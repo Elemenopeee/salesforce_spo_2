@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 
 abstract class ColorSystem {
-
   /// Primary color
   static const Color primary = Color(0xFF2D3142);
 
@@ -22,4 +21,7 @@ abstract class ColorSystem {
 
   /// Additional yellow color
   static const Color additionalYellow = Color(0xFFFFED7D);
+
+  /// white color
+  static const Color white = Color(0xFFFFFFFF);
 }
