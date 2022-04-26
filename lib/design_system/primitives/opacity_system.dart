@@ -1,13 +1,13 @@
 abstract class OpacitySystem {
   static const double opacity0 = 0.0;
+  static const double opacity01 = 0.1;
+  static const double opacity02 = 0.2;
+  static const double opacity03 = 0.3;
+  static const double opacity04 = 0.4;
   static const double opacity05 = 0.5;
-  static const double opacity10 = 10.0;
-  static const double opacity20 = 20.0;
-  static const double opacity30 = 30.0;
-  static const double opacity40 = 40.0;
-  static const double opacity50 = 50.0;
-  static const double opacity60 = 60.0;
-  static const double opacity70 = 70.0;
-  static const double opacity80 = 80.0;
-  static const double opacity90 = 90.0;
+  static const double opacity06 = 0.6;
+  static const double opacity07 = 0.7;
+  static const double opacity08 = 0.8;
+  static const double opacity09 = 0.9;
+  static const double opacity1 = 1;
 }
