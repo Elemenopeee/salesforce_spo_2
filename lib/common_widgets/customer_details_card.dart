@@ -1,8 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:salesforce_spo/design_system/design_system.dart';
+import 'package:salesforce_spo/utils/enums/music_instrument_enum.dart';
 
 class CustomerDetailsCard extends StatefulWidget {
-  const CustomerDetailsCard({Key? key}) : super(key: key);
+  final String firstName;
+  final String lastName;
+  final String? email;
+  final String? phone;
+  final String? preferredInstrument;
+
+  const CustomerDetailsCard({
+    Key? key,
+    required this.firstName,
+    required this.lastName,
+    this.email,
+    this.phone,
+    this.preferredInstrument,
+  }) : super(key: key);
 
   @override
   _CustomerDetailsCardState createState() => _CustomerDetailsCardState();
@@ -26,18 +41,18 @@ class _CustomerDetailsCardState extends State<CustomerDetailsCard> {
               children: [
                 RichText(
                     textAlign: TextAlign.center,
-                    text: const TextSpan(children: [
+                    text: TextSpan(children: [
                       TextSpan(
-                          text: 'Jessica Mendez •',
-                          style: TextStyle(
+                          text: '${widget.firstName} ${widget.lastName} •',
+                          style: const TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: SizeSystem.size16,
-                              color: ColorSystem.white)),
-                      WidgetSpan(
+                              color: ColorSystem.primary)),
+                      const WidgetSpan(
                           child: SizedBox(
                         width: SizeSystem.size5,
                       )),
-                      TextSpan(
+                      const TextSpan(
                           text: 'GC',
                           style: TextStyle(
                               fontWeight: FontWeight.bold,
@@ -48,44 +63,61 @@ class _CustomerDetailsCardState extends State<CustomerDetailsCard> {
                   height: SizeSystem.size5,
                 ),
                 RichText(
-                    textAlign: TextAlign.center,
-                    text: const TextSpan(children: [
+                  textAlign: TextAlign.center,
+                  text: TextSpan(
+                    children: [
                       WidgetSpan(
-                          child: Icon(
-                        Icons.run_circle,
-                        size: SizeSystem.size16,
-                        color: ColorSystem.complimentary,
-                      )),
-                      WidgetSpan(
-                          child: SizedBox(
-                        width: SizeSystem.size4,
-                      )),
-                      TextSpan(
-                          text: 'Premius',
-                          style: TextStyle(
-                              color: ColorSystem.complimentary,
-                              fontWeight: FontWeight.bold,
-                              fontSize: SizeSystem.size12)),
-                      TextSpan(
-                          text: ' • Visited on : 12-Mar-2022',
-                          style: TextStyle(
-                              fontSize: SizeSystem.size12,
-                              color: ColorSystem.secondary)),
-                    ])),
+                        child: SvgPicture.asset(
+                          IconSystem.badge,
+                          height: SizeSystem.size16,
+                          color: ColorSystem.complimentary,
+                        ),
+                      ),
+                      const WidgetSpan(
+                        child: SizedBox(
+                          width: SizeSystem.size4,
+                        ),
+                      ),
+                      const TextSpan(
+                        text: 'Premium',
+                        style: TextStyle(
+                          color: ColorSystem.complimentary,
+                          fontWeight: FontWeight.bold,
+                          fontSize: SizeSystem.size12,
+                        ),
+                      ),
+                      const TextSpan(
+                        text: ' • Visited on : 12-Mar-2022',
+                        style: TextStyle(
+                          fontSize: SizeSystem.size12,
+                          color: ColorSystem.secondary,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
                 const SizedBox(
                   height: SizeSystem.size10,
                 ),
-                const Text('example@apptware.com',
-                    style: TextStyle(
-                        fontSize: SizeSystem.size12,
-                        color: ColorSystem.secondary)),
+                if (widget.email != null)
+                  Text(
+                    widget.email!,
+                    style: const TextStyle(
+                      fontSize: SizeSystem.size12,
+                      color: ColorSystem.secondary,
+                    ),
+                  ),
                 const SizedBox(
                   height: SizeSystem.size5,
                 ),
-                const Text('+917057110312',
-                    style: TextStyle(
-                        fontSize: SizeSystem.size12,
-                        color: ColorSystem.secondary)),
+                if (widget.phone != null)
+                  Text(
+                    widget.phone!,
+                    style: const TextStyle(
+                      fontSize: SizeSystem.size12,
+                      color: ColorSystem.secondary,
+                    ),
+                  ),
               ],
             )
           ],
@@ -93,14 +125,17 @@ class _CustomerDetailsCardState extends State<CustomerDetailsCard> {
         const SizedBox(
           height: SizeSystem.size20,
         ),
-        Row(children: const [
-          CustomerMicroDetails(label: 'LTV', value: '20k+'),
-          CustomerMicroDetails(label: 'Level', value: 'Bas'),
-          CustomerMicroDetails(
-            label: 'Guitarist',
-            value: '',
-            icon: Icon(Icons.run_circle),
-          ),
+        Row(children: [
+          const CustomerMicroDetails(label: 'LTV', value: '20k+'),
+          const CustomerMicroDetails(label: 'Level', value: 'Bas'),
+          if (widget.preferredInstrument != null)
+            CustomerMicroDetails(
+              label: widget.preferredInstrument!,
+              value: '',
+              icon: SvgPicture.asset(MusicInstrument.getInstrumentIcon(
+                  MusicInstrument.getMusicInstrumentFromString(
+                      widget.preferredInstrument!))),
+            ),
         ])
       ]),
     );
@@ -114,6 +149,7 @@ class CustomerMicroDetails extends StatefulWidget {
   final String value;
   final String label;
   final Widget? icon;
+
   @override
   _CustomerMicroDetailsState createState() => _CustomerMicroDetailsState();
 }

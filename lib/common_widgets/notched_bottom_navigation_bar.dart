@@ -20,7 +20,7 @@ class NotchedBottomNavigationBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: MediaQuery.of(context).size.width,
-      color: Colors.white,
+      color: Colors.transparent,
       height: 80,
       child: Stack(
         children: [
@@ -29,17 +29,20 @@ class NotchedBottomNavigationBar extends StatelessWidget {
             painter: BottomNavigationBarPainter(),
             child: Center(
               heightFactor: 0.9,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  actions[0],
-                  actions[1],
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.2,
-                  ),
-                  actions[2],
-                  actions[3],
-                ],
+              child: SizedBox(
+                height: 80,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    actions[0],
+                    actions[1],
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.2,
+                    ),
+                    actions[2],
+                    actions[3],
+                  ],
+                ),
               ),
             ),
           ),
