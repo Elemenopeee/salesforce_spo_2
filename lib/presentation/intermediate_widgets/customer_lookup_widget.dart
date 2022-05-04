@@ -26,10 +26,12 @@ class _CustomerLookupWidgetState extends State<CustomerLookupWidget> {
 
   List<Customer> customers = [];
 
-  Future? _futureCustomers;
+  Future? futureCustomers;
 
   bool showPhoneField = true;
   bool showEmailField = true;
+
+  bool viewFullScreen = false;
 
   final FocusNode phoneFocusNode = FocusNode();
   final FocusNode emailFocusNode = FocusNode();
@@ -38,7 +40,6 @@ class _CustomerLookupWidgetState extends State<CustomerLookupWidget> {
   final TextEditingController emailController = TextEditingController();
 
   Future<void> getCustomer(bool searchingByPhoneNumber) async {
-    print(searchingByPhoneNumber);
     if (searchingByPhoneNumber) {
       // var editedPhone = phone.replaceAll(' ', '');
       // editedPhone = editedPhone.replaceAll('(', '');
@@ -62,7 +63,6 @@ class _CustomerLookupWidgetState extends State<CustomerLookupWidget> {
         print(error);
       }
     } else {
-      print(email);
       var data = await HttpService().doGet(
         path: '$kBaseURL$kCustomerSearchByEmail\'$email\'',
         tokenRequired: true,
@@ -86,7 +86,7 @@ class _CustomerLookupWidgetState extends State<CustomerLookupWidget> {
     phoneNumberController.addListener(() {
       if (phoneNumberController.text.length == 10) {
         setState(() {
-          _futureCustomers = getCustomer(true);
+          futureCustomers = getCustomer(true);
         });
       }
     });
@@ -99,7 +99,7 @@ class _CustomerLookupWidgetState extends State<CustomerLookupWidget> {
                 r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
             .hasMatch(email)) {
           setState(() {
-            _futureCustomers = getCustomer(false);
+            futureCustomers = getCustomer(false);
           });
         }
       }
@@ -114,55 +114,72 @@ class _CustomerLookupWidgetState extends State<CustomerLookupWidget> {
         color: Colors.transparent,
         child: Column(
           children: [
-            SizedBox(
-              height: 100,
-            ),
-            Container(
-              decoration: BoxDecoration(
-                color: ColorSystem.white,
-                shape: BoxShape.circle,
+            if (!viewFullScreen)
+              const SizedBox(
+                height: 100,
               ),
-              padding: EdgeInsets.all(10),
-              child: Transform.rotate(
-                angle: pi / 2,
-                child: SvgPicture.asset(IconSystem.leftArrow),
+            if (!viewFullScreen)
+              InkWell(
+                hoverColor: Colors.transparent,
+                highlightColor: Colors.transparent,
+                splashColor: Colors.transparent,
+                focusColor: Colors.transparent,
+                onTap: (){
+                  setState(() {
+                    viewFullScreen = true;
+                  });
+                },
+                child: Container(
+                  decoration: const BoxDecoration(
+                    color: ColorSystem.white,
+                    shape: BoxShape.circle,
+                  ),
+                  padding: const EdgeInsets.all(SizeSystem.size10),
+                  child: Transform.rotate(
+                    angle: pi / 2,
+                    child: SvgPicture.asset(IconSystem.leftArrow),
+                  ),
+                ),
               ),
-            ),
-            SizedBox(
-              height: 24,
-            ),
+            if (!viewFullScreen)
+              const SizedBox(
+                height: SizeSystem.size24,
+              ),
             Expanded(
               child: Container(
-                padding: const EdgeInsets.only(top: 48),
+                padding: const EdgeInsets.only(top: PaddingSystem.padding48),
                 decoration: const BoxDecoration(
                     color: ColorSystem.white,
                     borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(32),
-                        topRight: Radius.circular(32))),
+                        topLeft: Radius.circular(SizeSystem.size32),
+                        topRight: Radius.circular(SizeSystem.size32))),
                 child: Column(
                   children: [
                     const Text(
                       'Customer',
-                      style:
-                          TextStyle(color: ColorSystem.primary, fontSize: 34),
+                      style: TextStyle(
+                          color: ColorSystem.primary,
+                          fontSize: SizeSystem.size34),
                     ),
                     const SizedBox(
                       height: 20,
                     ),
                     const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 20),
+                      padding: EdgeInsets.symmetric(
+                          horizontal: PaddingSystem.padding20),
                       child: Text(
                         'Please enter your phone number to search a customer',
                         textAlign: TextAlign.center,
-                        style:
-                            TextStyle(color: ColorSystem.primary, fontSize: 16),
+                        style: TextStyle(
+                            color: ColorSystem.primary,
+                            fontSize: SizeSystem.size16),
                       ),
                     ),
                     const SizedBox(
                       height: 40,
                     ),
                     FutureBuilder(
-                      future: _futureCustomers,
+                      future: futureCustomers,
                       builder: (BuildContext context,
                           AsyncSnapshot<dynamic> snapshot) {
                         return Column(
@@ -170,12 +187,12 @@ class _CustomerLookupWidgetState extends State<CustomerLookupWidget> {
                           children: [
                             if (showPhoneField)
                               Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 48),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: PaddingSystem.padding48),
                                 child: GuitarCentreInputField(
                                   textEditingController: phoneNumberController,
                                   label: 'Phone',
-                                  hintText: '+1 (123) 456 7890',
+                                  hintText: '(123) 456 7890',
                                   textInputType: TextInputType.number,
                                   onChanged: (phone) {
                                     this.phone = phone;
@@ -190,8 +207,8 @@ class _CustomerLookupWidgetState extends State<CustomerLookupWidget> {
                               ),
                             if (showEmailField)
                               Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 48),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: PaddingSystem.padding48),
                                 child: GuitarCentreInputField(
                                   focusNode: emailFocusNode,
                                   textEditingController: emailController,
@@ -207,7 +224,7 @@ class _CustomerLookupWidgetState extends State<CustomerLookupWidget> {
                             if (customers.isNotEmpty)
                               ListView.builder(
                                 padding: const EdgeInsets.symmetric(
-                                  horizontal: 40,
+                                  horizontal: PaddingSystem.padding40,
                                 ),
                                 shrinkWrap: true,
                                 itemCount: customers.length,
@@ -230,7 +247,8 @@ class _CustomerLookupWidgetState extends State<CustomerLookupWidget> {
                       height: 40,
                     ),
                     Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 48),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: PaddingSystem.padding48),
                       child: TextButton(
                         style: ButtonStyle(
                           shape: MaterialStateProperty.resolveWith<
@@ -241,11 +259,13 @@ class _CustomerLookupWidgetState extends State<CustomerLookupWidget> {
                               MaterialStateProperty.resolveWith<Color>(
                             (Set<MaterialState> states) {
                               if (states.contains(MaterialState.pressed) ||
-                                  !states.contains(MaterialState.disabled))
+                                  !states.contains(MaterialState.disabled)) {
                                 return ColorSystem.primary;
-                              else if (states.contains(MaterialState.disabled))
+                              } else if (states
+                                  .contains(MaterialState.disabled)) {
                                 return ColorSystem.primary
                                     .withOpacity(OpacitySystem.opacity01);
+                              }
                               return ColorSystem.primary
                                   .withOpacity(OpacitySystem.opacity01);
                             },
@@ -253,15 +273,16 @@ class _CustomerLookupWidgetState extends State<CustomerLookupWidget> {
                         ),
                         onPressed: null,
                         child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 20, vertical: 20),
+                          padding:
+                              const EdgeInsets.all(PaddingSystem.padding20),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: const [
                               Text(
                                 '+ADD NEW CUSTOMER',
                                 style: TextStyle(
-                                    color: ColorSystem.white, fontSize: 18),
+                                    color: ColorSystem.white,
+                                    fontSize: SizeSystem.size18),
                               ),
                             ],
                           ),
@@ -269,11 +290,13 @@ class _CustomerLookupWidgetState extends State<CustomerLookupWidget> {
                       ),
                     ),
                     Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 48, vertical: 20),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: PaddingSystem.padding48,
+                          vertical: PaddingSystem.padding20),
                       child: InkWell(
-                        onTap: (){
-                          print('Here');
-                          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) {
+                        onTap: () {
+                          Navigator.push(context, MaterialPageRoute(
+                              builder: (BuildContext context) {
                             return const SearchScreen();
                           }));
                         },
@@ -283,9 +306,9 @@ class _CustomerLookupWidgetState extends State<CustomerLookupWidget> {
                         hoverColor: Colors.transparent,
                         child: TextFormField(
                           enabled: false,
-                          decoration: InputDecoration(
+                          decoration: const InputDecoration(
                             hintText: 'Search Name',
-                            hintStyle: const TextStyle(
+                            hintStyle: TextStyle(
                               color: ColorSystem.secondary,
                               fontSize: SizeSystem.size18,
                             ),

@@ -113,7 +113,7 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: getAppBar,
-      body: const TabHome(),
+      body: const SizedBox.shrink(),
       bottomNavigationBar: NotchedBottomNavigationBar(
         actions: [
           IconButton(
