@@ -1,4 +1,3 @@
-import 'dart:math';
 import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
@@ -6,14 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:salesforce_spo/common_widgets/notched_bottom_navigation_bar.dart';
 import 'package:salesforce_spo/design_system/design_system.dart';
-import 'package:salesforce_spo/models/customer.dart';
 import 'package:salesforce_spo/presentation/intermediate_widgets/customer_lookup_widget.dart';
-import 'package:salesforce_spo/presentation/tabs/home_tab.dart';
-import 'package:salesforce_spo/services/networking/endpoints.dart';
 import 'package:salesforce_spo/services/networking/networking_service.dart';
-import 'package:salesforce_spo/utils/phone_input_formatter.dart';
-
-import 'common_widgets/input_field_with_validation.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 void main() {
   runApp(const MyApp());
@@ -25,7 +19,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Salesforce SPO',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
@@ -167,7 +161,14 @@ class HomeScreen extends StatelessWidget {
         ],
         centerButton: FloatingActionButton(
           backgroundColor: ColorSystem.primary,
-          onPressed: () {},
+          onPressed: () async {
+            var response = await HttpService().doGet(path: 'http://demo2572955.mockable.io//testredirecturl');
+
+            if(response.data != null){
+              await launchUrlString(response.data['url']);
+            }
+
+          },
           child: SvgPicture.asset(
             IconSystem.plus,
             width: 24,
