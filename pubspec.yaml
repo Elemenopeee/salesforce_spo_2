@@ -18,6 +18,7 @@ dependencies:
   http:
   shared_preferences:
   url_launcher: ^6.1.0
+  msal_mobile: ^0.1.4
 
 dev_dependencies:
   flutter_test:

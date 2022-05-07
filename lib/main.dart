@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:msal_mobile/msal_mobile.dart';
 import 'package:salesforce_spo/common_widgets/notched_bottom_navigation_bar.dart';
 import 'package:salesforce_spo/design_system/design_system.dart';
 import 'package:salesforce_spo/presentation/intermediate_widgets/customer_lookup_widget.dart';
@@ -28,8 +29,16 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+
+  late MsalMobile msal;
 
   get getAppBar => AppBar(
         toolbarHeight: 80,
@@ -101,6 +110,23 @@ class HomeScreen extends StatelessWidget {
           ),
         ],
       );
+
+  @override
+  void initState() {
+    MsalMobile.create('assets/auth_config.json', "https://login.microsoftonline.com/Organizations").then((client) {
+      setState(() {
+        msal = client;
+      });
+    });
+
+    Future.delayed(Duration.zero, () async {
+      await msal.signIn(null, ["api://dbb40d92-075a-40d0-ae48-9d3a8aa10aa9/[delegated-permission-name]"]).then((result) {
+        print('access token (truncated): ${result.accessToken}');
+      });
+    });
+
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
