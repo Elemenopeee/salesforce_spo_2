@@ -16,13 +16,14 @@ abstract class IconSystem {
   static const String menu = 'assets/icons/menu.svg';
   static const String messageOutline = 'assets/icons/message_outline.svg';
   static const String more = 'assets/icons/more.svg';
-  static const String notifications = 'assets/icons/notifications.svg';
+  static const String notification = 'assets/icons/notification.svg';
   static const String person = 'assets/icons/person.svg';
   static const String phone = 'assets/icons/phone.svg';
   static const String plus = 'assets/icons/plus.svg';
   static const String search = 'assets/icons/search.svg';
   static const String shipping = 'assets/icons/shipping.svg';
   static const String sparkle = 'assets/icons/sparkle.svg';
+  static const String sun = 'assets/icons/sun.svg';
   static const String user = 'assets/icons/user.svg';
   static const String walk = 'assets/icons/walk.svg';
 }

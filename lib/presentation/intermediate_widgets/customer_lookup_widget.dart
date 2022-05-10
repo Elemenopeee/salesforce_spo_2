@@ -41,15 +41,10 @@ class _CustomerLookupWidgetState extends State<CustomerLookupWidget> {
 
   Future<void> getCustomer(bool searchingByPhoneNumber) async {
     if (searchingByPhoneNumber) {
-      // var editedPhone = phone.replaceAll(' ', '');
-      // editedPhone = editedPhone.replaceAll('(', '');
-      // editedPhone = editedPhone.replaceAll(')', '');
-
-      var editedPhone = ') 326-9711';
-
       var data = await HttpService().doGet(
-          path: '$kBaseURL$kCustomerSearchByPhone\'$editedPhone\'',
-          tokenRequired: true);
+        path: Endpoints.getCustomerSearchByPhone(phone),
+        tokenRequired: true,
+      );
 
       try {
         for (var record in data.data['records']) {
@@ -84,7 +79,14 @@ class _CustomerLookupWidgetState extends State<CustomerLookupWidget> {
   void initState() {
     super.initState();
     phoneNumberController.addListener(() {
-      if (phoneNumberController.text.length == 10) {
+      if(phoneFocusNode.hasFocus){
+        phone = phoneNumberController.text;
+        phone = phone.replaceAll('(', '');
+        phone = phone.replaceAll(')', '');
+        phone = phone.replaceAll('-', '');
+        phone = phone.replaceAll(' ', '');
+      }
+      if (phone.length >= 10) {
         setState(() {
           futureCustomers = getCustomer(true);
         });
@@ -124,7 +126,7 @@ class _CustomerLookupWidgetState extends State<CustomerLookupWidget> {
                 highlightColor: Colors.transparent,
                 splashColor: Colors.transparent,
                 focusColor: Colors.transparent,
-                onTap: (){
+                onTap: () {
                   setState(() {
                     viewFullScreen = true;
                   });
@@ -190,13 +192,11 @@ class _CustomerLookupWidgetState extends State<CustomerLookupWidget> {
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: PaddingSystem.padding48),
                                 child: GuitarCentreInputField(
+                                  focusNode: phoneFocusNode,
                                   textEditingController: phoneNumberController,
                                   label: 'Phone',
-                                  hintText: '(123) 456 7890',
+                                  hintText: '(123) 456-7890',
                                   textInputType: TextInputType.number,
-                                  onChanged: (phone) {
-                                    this.phone = phone;
-                                  },
                                   inputFormatters: [
                                     PhoneInputFormatter(
                                       mask: '(###) ###-####',
@@ -235,7 +235,11 @@ class _CustomerLookupWidgetState extends State<CustomerLookupWidget> {
                                     email: customers[index].email,
                                     phone: customers[index].phone,
                                     preferredInstrument:
-                                        customers[index].preferredInstrument,
+                                    customers[index].preferredInstrument,
+                                    lastTransactionDate: customers[index].lastTransactionDate,
+                                    ltv: customers[index].lifetimeNetUnits,
+                                    averageProductValue: customers[index].lifeTimeNetSalesAmount,
+                                    customerLevel: customers[index].medianLTVNet,
                                   );
                                 },
                               ),

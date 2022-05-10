@@ -18,11 +18,11 @@ class _SearchScreenState extends State<SearchScreen> {
 
   List<Customer> customers = [];
 
-  Future<void> get futureCustomers => getCustomer();
+  Future<void>? futureCustomers;
 
   Future<void> getCustomer() async {
     var data = await HttpService().doGet(
-      path: '$kBaseURL$kCustomerSearchByEmail\'$name\'',
+      path: Endpoints.getCustomerSearchByName(name),
       tokenRequired: true,
     );
 
@@ -46,6 +46,14 @@ class _SearchScreenState extends State<SearchScreen> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             TextFormField(
+              onChanged: (name){
+                this.name = name;
+                if(this.name.length >= 3){
+                  setState(() {
+                    futureCustomers = getCustomer();
+                  });
+                }
+              },
               decoration: const InputDecoration(
                 hintText: 'Search Name',
                 hintStyle: TextStyle(
@@ -53,19 +61,21 @@ class _SearchScreenState extends State<SearchScreen> {
                   fontSize: SizeSystem.size18,
                 ),
                 focusedBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: ColorSystem.primary, width: 1),
+                  borderSide: BorderSide(
+                    color: ColorSystem.primary,
+                    width: 1,
+                  ),
                 ),
               ),
             ),
             Expanded(
               child: FutureBuilder(
                 future: futureCustomers,
-                builder:
-                    (BuildContext context, AsyncSnapshot<void> snapshot) {
+                builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
                   return ListView.builder(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: PaddingSystem.padding40,
-                    ),
+                    // padding: const EdgeInsets.symmetric(
+                    //   horizontal: PaddingSystem.padding20,
+                    // ),
                     shrinkWrap: true,
                     itemCount: customers.length,
                     itemBuilder: (BuildContext context, int index) {
@@ -75,12 +85,15 @@ class _SearchScreenState extends State<SearchScreen> {
                         email: customers[index].email,
                         phone: customers[index].phone,
                         preferredInstrument:
-                        customers[index].preferredInstrument,
+                            customers[index].preferredInstrument,
+                        lastTransactionDate: customers[index].lastTransactionDate,
+                        ltv: customers[index].lifetimeNetUnits,
+                        averageProductValue: customers[index].lifeTimeNetSalesAmount,
+                        customerLevel: customers[index].medianLTVNet,
                       );
                     },
                   );
-
-                    },
+                },
               ),
             ),
           ],

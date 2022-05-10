@@ -1,7 +1,7 @@
 {
-  "client_id" : "dbb40d92-075a-40d0-ae48-9d3a8aa10aa9",
+  "client_id" : "88641257-66b0-4343-97c3-b78bf111e27a",
   "authorization_user_agent" : "https://login.microsoftonline.com/2903b32e-b3db-4aad-8b64-f3f7b64e235c/v2.0%27",
-  "ios_redirect_uri": "msauth.com.gccrm.gccustomerspo://auth",
+  "ios_redirect_uri": "msauth.com.guitarcenter.salesforceSpo://auth",
   "account_mode": "SINGLE",
   "authorities" : [
     {

@@ -1,13 +1,16 @@
+import 'dart:developer';
 import 'dart:ui';
 
+import 'package:azure_ad_authentication/azure_ad_authentication.dart';
+import 'package:azure_ad_authentication/exeption.dart';
+import 'package:azure_ad_authentication/model/user_ad.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:msal_mobile/msal_mobile.dart';
 import 'package:salesforce_spo/common_widgets/notched_bottom_navigation_bar.dart';
 import 'package:salesforce_spo/design_system/design_system.dart';
 import 'package:salesforce_spo/presentation/intermediate_widgets/customer_lookup_widget.dart';
-import 'package:salesforce_spo/services/networking/networking_service.dart';
+import 'package:salesforce_spo/presentation/tabs/home_tab.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 void main() {
@@ -37,8 +40,58 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  // late MsalMobile msal;
 
-  late MsalMobile msal;
+  static const String _authority =
+      "https://login.microsoftonline.com/organizations/oauth2/v2.0/authorize";
+
+  static const String _clientId = "88641257-66b0-4343-97c3-b78bf111e27a";
+
+  String _output = 'NONE';
+  static const List<String> kScopes = [
+    "https://graph.microsoft.com/user.read",
+    "https://graph.microsoft.com/Calendars.ReadWrite",
+  ];
+
+  Future<void> _acquireToken() async {
+    await getResult();
+  }
+
+  Future<String> getResult({bool isAcquireToken = true}) async {
+    AzureAdAuthentication pca = await intPca();
+    String? res;
+    UserAdModel? userAdModel;
+    try {
+      if (isAcquireToken) {
+        userAdModel = await pca.acquireToken(scopes: kScopes);
+        print(userAdModel?.id);
+        log(userAdModel!.accessToken! + userAdModel.accessToken!);
+        // userAdModel.
+      } else {
+        userAdModel = await pca.acquireTokenSilent(scopes: kScopes);
+      }
+    } on MsalUserCancelledException {
+      res = "User cancelled";
+    } on MsalNoAccountException {
+      res = "no account";
+    } on MsalInvalidConfigurationException {
+      res = "invalid config";
+    } on MsalInvalidScopeException {
+      res = "Invalid scope";
+    } on MsalException {
+      res = "Error getting token. Unspecified reason";
+    }
+
+    setState(() {
+      _output = (userAdModel?.toJson().toString() ?? res)!;
+    });
+    return (userAdModel?.toJson().toString() ?? res)!;
+  }
+
+  Future<AzureAdAuthentication> intPca() async {
+    return await AzureAdAuthentication.createPublicClientApplication(
+        clientId: _clientId, authority: _authority);
+  }
 
   get getAppBar => AppBar(
         toolbarHeight: 80,
@@ -81,7 +134,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 height: 20,
               ),
               SvgPicture.asset(
-                IconSystem.notifications,
+                IconSystem.notification,
                 width: 30,
                 height: 30,
                 color: Color(0xFF888888),
@@ -100,7 +153,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ],
           ),
           const SizedBox(
-            width: 05,
+            width: 20,
           ),
           SvgPicture.asset(
             IconSystem.search,
@@ -113,18 +166,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void initState() {
-    MsalMobile.create('assets/auth_config.json', "https://login.microsoftonline.com/Organizations").then((client) {
-      setState(() {
-        msal = client;
-      });
-    });
-
-    Future.delayed(Duration.zero, () async {
-      await msal.signIn(null, ["api://dbb40d92-075a-40d0-ae48-9d3a8aa10aa9/[delegated-permission-name]"]).then((result) {
-        print('access token (truncated): ${result.accessToken}');
-      });
-    });
-
     super.initState();
   }
 
@@ -133,7 +174,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: getAppBar,
-      body: const SizedBox.shrink(),
+      body: const TabHome(),
       bottomNavigationBar: NotchedBottomNavigationBar(
         actions: [
           IconButton(
@@ -177,7 +218,7 @@ class _HomeScreenState extends State<HomeScreen> {
           IconButton(
             focusColor: Colors.transparent,
             splashColor: Colors.transparent,
-            onPressed: () {},
+            onPressed: _acquireToken,
             icon: SvgPicture.asset(
               IconSystem.more,
               width: 24,
@@ -188,12 +229,12 @@ class _HomeScreenState extends State<HomeScreen> {
         centerButton: FloatingActionButton(
           backgroundColor: ColorSystem.primary,
           onPressed: () async {
-            var response = await HttpService().doGet(path: 'http://demo2572955.mockable.io//testredirecturl');
-
-            if(response.data != null){
-              await launchUrlString(response.data['url']);
+            try{
+              await launchUrlString('salesforce1://sObject/0018B000002ZDfbQAG/view');
             }
-
+            catch (e){
+              print(e);
+            }
           },
           child: SvgPicture.asset(
             IconSystem.plus,
@@ -206,8 +247,3 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 }
-
-
-
-
-

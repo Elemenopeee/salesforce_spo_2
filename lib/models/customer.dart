@@ -16,9 +16,13 @@ class Customer extends AppUser {
   @override
   String? phone;
 
-  final Object? lastTransactionDate;
-  final Object? lifeTimeNetSalesAmount;
+  final String? lastTransactionDate;
+  final double? lifeTimeNetSalesAmount;
   final String? preferredInstrument;
+  final double? lifetimeNetUnits;
+  final String? maxLTVNet;
+  final String? medianLTVNet;
+  final String? averageLTVNet;
 
   Customer._({
     this.email,
@@ -29,6 +33,10 @@ class Customer extends AppUser {
     this.lastTransactionDate,
     this.lifeTimeNetSalesAmount,
     this.preferredInstrument,
+    this.lifetimeNetUnits,
+    this.maxLTVNet,
+    this.medianLTVNet,
+    this.averageLTVNet,
   });
 
   factory Customer.fromJson({required Map<String, dynamic> json}) {
@@ -41,6 +49,10 @@ class Customer extends AppUser {
       lastTransactionDate: json['Last_Transaction_Date__c'],
       lifeTimeNetSalesAmount: json['Lifetime_Net_Sales_Amount__c'],
       preferredInstrument: json['Preferred_Instrument__c'],
+      lifetimeNetUnits: json['Lifetime_Net_Units__c'],
+      maxLTVNet: json['Max_ltv_net_dlrs_Formula__c'],
+      medianLTVNet: json['Median_ltv_net_dlrs_Formula__c'],
+      averageLTVNet: json['Avg_ltv_net_dlrs_Formula__c'],
     );
   }
 }

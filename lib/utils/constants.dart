@@ -1,1 +1,1 @@
-const String kBearerToken = '00D050000008qQ1!AQkAQACOabgCEHnIOz5jmfYHswo3M1o4soOdOBezBhKQVk2TJPDtNY177Qvm7E8TY7ZMJzzUkn.icj4LS91yidXfPmaSPoeX';
+const String kBearerToken = '00D050000008qQ1!AQkAQAK7h1.XtgPH5hQxHUyqNtGwMblcY1jgBFVLe01dSpIRwoYreJhxujFzclWVYG.s7azdIeniBOQTxUmutcFGoy7vtMOO';

@@ -9,6 +9,10 @@ class CustomerDetailsCard extends StatefulWidget {
   final String? email;
   final String? phone;
   final String? preferredInstrument;
+  final String? lastTransactionDate;
+  final double? ltv;
+  final double? averageProductValue;
+  final String? customerLevel;
 
   const CustomerDetailsCard({
     Key? key,
@@ -17,6 +21,10 @@ class CustomerDetailsCard extends StatefulWidget {
     this.email,
     this.phone,
     this.preferredInstrument,
+    this.lastTransactionDate,
+    this.ltv,
+    this.averageProductValue,
+    this.customerLevel,
   }) : super(key: key);
 
   @override
@@ -66,33 +74,38 @@ class _CustomerDetailsCardState extends State<CustomerDetailsCard> {
                   textAlign: TextAlign.center,
                   text: TextSpan(
                     children: [
-                      WidgetSpan(
-                        child: SvgPicture.asset(
-                          IconSystem.badge,
-                          height: SizeSystem.size16,
-                          color: ColorSystem.complimentary,
+                      if (widget.customerLevel != null)
+                        WidgetSpan(
+                          child: SvgPicture.asset(
+                            IconSystem.badge,
+                            height: SizeSystem.size16,
+                            color: getCustomerLevelColor(widget.customerLevel!),
+                          ),
                         ),
-                      ),
-                      const WidgetSpan(
-                        child: SizedBox(
-                          width: SizeSystem.size4,
+                      if (widget.customerLevel != null)
+                        const WidgetSpan(
+                          child: SizedBox(
+                            width: SizeSystem.size4,
+                          ),
                         ),
-                      ),
-                      const TextSpan(
-                        text: 'Premium',
-                        style: TextStyle(
-                          color: ColorSystem.complimentary,
-                          fontWeight: FontWeight.bold,
-                          fontSize: SizeSystem.size12,
+                      if (widget.customerLevel != null)
+                        TextSpan(
+                          text: widget.customerLevel!,
+                          style: TextStyle(
+                            color: getCustomerLevelColor(widget.customerLevel!),
+                            fontWeight: FontWeight.bold,
+                            fontSize: SizeSystem.size12,
+                          ),
                         ),
-                      ),
-                      const TextSpan(
-                        text: ' • Visited on : 12-Mar-2022',
-                        style: TextStyle(
-                          fontSize: SizeSystem.size12,
-                          color: ColorSystem.secondary,
+                      if (widget.lastTransactionDate != null)
+                        TextSpan(
+                          text:
+                              ' • Visited on : ${widget.lastTransactionDate!}',
+                          style: const TextStyle(
+                            fontSize: SizeSystem.size12,
+                            color: ColorSystem.secondary,
+                          ),
                         ),
-                      ),
                     ],
                   ),
                 ),
@@ -126,8 +139,11 @@ class _CustomerDetailsCardState extends State<CustomerDetailsCard> {
           height: SizeSystem.size20,
         ),
         Row(children: [
-          const CustomerMicroDetails(label: 'LTV', value: '20k+'),
-          const CustomerMicroDetails(label: 'Level', value: 'Bas'),
+          if (widget.ltv != null)
+            CustomerMicroDetails(label: 'LTV', value: widget.ltv!.toString()),
+          if (widget.averageProductValue != null)
+            CustomerMicroDetails(
+                label: 'APV', value: widget.averageProductValue!.toString()),
           if (widget.preferredInstrument != null)
             CustomerMicroDetails(
               label: widget.preferredInstrument!,
@@ -177,5 +193,19 @@ class _CustomerMicroDetailsState extends State<CustomerMicroDetails> {
         style: const TextStyle(color: ColorSystem.secondary),
       )
     ]);
+  }
+}
+
+
+Color getCustomerLevelColor(String level){
+  switch(level){
+    case 'LOW':
+      return ColorSystem.additionalYellow;
+    case 'MEDIUM':
+      return ColorSystem.lavender;
+    case 'HIGH':
+      return ColorSystem.complimentary;
+    default:
+      return ColorSystem.complimentary;
   }
 }

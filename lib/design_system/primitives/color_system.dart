@@ -24,4 +24,7 @@ abstract class ColorSystem {
 
   /// white color
   static const Color white = Color(0xFFFFFFFF);
+
+  // lavender color
+  static const Color lavender = Color(0xFF9DA0FF);
 }
