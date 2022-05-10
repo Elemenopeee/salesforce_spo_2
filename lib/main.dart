@@ -65,7 +65,8 @@ class _HomeScreenState extends State<HomeScreen> {
       if (isAcquireToken) {
         userAdModel = await pca.acquireToken(scopes: kScopes);
         print(userAdModel?.id);
-        log(userAdModel!.accessToken! + userAdModel.accessToken!);
+        log(userAdModel!.toJson().toString());
+
         // userAdModel.
       } else {
         userAdModel = await pca.acquireTokenSilent(scopes: kScopes);
