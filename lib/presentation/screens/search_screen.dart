@@ -80,6 +80,7 @@ class _SearchScreenState extends State<SearchScreen> {
                     itemCount: customers.length,
                     itemBuilder: (BuildContext context, int index) {
                       return CustomerDetailsCard(
+                        customerId: customers[index].id,
                         firstName: customers[index].firstName,
                         lastName: customers[index].lastName,
                         email: customers[index].email,

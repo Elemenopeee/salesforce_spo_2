@@ -147,181 +147,180 @@ class _CustomerLookupWidgetState extends State<CustomerLookupWidget> {
               const SizedBox(
                 height: SizeSystem.size24,
               ),
-            Expanded(
-              child: Container(
-                padding: const EdgeInsets.only(top: PaddingSystem.padding48),
-                decoration: const BoxDecoration(
-                    color: ColorSystem.white,
-                    borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(SizeSystem.size32),
-                        topRight: Radius.circular(SizeSystem.size32))),
-                child: Column(
-                  children: [
-                    const Text(
-                      'Customer',
+            Container(
+              padding: const EdgeInsets.only(top: PaddingSystem.padding48),
+              decoration: const BoxDecoration(
+                  color: ColorSystem.white,
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(SizeSystem.size32),
+                      topRight: Radius.circular(SizeSystem.size32))),
+              child: Column(
+                children: [
+                  const Text(
+                    'Customer',
+                    style: TextStyle(
+                        color: ColorSystem.primary,
+                        fontSize: SizeSystem.size34),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  const Padding(
+                    padding: EdgeInsets.symmetric(
+                        horizontal: PaddingSystem.padding20),
+                    child: Text(
+                      'Please enter your phone number to search a customer',
+                      textAlign: TextAlign.center,
                       style: TextStyle(
                           color: ColorSystem.primary,
-                          fontSize: SizeSystem.size34),
+                          fontSize: SizeSystem.size16),
                     ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    const Padding(
-                      padding: EdgeInsets.symmetric(
-                          horizontal: PaddingSystem.padding20),
-                      child: Text(
-                        'Please enter your phone number to search a customer',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            color: ColorSystem.primary,
-                            fontSize: SizeSystem.size16),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 40,
-                    ),
-                    FutureBuilder(
-                      future: futureCustomers,
-                      builder: (BuildContext context,
-                          AsyncSnapshot<dynamic> snapshot) {
-                        return Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            if (showPhoneField)
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: PaddingSystem.padding48),
-                                child: GuitarCentreInputField(
-                                  focusNode: phoneFocusNode,
-                                  textEditingController: phoneNumberController,
-                                  label: 'Phone',
-                                  hintText: '(123) 456-7890',
-                                  textInputType: TextInputType.number,
-                                  inputFormatters: [
-                                    PhoneInputFormatter(
-                                      mask: '(###) ###-####',
-                                    ),
-                                  ],
-                                  leadingIcon: IconSystem.phone,
-                                ),
+                  ),
+                  const SizedBox(
+                    height: 40,
+                  ),
+                  FutureBuilder(
+                    future: futureCustomers,
+                    builder: (BuildContext context,
+                        AsyncSnapshot<dynamic> snapshot) {
+                      return Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          if (showPhoneField)
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: PaddingSystem.padding48),
+                              child: GuitarCentreInputField(
+                                focusNode: phoneFocusNode,
+                                textEditingController: phoneNumberController,
+                                label: 'Phone',
+                                hintText: '(123) 456-7890',
+                                textInputType: TextInputType.number,
+                                inputFormatters: [
+                                  PhoneInputFormatter(
+                                    mask: '(###) ###-####',
+                                  ),
+                                ],
+                                leadingIcon: IconSystem.phone,
                               ),
-                            if (showEmailField)
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: PaddingSystem.padding48),
-                                child: GuitarCentreInputField(
-                                  focusNode: emailFocusNode,
-                                  textEditingController: emailController,
-                                  label: 'Email',
-                                  hintText: 'abc@xyz.com',
-                                  textInputType: TextInputType.emailAddress,
-                                  leadingIcon: IconSystem.messageOutline,
-                                  onChanged: (email) {
-                                    this.email = email;
-                                  },
-                                ),
-                              ),
-                            if (customers.isNotEmpty)
-                              ListView.builder(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: PaddingSystem.padding40,
-                                ),
-                                shrinkWrap: true,
-                                itemCount: customers.length,
-                                itemBuilder: (BuildContext context, int index) {
-                                  return CustomerDetailsCard(
-                                    firstName: customers[index].firstName,
-                                    lastName: customers[index].lastName,
-                                    email: customers[index].email,
-                                    phone: customers[index].phone,
-                                    preferredInstrument:
-                                    customers[index].preferredInstrument,
-                                    lastTransactionDate: customers[index].lastTransactionDate,
-                                    ltv: customers[index].lifetimeNetUnits,
-                                    averageProductValue: customers[index].lifeTimeNetSalesAmount,
-                                    customerLevel: customers[index].medianLTVNet,
-                                  );
+                            ),
+                          if (showEmailField)
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: PaddingSystem.padding48),
+                              child: GuitarCentreInputField(
+                                focusNode: emailFocusNode,
+                                textEditingController: emailController,
+                                label: 'Email',
+                                hintText: 'abc@xyz.com',
+                                textInputType: TextInputType.emailAddress,
+                                leadingIcon: IconSystem.messageOutline,
+                                onChanged: (email) {
+                                  this.email = email;
                                 },
                               ),
-                          ],
-                        );
-                      },
-                    ),
-                    const SizedBox(
-                      height: 40,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: PaddingSystem.padding48),
-                      child: TextButton(
-                        style: ButtonStyle(
-                          shape: MaterialStateProperty.resolveWith<
-                                  RoundedRectangleBorder>(
-                              (states) => RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(16))),
-                          backgroundColor:
-                              MaterialStateProperty.resolveWith<Color>(
-                            (Set<MaterialState> states) {
-                              if (states.contains(MaterialState.pressed) ||
-                                  !states.contains(MaterialState.disabled)) {
-                                return ColorSystem.primary;
-                              } else if (states
-                                  .contains(MaterialState.disabled)) {
-                                return ColorSystem.primary
-                                    .withOpacity(OpacitySystem.opacity01);
-                              }
+                            ),
+                          if (customers.isNotEmpty)
+                            ListView.builder(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: PaddingSystem.padding40,
+                              ),
+                              shrinkWrap: true,
+                              itemCount: customers.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                return CustomerDetailsCard(
+                                  customerId: customers[index].id,
+                                  firstName: customers[index].firstName,
+                                  lastName: customers[index].lastName,
+                                  email: customers[index].email,
+                                  phone: customers[index].phone,
+                                  preferredInstrument:
+                                  customers[index].preferredInstrument,
+                                  lastTransactionDate: customers[index].lastTransactionDate,
+                                  ltv: customers[index].lifetimeNetUnits,
+                                  averageProductValue: customers[index].lifeTimeNetSalesAmount,
+                                  customerLevel: customers[index].medianLTVNet,
+                                );
+                              },
+                            ),
+                        ],
+                      );
+                    },
+                  ),
+                  const SizedBox(
+                    height: 40,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: PaddingSystem.padding48),
+                    child: TextButton(
+                      style: ButtonStyle(
+                        shape: MaterialStateProperty.resolveWith<
+                                RoundedRectangleBorder>(
+                            (states) => RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16))),
+                        backgroundColor:
+                            MaterialStateProperty.resolveWith<Color>(
+                          (Set<MaterialState> states) {
+                            if (states.contains(MaterialState.pressed) ||
+                                !states.contains(MaterialState.disabled)) {
+                              return ColorSystem.primary;
+                            } else if (states
+                                .contains(MaterialState.disabled)) {
                               return ColorSystem.primary
                                   .withOpacity(OpacitySystem.opacity01);
-                            },
-                          ),
-                        ),
-                        onPressed: null,
-                        child: Padding(
-                          padding:
-                              const EdgeInsets.all(PaddingSystem.padding20),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: const [
-                              Text(
-                                '+ADD NEW CUSTOMER',
-                                style: TextStyle(
-                                    color: ColorSystem.white,
-                                    fontSize: SizeSystem.size18),
-                              ),
-                            ],
-                          ),
+                            }
+                            return ColorSystem.primary
+                                .withOpacity(OpacitySystem.opacity01);
+                          },
                         ),
                       ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: PaddingSystem.padding48,
-                          vertical: PaddingSystem.padding20),
-                      child: InkWell(
-                        onTap: () {
-                          Navigator.push(context, MaterialPageRoute(
-                              builder: (BuildContext context) {
-                            return const SearchScreen();
-                          }));
-                        },
-                        focusColor: Colors.transparent,
-                        splashColor: Colors.transparent,
-                        highlightColor: Colors.transparent,
-                        hoverColor: Colors.transparent,
-                        child: TextFormField(
-                          enabled: false,
-                          decoration: const InputDecoration(
-                            hintText: 'Search Name',
-                            hintStyle: TextStyle(
-                              color: ColorSystem.secondary,
-                              fontSize: SizeSystem.size18,
+                      onPressed: null,
+                      child: Padding(
+                        padding:
+                            const EdgeInsets.all(PaddingSystem.padding20),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: const [
+                            Text(
+                              '+ADD NEW CUSTOMER',
+                              style: TextStyle(
+                                  color: ColorSystem.white,
+                                  fontSize: SizeSystem.size18),
                             ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: PaddingSystem.padding48,
+                        vertical: PaddingSystem.padding20),
+                    child: InkWell(
+                      onTap: () {
+                        Navigator.push(context, MaterialPageRoute(
+                            builder: (BuildContext context) {
+                          return const SearchScreen();
+                        }));
+                      },
+                      focusColor: Colors.transparent,
+                      splashColor: Colors.transparent,
+                      highlightColor: Colors.transparent,
+                      hoverColor: Colors.transparent,
+                      child: TextFormField(
+                        enabled: false,
+                        decoration: const InputDecoration(
+                          hintText: 'Search Name',
+                          hintStyle: TextStyle(
+                            color: ColorSystem.secondary,
+                            fontSize: SizeSystem.size18,
                           ),
                         ),
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           ],

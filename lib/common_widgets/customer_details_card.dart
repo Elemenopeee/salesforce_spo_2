@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:salesforce_spo/design_system/design_system.dart';
 import 'package:salesforce_spo/utils/enums/music_instrument_enum.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 class CustomerDetailsCard extends StatefulWidget {
+  final String? customerId;
   final String firstName;
   final String lastName;
   final String? email;
@@ -16,6 +18,7 @@ class CustomerDetailsCard extends StatefulWidget {
 
   const CustomerDetailsCard({
     Key? key,
+    this.customerId,
     required this.firstName,
     required this.lastName,
     this.email,
@@ -34,126 +37,137 @@ class CustomerDetailsCard extends StatefulWidget {
 class _CustomerDetailsCardState extends State<CustomerDetailsCard> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.all(20),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            const SizedBox(
-              width: PaddingSystem.padding10,
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                RichText(
-                    textAlign: TextAlign.center,
-                    text: TextSpan(children: [
-                      TextSpan(
-                          text: '${widget.firstName} ${widget.lastName} •',
-                          style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: SizeSystem.size16,
-                              color: ColorSystem.primary)),
-                      const WidgetSpan(
-                          child: SizedBox(
-                        width: SizeSystem.size5,
-                      )),
-                      const TextSpan(
-                          text: 'GC',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: SizeSystem.size14,
-                              color: Colors.grey))
-                    ])),
-                const SizedBox(
-                  height: SizeSystem.size5,
-                ),
-                RichText(
-                  textAlign: TextAlign.center,
-                  text: TextSpan(
-                    children: [
-                      if (widget.customerLevel != null)
-                        WidgetSpan(
-                          child: SvgPicture.asset(
-                            IconSystem.badge,
-                            height: SizeSystem.size16,
-                            color: getCustomerLevelColor(widget.customerLevel!),
-                          ),
-                        ),
-                      if (widget.customerLevel != null)
+    return GestureDetector(
+      onTap: () async {
+        try{
+          await launchUrlString('salesforce1://sObject/${widget.customerId}/view');
+        }
+        catch (e){
+          print(e);
+        }
+      },
+      child: Container(
+        margin: const EdgeInsets.all(20),
+        color: ColorSystem.white,
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              const SizedBox(
+                width: PaddingSystem.padding10,
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  RichText(
+                      textAlign: TextAlign.center,
+                      text: TextSpan(children: [
+                        TextSpan(
+                            text: '${widget.firstName} ${widget.lastName} •',
+                            style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: SizeSystem.size16,
+                                color: ColorSystem.primary)),
                         const WidgetSpan(
-                          child: SizedBox(
-                            width: SizeSystem.size4,
-                          ),
-                        ),
-                      if (widget.customerLevel != null)
-                        TextSpan(
-                          text: widget.customerLevel!,
-                          style: TextStyle(
-                            color: getCustomerLevelColor(widget.customerLevel!),
-                            fontWeight: FontWeight.bold,
-                            fontSize: SizeSystem.size12,
-                          ),
-                        ),
-                      if (widget.lastTransactionDate != null)
-                        TextSpan(
-                          text:
-                              ' • Visited on : ${widget.lastTransactionDate!}',
-                          style: const TextStyle(
-                            fontSize: SizeSystem.size12,
-                            color: ColorSystem.secondary,
-                          ),
-                        ),
-                    ],
+                            child: SizedBox(
+                          width: SizeSystem.size5,
+                        )),
+                        const TextSpan(
+                            text: 'GC',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: SizeSystem.size14,
+                                color: Colors.grey))
+                      ])),
+                  const SizedBox(
+                    height: SizeSystem.size5,
                   ),
-                ),
-                const SizedBox(
-                  height: SizeSystem.size10,
-                ),
-                if (widget.email != null)
-                  Text(
-                    widget.email!,
-                    style: const TextStyle(
-                      fontSize: SizeSystem.size12,
-                      color: ColorSystem.secondary,
+                  RichText(
+                    textAlign: TextAlign.center,
+                    text: TextSpan(
+                      children: [
+                        if (widget.customerLevel != null)
+                          WidgetSpan(
+                            child: SvgPicture.asset(
+                              IconSystem.badge,
+                              height: SizeSystem.size16,
+                              color: getCustomerLevelColor(widget.customerLevel!),
+                            ),
+                          ),
+                        if (widget.customerLevel != null)
+                          const WidgetSpan(
+                            child: SizedBox(
+                              width: SizeSystem.size4,
+                            ),
+                          ),
+                        if (widget.customerLevel != null)
+                          TextSpan(
+                            text: widget.customerLevel!,
+                            style: TextStyle(
+                              color: getCustomerLevelColor(widget.customerLevel!),
+                              fontWeight: FontWeight.bold,
+                              fontSize: SizeSystem.size12,
+                            ),
+                          ),
+                        if (widget.lastTransactionDate != null)
+                          TextSpan(
+                            text:
+                                ' • Visited on : ${widget.lastTransactionDate!}',
+                            style: const TextStyle(
+                              fontSize: SizeSystem.size12,
+                              color: ColorSystem.secondary,
+                            ),
+                          ),
+                      ],
                     ),
                   ),
-                const SizedBox(
-                  height: SizeSystem.size5,
-                ),
-                if (widget.phone != null)
-                  Text(
-                    widget.phone!,
-                    style: const TextStyle(
-                      fontSize: SizeSystem.size12,
-                      color: ColorSystem.secondary,
-                    ),
+                  const SizedBox(
+                    height: SizeSystem.size10,
                   ),
-              ],
-            )
-          ],
-        ),
-        const SizedBox(
-          height: SizeSystem.size20,
-        ),
-        Row(children: [
-          if (widget.ltv != null)
-            CustomerMicroDetails(label: 'LTV', value: widget.ltv!.toString()),
-          if (widget.averageProductValue != null)
-            CustomerMicroDetails(
-                label: 'APV', value: widget.averageProductValue!.toString()),
-          if (widget.preferredInstrument != null)
-            CustomerMicroDetails(
-              label: widget.preferredInstrument!,
-              value: '',
-              icon: SvgPicture.asset(MusicInstrument.getInstrumentIcon(
-                  MusicInstrument.getMusicInstrumentFromString(
-                      widget.preferredInstrument!))),
-            ),
-        ])
-      ]),
+                  if (widget.email != null)
+                    Text(
+                      widget.email!,
+                      style: const TextStyle(
+                        fontSize: SizeSystem.size12,
+                        color: ColorSystem.secondary,
+                      ),
+                    ),
+                  const SizedBox(
+                    height: SizeSystem.size5,
+                  ),
+                  if (widget.phone != null)
+                    Text(
+                      widget.phone!,
+                      style: const TextStyle(
+                        fontSize: SizeSystem.size12,
+                        color: ColorSystem.secondary,
+                      ),
+                    ),
+                ],
+              )
+            ],
+          ),
+          const SizedBox(
+            height: SizeSystem.size20,
+          ),
+          Row(children: [
+            if (widget.ltv != null)
+              CustomerMicroDetails(label: 'LTV', value: widget.ltv!.toString()),
+            if (widget.averageProductValue != null)
+              CustomerMicroDetails(
+                  label: 'AOV', value: widget.averageProductValue!.toString()),
+            if (widget.preferredInstrument != null)
+              CustomerMicroDetails(
+                label: widget.preferredInstrument!,
+                value: '',
+                icon: SvgPicture.asset(MusicInstrument.getInstrumentIcon(
+                    MusicInstrument.getMusicInstrumentFromString(
+                        widget.preferredInstrument!))),
+              ),
+          ])
+        ]),
+      ),
     );
   }
 }

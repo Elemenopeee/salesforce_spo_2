@@ -21,7 +21,7 @@
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>$(FLUTTER_BUILD_NUMBER)</string>
+	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>
@@ -52,7 +52,7 @@
             </array>
         </dict>
     </array>
-	<key>LSApplicationQueriesSchemes</key>
+    <key>LSApplicationQueriesSchemes</key>
     <array>
     	<string>msauthv2</string>
     	<string>msauthv3</string>
