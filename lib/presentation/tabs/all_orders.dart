@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:salesforce_spo/models/order.dart';
+import 'package:salesforce_spo/presentation/tabs/open_orders.dart';
+import 'package:salesforce_spo/services/networking/endpoints.dart';
+import 'package:salesforce_spo/services/networking/networking_service.dart';
 
 class AllOrderTab extends StatefulWidget {
   const AllOrderTab({Key? key}) : super(key: key);
@@ -12,151 +17,78 @@ class _AllOrderTabState extends State<AllOrderTab>
   int currentIndex = 0;
   int currentIndexForInnerTab = 0;
 
+  late Future<void> _futureAllOrders;
+
+  List<Order> allOrders = [];
+
+  Future<void> _getAllOrders() async {
+    var response =
+        await HttpService().doGet(path: Endpoints.getCustomerAllOrders());
+    try {
+      for (var order in response.data['records']) {
+        allOrders.add(Order.fromJson(order));
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
   @override
   void initState() {
     super.initState();
+    _futureAllOrders = _getAllOrders();
   }
 
-  var listOfOrderName = [
-    "Vivek Limbani",
-    "Jack Sparrow",
-    "Trace Allison",
-    "Stiles Arron",
-    "Stiles Arron",
-    "Stiles Arron",
-    "Stiles Arron",
-  ];
-  var listOfOrderAmount = [
-    "229.99",
-    "229.99",
-    "229.99",
-    "229.99",
-    "229.99",
-    "229.99",
-    "229.99",
-  ];
-  var listOfOrderDate = [
-    "12-Mar-2022",
-    "12-Mar-2022",
-    "12-Mar-2022",
-    "12-Mar-2022",
-    "12-Mar-2022",
-    "12-Mar-2022",
-    "12-Mar-2022",
-  ];
-  var listOfOrderItems = [
-    "02 Items",
-    "12 Items",
-    "05 Items",
-    "07 Items",
-    "07 Items",
-    "07 Items",
-    "07 Items",
-  ];
-  var listOfOrderID = [
-    "OID: 323992999",
-    "OID: 323992999",
-    "OID: 323992999",
-    "OID: 323992999",
-    "OID: 323992999",
-    "OID: 323992999",
-    "OID: 323992999",
-  ];
-  var listOfOrderPercentage = [
-    "100%",
-    "30%",
-    "100%",
-    "20%",
-    "20%",
-    "20%",
-    "20%",
-  ];
+  String formattedDate(String date) {
+    var dateTime = DateTime.parse(date);
+    return DateFormat('dd-MMM-yyyy').format(dateTime);
+  }
 
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      child: getAllOrder(),
-    );
-  }
-
-  Widget getAllOrder() {
-    return ListView.builder(
-        itemCount: listOfOrderName.length,
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        itemBuilder: (context, index) {
-          return Column(
-            children: [
-              getAllOrderList(context, index),
-              Container(
-                color: Colors.white,
-                child: Divider(
-                  color: Colors.grey.withOpacity(0.2),
-                  thickness: 1,
+      child: FutureBuilder(
+        future: _futureAllOrders,
+        builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+          switch (snapshot.connectionState) {
+            case ConnectionState.none:
+            case ConnectionState.waiting:
+            case ConnectionState.active:
+              return const Center(
+                child: SizedBox(
+                  height: 100,
+                  child: Center(child: CircularProgressIndicator()),
                 ),
-              ),
-            ],
-          );
-        });
-  }
-
-  Widget getAllOrderList(BuildContext context, int index) {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 08),
-      color: Colors.white,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                listOfOrderName[index],
-                style:
-                const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
-              ),
-              const SizedBox(
-                height: 05,
-              ),
-              Text(
-                listOfOrderDate[index],
-                style: const TextStyle(fontSize: 14),
-              ),
-              const SizedBox(
-                height: 05,
-              ),
-              Text(
-                listOfOrderID[index],
-                style: const TextStyle(fontSize: 14, color: Colors.grey),
-              ),
-            ],
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Text(
-                listOfOrderAmount[index],
-                style:
-                const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
-              ),
-              const SizedBox(
-                height: 05,
-              ),
-              Text(
-                listOfOrderItems[index],
-                style:
-                const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
-              ),
-              const SizedBox(
-                height: 05,
-              ),
-              Text(
-                listOfOrderPercentage[index],
-                style: const TextStyle(fontSize: 14, color: Colors.grey),
-              ),
-            ],
-          ),
-        ],
+              );
+            case ConnectionState.done:
+              return ListView.separated(
+                itemCount: allOrders.length,
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemBuilder: (context, index) {
+                  return OrderWidget(
+                    name:
+                        '${allOrders[index].customerFirstName} ${allOrders[index].customerLastName}',
+                    amount: allOrders[index].orderAmount.toString(),
+                    date: formattedDate(allOrders[index].createdDate ??
+                        DateTime.now().toString()),
+                    items: '${allOrders[index].items} items',
+                    orderId: allOrders[index].id,
+                    orderPercentage: '',
+                  );
+                },
+                separatorBuilder: (BuildContext context, int index) {
+                  return Container(
+                    color: Colors.white,
+                    child: Divider(
+                      color: Colors.grey.withOpacity(0.2),
+                      thickness: 1,
+                    ),
+                  );
+                },
+              );
+          }
+        },
       ),
     );
   }

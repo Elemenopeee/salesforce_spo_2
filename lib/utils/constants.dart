@@ -1,1 +1,9 @@
-const String kBearerToken = '00D050000008qQ1!AQkAQJADwURI_D0Bq4bxU9Y9k7Q55IE_bOs4WRhluozlEkmUK0X5GVcmJs3r2uPpB3VGpyqm10kMgf0GRawW7d_ap6bjE6ef';
+const Map<String, dynamic> authJson = {
+  'grant_type': 'password',
+  'client_id':
+      '3MVG9Fy_1ZngbXqNlrXOhqeBwQrrqaj4EhIUP3_y7bEGFXyyBhlfNqG42ij2H8vmp_KoU1roTlPzndiINXRhC',
+  'client_secret':
+      'FC8D0C7C1289B520E06606FA3A6911CCB78D5D02CB1A7454694AE884B6EF0C8B',
+  'username': 'amol.pawar@guitarcenter.com.ap',
+  'password': 'Apptware@40',
+};

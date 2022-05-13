@@ -19,6 +19,7 @@ dependencies:
   shared_preferences:
   url_launcher: ^6.1.0
   azure_ad_authentication: ^1.0.3
+  intl: ^0.17.0
 
 dev_dependencies:
   change_app_package_name: ^1.0.0

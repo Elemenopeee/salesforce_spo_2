@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:salesforce_spo/models/order.dart';
+import 'package:salesforce_spo/services/networking/endpoints.dart';
+import 'package:salesforce_spo/services/networking/networking_service.dart';
 
 class OpenOrderTab extends StatefulWidget {
   const OpenOrderTab({Key? key}) : super(key: key);
@@ -12,95 +16,102 @@ class _OpenOrderTabState extends State<OpenOrderTab>
   int currentIndex = 0;
   int currentIndexForInnerTab = 0;
 
+  late Future<void> _futureOpenOrders;
+
+  List<Order> openOrders = [];
+
+  Future<void> _getOpenOrders() async {
+    var response = await HttpService().doGet(path: Endpoints.getCustomerOpenOrders());
+    try{
+      for(var order in response.data['records']){
+        openOrders.add(Order.fromJson(order));
+      }
+    }catch (e){
+      print(e);
+    }
+  }
+
   @override
   void initState() {
     super.initState();
+    _futureOpenOrders = _getOpenOrders();
   }
 
-  var listOfOrderName = [
-    "Jessica Mendiz",
-    "Jack Sparrow",
-    "Trace Allison",
-    "Stiles Arron",
-    "Stiles Arron",
-    "Stiles Arron",
-    "Stiles Arron",
-  ];
-  var listOfOrderAmount = [
-    "229.99",
-    "229.99",
-    "229.99",
-    "229.99",
-    "229.99",
-    "229.99",
-    "229.99",
-  ];
-  var listOfOrderDate = [
-    "12-Mar-2022",
-    "12-Mar-2022",
-    "12-Mar-2022",
-    "12-Mar-2022",
-    "12-Mar-2022",
-    "12-Mar-2022",
-    "12-Mar-2022",
-  ];
-  var listOfOrderItems = [
-    "02 Items",
-    "12 Items",
-    "05 Items",
-    "07 Items",
-    "07 Items",
-    "07 Items",
-    "07 Items",
-  ];
-  var listOfOrderID = [
-    "OID: 323992999",
-    "OID: 323992999",
-    "OID: 323992999",
-    "OID: 323992999",
-    "OID: 323992999",
-    "OID: 323992999",
-    "OID: 323992999",
-  ];
-  var listOfOrderPercentage = [
-    "100%",
-    "30%",
-    "100%",
-    "20%",
-    "20%",
-    "20%",
-    "20%",
-  ];
+  String formattedDate(String date) {
+    var dateTime = DateTime.parse(date);
+    return DateFormat('dd-MMM-yyyy').format(dateTime);
+  }
 
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      child: getOpenOrder(),
+      child: FutureBuilder(
+        future: _futureOpenOrders,
+        builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+          switch(snapshot.connectionState){
+            case ConnectionState.none:
+            case ConnectionState.waiting:
+            case ConnectionState.active:
+            return const Center(
+              child: SizedBox(
+                height: 100,
+                child: Center(child: CircularProgressIndicator()),
+              ),
+            );
+            case ConnectionState.done:
+              return ListView.separated(
+                itemCount: openOrders.length,
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemBuilder: (context, index) {
+                  return OrderWidget(
+                    name:
+                    '${openOrders[index].customerFirstName} ${openOrders[index].customerLastName}',
+                    amount: openOrders[index].orderAmount.toString(),
+                    date: formattedDate(
+                        openOrders[index].createdDate ?? DateTime.now().toString()),
+                    items: '${openOrders[index].items} items',
+                    orderId: openOrders[index].id,
+                    orderPercentage: '',
+                  );
+                },
+                separatorBuilder: (BuildContext context, int index) {
+                  return Container(
+                    color: Colors.white,
+                    child: Divider(
+                      color: Colors.grey.withOpacity(0.2),
+                      thickness: 1,
+                    ),
+                  );
+                },
+              );
+          }
+        },
+      ),
     );
   }
+}
 
-  Widget getOpenOrder() {
-    return ListView.builder(
-        itemCount: listOfOrderName.length,
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        itemBuilder: (context, index) {
-          return Column(
-            children: [
-              getOpenOrderList(context, index),
-              Container(
-                color: Colors.white,
-                child: Divider(
-                  color: Colors.grey.withOpacity(0.2),
-                  thickness: 1,
-                ),
-              ),
-            ],
-          );
-        });
-  }
+class OrderWidget extends StatelessWidget {
+  final String name;
+  final String amount;
+  final String date;
+  final String items;
+  final String orderId;
+  final String orderPercentage;
 
-  Widget getOpenOrderList(BuildContext context, int index) {
+  const OrderWidget({
+    Key? key,
+    required this.name,
+    required this.amount,
+    required this.date,
+    required this.items,
+    required this.orderId,
+    required this.orderPercentage,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 08),
       color: Colors.white,
@@ -111,22 +122,22 @@ class _OpenOrderTabState extends State<OpenOrderTab>
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                listOfOrderName[index],
+                name,
                 style:
-                const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+                    const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
               ),
               const SizedBox(
                 height: 05,
               ),
               Text(
-                listOfOrderDate[index],
+                date,
                 style: const TextStyle(fontSize: 14),
               ),
               const SizedBox(
                 height: 05,
               ),
               Text(
-                listOfOrderID[index],
+                'OID: $orderId',
                 style: const TextStyle(fontSize: 14, color: Colors.grey),
               ),
             ],
@@ -135,23 +146,23 @@ class _OpenOrderTabState extends State<OpenOrderTab>
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Text(
-                listOfOrderAmount[index],
+                amount,
                 style:
-                const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+                    const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
               ),
               const SizedBox(
                 height: 05,
               ),
               Text(
-                listOfOrderItems[index],
+                items,
                 style:
-                const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+                    const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
               ),
               const SizedBox(
                 height: 05,
               ),
               Text(
-                listOfOrderPercentage[index],
+                orderPercentage,
                 style: const TextStyle(fontSize: 14, color: Colors.grey),
               ),
             ],

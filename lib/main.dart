@@ -11,11 +11,10 @@ import 'package:salesforce_spo/common_widgets/notched_bottom_navigation_bar.dart
 import 'package:salesforce_spo/design_system/design_system.dart';
 import 'package:salesforce_spo/presentation/intermediate_widgets/customer_lookup_widget.dart';
 import 'package:salesforce_spo/presentation/tabs/home_tab.dart';
-import 'package:url_launcher/url_launcher_string.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await _acquireToken();
+  // await _acquireToken();
   runApp(const MyApp());
 }
 
@@ -117,7 +116,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: getAppBar,
-      body: const TabHome(),
+      body: TabHome(agentName: 'John Doe',),
       bottomNavigationBar: NotchedBottomNavigationBar(
         actions: [
           IconButton(

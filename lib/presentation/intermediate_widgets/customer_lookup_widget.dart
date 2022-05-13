@@ -59,7 +59,7 @@ class _CustomerLookupWidgetState extends State<CustomerLookupWidget> {
       }
     } else {
       var data = await HttpService().doGet(
-        path: '$kBaseURL$kCustomerSearchByEmail\'$email\'',
+        path: Endpoints.getCustomerSearchByEmail(email),
         tokenRequired: true,
       );
       try {

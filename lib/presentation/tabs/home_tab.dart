@@ -1,13 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:intl/intl.dart';
 import 'package:salesforce_spo/design_system/design_system.dart';
+import 'package:salesforce_spo/services/networking/endpoints.dart';
+import 'package:salesforce_spo/services/networking/networking_service.dart';
 
 import 'all_orders.dart';
 import 'custom_tab_bar.dart';
 import 'open_orders.dart';
 
 class TabHome extends StatefulWidget {
-  const TabHome({Key? key}) : super(key: key);
+  final String agentName;
+
+  const TabHome({
+    Key? key,
+    required this.agentName,
+  }) : super(key: key);
 
   @override
   _TabHomeState createState() => _TabHomeState();
@@ -17,6 +25,7 @@ class _TabHomeState extends State<TabHome> with SingleTickerProviderStateMixin {
   TabController? _tabController;
   int currentIndex = 0;
   int currentIndexForInnerTab = 0;
+
   @override
   void initState() {
     super.initState();
@@ -58,7 +67,9 @@ class _TabHomeState extends State<TabHome> with SingleTickerProviderStateMixin {
               const SizedBox(
                 height: 30,
               ),
-              const ProfileContainer(),
+              ProfileContainer(
+                agentName: widget.agentName,
+              ),
               const SizedBox(
                 height: 20,
               ),
@@ -92,7 +103,7 @@ class _TabHomeState extends State<TabHome> with SingleTickerProviderStateMixin {
                     labelColor: Colors.black,
                     unSelectLabelColor: Colors.grey,
                     labelTextStyle:
-                    const TextStyle(fontWeight: FontWeight.bold),
+                        const TextStyle(fontWeight: FontWeight.bold),
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(
@@ -201,11 +212,26 @@ class _TabHomeState extends State<TabHome> with SingleTickerProviderStateMixin {
 //   }
 // }
 
-class ProfileContainer extends StatelessWidget {
-  const ProfileContainer({Key? key}) : super(key: key);
+class ProfileContainer extends StatefulWidget {
+  final String agentName;
+
+  const ProfileContainer({
+    Key? key,
+    required this.agentName,
+  }) : super(key: key);
 
   @override
+  State<ProfileContainer> createState() => _ProfileContainerState();
+}
+
+class _ProfileContainerState extends State<ProfileContainer> {
+  @override
   Widget build(BuildContext context) {
+    var dateNow = DateTime.now();
+    var date = DateTime(dateNow.month, dateNow.day);
+    var formattedDate =
+        DateFormat(DateFormat.ABBR_MONTH_WEEKDAY_DAY).format(date);
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Row(
@@ -221,9 +247,9 @@ class ProfileContainer extends StatelessWidget {
                   const SizedBox(
                     width: 10,
                   ),
-                  const Text(
-                    "WED 16 MAR",
-                    style: TextStyle(
+                  Text(
+                    formattedDate,
+                    style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
                       color: Colors.indigoAccent,
@@ -234,11 +260,11 @@ class ProfileContainer extends StatelessWidget {
               const SizedBox(
                 height: 10,
               ),
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 05),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 05),
                 child: Text(
-                  "Hi, ${"Grace"}",
-                  style: TextStyle(
+                  "Hi, ${widget.agentName}",
+                  style: const TextStyle(
                     fontSize: 28,
                     fontWeight: FontWeight.w500,
                   ),
@@ -275,11 +301,69 @@ class ProfileContainer extends StatelessWidget {
   }
 }
 
-class ProgressContainer extends StatelessWidget {
+class ProgressContainer extends StatefulWidget {
   const ProgressContainer({Key? key}) : super(key: key);
 
   @override
+  State<ProgressContainer> createState() => _ProgressContainerState();
+}
+
+class _ProgressContainerState extends State<ProgressContainer> {
+  double totalSales = 0;
+  double totalCommission = 0;
+  double todaysSale = 0;
+  double todaysCommission = 0;
+
+  late Future<void> _futureSales;
+  late Future<void> _futureCommission;
+  late Future<void> _futureTodaysSale;
+  late Future<void> _futureTodaysCommission;
+
+  Future<void> _getTotalSales() async {
+    var response = await HttpService().doGet(path: Endpoints.getTotalSales());
+    totalSales = response.data['records'][0]['expr0'];
+  }
+
+  Future<void> _getTotalCommission() async {
+    var response =
+        await HttpService().doGet(path: Endpoints.getTotalCommission());
+    totalCommission = response.data['records'][0]['expr0'];
+  }
+
+  Future<void> _getTodaysSale() async {
+    var response = await HttpService().doGet(path: Endpoints.getTodaysSales());
+    if (response.data['records'].length > 0) {
+      todaysSale = response.data['records'][0]['expr0'];
+    }
+  }
+
+  Future<void> _getTodaysCommission() async {
+    var response =
+        await HttpService().doGet(path: Endpoints.getTodaysCommission());
+    if (response.data['records'].length > 0) {
+      todaysCommission = response.data['records'][0]['expr0'];
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _futureSales = _getTotalSales();
+    _futureCommission = _getTotalCommission();
+    _futureTodaysSale = _getTodaysSale();
+    _futureTodaysCommission = _getTodaysCommission();
+  }
+
+  String formattedNumber (double value){
+    var f = NumberFormat.compact(locale: "en_US");
+    return f.format(value);
+  }
+
+  @override
   Widget build(BuildContext context) {
+    var dateTime = DateTime.now();
+    var month = DateFormat(DateFormat.MONTH).format(dateTime);
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Column(
@@ -309,74 +393,106 @@ class ProgressContainer extends StatelessWidget {
             children: [
               Expanded(
                 child: Container(
-                  height: 250,
+                  // height: 250,
                   width: double.infinity,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20),
                     color: Colors.blueAccent.shade200.withOpacity(0.8),
                   ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Padding(
-                        padding:
-                        EdgeInsets.symmetric(horizontal: 20, vertical: 25),
-                        child: Text(
-                          "MY SALES",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w500,
-                            fontSize: 16,
-                          ),
-                        ),
-                      ),
-                      Center(
-                        child: SvgPicture.asset(
-                          'assets/icons/ic_graph.svg',
-                          height: 90.00,
-                          width: 90.00,
-                          color: Colors.blue.shade700,
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 12,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: RichText(
-                          text: const TextSpan(
-                            children: [
-                              TextSpan(
-                                text: "12% ",
-                                style: TextStyle(
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.w700,
-                                ),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 20, vertical: 20),
+                    child: FutureBuilder(
+                      future: Future.wait([
+                        _futureSales,
+                        _futureTodaysSale,
+                      ]),
+                      builder: (BuildContext context,
+                          AsyncSnapshot<dynamic> snapshot) {
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              "MY SALES",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w300,
+                                fontSize: 16,
                               ),
-                              TextSpan(
-                                text: "of store",
-                                style: TextStyle(
-                                  fontSize: 18,
-                                ),
+                            ),
+                            const SizedBox(
+                              height: 30,
+                            ),
+                            RichText(
+                              maxLines: 1,
+                              text: TextSpan(
+                                children: [
+                                  const TextSpan(
+                                    text: '\$ ',
+                                    style: TextStyle(
+                                      fontSize: 36,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w200,
+                                    ),
+                                  ),
+                                  TextSpan(
+                                    text: formattedNumber(totalSales),
+                                    style: const TextStyle(
+                                      fontSize: 36,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ],
                               ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 08,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: Text(
-                          "29k This Month",
-                          style: TextStyle(
-                            color: Colors.white.withOpacity(0.5),
-                            fontSize: 15,
-                          ),
-                        ),
-                      ),
-                    ],
+                            ),
+                            Text(
+                              month,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w300,
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 30,
+                            ),
+                            RichText(
+                              text: TextSpan(
+                                children: [
+                                  const TextSpan(
+                                    text: '\$ ',
+                                    style: TextStyle(
+                                      fontSize: 24,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w200,
+                                    ),
+                                  ),
+                                  TextSpan(
+                                    text: formattedNumber(todaysSale),
+                                    style: const TextStyle(
+                                      fontSize: 24,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 08,
+                            ),
+                            Text(
+                              "Today",
+                              style: TextStyle(
+                                color: Colors.white.withOpacity(0.5),
+                                fontSize: 15,
+                              ),
+                            ),
+                          ],
+                        );
+                      },
+                    ),
                   ),
                 ),
               ),
@@ -385,77 +501,105 @@ class ProgressContainer extends StatelessWidget {
               ),
               Expanded(
                 child: Container(
-                  height: 250,
+                  // height: 250,
                   width: double.infinity,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20),
                     color: Colors.indigoAccent.withOpacity(0.7),
                   ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Padding(
-                        padding:
-                        EdgeInsets.symmetric(horizontal: 20, vertical: 25),
-                        child: Text(
-                          "MY COMMISSION",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w500,
-                            fontSize: 16,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 08,
-                      ),
-                      Center(
-                        child: SvgPicture.asset(
-                          'assets/icons/ic_chart.svg',
-                          height: 90.00,
-                          width: 90.00,
-                          color: Colors.indigo,
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 08,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: RichText(
-                          text: const TextSpan(
-                            children: [
-                              TextSpan(
-                                text: "1.4",
-                                style: TextStyle(
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.w700,
-                                ),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 20, vertical: 20),
+                    child: FutureBuilder(
+                      future: Future.wait([
+                        _futureCommission,
+                        _futureTodaysCommission,
+                      ]),
+                      builder: (BuildContext context,
+                          AsyncSnapshot<dynamic> snapshot) {
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              "MY COMMISSION",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w300,
+                                fontSize: 16,
                               ),
-                              TextSpan(
-                                text: "k",
-                                style: TextStyle(
-                                  fontSize: 18,
-                                ),
+                            ),
+                            SizedBox(
+                              height: 30,
+                            ),
+                            RichText(
+                              text: TextSpan(
+                                children: [
+                                  const TextSpan(
+                                    text: '\$ ',
+                                    style: TextStyle(
+                                      fontSize: 36,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w200,
+                                    ),
+                                  ),
+                                  TextSpan(
+                                    text: formattedNumber(totalCommission),
+                                    style: const TextStyle(
+                                      fontSize: 36,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ],
                               ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 08,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: Text(
-                          "Nice Job!",
-                          style: TextStyle(
-                            color: Colors.white.withOpacity(0.5),
-                            fontSize: 15,
-                          ),
-                        ),
-                      ),
-                    ],
+                            ),
+                            Text(
+                              month,
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w300,
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 30,
+                            ),
+                            RichText(
+                              text: TextSpan(
+                                children: [
+                                  const TextSpan(
+                                    text: '\$ ',
+                                    style: TextStyle(
+                                      fontSize: 24,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w200,
+                                    ),
+                                  ),
+                                  TextSpan(
+                                    text: formattedNumber(todaysCommission),
+                                    style: const TextStyle(
+                                      fontSize: 24,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 08,
+                            ),
+                            Text(
+                              "Today",
+                              style: TextStyle(
+                                color: Colors.white.withOpacity(0.5),
+                                fontSize: 15,
+                              ),
+                            ),
+                          ],
+                        );
+                      },
+                    ),
                   ),
                 ),
               ),

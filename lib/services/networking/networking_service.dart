@@ -14,7 +14,7 @@ class HttpService {
   Future<HttpResponse> doGet(
       {required String path,
         Map<String, dynamic>? params,
-        bool tokenRequired = false}) async {
+        bool tokenRequired = true}) async {
     try {
       Map<String, String> headers = {};
       // check if token is required then add bearer token in header
@@ -22,7 +22,7 @@ class HttpService {
         // SharedPreferenceService sharedPreferences = SharedPreferenceService();
         // GET TOKEN
         // String? token = await sharedPreferences.getUserToken(key: 'token');
-        headers.putIfAbsent('Authorization', () => 'OAuth $kBearerToken');
+        headers.putIfAbsent('Authorization', () => 'OAuth 00D050000008qQ1!AQkAQJvjqpHQHPfdRC.4ORLrnNIxWJHJzkwq8MPnk6Ncqq7PTYmetQmQ4dfVAY4GYv.iyzBwNm1FjHOzNoDpYmehN_f7EAf0');
       }
       // var uri = Uri.https(kBaseURL, path, params);
       print(path);
@@ -72,13 +72,13 @@ class HttpService {
     try {
       Map<String, String> headers = {"Content-Type": "application/json"};
       // check if token is required then add bearer token in header
-      if (tokenRequired) {
-        SharedPreferenceService sharedPreferences = SharedPreferenceService();
-        // GET TOKEN
-        String? token = await sharedPreferences.getUserToken(key: 'token');
-        headers.putIfAbsent('Authorization', () => 'Bearer $token');
-      }
-      var uri = Uri.https(kBaseURL, path, params);
+      // if (tokenRequired) {
+      //   SharedPreferenceService sharedPreferences = SharedPreferenceService();
+      //   // GET TOKEN
+      //   String? token = await sharedPreferences.getUserToken(key: 'token');
+      //   headers.putIfAbsent('Authorization', () => 'Bearer $token');
+      // }
+      var uri = Uri.https('', path, params);
       final response =
       await http.post(uri, body: json.encode(body), headers: headers);
       dynamic data; // set decoded body response
