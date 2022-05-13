@@ -5,7 +5,7 @@ const Map<String, dynamic> authJson = {
   'client_secret':
       'E062FCA77D3FE219F8E4AE7A09B74ADEDC45032D2107FC1360DB24EFB693E502',
   'username': 'eaisupport@guitarcenter.com',
-  'password': 'T!bC0$6$#3!R0$j6xZ5WbXCZYNJOCFpRfesG3S',
+  'password': 'T!bC0\$6\$#3!R0\$j6xZ5WbXCZYNJOCFpRfesG3S',
 };
 
 Map<String, String> authHeaders = {
