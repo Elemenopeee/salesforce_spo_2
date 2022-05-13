@@ -7,3 +7,9 @@ const Map<String, dynamic> authJson = {
   'username': 'amol.pawar@guitarcenter.com.ap',
   'password': 'Apptware@40',
 };
+
+Map<String, String> authHeaders = {
+  "Content-Type": "application/x-www-form-urlencoded"
+};
+
+const String authURL = '/services/oauth2/token';
