@@ -28,6 +28,8 @@ const List<String> kScopes = [
   "https://graph.microsoft.com/Calendars.ReadWrite",
 ];
 
+UserAdModel? userAdModel;
+
 Future<void> _acquireToken() async {
   await getResult();
 }
@@ -35,7 +37,6 @@ Future<void> _acquireToken() async {
 Future<String> getResult({bool isAcquireToken = true}) async {
   AzureAdAuthentication pca = await intPca();
   String? res;
-  UserAdModel? userAdModel;
   try {
     if (isAcquireToken) {
       userAdModel = await pca.acquireToken(scopes: kScopes);
@@ -57,10 +58,6 @@ Future<String> getResult({bool isAcquireToken = true}) async {
   } on MsalException {
     res = "Error getting token. Unspecified reason";
   }
-
-  // setState(() {
-  //   _output = (userAdModel?.toJson().toString() ?? res)!;
-  // });
   return (userAdModel?.toJson().toString() ?? res)!;
 }
 
@@ -116,7 +113,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: getAppBar,
-      body: TabHome(agentName: 'John Doe',),
+      body: TabHome(agentName: userAdModel?.givenName ?? 'John Doe',),
       bottomNavigationBar: NotchedBottomNavigationBar(
         actions: [
           IconButton(

@@ -228,9 +228,9 @@ class _ProfileContainerState extends State<ProfileContainer> {
   @override
   Widget build(BuildContext context) {
     var dateNow = DateTime.now();
-    var date = DateTime(dateNow.month, dateNow.day);
+    var date = DateTime(dateNow.year, dateNow.month, dateNow.day);
     var formattedDate =
-        DateFormat(DateFormat.ABBR_MONTH_WEEKDAY_DAY).format(date);
+        DateFormat(DateFormat.MONTH).format(date);
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -322,6 +322,7 @@ class _ProgressContainerState extends State<ProgressContainer> {
   Future<void> _getTotalSales() async {
     var response = await HttpService().doGet(path: Endpoints.getTotalSales());
     totalSales = response.data['records'][0]['expr0'];
+    print(totalSales);
   }
 
   Future<void> _getTotalCommission() async {
@@ -356,6 +357,7 @@ class _ProgressContainerState extends State<ProgressContainer> {
 
   String formattedNumber (double value){
     var f = NumberFormat.compact(locale: "en_US");
+    print(f.format(value));
     return f.format(value);
   }
 
@@ -417,7 +419,7 @@ class _ProgressContainerState extends State<ProgressContainer> {
                               style: TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.w300,
-                                fontSize: 16,
+                                fontSize: 14,
                               ),
                             ),
                             const SizedBox(
@@ -430,7 +432,7 @@ class _ProgressContainerState extends State<ProgressContainer> {
                                   const TextSpan(
                                     text: '\$ ',
                                     style: TextStyle(
-                                      fontSize: 36,
+                                      fontSize: 32,
                                       color: Colors.white,
                                       fontWeight: FontWeight.w200,
                                     ),
@@ -438,7 +440,7 @@ class _ProgressContainerState extends State<ProgressContainer> {
                                   TextSpan(
                                     text: formattedNumber(totalSales),
                                     style: const TextStyle(
-                                      fontSize: 36,
+                                      fontSize: 32,
                                       fontWeight: FontWeight.bold,
                                       color: Colors.white,
                                     ),
@@ -525,7 +527,7 @@ class _ProgressContainerState extends State<ProgressContainer> {
                               style: TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.w300,
-                                fontSize: 16,
+                                fontSize: 14,
                               ),
                             ),
                             SizedBox(
@@ -537,7 +539,7 @@ class _ProgressContainerState extends State<ProgressContainer> {
                                   const TextSpan(
                                     text: '\$ ',
                                     style: TextStyle(
-                                      fontSize: 36,
+                                      fontSize: 32,
                                       color: Colors.white,
                                       fontWeight: FontWeight.w200,
                                     ),
@@ -545,7 +547,7 @@ class _ProgressContainerState extends State<ProgressContainer> {
                                   TextSpan(
                                     text: formattedNumber(totalCommission),
                                     style: const TextStyle(
-                                      fontSize: 36,
+                                      fontSize: 32,
                                       fontWeight: FontWeight.bold,
                                       color: Colors.white,
                                     ),

@@ -57,5 +57,7 @@
     	<string>msauthv2</string>
     	<string>msauthv3</string>
     </array>
+	<key>CADisableMinimumFrameDurationOnPhone</key>
+	<true/>
 </dict>
 </plist>
