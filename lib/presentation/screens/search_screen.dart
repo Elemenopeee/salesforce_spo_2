@@ -41,12 +41,15 @@ class _SearchScreenState extends State<SearchScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: ColorSystem.white,
-      body: Padding(
-        padding: const EdgeInsets.all(40.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            TextFormField(
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          SizedBox(
+            height: 20,
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20,),
+            child: TextFormField(
               onChanged: (name){
                 this.name = name;
                 if(this.name.length >= 3){
@@ -69,37 +72,35 @@ class _SearchScreenState extends State<SearchScreen> {
                 ),
               ),
             ),
-            Expanded(
-              child: FutureBuilder(
-                future: futureCustomers,
-                builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
-                  return ListView.builder(
-                    // padding: const EdgeInsets.symmetric(
-                    //   horizontal: PaddingSystem.padding20,
-                    // ),
-                    shrinkWrap: true,
-                    itemCount: customers.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return CustomerDetailsCard(
-                        customerId: customers[index].id,
-                        firstName: customers[index].firstName,
-                        lastName: customers[index].lastName,
-                        email: customers[index].email,
-                        phone: customers[index].phone,
-                        preferredInstrument:
-                            customers[index].preferredInstrument,
-                        lastTransactionDate: customers[index].lastTransactionDate,
-                        ltv: customers[index].lifetimeNetUnits,
-                        averageProductValue: customers[index].lifeTimeNetSalesAmount,
-                        customerLevel: customers[index].medianLTVNet,
-                      );
-                    },
-                  );
-                },
-              ),
+          ),
+          Expanded(
+            child: FutureBuilder(
+              future: futureCustomers,
+              builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
+                return ListView.builder(
+                  padding: const EdgeInsets.symmetric(horizontal: 30),
+                  shrinkWrap: true,
+                  itemCount: customers.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return CustomerDetailsCard(
+                      customerId: customers[index].id,
+                      firstName: customers[index].firstName,
+                      lastName: customers[index].lastName,
+                      email: customers[index].email,
+                      phone: customers[index].phone,
+                      preferredInstrument:
+                          customers[index].preferredInstrument,
+                      lastTransactionDate: customers[index].lastTransactionDate,
+                      ltv: customers[index].lifetimeNetUnits,
+                      averageProductValue: customers[index].lifeTimeNetSalesAmount,
+                      customerLevel: customers[index].medianLTVNet,
+                    );
+                  },
+                );
+              },
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

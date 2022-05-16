@@ -367,7 +367,7 @@ class _ProgressContainerState extends State<ProgressContainer> {
                 "Metrics of Month",
                 style: TextStyle(
                   fontSize: 20,
-                  fontWeight: FontWeight.w500,
+                  fontWeight: FontWeight.bold,
                   fontFamily: kRubik,
                   color: ColorSystem.primary,
                 ),
@@ -411,7 +411,7 @@ class _ProgressContainerState extends State<ProgressContainer> {
                               style: TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.w300,
-                                fontSize: 12,
+                                fontSize: 14,
                                 fontFamily: kRubik,
                               ),
                             ),
@@ -528,7 +528,7 @@ class _ProgressContainerState extends State<ProgressContainer> {
                               style: TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.w300,
-                                fontSize: 12,
+                                fontSize: 14,
                                 fontFamily: kRubik,
                               ),
                             ),

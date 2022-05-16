@@ -49,7 +49,7 @@ class _CustomerDetailsCardState extends State<CustomerDetailsCard> {
         }
       },
       child: Container(
-        margin: const EdgeInsets.all(20),
+        margin: const EdgeInsets.all(10),
         color: ColorSystem.white,
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Row(

@@ -11,6 +11,7 @@ import 'package:salesforce_spo/services/networking/endpoints.dart';
 import 'package:salesforce_spo/services/networking/networking_service.dart';
 import 'package:salesforce_spo/utils/constants.dart';
 import 'package:salesforce_spo/utils/phone_input_formatter.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 import '../screens/search_screen.dart';
 
@@ -280,7 +281,13 @@ class _CustomerLookupWidgetState extends State<CustomerLookupWidget> {
                             },
                           ),
                         ),
-                        onPressed: null,
+                        onPressed: () async {
+                          try{
+                            await launchUrlString('salesforce1://sObject/Account/view');
+                          } catch (e){
+                            print(e);
+                          }
+                        },
                         child: Padding(
                           padding:
                               const EdgeInsets.all(PaddingSystem.padding8),
