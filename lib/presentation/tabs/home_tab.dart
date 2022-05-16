@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:salesforce_spo/design_system/design_system.dart';
 import 'package:salesforce_spo/services/networking/endpoints.dart';
 import 'package:salesforce_spo/services/networking/networking_service.dart';
+import 'package:salesforce_spo/utils/constants.dart';
 
 import 'all_orders.dart';
 import 'custom_tab_bar.dart';
@@ -39,93 +40,75 @@ class _TabHomeState extends State<TabHome> with SingleTickerProviderStateMixin {
     _tabController?.dispose();
   }
 
-  var listOfName = [
-    "Sebastian",
-    "Amanda",
-    "You / Claire",
-    "Sebastian",
-    "Amanda",
-    "You / Claire",
-  ];
-  var listOfViews = [
-    "105 k",
-    "73 k",
-    "51 k",
-    "105 k",
-    "73 k",
-    "51 k",
-  ];
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              // const AppBarCustom(),
-              const SizedBox(
-                height: 30,
-              ),
-              ProfileContainer(
-                agentName: widget.agentName,
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              const ProgressContainer(),
-              const SizedBox(
-                height: 40,
-              ),
-              Column(
-                children: [
-                  CustomTabBarExtended(
-                    padding: const EdgeInsets.symmetric(horizontal: 30),
-                    height: 45,
-                    containerColor: Colors.grey.withOpacity(0.1),
-                    containerBorderRadius: 10.0,
-                    tabBorderRadius: 10.0,
-                    tabOneName: "Open Order",
-                    tabTwoName: "All Order",
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.shade300,
-                        offset: const Offset(
-                          0.0,
-                          1.0,
-                        ),
-                        blurRadius: 2,
-                        spreadRadius: 2,
-                      )
-                    ],
-                    tabController: _tabController,
-                    tabColor: Colors.white,
-                    labelColor: Colors.black,
-                    unSelectLabelColor: Colors.grey,
-                    labelTextStyle:
-                        const TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 30, vertical: 15),
-                    child: SizedBox(
-                      height: 300,
-                      child: TabBarView(
-                        controller: _tabController,
-                        children: const [
-                          OpenOrderTab(),
-                          AllOrderTab(),
-                        ],
+    return SafeArea(
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            // const AppBarCustom(),
+            const SizedBox(
+              height: 30,
+            ),
+            ProfileContainer(
+              agentName: widget.agentName,
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            const ProgressContainer(),
+            const SizedBox(
+              height: 36,
+            ),
+            Column(
+              children: [
+                CustomTabBarExtended(
+                  padding: const EdgeInsets.symmetric(horizontal: 30),
+                  height: 40,
+                  containerColor: Colors.grey.withOpacity(0.1),
+                  containerBorderRadius: 10.0,
+                  tabBorderRadius: 10.0,
+                  tabOneName: "Open Orders",
+                  tabTwoName: "All Orders",
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.shade300,
+                      offset: const Offset(
+                        0.0,
+                        1.0,
                       ),
+                      blurRadius: 2,
+                      spreadRadius: 2,
+                    )
+                  ],
+                  tabController: _tabController,
+                  tabColor: Colors.white,
+                  labelColor: Colors.black,
+                  unSelectLabelColor: Colors.grey,
+                  labelTextStyle: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontFamily: kRubik,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 28, vertical: 14),
+                  child: SizedBox(
+                    height: 360,
+                    child: TabBarView(
+                      controller: _tabController,
+                      children: const [
+                        OpenOrderTab(),
+                        AllOrderTab(),
+                      ],
                     ),
                   ),
-                ],
-              ),
-            ],
-          ),
+                ),
+              ],
+            ),
+          ],
         ),
       ),
-      backgroundColor: Colors.white,
     );
   }
 }
@@ -229,8 +212,9 @@ class _ProfileContainerState extends State<ProfileContainer> {
   Widget build(BuildContext context) {
     var dateNow = DateTime.now();
     var date = DateTime(dateNow.year, dateNow.month, dateNow.day);
+    print(date);
     var formattedDate =
-        DateFormat(DateFormat.MONTH).format(date);
+        DateFormat(DateFormat.ABBR_MONTH_WEEKDAY_DAY).format(date);
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -243,16 +227,19 @@ class _ProfileContainerState extends State<ProfileContainer> {
                 children: [
                   SvgPicture.asset(
                     IconSystem.sun,
+                    width: SizeSystem.size16,
+                    height: SizeSystem.size16,
                   ),
                   const SizedBox(
                     width: 10,
                   ),
                   Text(
-                    formattedDate,
+                    formattedDate.toUpperCase(),
                     style: const TextStyle(
-                      fontSize: 16,
+                      fontSize: 12,
                       fontWeight: FontWeight.w500,
-                      color: Colors.indigoAccent,
+                      color: ColorSystem.lavender2,
+                      fontFamily: kRubik,
                     ),
                   ),
                 ],
@@ -265,8 +252,10 @@ class _ProfileContainerState extends State<ProfileContainer> {
                 child: Text(
                   "Hi, ${widget.agentName}",
                   style: const TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.w500,
+                    fontSize: 32,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: kRubik,
+                    color: ColorSystem.primary,
                   ),
                 ),
               ),
@@ -279,8 +268,9 @@ class _ProfileContainerState extends State<ProfileContainer> {
                 height: 60,
                 width: 60,
                 decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(25),
-                    color: Colors.pinkAccent),
+                  borderRadius: BorderRadius.circular(25),
+                  color: Colors.pinkAccent,
+                ),
               ),
               Positioned(
                 top: 42,
@@ -355,7 +345,7 @@ class _ProgressContainerState extends State<ProgressContainer> {
     _futureTodaysCommission = _getTodaysCommission();
   }
 
-  String formattedNumber (double value){
+  String formattedNumber(double value) {
     var f = NumberFormat.compact(locale: "en_US");
     print(f.format(value));
     return f.format(value);
@@ -376,13 +366,15 @@ class _ProgressContainerState extends State<ProgressContainer> {
               const Text(
                 "Metrics of Month",
                 style: TextStyle(
-                  fontSize: 25,
+                  fontSize: 20,
                   fontWeight: FontWeight.w500,
+                  fontFamily: kRubik,
+                  color: ColorSystem.primary,
                 ),
               ),
               Icon(
                 Icons.more_horiz_outlined,
-                color: Colors.grey.withOpacity(0.2),
+                color: Colors.grey.withOpacity(0.4),
                 size: 40,
               ),
             ],
@@ -399,7 +391,7 @@ class _ProgressContainerState extends State<ProgressContainer> {
                   width: double.infinity,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20),
-                    color: Colors.blueAccent.shade200.withOpacity(0.8),
+                    color: Color(0xFF8C80F8),
                   ),
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
@@ -419,15 +411,19 @@ class _ProgressContainerState extends State<ProgressContainer> {
                               style: TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.w300,
-                                fontSize: 14,
+                                fontSize: 12,
+                                fontFamily: kRubik,
                               ),
                             ),
                             const SizedBox(
-                              height: 30,
+                              height: 24,
                             ),
                             RichText(
                               maxLines: 1,
                               text: TextSpan(
+                                style: const TextStyle(
+                                  fontFamily: kRubik,
+                                ),
                                 children: [
                                   const TextSpan(
                                     text: '\$ ',
@@ -450,10 +446,11 @@ class _ProgressContainerState extends State<ProgressContainer> {
                             ),
                             Text(
                               month,
-                              style: TextStyle(
+                              style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 16,
                                 fontWeight: FontWeight.w300,
+                                fontFamily: kRubik,
                               ),
                             ),
                             const SizedBox(
@@ -476,6 +473,7 @@ class _ProgressContainerState extends State<ProgressContainer> {
                                       fontSize: 24,
                                       fontWeight: FontWeight.bold,
                                       color: Colors.white,
+                                      fontFamily: kRubik,
                                     ),
                                   ),
                                 ],
@@ -489,6 +487,7 @@ class _ProgressContainerState extends State<ProgressContainer> {
                               style: TextStyle(
                                 color: Colors.white.withOpacity(0.5),
                                 fontSize: 15,
+                                fontFamily: kRubik,
                               ),
                             ),
                           ],
@@ -507,11 +506,13 @@ class _ProgressContainerState extends State<ProgressContainer> {
                   width: double.infinity,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20),
-                    color: Colors.indigoAccent.withOpacity(0.7),
+                    color: Color(0xFFAF8EFF),
                   ),
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
-                        horizontal: 20, vertical: 20),
+                      horizontal: 20,
+                      vertical: 20,
+                    ),
                     child: FutureBuilder(
                       future: Future.wait([
                         _futureCommission,
@@ -527,14 +528,18 @@ class _ProgressContainerState extends State<ProgressContainer> {
                               style: TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.w300,
-                                fontSize: 14,
+                                fontSize: 12,
+                                fontFamily: kRubik,
                               ),
                             ),
-                            SizedBox(
-                              height: 30,
+                            const SizedBox(
+                              height: 24,
                             ),
                             RichText(
                               text: TextSpan(
+                                style: const TextStyle(
+                                  fontFamily: kRubik,
+                                ),
                                 children: [
                                   const TextSpan(
                                     text: '\$ ',
@@ -561,6 +566,7 @@ class _ProgressContainerState extends State<ProgressContainer> {
                                 color: Colors.white,
                                 fontSize: 16,
                                 fontWeight: FontWeight.w300,
+                                fontFamily: kRubik,
                               ),
                             ),
                             const SizedBox(
@@ -568,6 +574,9 @@ class _ProgressContainerState extends State<ProgressContainer> {
                             ),
                             RichText(
                               text: TextSpan(
+                                style: const TextStyle(
+                                  fontFamily: kRubik,
+                                ),
                                 children: [
                                   const TextSpan(
                                     text: '\$ ',
@@ -596,6 +605,7 @@ class _ProgressContainerState extends State<ProgressContainer> {
                               style: TextStyle(
                                 color: Colors.white.withOpacity(0.5),
                                 fontSize: 15,
+                                fontFamily: kRubik,
                               ),
                             ),
                           ],

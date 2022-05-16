@@ -11,6 +11,7 @@ import 'package:salesforce_spo/common_widgets/notched_bottom_navigation_bar.dart
 import 'package:salesforce_spo/design_system/design_system.dart';
 import 'package:salesforce_spo/presentation/intermediate_widgets/customer_lookup_widget.dart';
 import 'package:salesforce_spo/presentation/tabs/home_tab.dart';
+import 'package:salesforce_spo/utils/constants.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -89,7 +90,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-
   get getAppBar => AppBar(
         toolbarHeight: 80,
         leadingWidth: double.infinity,
@@ -99,7 +99,11 @@ class _HomeScreenState extends State<HomeScreen> {
         title: const Text(
           "HOME",
           style: TextStyle(
-              fontSize: 18, fontWeight: FontWeight.w500, color: Colors.black),
+            fontSize: 18,
+            fontWeight: FontWeight.w500,
+            color: Colors.black,
+            fontFamily: kRubik,
+          ),
         ),
       );
 
@@ -111,9 +115,12 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       extendBodyBehindAppBar: true,
       appBar: getAppBar,
-      body: TabHome(agentName: userAdModel?.givenName ?? 'John Doe',),
+      body: TabHome(
+        agentName: userAdModel?.givenName ?? 'John Doe',
+      ),
       bottomNavigationBar: NotchedBottomNavigationBar(
         actions: [
           IconButton(
@@ -176,7 +183,16 @@ class _HomeScreenState extends State<HomeScreen> {
                 isScrollControlled: true,
                 context: context,
                 builder: (BuildContext context) {
-                  return const CustomerLookupWidget();
+                  return DraggableScrollableSheet(
+                    snap: true,
+                    initialChildSize: 0.9,
+                    minChildSize: 0.9,
+                    maxChildSize: 1.0,
+                    builder: (BuildContext context,
+                        ScrollController scrollController) {
+                      return const CustomerLookupWidget();
+                    },
+                  );
                 },
                 backgroundColor: Colors.transparent);
           },

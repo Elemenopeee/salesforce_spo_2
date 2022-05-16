@@ -4,6 +4,8 @@ import 'package:salesforce_spo/design_system/design_system.dart';
 import 'package:salesforce_spo/utils/enums/music_instrument_enum.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
+import '../utils/constants.dart';
+
 class CustomerDetailsCard extends StatefulWidget {
   final String? customerId;
   final String firstName;
@@ -39,10 +41,10 @@ class _CustomerDetailsCardState extends State<CustomerDetailsCard> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () async {
-        try{
-          await launchUrlString('salesforce1://sObject/${widget.customerId}/view');
-        }
-        catch (e){
+        try {
+          await launchUrlString(
+              'salesforce1://sObject/${widget.customerId}/view');
+        } catch (e) {
           print(e);
         }
       },
@@ -61,25 +63,35 @@ class _CustomerDetailsCardState extends State<CustomerDetailsCard> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   RichText(
-                      textAlign: TextAlign.center,
-                      text: TextSpan(children: [
+                    textAlign: TextAlign.center,
+                    text: TextSpan(
+                      style: const TextStyle(
+                        fontFamily: kRubik,
+                      ),
+                      children: [
                         TextSpan(
-                            text: '${widget.firstName} ${widget.lastName} •',
-                            style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: SizeSystem.size16,
-                                color: ColorSystem.primary)),
+                          text: '${widget.firstName} ${widget.lastName} •',
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: SizeSystem.size16,
+                            color: ColorSystem.primary,
+                          ),
+                        ),
                         const WidgetSpan(
                             child: SizedBox(
                           width: SizeSystem.size5,
                         )),
                         const TextSpan(
-                            text: 'GC',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: SizeSystem.size14,
-                                color: Colors.grey))
-                      ])),
+                          text: 'GC',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: SizeSystem.size14,
+                            color: Colors.grey,
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
                   const SizedBox(
                     height: SizeSystem.size5,
                   ),
@@ -92,7 +104,8 @@ class _CustomerDetailsCardState extends State<CustomerDetailsCard> {
                             child: SvgPicture.asset(
                               IconSystem.badge,
                               height: SizeSystem.size16,
-                              color: getCustomerLevelColor(widget.customerLevel!),
+                              color:
+                                  getCustomerLevelColor(widget.customerLevel!),
                             ),
                           ),
                         if (widget.customerLevel != null)
@@ -105,7 +118,8 @@ class _CustomerDetailsCardState extends State<CustomerDetailsCard> {
                           TextSpan(
                             text: widget.customerLevel!,
                             style: TextStyle(
-                              color: getCustomerLevelColor(widget.customerLevel!),
+                              color:
+                                  getCustomerLevelColor(widget.customerLevel!),
                               fontWeight: FontWeight.bold,
                               fontSize: SizeSystem.size12,
                             ),
@@ -130,7 +144,7 @@ class _CustomerDetailsCardState extends State<CustomerDetailsCard> {
                       widget.email!,
                       style: const TextStyle(
                         fontSize: SizeSystem.size12,
-                        color: ColorSystem.secondary,
+                        color: ColorSystem.primary,
                       ),
                     ),
                   const SizedBox(
@@ -141,7 +155,7 @@ class _CustomerDetailsCardState extends State<CustomerDetailsCard> {
                       widget.phone!,
                       style: const TextStyle(
                         fontSize: SizeSystem.size12,
-                        color: ColorSystem.secondary,
+                        color: ColorSystem.primary,
                       ),
                     ),
                 ],
@@ -197,22 +211,32 @@ class _CustomerMicroDetailsState extends State<CustomerMicroDetails> {
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(PaddingSystem.padding10),
             color: ColorSystem.secondary.withOpacity(OpacitySystem.opacity01)),
-        child: widget.icon ?? Text(widget.value),
+        child: widget.icon ??
+            Text(
+              widget.value,
+              style: const TextStyle(
+                color: ColorSystem.primary,
+                fontFamily: kRubik,
+              ),
+            ),
       ),
       const SizedBox(
         height: SizeSystem.size10,
       ),
       Text(
         widget.label,
-        style: const TextStyle(color: ColorSystem.secondary),
+        style: const TextStyle(
+          color: ColorSystem.secondary,
+          fontSize: SizeSystem.size12,
+          fontFamily: kRubik,
+        ),
       )
     ]);
   }
 }
 
-
-Color getCustomerLevelColor(String level){
-  switch(level){
+Color getCustomerLevelColor(String level) {
+  switch (level) {
     case 'LOW':
       return ColorSystem.additionalYellow;
     case 'MEDIUM':

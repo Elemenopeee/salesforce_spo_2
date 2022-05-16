@@ -40,6 +40,7 @@ class _SearchScreenState extends State<SearchScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: ColorSystem.white,
       body: Padding(
         padding: const EdgeInsets.all(40.0),
         child: Column(

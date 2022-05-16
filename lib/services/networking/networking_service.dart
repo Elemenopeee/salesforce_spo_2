@@ -40,7 +40,6 @@ class HttpService {
       if (response.body.isNotEmpty) {
         data = json.decode(response.body);
       }
-      print(response.statusCode);
       switch (response.statusCode) {
         case 200: // API success
         case 201:
