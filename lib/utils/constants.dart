@@ -13,3 +13,8 @@ Map<String, String> authHeaders = {
 };
 
 const String authURL = '/services/oauth2/token';
+<<<<<<< HEAD
+=======
+
+const String kRubik = 'Rubik';
+>>>>>>> develop

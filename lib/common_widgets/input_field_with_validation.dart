@@ -1,8 +1,8 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:salesforce_spo/design_system/design_system.dart';
+import 'package:salesforce_spo/utils/constants.dart';
 
 class GuitarCentreInputField extends StatelessWidget {
   final String leadingIcon;
@@ -51,7 +51,11 @@ class GuitarCentreInputField extends StatelessWidget {
             top: PaddingSystem.padding20,
             bottom: PaddingSystem.padding20,
           ),
-          child: SvgPicture.asset(leadingIcon),
+          child: SvgPicture.asset(
+            leadingIcon,
+            width: SizeSystem.size24,
+            height: SizeSystem.size24,
+          ),
         ),
         Expanded(
           child: TextFormField(
@@ -77,7 +81,8 @@ class GuitarCentreInputField extends StatelessWidget {
               label: Text(label),
               labelStyle: const TextStyle(
                 color: ColorSystem.secondary,
-                fontSize: SizeSystem.size12,
+                fontSize: SizeSystem.size14,
+                fontFamily: kRubik,
               ),
               floatingLabelBehavior: floatingLabelBehavior,
               floatingLabelStyle: floatingLabelTextStyle,

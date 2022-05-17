@@ -68,7 +68,7 @@ class _AllOrderTabState extends State<AllOrderTab>
                 itemBuilder: (context, index) {
                   return OrderWidget(
                     name:
-                        '${allOrders[index].customerFirstName} ${allOrders[index].customerLastName}',
+                        '${allOrders[index].customerFirstName ?? '--'} ${allOrders[index].customerLastName ?? '--'}',
                     amount: allOrders[index].orderAmount.toString(),
                     date: formattedDate(allOrders[index].createdDate ??
                         DateTime.now().toString()),

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:salesforce_spo/design_system/design_system.dart';
 import 'package:salesforce_spo/models/order.dart';
 import 'package:salesforce_spo/services/networking/endpoints.dart';
 import 'package:salesforce_spo/services/networking/networking_service.dart';
+import 'package:salesforce_spo/utils/constants.dart';
 
 class OpenOrderTab extends StatefulWidget {
   const OpenOrderTab({Key? key}) : super(key: key);
@@ -21,12 +23,13 @@ class _OpenOrderTabState extends State<OpenOrderTab>
   List<Order> openOrders = [];
 
   Future<void> _getOpenOrders() async {
-    var response = await HttpService().doGet(path: Endpoints.getCustomerOpenOrders());
-    try{
-      for(var order in response.data['records']){
+    var response =
+        await HttpService().doGet(path: Endpoints.getCustomerOpenOrders());
+    try {
+      for (var order in response.data['records']) {
         openOrders.add(Order.fromJson(order));
       }
-    }catch (e){
+    } catch (e) {
       print(e);
     }
   }
@@ -48,16 +51,16 @@ class _OpenOrderTabState extends State<OpenOrderTab>
       child: FutureBuilder(
         future: _futureOpenOrders,
         builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-          switch(snapshot.connectionState){
+          switch (snapshot.connectionState) {
             case ConnectionState.none:
             case ConnectionState.waiting:
             case ConnectionState.active:
-            return const Center(
-              child: SizedBox(
-                height: 100,
-                child: Center(child: CircularProgressIndicator()),
-              ),
-            );
+              return const Center(
+                child: SizedBox(
+                  height: 100,
+                  child: Center(child: CircularProgressIndicator()),
+                ),
+              );
             case ConnectionState.done:
               return ListView.separated(
                 itemCount: openOrders.length,
@@ -66,10 +69,10 @@ class _OpenOrderTabState extends State<OpenOrderTab>
                 itemBuilder: (context, index) {
                   return OrderWidget(
                     name:
-                    '${openOrders[index].customerFirstName} ${openOrders[index].customerLastName}',
+                        '${openOrders[index].customerFirstName ?? '--'} ${openOrders[index].customerLastName ?? '--'}',
                     amount: openOrders[index].orderAmount.toString(),
-                    date: formattedDate(
-                        openOrders[index].createdDate ?? DateTime.now().toString()),
+                    date: formattedDate(openOrders[index].createdDate ??
+                        DateTime.now().toString()),
                     items: '${openOrders[index].items} items',
                     orderId: openOrders[index].id,
                     orderPercentage: '',
@@ -123,22 +126,34 @@ class OrderWidget extends StatelessWidget {
             children: [
               Text(
                 name,
-                style:
-                    const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  fontFamily: kRubik,
+                  color: ColorSystem.primary,
+                ),
               ),
               const SizedBox(
-                height: 05,
+                height: 04,
               ),
               Text(
                 date,
-                style: const TextStyle(fontSize: 14),
+                style: const TextStyle(
+                  fontSize: 12,
+                  fontFamily: kRubik,
+                  color: ColorSystem.primary,
+                ),
               ),
               const SizedBox(
-                height: 05,
+                height: 04,
               ),
               Text(
                 'OID: $orderId',
-                style: const TextStyle(fontSize: 14, color: Colors.grey),
+                style: const TextStyle(
+                  fontSize: 12,
+                  fontFamily: kRubik,
+                  color: ColorSystem.secondary,
+                ),
               ),
             ],
           ),
@@ -147,23 +162,34 @@ class OrderWidget extends StatelessWidget {
             children: [
               Text(
                 amount,
-                style:
-                    const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  fontFamily: kRubik,
+                  color: ColorSystem.primary,
+                ),
               ),
               const SizedBox(
-                height: 05,
+                height: 04,
               ),
               Text(
                 items,
-                style:
-                    const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+                style: const TextStyle(
+                  fontSize: 12,
+                  fontFamily: kRubik,
+                  color: ColorSystem.primary,
+                ),
               ),
               const SizedBox(
-                height: 05,
+                height: 04,
               ),
               Text(
                 orderPercentage,
-                style: const TextStyle(fontSize: 14, color: Colors.grey),
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontFamily: kRubik,
+                  color: ColorSystem.secondary,
+                ),
               ),
             ],
           ),

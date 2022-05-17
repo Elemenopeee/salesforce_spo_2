@@ -22,6 +22,7 @@ dependencies:
   intl: ^0.17.0
 
 dev_dependencies:
+  flutter_launcher_icons: ^0.9.2
   change_app_package_name: ^1.0.0
   flutter_test:
     sdk: flutter
@@ -34,7 +35,19 @@ flutter:
   assets:
     - assets/icons/
     - assets/icons/music_icons/
-  
+
+  fonts:
+    - family: Rubik
+      fonts:
+        - asset: assets/fonts/rubik_regular.ttf
+        - asset: assets/fonts/rubik_semiBold.ttf
+          weight: 600
+
+flutter_icons:
+  android: "launcher_icon"
+  ios: true
+  remove_alpha_ios: true
+  image_path: "assets/icons/app_icon.png"
   
   
   
