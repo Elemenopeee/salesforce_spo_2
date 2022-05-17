@@ -73,7 +73,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Salesforce SPO',
+      title: 'Customer Connect',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
