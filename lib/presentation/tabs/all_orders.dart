@@ -17,13 +17,19 @@ class _AllOrderTabState extends State<AllOrderTab>
   int currentIndex = 0;
   int currentIndexForInnerTab = 0;
 
+  int offset = 0;
+  bool isLoadingData = false;
+
+  ScrollController scrollController = ScrollController();
+
   late Future<void> _futureAllOrders;
 
   List<Order> allOrders = [];
 
-  Future<void> _getAllOrders() async {
+  Future<void> _getAllOrders(int offset) async {
     var response =
-        await HttpService().doGet(path: Endpoints.getCustomerAllOrders());
+        await HttpService().doGet(path: Endpoints.getCustomerAllOrders(offset));
+    isLoadingData = false;
     try {
       for (var order in response.data['records']) {
         allOrders.add(Order.fromJson(order));
@@ -36,7 +42,8 @@ class _AllOrderTabState extends State<AllOrderTab>
   @override
   void initState() {
     super.initState();
-    _futureAllOrders = _getAllOrders();
+    scrollController.addListener(scrollListener);
+    _futureAllOrders = _getAllOrders(offset);
   }
 
   String formattedDate(String date) {
@@ -46,50 +53,65 @@ class _AllOrderTabState extends State<AllOrderTab>
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: FutureBuilder(
-        future: _futureAllOrders,
-        builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-          switch (snapshot.connectionState) {
-            case ConnectionState.none:
-            case ConnectionState.waiting:
-            case ConnectionState.active:
-              return const Center(
-                child: SizedBox(
-                  height: 100,
-                  child: Center(child: CircularProgressIndicator()),
+    return FutureBuilder(
+      future: _futureAllOrders,
+      builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+        if(snapshot.connectionState == ConnectionState.waiting && allOrders.isEmpty){
+          return const Center(
+            child: SizedBox(
+              height: 100,
+              child: Center(child: CircularProgressIndicator()),
+            ),
+          );
+        } else {
+          return ListView.separated(
+            controller: scrollController,
+            itemCount: allOrders.length,
+            shrinkWrap: true,
+            itemBuilder: (context, index) {
+              return OrderWidget(
+                name:
+                '${allOrders[index].customerFirstName ?? '--'} ${allOrders[index].customerLastName ?? '--'}',
+                amount: '\$ ${allOrders[index].orderAmount.toString()}',
+                date: formattedDate(allOrders[index].createdDate ??
+                    DateTime.now().toString()),
+                items: '${allOrders[index].items} items',
+                orderId: allOrders[index].orderNumber ?? '--',
+                orderPercentage: '',
+              );
+            },
+            separatorBuilder: (BuildContext context, int index) {
+              return Container(
+                color: Colors.white,
+                child: Divider(
+                  color: Colors.grey.withOpacity(0.2),
+                  thickness: 1,
                 ),
               );
-            case ConnectionState.done:
-              return ListView.separated(
-                itemCount: allOrders.length,
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemBuilder: (context, index) {
-                  return OrderWidget(
-                    name:
-                        '${allOrders[index].customerFirstName ?? '--'} ${allOrders[index].customerLastName ?? '--'}',
-                    amount: allOrders[index].orderAmount.toString(),
-                    date: formattedDate(allOrders[index].createdDate ??
-                        DateTime.now().toString()),
-                    items: '${allOrders[index].items} items',
-                    orderId: allOrders[index].id,
-                    orderPercentage: '',
-                  );
-                },
-                separatorBuilder: (BuildContext context, int index) {
-                  return Container(
-                    color: Colors.white,
-                    child: Divider(
-                      color: Colors.grey.withOpacity(0.2),
-                      thickness: 1,
-                    ),
-                  );
-                },
-              );
-          }
-        },
-      ),
+            },
+          );
+        }
+      },
     );
+  }
+
+  void scrollListener(){
+    var maxExtent = scrollController.position.maxScrollExtent;
+    var loadingPosition = maxExtent - (maxExtent * 0.4);
+    if(scrollController.position.extentAfter < loadingPosition && !isLoadingData){
+      offset = offset + 20;
+      print(offset);
+      setState((){
+        isLoadingData = true;
+        _futureAllOrders = _getAllOrders(offset);
+      });
+    }
+  }
+
+  @override
+  void dispose(){
+    scrollController.removeListener(scrollListener);
+    scrollController.dispose();
+    super.dispose();
   }
 }

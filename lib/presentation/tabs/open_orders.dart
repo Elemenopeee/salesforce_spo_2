@@ -18,13 +18,19 @@ class _OpenOrderTabState extends State<OpenOrderTab>
   int currentIndex = 0;
   int currentIndexForInnerTab = 0;
 
+  int offset = 0;
+  bool isLoadingData = false;
+
+  ScrollController scrollController = ScrollController();
+
   late Future<void> _futureOpenOrders;
 
   List<Order> openOrders = [];
 
-  Future<void> _getOpenOrders() async {
+  Future<void> _getOpenOrders(int offset) async {
     var response =
-        await HttpService().doGet(path: Endpoints.getCustomerOpenOrders());
+        await HttpService().doGet(path: Endpoints.getCustomerOpenOrders(offset));
+    isLoadingData = false;
     try {
       for (var order in response.data['records']) {
         openOrders.add(Order.fromJson(order));
@@ -37,7 +43,8 @@ class _OpenOrderTabState extends State<OpenOrderTab>
   @override
   void initState() {
     super.initState();
-    _futureOpenOrders = _getOpenOrders();
+    scrollController.addListener(scrollListener);
+    _futureOpenOrders = _getOpenOrders(offset);
   }
 
   String formattedDate(String date) {
@@ -47,52 +54,68 @@ class _OpenOrderTabState extends State<OpenOrderTab>
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: FutureBuilder(
-        future: _futureOpenOrders,
-        builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-          switch (snapshot.connectionState) {
-            case ConnectionState.none:
-            case ConnectionState.waiting:
-            case ConnectionState.active:
-              return const Center(
-                child: SizedBox(
-                  height: 100,
-                  child: Center(child: CircularProgressIndicator()),
+    return FutureBuilder(
+      future: _futureOpenOrders,
+      builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+        if(snapshot.connectionState == ConnectionState.waiting && openOrders.isEmpty){
+          return const Center(
+            child: SizedBox(
+              height: 100,
+              child: Center(child: CircularProgressIndicator()),
+            ),
+          );
+        } else {
+          return ListView.separated(
+            controller: scrollController,
+            itemCount: openOrders.length,
+            shrinkWrap: true,
+            itemBuilder: (context, index) {
+              return OrderWidget(
+                name:
+                '${openOrders[index].customerFirstName ?? '--'} ${openOrders[index].customerLastName ?? '--'}',
+                amount: '\$ ${openOrders[index].orderAmount.toString()}',
+                date: formattedDate(openOrders[index].createdDate ??
+                    DateTime.now().toString()),
+                items: '${openOrders[index].items} items',
+                orderId: openOrders[index].orderNumber ?? '--',
+                orderPercentage: '',
+              );
+            },
+            separatorBuilder: (BuildContext context, int index) {
+              return Container(
+                color: Colors.white,
+                child: Divider(
+                  color: Colors.grey.withOpacity(0.2),
+                  thickness: 1,
                 ),
               );
-            case ConnectionState.done:
-              return ListView.separated(
-                itemCount: openOrders.length,
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemBuilder: (context, index) {
-                  return OrderWidget(
-                    name:
-                        '${openOrders[index].customerFirstName ?? '--'} ${openOrders[index].customerLastName ?? '--'}',
-                    amount: openOrders[index].orderAmount.toString(),
-                    date: formattedDate(openOrders[index].createdDate ??
-                        DateTime.now().toString()),
-                    items: '${openOrders[index].items} items',
-                    orderId: openOrders[index].id,
-                    orderPercentage: '',
-                  );
-                },
-                separatorBuilder: (BuildContext context, int index) {
-                  return Container(
-                    color: Colors.white,
-                    child: Divider(
-                      color: Colors.grey.withOpacity(0.2),
-                      thickness: 1,
-                    ),
-                  );
-                },
-              );
-          }
-        },
-      ),
+            },
+          );
+        }
+      },
     );
   }
+
+  void scrollListener(){
+    var maxExtent = scrollController.position.maxScrollExtent;
+    var loadingPosition = maxExtent - (maxExtent * 0.4);
+    if(scrollController.position.extentAfter < loadingPosition && !isLoadingData){
+      offset = offset + 20;
+      print(offset);
+      setState((){
+        isLoadingData = true;
+        _futureOpenOrders = _getOpenOrders(offset);
+      });
+    }
+  }
+
+  @override
+  void dispose(){
+    scrollController.removeListener(scrollListener);
+    scrollController.dispose();
+    super.dispose();
+  }
+
 }
 
 class OrderWidget extends StatelessWidget {

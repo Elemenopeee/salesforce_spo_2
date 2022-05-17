@@ -1,6 +1,6 @@
 class Order {
   final String id;
-  final String orderNumber;
+  final String? orderNumber;
   final String? customerFirstName;
   final String? customerLastName;
   final String? lastModifiedDate;
@@ -24,7 +24,7 @@ class Order {
   factory Order.fromJson(Map<String, dynamic> json){
     return Order._(
       id: json['Id'],
-      orderNumber: json['OrderNumber__c'],
+      orderNumber: json['Order_Number__c'],
       customerFirstName: json['First_Name__c'],
       customerLastName: json['Last_Name__c'],
       lastModifiedDate: json['LastModifiedDate'],
