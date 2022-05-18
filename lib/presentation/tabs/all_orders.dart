@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:salesforce_spo/common_widgets/order_widget.dart';
 import 'package:salesforce_spo/models/order.dart';
 import 'package:salesforce_spo/presentation/tabs/open_orders.dart';
 import 'package:salesforce_spo/services/networking/endpoints.dart';
@@ -78,6 +79,7 @@ class _AllOrderTabState extends State<AllOrderTab>
                 items: '${allOrders[index].items} items',
                 orderId: allOrders[index].orderNumber ?? '--',
                 orderPercentage: '',
+                isDraft: allOrders[index].orderStatus == 'Draft',
               );
             },
             separatorBuilder: (BuildContext context, int index) {
@@ -100,7 +102,6 @@ class _AllOrderTabState extends State<AllOrderTab>
     var loadingPosition = maxExtent - (maxExtent * 0.4);
     if(scrollController.position.extentAfter < loadingPosition && !isLoadingData){
       offset = offset + 20;
-      print(offset);
       setState((){
         isLoadingData = true;
         _futureAllOrders = _getAllOrders(offset);

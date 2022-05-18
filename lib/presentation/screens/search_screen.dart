@@ -16,13 +16,18 @@ class SearchScreen extends StatefulWidget {
 class _SearchScreenState extends State<SearchScreen> {
   String name = '';
 
+  int offset = 0;
+  bool isLoadingData = false;
+
+  ScrollController scrollController = ScrollController();
+
   List<Customer> customers = [];
 
   Future<void>? futureCustomers;
 
-  Future<void> getCustomer() async {
+  Future<void> getCustomer(int offset) async {
     var data = await HttpService().doGet(
-      path: Endpoints.getCustomerSearchByName(name),
+      path: Endpoints.getCustomerSearchByName(name, offset),
       tokenRequired: true,
     );
 
@@ -35,6 +40,12 @@ class _SearchScreenState extends State<SearchScreen> {
     } catch (error) {
       print(error);
     }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    scrollController.addListener(scrollListener);
   }
 
   @override
@@ -54,7 +65,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 this.name = name;
                 if(this.name.length >= 3){
                   setState(() {
-                    futureCustomers = getCustomer();
+                    futureCustomers = getCustomer(offset);
                   });
                 }
               },
@@ -78,15 +89,15 @@ class _SearchScreenState extends State<SearchScreen> {
               future: futureCustomers,
               builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
                 switch(snapshot.connectionState){
-                  case ConnectionState.none:
-                    return const SizedBox.shrink();
                   case ConnectionState.waiting:
                   case ConnectionState.active:
                     return const Center(
                       child: CircularProgressIndicator(),
                     );
+                  case ConnectionState.none:
                   case ConnectionState.done:
                     return ListView.builder(
+                      controller: scrollController,
                       padding: const EdgeInsets.symmetric(horizontal: 30),
                       shrinkWrap: true,
                       itemCount: customers.length,
@@ -113,5 +124,24 @@ class _SearchScreenState extends State<SearchScreen> {
         ],
       ),
     );
+  }
+
+  void scrollListener(){
+    var maxExtent = scrollController.position.maxScrollExtent;
+    var loadingPosition = maxExtent - (maxExtent * 0.4);
+    if(scrollController.position.extentAfter < loadingPosition && !isLoadingData){
+      offset = offset + 20;
+      setState((){
+        isLoadingData = true;
+        futureCustomers = getCustomer(offset);
+      });
+    }
+  }
+
+  @override
+  void dispose(){
+    scrollController.removeListener(scrollListener);
+    scrollController.dispose();
+    super.dispose();
   }
 }

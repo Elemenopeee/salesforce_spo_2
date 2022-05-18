@@ -31,6 +31,7 @@ class Order {
       createdDate: json['CreatedDate'],
       orderAmount: json['Total_Amount__c'],
       items: json['Rollup_Count_Order_Line_Items__c'],
+      orderStatus: json['Order_Status__c'],
     );
   }
 

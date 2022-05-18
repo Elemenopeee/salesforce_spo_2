@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:salesforce_spo/design_system/design_system.dart';
+import 'package:salesforce_spo/common_widgets/order_widget.dart';
 import 'package:salesforce_spo/models/order.dart';
 import 'package:salesforce_spo/services/networking/endpoints.dart';
 import 'package:salesforce_spo/services/networking/networking_service.dart';
-import 'package:salesforce_spo/utils/constants.dart';
 
 class OpenOrderTab extends StatefulWidget {
   const OpenOrderTab({Key? key}) : super(key: key);
@@ -79,6 +78,7 @@ class _OpenOrderTabState extends State<OpenOrderTab>
                 items: '${openOrders[index].items} items',
                 orderId: openOrders[index].orderNumber ?? '--',
                 orderPercentage: '',
+                isDraft: openOrders[index].orderStatus == 'Draft',
               );
             },
             separatorBuilder: (BuildContext context, int index) {
@@ -101,7 +101,6 @@ class _OpenOrderTabState extends State<OpenOrderTab>
     var loadingPosition = maxExtent - (maxExtent * 0.4);
     if(scrollController.position.extentAfter < loadingPosition && !isLoadingData){
       offset = offset + 20;
-      print(offset);
       setState((){
         isLoadingData = true;
         _futureOpenOrders = _getOpenOrders(offset);
@@ -116,108 +115,4 @@ class _OpenOrderTabState extends State<OpenOrderTab>
     super.dispose();
   }
 
-}
-
-class OrderWidget extends StatelessWidget {
-  final String name;
-  final String amount;
-  final String date;
-  final String items;
-  final String orderId;
-  final String orderPercentage;
-
-  const OrderWidget({
-    Key? key,
-    required this.name,
-    required this.amount,
-    required this.date,
-    required this.items,
-    required this.orderId,
-    required this.orderPercentage,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 08),
-      color: Colors.white,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                name,
-                style: const TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                  fontFamily: kRubik,
-                  color: ColorSystem.primary,
-                ),
-              ),
-              const SizedBox(
-                height: 04,
-              ),
-              Text(
-                date,
-                style: const TextStyle(
-                  fontSize: 12,
-                  fontFamily: kRubik,
-                  color: ColorSystem.primary,
-                ),
-              ),
-              const SizedBox(
-                height: 04,
-              ),
-              Text(
-                'OID: $orderId',
-                style: const TextStyle(
-                  fontSize: 12,
-                  fontFamily: kRubik,
-                  color: ColorSystem.secondary,
-                ),
-              ),
-            ],
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Text(
-                amount,
-                style: const TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                  fontFamily: kRubik,
-                  color: ColorSystem.primary,
-                ),
-              ),
-              const SizedBox(
-                height: 04,
-              ),
-              Text(
-                items,
-                style: const TextStyle(
-                  fontSize: 12,
-                  fontFamily: kRubik,
-                  color: ColorSystem.primary,
-                ),
-              ),
-              const SizedBox(
-                height: 04,
-              ),
-              Text(
-                orderPercentage,
-                style: const TextStyle(
-                  fontSize: 14,
-                  fontFamily: kRubik,
-                  color: ColorSystem.secondary,
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
 }
