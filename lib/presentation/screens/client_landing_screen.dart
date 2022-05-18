@@ -1,14 +1,14 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+class ClientLandingScreen extends StatefulWidget {
+  const ClientLandingScreen({Key? key}) : super(key: key);
 
   @override
-  _HomeScreenState createState() => _HomeScreenState();
+  _ClientLandingScreenState createState() => _ClientLandingScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _ClientLandingScreenState extends State<ClientLandingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
