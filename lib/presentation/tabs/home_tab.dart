@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:salesforce_spo/design_system/design_system.dart';
 import 'package:salesforce_spo/services/networking/endpoints.dart';
 import 'package:salesforce_spo/services/networking/networking_service.dart';
+import 'package:salesforce_spo/services/storage/shared_preferences_service.dart';
 import 'package:salesforce_spo/utils/constants.dart';
 
 import 'all_orders.dart';
@@ -229,28 +230,41 @@ class _ProgressContainerState extends State<ProgressContainer> {
   late Future<void> _futureTodaysCommission;
 
   Future<void> _getTotalSales() async {
-    var response = await HttpService().doGet(path: Endpoints.getTotalSales('prachi.potdar@guitarcenter.com'));
-    totalSales = response.data['records'][0]['Sales'];
+    var agentMail = await SharedPreferenceService().getValue('agent_email');
+    if(agentMail != null){
+      var response = await HttpService().doGet(path: Endpoints.getTotalSales(agentMail));
+      totalSales = response.data['records'][0]['Sales'];
+    }
   }
 
   Future<void> _getTotalCommission() async {
-    var response =
-        await HttpService().doGet(path: Endpoints.getTotalCommission('prachi.potdar@guitarcenter.com'));
-    totalCommission = response.data['records'][0]['commission'];
+    var agentMail = await SharedPreferenceService().getValue('agent_email');
+    print(agentMail);
+    if(agentMail != null){
+      var response =
+      await HttpService().doGet(path: Endpoints.getTotalCommission(agentMail));
+      totalCommission = response.data['records'][0]['commission'];
+    }
   }
 
   Future<void> _getTodaysSale() async {
-    var response = await HttpService().doGet(path: Endpoints.getTodaysSales('prachi.potdar@guitarcenter.com'));
-    if (response.data['records'].length > 0) {
-      todaysSale = response.data['records'][0]['Sales'];
+    var agentMail = await SharedPreferenceService().getValue('agent_email');
+    if(agentMail != null){
+      var response = await HttpService().doGet(path: Endpoints.getTodaysSales(agentMail));
+      if (response.data['records'].length > 0) {
+        todaysSale = response.data['records'][0]['Sales'];
+      }
     }
   }
 
   Future<void> _getTodaysCommission() async {
-    var response =
-        await HttpService().doGet(path: Endpoints.getTodaysCommission('prachi.potdar@guitarcenter.com'));
-    if (response.data['records'].length > 0) {
-      todaysCommission = response.data['records'][0]['commission'];
+    var agentMail = await SharedPreferenceService().getValue('agent_email');
+    if(agentMail != null){
+      var response =
+      await HttpService().doGet(path: Endpoints.getTodaysCommission(agentMail));
+      if (response.data['records'].length > 0) {
+        todaysCommission = response.data['records'][0]['commission'];
+      }
     }
   }
 
