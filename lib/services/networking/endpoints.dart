@@ -10,7 +10,7 @@ abstract class Endpoints {
   static String kCustomerAllOrders =
       '/services/data/v53.0/query/?q=SELECT Id,First_Name__c,Last_Name__c,OrderNumber__c,Total_Amount__c,Commission_JSON__c, Rollup_Count_Order_Line_Items__c,CreatedDate,LastModifiedDate FROM GC_Order__c ORDER BY CreatedDate DESC, LastModifiedDate DESC NULLS LAST LIMIT 20 OFFSET ';
   static String kCustomerOpenOrders =
-      '/services/data/v53.0/query/?q=SELECT Id,Order_Number__c,First_Name__c,Last_Name__c,LastModifiedDate,CreatedDate,Total_Amount__c,Commission_JSON__c, Rollup_Count_Order_Line_Items__c,Order_Status__c FROM GC_Order__c where Order_Status__c = \'draft\' ORDER BY CreatedDate DESC, LastModifiedDate DESC NULLS LAST LIMIT 20 OFFSET ';
+      '/services/data/v53.0/query/?q=SELECT Id,Order_Number__c,First_Name__c,Last_Name__c,LastModifiedDate,CreatedDate,Total_Amount__c,Commission_JSON__c, Rollup_Count_Order_Line_Items__c,Order_Status__c FROM GC_Order__c where Order_Status__c = \'Draft\' ORDER BY CreatedDate DESC, LastModifiedDate DESC NULLS LAST LIMIT 20 OFFSET ';
   static String kAgentTotalSales =
       '/services/data/v53.0/query/?q=SELECT SUM(Gross_Sales_MTD__c) FROM User';
   static String kAgentTotalCommission =
