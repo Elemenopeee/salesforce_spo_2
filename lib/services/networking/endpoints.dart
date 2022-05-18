@@ -7,7 +7,7 @@ abstract class Endpoints {
   static String kCustomerSearchByName =
       '/services/data/v53.0/query/?q= SELECT id,firstname,lastname,accountEmail__c,accountPhone__c,Last_Transaction_Date__c,Lifetime_Net_Sales_Amount__c,Lifetime_Net_Units__c,Preferred_Instrument__c,Max_ltv_net_dlrs_Formula__c,Median_ltv_net_dlrs_Formula__c, Avg_ltv_net_dlrs_Formula__c from account where name like ';
   static String kCustomerAllOrders =
-      '/services/data/v53.0/query/?q=SELECT Id,First_Name__c,Last_Name__c,OrderNumber__c,Total_Amount__c,Commission_JSON__c, Rollup_Count_Order_Line_Items__c,CreatedDate,LastModifiedDate FROM GC_Order__c ORDER BY CreatedDate DESC, LastModifiedDate DESC NULLS LAST LIMIT 20 OFFSET ';
+      '/services/data/v53.0/query/?q=SELECT Id,First_Name__c,Last_Name__c,Order_Number__c,Total_Amount__c,Commission_JSON__c, Rollup_Count_Order_Line_Items__c,CreatedDate,LastModifiedDate,Order_Status__c FROM GC_Order__c ORDER BY CreatedDate DESC, LastModifiedDate DESC NULLS LAST LIMIT 20 OFFSET ';
   static String kCustomerOpenOrders =
       '/services/data/v53.0/query/?q=SELECT Id,Order_Number__c,First_Name__c,Last_Name__c,LastModifiedDate,CreatedDate,Total_Amount__c,Commission_JSON__c, Rollup_Count_Order_Line_Items__c,Order_Status__c FROM GC_Order__c where Order_Status__c = \'draft\' ORDER BY CreatedDate DESC, LastModifiedDate DESC NULLS LAST LIMIT 20 OFFSET ';
   static String kAgentTotalSales =
