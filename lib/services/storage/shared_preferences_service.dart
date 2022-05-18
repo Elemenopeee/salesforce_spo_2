@@ -23,4 +23,9 @@ class SharedPreferenceService {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.clear();
   }
+
+  Future<String?> getKey(String key) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.get(key).toString();
+  }
 }

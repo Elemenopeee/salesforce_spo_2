@@ -1,3 +1,4 @@
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
@@ -91,8 +92,8 @@ class _TabHomeState extends State<TabHome> with SingleTickerProviderStateMixin {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 28, vertical: 14),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 28, vertical: 14),
                   child: SizedBox(
                     height: 360,
                     child: TabBarView(
@@ -112,88 +113,6 @@ class _TabHomeState extends State<TabHome> with SingleTickerProviderStateMixin {
     );
   }
 }
-
-// class AppBarCustom extends StatefulWidget {
-//   const AppBarCustom({Key? key}) : super(key: key);
-//
-//   @override
-//   _AppBarCustomState createState() => _AppBarCustomState();
-// }
-//
-// class _AppBarCustomState extends State<AppBarCustom> {
-//   @override
-//   Widget build(BuildContext context) {
-//     return Row(
-//       children: [
-//         const SizedBox(
-//           width: 15,
-//         ),
-//         Image.asset(
-//           Images.icDrawer,
-//           height: 30,
-//           width: 30,
-//           color: Colors.grey,
-//         ),
-//         const SizedBox(
-//           width: 15,
-//         ),
-//         Image.asset(
-//           Images.icMessenger,
-//           height: 30,
-//           width: 30,
-//           color: Colors.grey,
-//         ),
-//         const Spacer(),
-//         Column(
-//           mainAxisAlignment: MainAxisAlignment.center,
-//           crossAxisAlignment: CrossAxisAlignment.center,
-//           children: const [
-//             Text(
-//               "HOME",
-//               style: TextStyle(
-//                   fontSize: 18,
-//                   fontWeight: FontWeight.w500,
-//                   color: Colors.black),
-//             ),
-//           ],
-//         ),
-//         const Spacer(),
-//         Column(
-//           children: [
-//             const SizedBox(
-//               height: 20,
-//             ),
-//             Image.asset(
-//               Images.icNotification,
-//               color: Colors.grey,
-//             ),
-//             const SizedBox(
-//               height: 10,
-//             ),
-//             Container(
-//               height: 10,
-//               width: 10,
-//               decoration: BoxDecoration(
-//                 borderRadius: BorderRadius.circular(50),
-//                 color: Colors.purple,
-//               ),
-//             ),
-//           ],
-//         ),
-//         const SizedBox(
-//           width: 15,
-//         ),
-//         Image.asset(
-//           Images.icSearch,
-//           color: Colors.grey,
-//         ),
-//         const SizedBox(
-//           width: 20,
-//         ),
-//       ],
-//     );
-//   }
-// }
 
 class ProfileContainer extends StatefulWidget {
   final String agentName;
@@ -310,29 +229,28 @@ class _ProgressContainerState extends State<ProgressContainer> {
   late Future<void> _futureTodaysCommission;
 
   Future<void> _getTotalSales() async {
-    var response = await HttpService().doGet(path: Endpoints.getTotalSales());
-    totalSales = response.data['records'][0]['expr0'];
-    print(totalSales);
+    var response = await HttpService().doGet(path: Endpoints.getTotalSales('prachi.potdar@guitarcenter.com'));
+    totalSales = response.data['records'][0]['Sales'];
   }
 
   Future<void> _getTotalCommission() async {
     var response =
-        await HttpService().doGet(path: Endpoints.getTotalCommission());
-    totalCommission = response.data['records'][0]['expr0'];
+        await HttpService().doGet(path: Endpoints.getTotalCommission('prachi.potdar@guitarcenter.com'));
+    totalCommission = response.data['records'][0]['commission'];
   }
 
   Future<void> _getTodaysSale() async {
-    var response = await HttpService().doGet(path: Endpoints.getTodaysSales());
+    var response = await HttpService().doGet(path: Endpoints.getTodaysSales('prachi.potdar@guitarcenter.com'));
     if (response.data['records'].length > 0) {
-      todaysSale = response.data['records'][0]['expr0'];
+      todaysSale = response.data['records'][0]['Sales'];
     }
   }
 
   Future<void> _getTodaysCommission() async {
     var response =
-        await HttpService().doGet(path: Endpoints.getTodaysCommission());
+        await HttpService().doGet(path: Endpoints.getTodaysCommission('prachi.potdar@guitarcenter.com'));
     if (response.data['records'].length > 0) {
-      todaysCommission = response.data['records'][0]['expr0'];
+      todaysCommission = response.data['records'][0]['commission'];
     }
   }
 
@@ -347,7 +265,6 @@ class _ProgressContainerState extends State<ProgressContainer> {
 
   String formattedNumber(double value) {
     var f = NumberFormat.compact(locale: "en_US");
-    print(f.format(value));
     return f.format(value);
   }
 
@@ -391,7 +308,7 @@ class _ProgressContainerState extends State<ProgressContainer> {
                   width: double.infinity,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20),
-                    color: Color(0xFF8C80F8),
+                    color: const Color(0xFF8C80F8),
                   ),
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
@@ -418,77 +335,70 @@ class _ProgressContainerState extends State<ProgressContainer> {
                             const SizedBox(
                               height: 24,
                             ),
-                            RichText(
-                              maxLines: 1,
-                              text: TextSpan(
-                                style: const TextStyle(
-                                  fontFamily: kRubik,
+                            Center(
+                              child: SizedBox(
+                                height: 80,
+                                width: 100,
+                                child: PieChart(
+                                  PieChartData(
+                                    sections: showingSections(todaysSale, totalSales),
+                                    centerSpaceColor: const Color(0xFF8C80F8),
+                                    centerSpaceRadius: 24,
+                                  ),
                                 ),
-                                children: [
-                                  const TextSpan(
-                                    text: '\$ ',
-                                    style: TextStyle(
-                                      fontSize: 32,
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w200,
-                                    ),
-                                  ),
-                                  TextSpan(
-                                    text: formattedNumber(totalSales),
-                                    style: const TextStyle(
-                                      fontSize: 32,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Text(
-                              month,
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 16,
-                                fontWeight: FontWeight.w300,
-                                fontFamily: kRubik,
                               ),
                             ),
                             const SizedBox(
                               height: 30,
                             ),
-                            RichText(
-                              text: TextSpan(
-                                children: [
-                                  const TextSpan(
-                                    text: '\$ ',
-                                    style: TextStyle(
-                                      fontSize: 24,
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w200,
-                                    ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Text(
+                                  formattedNumber(totalSales).toLowerCase(),
+                                  style: const TextStyle(
+                                    fontSize: SizeSystem.size24,
+                                    color: ColorSystem.white,
+                                    fontFamily: kRubik,
+                                    fontWeight: FontWeight.bold,
                                   ),
-                                  TextSpan(
-                                    text: formattedNumber(todaysSale),
-                                    style: const TextStyle(
-                                      fontSize: 24,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.white,
-                                      fontFamily: kRubik,
-                                    ),
+                                ),
+                                Text(
+                                  formattedNumber(todaysSale),
+                                  style: const TextStyle(
+                                    fontSize: SizeSystem.size14,
+                                    color: ColorSystem.white,
+                                    fontFamily: kRubik,
                                   ),
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
                             const SizedBox(
-                              height: 08,
+                              height: SizeSystem.size4,
                             ),
-                            Text(
-                              "Today",
-                              style: TextStyle(
-                                color: Colors.white.withOpacity(0.5),
-                                fontSize: 15,
-                                fontFamily: kRubik,
-                              ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  month,
+                                  style: TextStyle(
+                                    fontSize: SizeSystem.size12,
+                                    color: ColorSystem.white.withOpacity(0.5),
+                                    fontFamily: kRubik,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                ),
+                                Text(
+                                  'Today',
+                                  style: TextStyle(
+                                    fontSize: SizeSystem.size12,
+                                    color: ColorSystem.white.withOpacity(0.5),
+                                    fontFamily: kRubik,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                ),
+                              ],
                             ),
                           ],
                         );
@@ -506,7 +416,7 @@ class _ProgressContainerState extends State<ProgressContainer> {
                   width: double.infinity,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20),
-                    color: Color(0xFFAF8EFF),
+                    color: const Color(0xFFAF8EFF),
                   ),
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
@@ -535,78 +445,66 @@ class _ProgressContainerState extends State<ProgressContainer> {
                             const SizedBox(
                               height: 24,
                             ),
-                            RichText(
-                              text: TextSpan(
-                                style: const TextStyle(
-                                  fontFamily: kRubik,
+                            Center(
+                              child: SizedBox(
+                                height: 80,
+                                width: 100,
+                                child: LineChart(
+                                  mainData(),
                                 ),
-                                children: [
-                                  const TextSpan(
-                                    text: '\$ ',
-                                    style: TextStyle(
-                                      fontSize: 32,
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w200,
-                                    ),
-                                  ),
-                                  TextSpan(
-                                    text: formattedNumber(totalCommission),
-                                    style: const TextStyle(
-                                      fontSize: 32,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Text(
-                              month,
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 16,
-                                fontWeight: FontWeight.w300,
-                                fontFamily: kRubik,
                               ),
                             ),
                             const SizedBox(
                               height: 30,
                             ),
-                            RichText(
-                              text: TextSpan(
-                                style: const TextStyle(
-                                  fontFamily: kRubik,
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Text(
+                                  formattedNumber(totalCommission).toLowerCase(),
+                                  style: const TextStyle(
+                                    fontSize: SizeSystem.size24,
+                                    color: ColorSystem.white,
+                                    fontFamily: kRubik,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
-                                children: [
-                                  const TextSpan(
-                                    text: '\$ ',
-                                    style: TextStyle(
-                                      fontSize: 24,
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w200,
-                                    ),
+                                Text(
+                                  formattedNumber(todaysCommission),
+                                  style: const TextStyle(
+                                    fontSize: SizeSystem.size14,
+                                    color: ColorSystem.white,
+                                    fontFamily: kRubik,
                                   ),
-                                  TextSpan(
-                                    text: formattedNumber(todaysCommission),
-                                    style: const TextStyle(
-                                      fontSize: 24,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
                             const SizedBox(
-                              height: 08,
+                              height: SizeSystem.size4,
                             ),
-                            Text(
-                              "Today",
-                              style: TextStyle(
-                                color: Colors.white.withOpacity(0.5),
-                                fontSize: 15,
-                                fontFamily: kRubik,
-                              ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  month,
+                                  style: TextStyle(
+                                    fontSize: SizeSystem.size12,
+                                    color: ColorSystem.white.withOpacity(0.5),
+                                    fontFamily: kRubik,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                ),
+                                Text(
+                                  'Today',
+                                  style: TextStyle(
+                                    fontSize: SizeSystem.size12,
+                                    color: ColorSystem.white.withOpacity(0.5),
+                                    fontFamily: kRubik,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                ),
+                              ],
                             ),
                           ],
                         );
@@ -621,4 +519,76 @@ class _ProgressContainerState extends State<ProgressContainer> {
       ),
     );
   }
+}
+
+List<PieChartSectionData> showingSections(double todaysSale, double totalSale) {
+  return List.generate(2, (i) {
+    const fontSize = 0.0;
+    const radius = 10.0;
+    switch (i) {
+      case 0:
+        return PieChartSectionData(
+          color: const Color(0xFF7FE3F0),
+          value: todaysSale,
+          radius: radius,
+          titleStyle: const TextStyle(
+            fontSize: fontSize,
+          ),
+        );
+      case 1:
+        return PieChartSectionData(
+          color: const Color(0xFF5763A9),
+          value: totalSale,
+          radius: radius,
+          titleStyle: const TextStyle(
+            fontSize: fontSize,
+          ),
+        );
+      default:
+        throw Error();
+    }
+  });
+}
+
+List<Color> gradientColors = [
+  const Color(0xff23b6e6),
+  const Color(0xff02d39a),
+];
+
+LineChartData mainData() {
+  return LineChartData(
+    titlesData: FlTitlesData(
+      show: false
+    ),
+    gridData: FlGridData(
+      show: false,
+    ),
+    borderData: FlBorderData(
+      show: false,
+    ),
+    // minX: 0,
+    // maxX: 11,
+    // minY: 0,
+    // maxY: 6,
+    lineBarsData: [
+      LineChartBarData(
+        color: Color(0xFF7265E3),
+        spots: const [
+          FlSpot(0, 3),
+          FlSpot(2.6, 2),
+          FlSpot(4.9, 5),
+          FlSpot(6.8, 3.1),
+          FlSpot(8, 4),
+          FlSpot(9.5, 3),
+          FlSpot(11, 4),
+        ],
+        isCurved: true,
+        barWidth: 5,
+        isStrokeCapRound: true,
+        dotData: FlDotData(
+          show: false,
+        ),
+      ),
+    ],
+  );
 }

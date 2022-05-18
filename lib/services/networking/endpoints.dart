@@ -5,19 +5,19 @@ abstract class Endpoints {
   static String kCustomerSearchByEmail =
       '/services/data/v53.0/query/?q=SELECT id,firstname,lastname,accountEmail__c,accountPhone__c,Last_Transaction_Date__c,Lifetime_Net_Sales_Amount__c,Lifetime_Net_Units__c,Preferred_Instrument__c, Max_ltv_net_dlrs_Formula__c, Median_ltv_net_dlrs_Formula__c, Avg_ltv_net_dlrs_Formula__c from account where accountEmail__c=';
   static String kCustomerSearchByName =
-      '/services/data/v53.0/query/?q=SELECT id,firstname,lastname,accountEmail__c,accountPhone__c,Last_Transaction_Date__c,Lifetime_Net_Sales_Amount__c,Lifetime_Net_Units__c,Preferred_Instrument__c, Max_ltv_net_dlrs_Formula__c, Median_ltv_net_dlrs_Formula__c, Avg_ltv_net_dlrs_Formula__c from account where name like ';
+      '/services/data/v53.0/query/?q= SELECT id,firstname,lastname,accountEmail__c,accountPhone__c,Last_Transaction_Date__c,Lifetime_Net_Sales_Amount__c,Lifetime_Net_Units__c,Preferred_Instrument__c,Max_ltv_net_dlrs_Formula__c,Median_ltv_net_dlrs_Formula__c, Avg_ltv_net_dlrs_Formula__c from account where name like ';
   static String kCustomerAllOrders =
       '/services/data/v53.0/query/?q=SELECT Id,First_Name__c,Last_Name__c,OrderNumber__c,Total_Amount__c,Commission_JSON__c, Rollup_Count_Order_Line_Items__c,CreatedDate,LastModifiedDate FROM GC_Order__c ORDER BY CreatedDate DESC, LastModifiedDate DESC NULLS LAST LIMIT 20 OFFSET ';
   static String kCustomerOpenOrders =
       '/services/data/v53.0/query/?q=SELECT Id,Order_Number__c,First_Name__c,Last_Name__c,LastModifiedDate,CreatedDate,Total_Amount__c,Commission_JSON__c, Rollup_Count_Order_Line_Items__c,Order_Status__c FROM GC_Order__c where Order_Status__c = \'draft\' ORDER BY CreatedDate DESC, LastModifiedDate DESC NULLS LAST LIMIT 20 OFFSET ';
   static String kAgentTotalSales =
-      '/services/data/v53.0/query/?q=SELECT SUM(Gross_Sales_MTD__c) FROM User';
+      '/services/data/v53.0/query/?q=SELECT name,email,sum(Gross_Sales_MTD__c) Sales FROM User WHERE Gross_Sales_MTD__c != null and email =';
   static String kAgentTotalCommission =
-      '/services/data/v53.0/query/?q=SELECT SUM(Comm_Amount_MTD__c) FROM User';
+      '/services/data/v53.0/query/?q=SELECT name,email,sum(Comm_Amount_MTD__c) commission FROM User WHERE Comm_Amount_MTD__c != null and email =';
   static String kAgentTodaysSales =
-      '/services/data/v53.0/query/?q=SELECT Gross_Sales_MTD__c, CreatedDate, LastModifiedDate FROM User where createddate =last_n_days : 1';
+      '/services/data/v53.0/query/?q=SELECT email,Gross_Sales_MTD__c, CreatedDate, LastModifiedDate FROM User where email =';
   static String kAgentTodaysCommission =
-      '/services/data/v53.0/query/?q=SELECT Comm_Amount_MTD__c,CreatedDate, LastModifiedDate FROM User where createddate =last_n_days : 1';
+      '/services/data/v53.0/query/?q=SELECT email,Comm_Amount_MTD__c,CreatedDate, LastModifiedDate FROM User where email =';
 
   static String getCustomerSearchByPhone(String phone) {
     return '$kBaseURL$kCustomerSearchByPhone\'$phone\'';
@@ -27,8 +27,8 @@ abstract class Endpoints {
     return '$kBaseURL$kCustomerSearchByEmail\'$email\'';
   }
 
-  static String getCustomerSearchByName(String name) {
-    return '$kBaseURL$kCustomerSearchByName%27%25$name%25%27';
+  static String getCustomerSearchByName(String name, int offset) {
+    return '$kBaseURL$kCustomerSearchByName%27%25$name%25%27 ORDER BY Name LIMIT 20 OFFSET $offset';
   }
 
   static String getCustomerAllOrders(int offset) {
@@ -39,19 +39,19 @@ abstract class Endpoints {
     return '$kBaseURL$kCustomerOpenOrders$offset';
   }
 
-  static String getTotalSales() {
-    return '$kBaseURL$kAgentTotalSales';
+  static String getTotalSales(String agentMail) {
+    return '$kBaseURL$kAgentTotalSales${'\'$agentMail\' group by name, email'}';
   }
 
-  static String getTodaysSales() {
-    return '$kBaseURL$kAgentTodaysSales';
+  static String getTodaysSales(String agentMail) {
+    return '$kBaseURL$kAgentTodaysSales${'\'$agentMail\' and createddate =last_n_days : 1'}';
   }
 
-  static String getTotalCommission() {
-    return '$kBaseURL$kAgentTotalCommission';
+  static String getTotalCommission(String agentmail) {
+    return '$kBaseURL$kAgentTotalCommission${'\'$agentmail\' group by name, email'}';
   }
 
-  static String getTodaysCommission() {
-    return '$kBaseURL$kAgentTodaysCommission';
+  static String getTodaysCommission(String agentMail) {
+    return '$kBaseURL$kAgentTodaysCommission${'\'$agentMail\' and createddate =last_n_days : 1'}';
   }
 }
