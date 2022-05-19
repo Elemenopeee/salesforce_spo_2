@@ -5,6 +5,7 @@ import 'package:salesforce_spo/models/order.dart';
 import 'package:salesforce_spo/presentation/tabs/open_orders.dart';
 import 'package:salesforce_spo/services/networking/endpoints.dart';
 import 'package:salesforce_spo/services/networking/networking_service.dart';
+import 'package:salesforce_spo/services/storage/shared_preferences_service.dart';
 
 class AllOrderTab extends StatefulWidget {
   const AllOrderTab({Key? key}) : super(key: key);
@@ -28,15 +29,18 @@ class _AllOrderTabState extends State<AllOrderTab>
   List<Order> allOrders = [];
 
   Future<void> _getAllOrders(int offset) async {
-    var response =
-        await HttpService().doGet(path: Endpoints.getCustomerAllOrders(offset));
-    isLoadingData = false;
-    try {
-      for (var order in response.data['records']) {
-        allOrders.add(Order.fromJson(order));
+    var agentMail = await SharedPreferenceService().getValue('agent_email');
+    if(agentMail != null){
+      var response =
+      await HttpService().doGet(path: Endpoints.getCustomerAllOrders(agentMail,offset));
+      isLoadingData = false;
+      try {
+        for (var order in response.data['records']) {
+          allOrders.add(Order.fromJson(order));
+        }
+      } catch (e) {
+        print(e);
       }
-    } catch (e) {
-      print(e);
     }
   }
 
@@ -79,7 +83,8 @@ class _AllOrderTabState extends State<AllOrderTab>
                 items: '${allOrders[index].items} items',
                 orderId: allOrders[index].orderNumber ?? '--',
                 orderPercentage: '',
-                isDraft: allOrders[index].orderStatus == 'Draft',
+                showStatusLabel: true,
+                orderStatus: allOrders[index].orderStatus ?? '--',
               );
             },
             separatorBuilder: (BuildContext context, int index) {
