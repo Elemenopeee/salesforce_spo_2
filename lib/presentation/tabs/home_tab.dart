@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -132,7 +134,6 @@ class _ProfileContainerState extends State<ProfileContainer> {
   Widget build(BuildContext context) {
     var dateNow = DateTime.now();
     var date = DateTime(dateNow.year, dateNow.month, dateNow.day);
-    print(date);
     var formattedDate =
         DateFormat(DateFormat.ABBR_MONTH_WEEKDAY_DAY).format(date);
 
@@ -170,7 +171,7 @@ class _ProfileContainerState extends State<ProfileContainer> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 05),
                 child: Text(
-                  "Hi, ${widget.agentName}",
+                  "Hi ${widget.agentName}",
                   style: const TextStyle(
                     fontSize: 32,
                     fontWeight: FontWeight.bold,
@@ -251,8 +252,11 @@ class _ProgressContainerState extends State<ProgressContainer> {
     var agentMail = await SharedPreferenceService().getValue('agent_email');
     if(agentMail != null){
       var response = await HttpService().doGet(path: Endpoints.getTodaysSales(agentMail));
-      if (response.data['records'].length > 0) {
-        todaysSale = response.data['records'][0]['Sales'];
+      log('Response is ------------>> ${response.data}');
+      List<dynamic> records = response.data['records'];
+      if (records.isNotEmpty) {
+        var saleData = records.firstWhere((element) => element['Gross_Sales_Yesterday__c'] != null);
+        todaysSale = saleData['Gross_Sales_Yesterday__c'];
       }
     }
   }
@@ -262,8 +266,12 @@ class _ProgressContainerState extends State<ProgressContainer> {
     if(agentMail != null){
       var response =
       await HttpService().doGet(path: Endpoints.getTodaysCommission(agentMail));
-      if (response.data['records'].length > 0) {
-        todaysCommission = response.data['records'][0]['commission'];
+      log('Response is ------------>> ${response.data}');
+      List<dynamic> records = response.data['records'];
+
+      if (records.isNotEmpty) {
+        var commissionData = records.firstWhere((element) => element['Comm_Amount_Yesterday__c'] != null);
+        todaysCommission = commissionData['Comm_Amount_Yesterday__c'];
       }
     }
   }
@@ -466,7 +474,7 @@ class _ProgressContainerState extends State<ProgressContainer> {
                                 child: PieChart(
                                   PieChartData(
                                     sections: showingSections(todaysCommission, totalCommission),
-                                    centerSpaceColor: const Color(0xFF8C80F8),
+                                    centerSpaceColor: const Color(0xFFAF8EFF),
                                     centerSpaceRadius: 24,
                                   ),
                                 ),

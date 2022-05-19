@@ -34,9 +34,6 @@ class _CustomerLookupWidgetState extends State<CustomerLookupWidget> {
   bool showPhoneField = true;
   bool showEmailField = true;
 
-  bool isLoadingPhone = false;
-  bool isLoadingEmail = false;
-
   bool viewFullScreen = false;
 
   bool? hasRecords;
@@ -53,10 +50,6 @@ class _CustomerLookupWidgetState extends State<CustomerLookupWidget> {
     customers.clear();
 
     if (searchingByPhoneNumber) {
-      setState(() {
-        isLoadingPhone = true;
-        isLoadingEmail = false;
-      });
       var data = await HttpService().doGet(
         path: Endpoints.getCustomerSearchByPhone(phone),
         tokenRequired: true,
@@ -69,16 +62,11 @@ class _CustomerLookupWidgetState extends State<CustomerLookupWidget> {
 
         if (customers.isNotEmpty) {
           showEmailField = false;
-          isLoadingPhone = false;
         }
       } catch (error) {
         print(error);
       }
     } else {
-      setState(() {
-        isLoadingPhone = false;
-        isLoadingEmail = true;
-      });
       var data = await HttpService().doGet(
         path: Endpoints.getCustomerSearchByEmail(email),
         tokenRequired: true,
@@ -89,7 +77,6 @@ class _CustomerLookupWidgetState extends State<CustomerLookupWidget> {
         }
         if (customers.isNotEmpty) {
           showPhoneField = false;
-          isLoadingEmail = false;
         }
       } catch (error) {
         print(error);
@@ -235,49 +222,39 @@ class _CustomerLookupWidgetState extends State<CustomerLookupWidget> {
                                       ),
                                     ],
                                     leadingIcon: IconSystem.phone,
-                                    suffixIcon: isLoadingPhone
-                                        ? const Center(
-                                            child: SizedBox(
-                                              width: 20,
-                                              height: 20,
-                                              child:
-                                                  CircularProgressIndicator(),
-                                            ),
-                                          )
-                                        : hasRecords != null
-                                            ? hasRecords!
+                                    suffixIcon: hasRecords != null
+                                        ? hasRecords!
+                                            ? Column(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  const SizedBox(
+                                                    height: 8,
+                                                  ),
+                                                  SvgPicture.asset(
+                                                    IconSystem.checkmark,
+                                                    color: ColorSystem
+                                                        .additionalGreen,
+                                                  ),
+                                                ],
+                                              )
+                                            : searchingByPhoneNumber
                                                 ? Column(
                                                     mainAxisSize:
                                                         MainAxisSize.min,
-                                                    children: [
-                                                      const SizedBox(
+                                                    children: const [
+                                                      SizedBox(
                                                         height: 8,
                                                       ),
-                                                      SvgPicture.asset(
-                                                        IconSystem.checkmark,
+                                                      Icon(
+                                                        CupertinoIcons
+                                                            .clear_circled,
                                                         color: ColorSystem
-                                                            .additionalGreen,
+                                                            .complimentary,
                                                       ),
                                                     ],
                                                   )
-                                                : searchingByPhoneNumber
-                                                    ? Column(
-                                                        mainAxisSize:
-                                                            MainAxisSize.min,
-                                                        children: const [
-                                                          SizedBox(
-                                                            height: 8,
-                                                          ),
-                                                          Icon(
-                                                            CupertinoIcons
-                                                                .clear_circled,
-                                                            color: ColorSystem
-                                                                .complimentary,
-                                                          ),
-                                                        ],
-                                                      )
-                                                    : const SizedBox.shrink()
-                                            : const SizedBox.shrink(),
+                                                : const SizedBox.shrink()
+                                        : const SizedBox.shrink(),
                                   ),
                                 ),
                               if (showEmailField)
@@ -294,50 +271,40 @@ class _CustomerLookupWidgetState extends State<CustomerLookupWidget> {
                                     onChanged: (email) {
                                       this.email = email;
                                     },
-                                    suffixIcon: isLoadingEmail
-                                        ? const Center(
-                                            child: SizedBox(
-                                              width: 20,
-                                              height: 20,
-                                              child:
-                                                  CircularProgressIndicator(),
-                                            ),
-                                          )
-                                        : hasRecords != null
-                                            ? hasRecords!
+                                    suffixIcon: hasRecords != null
+                                        ? hasRecords!
+                                            ? Column(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  const SizedBox(
+                                                    height: 8,
+                                                  ),
+                                                  SvgPicture.asset(
+                                                    IconSystem.checkmark,
+                                                    color: ColorSystem
+                                                        .additionalGreen,
+                                                    height: 24,
+                                                  ),
+                                                ],
+                                              )
+                                            : !searchingByPhoneNumber
                                                 ? Column(
                                                     mainAxisSize:
                                                         MainAxisSize.min,
-                                                    children: [
-                                                      const SizedBox(
+                                                    children: const [
+                                                      SizedBox(
                                                         height: 8,
                                                       ),
-                                                      SvgPicture.asset(
-                                                        IconSystem.checkmark,
+                                                      Icon(
+                                                        CupertinoIcons
+                                                            .clear_circled,
                                                         color: ColorSystem
-                                                            .additionalGreen,
-                                                        height: 24,
+                                                            .complimentary,
                                                       ),
                                                     ],
                                                   )
-                                                : !searchingByPhoneNumber
-                                                    ? Column(
-                                                        mainAxisSize:
-                                                            MainAxisSize.min,
-                                                        children: const [
-                                                          SizedBox(
-                                                            height: 8,
-                                                          ),
-                                                          Icon(
-                                                            CupertinoIcons
-                                                                .clear_circled,
-                                                            color: ColorSystem
-                                                                .complimentary,
-                                                          ),
-                                                        ],
-                                                      )
-                                                    : const SizedBox.shrink()
-                                            : const SizedBox.shrink(),
+                                                : const SizedBox.shrink()
+                                        : const SizedBox.shrink(),
                                   ),
                                 ),
                               if (customers.isNotEmpty)
