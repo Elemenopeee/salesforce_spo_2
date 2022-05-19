@@ -7,9 +7,9 @@ abstract class Endpoints {
   static String kCustomerSearchByName =
       '/services/data/v53.0/query/?q= SELECT id,firstname,lastname,accountEmail__c,accountPhone__c,Last_Transaction_Date__c,Lifetime_Net_Sales_Amount__c,Lifetime_Net_Units__c,Preferred_Instrument__c,Max_ltv_net_dlrs_Formula__c,Median_ltv_net_dlrs_Formula__c, Avg_ltv_net_dlrs_Formula__c from account where name like ';
   static String kCustomerAllOrders =
-      '/services/data/v53.0/query/?q=SELECT Id,First_Name__c,Last_Name__c,Order_Number__c,Total_Amount__c,Commission_JSON__c, Rollup_Count_Order_Line_Items__c,CreatedDate,LastModifiedDate,Order_Status__c FROM GC_Order__c ORDER BY CreatedDate DESC, LastModifiedDate DESC NULLS LAST LIMIT 20 OFFSET ';
+      '/services/data/v53.0/query/?q=SELECT Id,OwnerId,First_Name__c,Last_Name__c,Order_Number__c,Total_Amount__c,Commission_JSON__c, Rollup_Count_Order_Line_Items__c,Order_Status__c,CreatedDate,LastModifiedDate FROM GC_Order__c where OwnerId IN (SELECT Id FROM User WHERE Email = ';
   static String kCustomerOpenOrders =
-      '/services/data/v53.0/query/?q=SELECT Id,Order_Number__c,First_Name__c,Last_Name__c,LastModifiedDate,CreatedDate,Total_Amount__c,Commission_JSON__c, Rollup_Count_Order_Line_Items__c,Order_Status__c FROM GC_Order__c where Order_Status__c = \'draft\' ORDER BY CreatedDate DESC, LastModifiedDate DESC NULLS LAST LIMIT 20 OFFSET ';
+      '/services/data/v53.0/query/?q=SELECT Id, OwnerId, First_Name__c, Last_Name__c, Order_Number__c, LastModifiedDate, CreatedDate, Total_Amount__c, Commission_JSON__c, Rollup_Count_Order_Line_Items__c, Order_Status__c FROM GC_Order__c where OwnerId IN (SELECT Id FROM User WHERE Email = ';
   static String kAgentTotalSales =
       '/services/data/v53.0/query/?q=SELECT name,email,sum(Gross_Sales_MTD__c) Sales FROM User WHERE Gross_Sales_MTD__c != null and email =';
   static String kAgentTotalCommission =
@@ -31,12 +31,12 @@ abstract class Endpoints {
     return '$kBaseURL$kCustomerSearchByName%27%25$name%25%27 ORDER BY Name LIMIT 20 OFFSET $offset';
   }
 
-  static String getCustomerAllOrders(int offset) {
-    return '$kBaseURL$kCustomerAllOrders$offset';
+  static String getCustomerAllOrders(String email, int offset) {
+    return '$kBaseURL$kCustomerAllOrders${'\'$email\') ORDER BY CreatedDate DESC, LastModifiedDate DESC NULLS LAST LIMIT 20 OFFSET $offset'}';
   }
 
-  static String getCustomerOpenOrders(int offset) {
-    return '$kBaseURL$kCustomerOpenOrders$offset';
+  static String getCustomerOpenOrders(String email, int offset) {
+    return '$kBaseURL$kCustomerOpenOrders${'\'$email\') and Order_Status__c = \'draft\' ORDER BY CreatedDate DESC, LastModifiedDate DESC NULLS LAST LIMIT 20 OFFSET $offset'}';
   }
 
   static String getTotalSales(String agentMail) {
@@ -47,8 +47,8 @@ abstract class Endpoints {
     return '$kBaseURL$kAgentTodaysSales${'\'$agentMail\' and createddate =last_n_days : 1'}';
   }
 
-  static String getTotalCommission(String agentmail) {
-    return '$kBaseURL$kAgentTotalCommission${'\'$agentmail\' group by name, email'}';
+  static String getTotalCommission(String agentMail) {
+    return '$kBaseURL$kAgentTotalCommission${'\'$agentMail\' group by name, email'}';
   }
 
   static String getTodaysCommission(String agentMail) {
