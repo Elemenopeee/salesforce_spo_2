@@ -16,9 +16,9 @@ abstract class Endpoints {
   static String kAgentTotalCommission =
       '/services/data/v53.0/query/?q=SELECT name,email,sum(Comm_Amount_MTD__c) commission FROM User WHERE Comm_Amount_MTD__c != null and email =';
   static String kAgentTodaysSales =
-      '/services/data/v53.0/query/?q=SELECT email,Gross_Sales_MTD__c, CreatedDate, LastModifiedDate FROM User where email =';
+      '/services/data/v53.0/query/?q=SELECT email,Gross_Sales_MTD__c, Comm_Amount_Yesterday__c, CreatedDate, LastModifiedDate FROM User where email =';
   static String kAgentTodaysCommission =
-      '/services/data/v53.0/query/?q=SELECT email,Comm_Amount_MTD__c,CreatedDate, LastModifiedDate FROM User where email =';
+      '/services/data/v53.0/query/?q=SELECT email,Comm_Amount_MTD__c, Gross_Sales_Yesterday__c, CreatedDate, LastModifiedDate FROM User where email =';
 
   static String getCustomerSearchByPhone(String phone) {
     return '$kBaseURL$kCustomerSearchByPhone\'$phone\'';
@@ -37,7 +37,7 @@ abstract class Endpoints {
   }
 
   static String getCustomerOpenOrders(String email, int offset) {
-    return '$kBaseURL$kCustomerOpenOrders${'\'$email\') and Order_Status__c = \'draft\' ORDER BY CreatedDate DESC, LastModifiedDate DESC NULLS LAST LIMIT 20 OFFSET $offset'}';
+    return '$kBaseURL$kCustomerOpenOrders${'\'$email\') and Order_Status__c = \'Draft\' ORDER BY CreatedDate DESC, LastModifiedDate DESC NULLS LAST LIMIT 20 OFFSET $offset'}';
   }
 
   static String getTotalSales(String agentMail) {
