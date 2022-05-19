@@ -370,7 +370,7 @@ class _ProgressContainerState extends State<ProgressContainer> {
                               crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
                                 Text(
-                                  formattedNumber(totalSales).toLowerCase(),
+                                  totalSales == 0 ? '--' : formattedNumber(totalSales).toLowerCase(),
                                   style: const TextStyle(
                                     fontSize: SizeSystem.size24,
                                     color: ColorSystem.white,
@@ -379,7 +379,7 @@ class _ProgressContainerState extends State<ProgressContainer> {
                                   ),
                                 ),
                                 Text(
-                                  formattedNumber(todaysSale),
+                                  todaysSale == 0 ? '--' : formattedNumber(todaysSale),
                                   style: const TextStyle(
                                     fontSize: SizeSystem.size14,
                                     color: ColorSystem.white,
@@ -463,8 +463,12 @@ class _ProgressContainerState extends State<ProgressContainer> {
                               child: SizedBox(
                                 height: 80,
                                 width: 100,
-                                child: LineChart(
-                                  mainData(),
+                                child: PieChart(
+                                  PieChartData(
+                                    sections: showingSections(todaysCommission, totalCommission),
+                                    centerSpaceColor: const Color(0xFF8C80F8),
+                                    centerSpaceRadius: 24,
+                                  ),
                                 ),
                               ),
                             ),
@@ -476,7 +480,7 @@ class _ProgressContainerState extends State<ProgressContainer> {
                               crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
                                 Text(
-                                  formattedNumber(totalCommission).toLowerCase(),
+                                  totalCommission == 0 ? '--' : formattedNumber(totalCommission).toLowerCase(),
                                   style: const TextStyle(
                                     fontSize: SizeSystem.size24,
                                     color: ColorSystem.white,
@@ -485,7 +489,7 @@ class _ProgressContainerState extends State<ProgressContainer> {
                                   ),
                                 ),
                                 Text(
-                                  formattedNumber(todaysCommission),
+                                  todaysCommission == 0 ? '--' : formattedNumber(todaysCommission),
                                   style: const TextStyle(
                                     fontSize: SizeSystem.size14,
                                     color: ColorSystem.white,

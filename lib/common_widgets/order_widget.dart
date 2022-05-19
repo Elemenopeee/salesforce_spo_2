@@ -10,7 +10,8 @@ class OrderWidget extends StatelessWidget {
   final String items;
   final String orderId;
   final String orderPercentage;
-  final bool isDraft;
+  final String? orderStatus;
+  final bool showStatusLabel;
 
   const OrderWidget({
     Key? key,
@@ -20,7 +21,8 @@ class OrderWidget extends StatelessWidget {
     required this.items,
     required this.orderId,
     required this.orderPercentage,
-    this.isDraft = false,
+    this.orderStatus,
+    this.showStatusLabel = false,
   }) : super(key: key);
 
   @override
@@ -68,23 +70,35 @@ class OrderWidget extends StatelessWidget {
                       color: ColorSystem.secondary,
                     ),
                   ),
-                  if (isDraft)
+                  if (showStatusLabel)
                     Padding(
                       padding: const EdgeInsets.symmetric(
                           horizontal: SizeSystem.size6),
                       child: Container(
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(SizeSystem.size2),
-                          color: ColorSystem.complimentary.withOpacity(0.2),
+                          color: orderStatus == 'Draft'
+                              ? ColorSystem.complimentary.withOpacity(0.2)
+                              : orderStatus == 'Completed'
+                                  ? ColorSystem.additionalGreen
+                                  : ColorSystem.white,
                         ),
                         padding: const EdgeInsets.symmetric(
                           horizontal: SizeSystem.size8,
                           vertical: SizeSystem.size2,
                         ),
-                        child: const Text(
-                          'Open',
+                        child: Text(
+                          orderStatus == 'Draft'
+                              ? 'Open'
+                              : orderStatus == 'Completed'
+                                  ? 'Completed'
+                                  : '',
                           style: TextStyle(
-                            color: ColorSystem.complimentary,
+                            color: orderStatus == 'Draft'
+                                ? ColorSystem.complimentary
+                                : orderStatus == 'Completed'
+                                    ? ColorSystem.additionalGreen
+                                    : ColorSystem.white,
                             fontSize: SizeSystem.size10,
                             fontFamily: kRubik,
                           ),
