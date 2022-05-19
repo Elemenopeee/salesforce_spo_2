@@ -118,7 +118,7 @@ class _HomeScreenState extends State<HomeScreen> {
       extendBodyBehindAppBar: true,
       appBar: getAppBar,
       body: TabHome(
-        agentName: userAdModel?.givenName ?? 'John Doe',
+        agentName: userAdModel?.givenName ?? 'there',
       ),
       bottomNavigationBar: NotchedBottomNavigationBar(
         actions: [

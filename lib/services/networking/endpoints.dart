@@ -1,6 +1,6 @@
 abstract class Endpoints {
 
-  static String kBaseURL = 'https://gcinc.my.salesforce.com';
+  static String kBaseURL = 'https://gcinc--ap.my.salesforce.com';
   static String kCustomerSearchByPhone =
       '/services/data/v53.0/query/?q=SELECT id,firstname,lastname,accountEmail__c,accountPhone__c,Last_Transaction_Date__c,Lifetime_Net_Sales_Amount__c,Lifetime_Net_Units__c,Preferred_Instrument__c, Max_ltv_net_dlrs_Formula__c, Median_ltv_net_dlrs_Formula__c, Avg_ltv_net_dlrs_Formula__c from account where accountPhone__c=';
   static String kCustomerSearchByEmail =
@@ -16,9 +16,9 @@ abstract class Endpoints {
   static String kAgentTotalCommission =
       '/services/data/v53.0/query/?q=SELECT name,email,sum(Comm_Amount_MTD__c) commission FROM User WHERE Comm_Amount_MTD__c != null and email =';
   static String kAgentTodaysSales =
-      '/services/data/v53.0/query/?q=SELECT email,Gross_Sales_MTD__c, CreatedDate, LastModifiedDate FROM User where email =';
+      '/services/data/v53.0/query/?q=SELECT email,Gross_Sales_MTD__c,Gross_Sales_Yesterday__c, CreatedDate, LastModifiedDate FROM User where email =';
   static String kAgentTodaysCommission =
-      '/services/data/v53.0/query/?q=SELECT email,Comm_Amount_MTD__c,CreatedDate, LastModifiedDate FROM User where email =';
+      '/services/data/v53.0/query/?q=SELECT email,Comm_Amount_MTD__c,Comm_Amount_Yesterday__c, CreatedDate, LastModifiedDate FROM User where email =';
 
   static String getCustomerSearchByPhone(String phone) {
     return '$kBaseURL$kCustomerSearchByPhone\'$phone\'';
@@ -37,7 +37,7 @@ abstract class Endpoints {
   }
 
   static String getCustomerOpenOrders(String email, int offset) {
-    return '$kBaseURL$kCustomerOpenOrders${'\'$email\') and Order_Status__c = \'draft\' ORDER BY CreatedDate DESC, LastModifiedDate DESC NULLS LAST LIMIT 20 OFFSET $offset'}';
+    return '$kBaseURL$kCustomerOpenOrders${'\'$email\') and Order_Status__c = \'Draft\' ORDER BY CreatedDate DESC, LastModifiedDate DESC NULLS LAST LIMIT 20 OFFSET $offset'}';
   }
 
   static String getTotalSales(String agentMail) {
@@ -45,7 +45,7 @@ abstract class Endpoints {
   }
 
   static String getTodaysSales(String agentMail) {
-    return '$kBaseURL$kAgentTodaysSales${'\'$agentMail\' and createddate =last_n_days : 1'}';
+    return '$kBaseURL$kAgentTodaysSales${'\'$agentMail\''}';
   }
 
   static String getTotalCommission(String agentMail) {
@@ -53,6 +53,6 @@ abstract class Endpoints {
   }
 
   static String getTodaysCommission(String agentMail) {
-    return '$kBaseURL$kAgentTodaysCommission${'\'$agentMail\' and createddate =last_n_days : 1'}';
+    return '$kBaseURL$kAgentTodaysCommission${'\'$agentMail\''}';
   }
 }
