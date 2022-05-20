@@ -42,7 +42,8 @@ Future<String> getResult({bool isAcquireToken = true}) async {
   try {
     if (isAcquireToken) {
       userAdModel = await pca.acquireToken(scopes: kScopes);
-      SharedPreferenceService().setKey(key: 'agent_email', value: '${userAdModel?.mail}');
+      SharedPreferenceService()
+          .setKey(key: 'agent_email', value: '${userAdModel?.mail}');
       // userAdModel.
     } else {
       userAdModel = await pca.acquireTokenSilent(scopes: kScopes);
@@ -183,13 +184,12 @@ class _HomeScreenState extends State<HomeScreen> {
                 context: context,
                 builder: (BuildContext context) {
                   return DraggableScrollableSheet(
-                    snap: true,
                     initialChildSize: 0.9,
                     minChildSize: 0.9,
                     maxChildSize: 1.0,
                     builder: (BuildContext context,
                         ScrollController scrollController) {
-                      return const CustomerLookupWidget();
+                      return CustomerLookupWidget();
                     },
                   );
                 },

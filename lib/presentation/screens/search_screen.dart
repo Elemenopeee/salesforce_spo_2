@@ -1,4 +1,7 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../common_widgets/customer_details_card.dart';
 import '../../design_system/design_system.dart';
@@ -26,10 +29,15 @@ class _SearchScreenState extends State<SearchScreen> {
   Future<void>? futureCustomers;
 
   Future<void> getCustomer(int offset) async {
+
+    print(Endpoints.getCustomerSearchByName(name, offset));
+
     var data = await HttpService().doGet(
       path: Endpoints.getCustomerSearchByName(name, offset),
       tokenRequired: true,
     );
+
+    log(data.data.toString());
 
     customers.clear();
 
@@ -55,33 +63,51 @@ class _SearchScreenState extends State<SearchScreen> {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          SizedBox(
-            height: 20,
+          const SizedBox(
+            height: SizeSystem.size20,
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20,),
-            child: TextFormField(
-              onChanged: (name){
-                this.name = name;
-                if(this.name.length >= 3){
-                  setState(() {
-                    futureCustomers = getCustomer(offset);
-                  });
-                }
-              },
-              decoration: const InputDecoration(
-                hintText: 'Search Name',
-                hintStyle: TextStyle(
-                  color: ColorSystem.secondary,
-                  fontSize: SizeSystem.size18,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                InkWell(
+                  onTap: Navigator.of(context).pop,
+                  child: SvgPicture.asset(IconSystem.back, width: 20, height: 20,),
+                  focusColor: Colors.transparent,
+                  splashColor: Colors.transparent,
+                  hoverColor: Colors.transparent,
+                  highlightColor: Colors.transparent,
                 ),
-                focusedBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(
-                    color: ColorSystem.primary,
-                    width: 1,
+                const SizedBox(
+                  width: SizeSystem.size20,
+                ),
+                Expanded(
+                  child: TextFormField(
+                    onChanged: (name){
+                      this.name = name;
+                      if(this.name.length >= 3){
+                        setState(() {
+                          futureCustomers = getCustomer(offset);
+                        });
+                      }
+                    },
+                    decoration: const InputDecoration(
+                      hintText: 'Search Name',
+                      hintStyle: TextStyle(
+                        color: ColorSystem.secondary,
+                        fontSize: SizeSystem.size18,
+                      ),
+                      focusedBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(
+                          color: ColorSystem.primary,
+                          width: 1,
+                        ),
+                      ),
+                    ),
                   ),
-                ),
-              ),
+                )
+              ],
             ),
           ),
           Expanded(

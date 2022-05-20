@@ -80,7 +80,7 @@ class OrderWidget extends StatelessWidget {
                           color: orderStatus == 'Draft'
                               ? ColorSystem.complimentary.withOpacity(0.2)
                               : orderStatus == 'Completed'
-                                  ? ColorSystem.additionalGreen
+                                  ? ColorSystem.additionalGreen.withOpacity(0.2)
                                   : ColorSystem.white,
                         ),
                         padding: const EdgeInsets.symmetric(
