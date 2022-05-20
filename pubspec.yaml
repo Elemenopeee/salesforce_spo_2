@@ -19,6 +19,7 @@ dependencies:
   shared_preferences:
   url_launcher: ^6.1.0
   carousel_slider: ^4.1.1
+  fl_chart: ^0.50.6
 #  azure_ad_authentication: ^1.0.3
   intl: ^0.17.0
 

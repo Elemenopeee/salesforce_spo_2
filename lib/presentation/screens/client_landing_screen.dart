@@ -1,5 +1,5 @@
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:salesforce_spo/design_system/design_system.dart';
@@ -7,6 +7,7 @@ import 'package:salesforce_spo/design_system/primitives/landing_images.dart';
 import 'package:salesforce_spo/design_system/primitives/music_icons_system.dart';
 
 import '../../utils/constants.dart';
+import 'chart/sector.dart';
 
 class ClientLandingScreen extends StatefulWidget {
   const ClientLandingScreen({Key? key}) : super(key: key);
@@ -213,17 +214,32 @@ class _GetCarouselBannerState extends State<GetCarouselBanner> {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      decoration: BoxDecoration(borderRadius: BorderRadius.circular(10)),
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(20)),
       child: CarouselSlider(
+        options: CarouselOptions(
+            height: 190,
+            autoPlay: false,
+            enableInfiniteScroll: true,
+            viewportFraction: 0.8,
+            aspectRatio: 16 / 9,
+            autoPlayAnimationDuration: const Duration(milliseconds: 800),
+            onPageChanged: (index, reason) {
+              setState(() {
+                currentPos = index;
+              });
+            }),
         items: [
           Container(
+            margin: const EdgeInsets.symmetric(horizontal: 10),
+            width: double.infinity,
+            decoration: BoxDecoration(borderRadius: BorderRadius.circular(20)),
             padding: const EdgeInsets.symmetric(
                 vertical: 4.0, horizontal: PaddingSystem.padding10),
             child: Container(
-              width: double.infinity,
+              // width: double.infinity,
               decoration: BoxDecoration(
                 color: ColorSystem.greyBg,
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(20),
               ),
               child: Padding(
                 padding: const EdgeInsets.symmetric(
@@ -246,38 +262,135 @@ class _GetCarouselBannerState extends State<GetCarouselBanner> {
             ),
           ),
           Container(
+            margin: const EdgeInsets.symmetric(horizontal: 50),
             width: double.infinity,
             padding: const EdgeInsets.symmetric(
-                vertical: 4.0, horizontal: PaddingSystem.padding10),
-            child: Container(
-              decoration: BoxDecoration(
-                color: ColorSystem.pink,
-                borderRadius: BorderRadius.circular(10),
-              ),
+              vertical: PaddingSystem.padding20,
+              horizontal: PaddingSystem.padding20,
+            ),
+            decoration: BoxDecoration(
+              color: ColorSystem.purple,
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  "ACCESSORIES",
+                  style: TextStyle(
+                    fontFamily: kRubik,
+                    fontWeight: FontWeight.w600,
+                    color: ColorSystem.white,
+                    fontSize: SizeSystem.size12,
+                  ),
+                ),
+                const Spacer(),
+                PieChartWidget(industrySectors),
+                const Spacer(),
+                RichText(
+                  textAlign: TextAlign.center,
+                  text: const TextSpan(
+                    style: TextStyle(
+                      fontFamily: kRubik,
+                    ),
+                    children: [
+                      TextSpan(
+                        text: '37% ',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w700,
+                          fontSize: SizeSystem.size14,
+                          color: ColorSystem.white,
+                        ),
+                      ),
+                      TextSpan(
+                        text: '/ 42',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w700,
+                          fontSize: SizeSystem.size10,
+                          color: ColorSystem.white,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Text(
+                  "\$57k Spent",
+                  style: TextStyle(
+                    fontFamily: kRubik,
+                    color: ColorSystem.white.withOpacity(0.4),
+                    fontSize: SizeSystem.size12,
+                  ),
+                ),
+              ],
             ),
           ),
           Container(
-            width: double.infinity,
-            padding: const EdgeInsets.symmetric(
-                vertical: 4.0, horizontal: PaddingSystem.padding10),
+            margin: const EdgeInsets.symmetric(horizontal: 50),
             child: Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(
+                vertical: PaddingSystem.padding20,
+                horizontal: PaddingSystem.padding20,
+              ),
               decoration: BoxDecoration(
-                color: ColorSystem.purple,
-                borderRadius: BorderRadius.circular(10),
+                color: ColorSystem.pink,
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    "ORDER\nFREQUENCY",
+                    style: TextStyle(
+                      fontFamily: kRubik,
+                      fontWeight: FontWeight.w600,
+                      color: ColorSystem.white,
+                      fontSize: SizeSystem.size12,
+                    ),
+                  ),
+                  const Spacer(),
+                  BarChartWidget(),
+                  // PieChartWidget(),
+                  const Spacer(),
+                  RichText(
+                    textAlign: TextAlign.center,
+                    text: const TextSpan(
+                      style: TextStyle(
+                        fontFamily: kRubik,
+                      ),
+                      children: [
+                        TextSpan(
+                          text: '\$300% ',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w700,
+                            fontSize: SizeSystem.size14,
+                            color: ColorSystem.white,
+                          ),
+                        ),
+                        TextSpan(
+                          text: '/Order',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w700,
+                            fontSize: SizeSystem.size10,
+                            color: ColorSystem.white,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Text(
+                    "Weekly 1",
+                    style: TextStyle(
+                      fontFamily: kRubik,
+                      color: ColorSystem.white.withOpacity(0.4),
+                      fontSize: SizeSystem.size12,
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
         ],
-        options: CarouselOptions(
-            height: 190,
-            autoPlay: false,
-            enableInfiniteScroll: true,
-            autoPlayAnimationDuration: const Duration(milliseconds: 800),
-            onPageChanged: (index, reason) {
-              setState(() {
-                currentPos = index;
-              });
-            }),
       ),
     );
   }
@@ -858,6 +971,76 @@ class OfferList extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+class PieChartWidget extends StatelessWidget {
+  final List<Sector> sectors;
+
+  PieChartWidget(this.sectors);
+
+  @override
+  Widget build(BuildContext context) {
+    return AspectRatio(
+        aspectRatio: 9.0,
+        child: PieChart(PieChartData(
+          sections: _chartSections(sectors),
+          centerSpaceRadius: 15.0,
+        )));
+  }
+
+  List<PieChartSectionData> _chartSections(List<Sector> sectors) {
+    final List<PieChartSectionData> list = [];
+    for (var sector in sectors) {
+      const double radius = 30.0;
+      final data = PieChartSectionData(
+        color: sector.color,
+        value: sector.value,
+        radius: radius,
+        title: '',
+      );
+      list.add(data);
+    }
+    return list;
+  }
+}
+
+class BarChartWidget extends StatelessWidget {
+  // final List<Sector> sectors;
+  //
+  // BarChartWidget(this.sectors);
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: BarChart(BarChartData(
+          borderData: FlBorderData(
+              border: const Border(
+            top: BorderSide.none,
+            right: BorderSide.none,
+            left: BorderSide(width: 1),
+            bottom: BorderSide(width: 1),
+          )),
+          groupsSpace: 05,
+          barGroups: [
+            BarChartGroupData(x: 50, barRods: [
+              BarChartRodData(fromY: 0, width: 10, color: Colors.red, toY: 20),
+            ]),
+            // BarChartGroupData(x: 2, barRods: [
+            //   BarChartRodData(fromY: 9, width: 05, color: Colors.red, toY: 3),
+            // ]),
+            // BarChartGroupData(x: 3, barRods: [
+            //   BarChartRodData(fromY: 4, width: 05, color: Colors.red, toY: 3),
+            // ]),
+            // BarChartGroupData(x: 4, barRods: [
+            //   BarChartRodData(fromY: 2, width: 05, color: Colors.red, toY: 3),
+            // ]),
+            // BarChartGroupData(x: 5, barRods: [
+            //   BarChartRodData(
+            //       fromY: 13, width: 05, color: Colors.red, toY: 3),
+            // ]),
+          ])),
     );
   }
 }
