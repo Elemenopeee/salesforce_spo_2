@@ -83,6 +83,7 @@ class _OpenOrderTabState extends State<OpenOrderTab>
                 orderId: openOrders[index].orderNumber ?? '--',
                 orderPercentage: '',
                 orderStatus: openOrders[index].orderStatus ?? '--',
+                showStatusLabel: true,
               );
             },
             separatorBuilder: (BuildContext context, int index) {

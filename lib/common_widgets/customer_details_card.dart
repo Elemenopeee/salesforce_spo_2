@@ -213,11 +213,11 @@ class _CustomerMicroDetailsState extends State<CustomerMicroDetails> {
             color: ColorSystem.secondary.withOpacity(OpacitySystem.opacity01)),
         child: widget.icon ??
             Text(
-              widget.value,
+              '\$${widget.value}',
               style: const TextStyle(
                 color: ColorSystem.primary,
                 fontFamily: kRubik,
-              ),
+              )
             ),
       ),
       const SizedBox(

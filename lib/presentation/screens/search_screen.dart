@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -27,10 +29,15 @@ class _SearchScreenState extends State<SearchScreen> {
   Future<void>? futureCustomers;
 
   Future<void> getCustomer(int offset) async {
+
+    print(Endpoints.getCustomerSearchByName(name, offset));
+
     var data = await HttpService().doGet(
       path: Endpoints.getCustomerSearchByName(name, offset),
       tokenRequired: true,
     );
+
+    log(data.data.toString());
 
     customers.clear();
 
