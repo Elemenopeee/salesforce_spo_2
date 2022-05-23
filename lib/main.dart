@@ -42,7 +42,7 @@ Future<String> getResult({bool isAcquireToken = true}) async {
     if (isAcquireToken) {
       userAdModel = await pca.acquireToken(scopes: kScopes);
       SharedPreferenceService()
-          .setKey(key: 'agent_email', value: 'ankit.kumar@guitarcenter.com');
+          .setKey(key: 'agent_email', value: '${userAdModel?.mail}');
 
       // userAdModel.
     } else {
