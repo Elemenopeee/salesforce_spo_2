@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:salesforce_spo/common_widgets/cases_product_list.dart';
+import 'package:salesforce_spo/common_widgets/getCarousel.dart';
 
 import '../../common_widgets/client_feature_tabs_list.dart';
 import '../../common_widgets/get_banner.dart';
@@ -70,7 +72,7 @@ class _CasesTabState extends State<CasesTab> {
               const SizedBox(
                 height: SizeSystem.size25,
               ),
-
+              const CasesProductList(),
             ],
           ),
         ),

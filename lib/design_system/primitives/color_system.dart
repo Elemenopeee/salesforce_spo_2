@@ -34,6 +34,8 @@ abstract class ColorSystem {
   /// Additional Grey Background color
   static const Color greyBg = Color(0xFFF4F6FA);
 
+  static const Color secondaryGreyBg = Color(0xFFF6F6F6);
+
   /// Additional Pink Background color
   static const Color pink = Color(0xFFFF9B90);
 
@@ -42,6 +44,7 @@ abstract class ColorSystem {
 
   /// Additional Text color
   static const Color primaryTextColor = Color(0xFF2D3142);
+
 
 
 }
