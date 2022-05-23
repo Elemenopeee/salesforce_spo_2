@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -30,17 +28,15 @@ class _SearchScreenState extends State<SearchScreen> {
 
   Future<void> getCustomer(int offset) async {
 
-    print(Endpoints.getCustomerSearchByName(name, offset));
+    if(offset == 0){
+      customers.clear();
+    }
 
     var data = await HttpService().doGet(
       path: Endpoints.getCustomerSearchByName(name, offset),
       tokenRequired: true,
     );
-
-    log(data.data.toString());
-
-    customers.clear();
-
+    isLoadingData = false;
     try {
       for (var record in data.data['records']) {
         customers.add(Customer.fromJson(json: record));
@@ -85,6 +81,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 Expanded(
                   child: TextFormField(
                     onChanged: (name){
+                      offset = 0;
                       this.name = name;
                       if(this.name.length >= 3){
                         setState(() {
@@ -117,11 +114,15 @@ class _SearchScreenState extends State<SearchScreen> {
                 switch(snapshot.connectionState){
                   case ConnectionState.waiting:
                   case ConnectionState.active:
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
                   case ConnectionState.none:
                   case ConnectionState.done:
+
+                    if(isLoadingData && customers.isEmpty){
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
+
                     return ListView.builder(
                       controller: scrollController,
                       padding: const EdgeInsets.symmetric(horizontal: 30),
@@ -157,6 +158,8 @@ class _SearchScreenState extends State<SearchScreen> {
     var loadingPosition = maxExtent - (maxExtent * 0.4);
     if(scrollController.position.extentAfter < loadingPosition && !isLoadingData){
       offset = offset + 20;
+      print('Here');
+      print('Offset $offset');
       setState((){
         isLoadingData = true;
         futureCustomers = getCustomer(offset);

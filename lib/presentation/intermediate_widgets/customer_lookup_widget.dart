@@ -157,15 +157,24 @@ class _CustomerLookupWidgetState extends State<CustomerLookupWidget> {
                     viewFullScreen = true;
                   });
                 },
-                child: Container(
-                  decoration: const BoxDecoration(
-                    color: ColorSystem.white,
-                    shape: BoxShape.circle,
-                  ),
-                  padding: const EdgeInsets.all(SizeSystem.size10),
-                  child: Transform.rotate(
-                    angle: pi / 2,
-                    child: SvgPicture.asset(IconSystem.leftArrow),
+                child: InkWell(
+                  focusColor: Colors.transparent,
+                  highlightColor: Colors.transparent,
+                  hoverColor: Colors.transparent,
+                  splashColor: Colors.transparent,
+                  onTap: (){
+                    Navigator.of(context).pop();
+                  },
+                  child: Container(
+                    decoration: const BoxDecoration(
+                      color: ColorSystem.white,
+                      shape: BoxShape.circle,
+                    ),
+                    padding: const EdgeInsets.all(SizeSystem.size10),
+                    child: Transform.rotate(
+                      angle: - pi / 2,
+                      child: SvgPicture.asset(IconSystem.leftArrow),
+                    ),
                   ),
                 ),
               ),
@@ -258,6 +267,7 @@ class _CustomerLookupWidgetState extends State<CustomerLookupWidget> {
                                                             .clear();
                                                         setState(() {
                                                           hasRecords = null;
+                                                          showEmailField = true;
                                                         });
                                                       },
                                                       focusColor:
@@ -325,6 +335,7 @@ class _CustomerLookupWidgetState extends State<CustomerLookupWidget> {
                                                         emailController.clear();
                                                         setState(() {
                                                           hasRecords = null;
+                                                          showPhoneField = true;
                                                         });
                                                       },
                                                       focusColor:
