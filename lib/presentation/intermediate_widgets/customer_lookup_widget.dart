@@ -34,9 +34,6 @@ class _CustomerLookupWidgetState extends State<CustomerLookupWidget> {
   bool showPhoneField = true;
   bool showEmailField = true;
 
-  bool isLoadingPhone = false;
-  bool isLoadingEmail = false;
-
   bool viewFullScreen = false;
 
   bool? hasRecords;
@@ -49,14 +46,12 @@ class _CustomerLookupWidgetState extends State<CustomerLookupWidget> {
   final TextEditingController phoneNumberController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
 
+  final ScrollController scrollController = ScrollController();
+
   Future<void> getCustomer(bool searchingByPhoneNumber) async {
     customers.clear();
 
     if (searchingByPhoneNumber) {
-      setState(() {
-        isLoadingPhone = true;
-        isLoadingEmail = false;
-      });
       var data = await HttpService().doGet(
         path: Endpoints.getCustomerSearchByPhone(phone),
         tokenRequired: true,
@@ -69,16 +64,11 @@ class _CustomerLookupWidgetState extends State<CustomerLookupWidget> {
 
         if (customers.isNotEmpty) {
           showEmailField = false;
-          isLoadingPhone = false;
         }
       } catch (error) {
         print(error);
       }
     } else {
-      setState(() {
-        isLoadingPhone = false;
-        isLoadingEmail = true;
-      });
       var data = await HttpService().doGet(
         path: Endpoints.getCustomerSearchByEmail(email),
         tokenRequired: true,
@@ -89,7 +79,6 @@ class _CustomerLookupWidgetState extends State<CustomerLookupWidget> {
         }
         if (customers.isNotEmpty) {
           showPhoneField = false;
-          isLoadingEmail = false;
         }
       } catch (error) {
         print(error);
@@ -141,127 +130,145 @@ class _CustomerLookupWidgetState extends State<CustomerLookupWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return BackdropFilter(
-      filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-      child: GestureDetector(
-        onTap: () {
-          FocusScope.of(context).unfocus();
-        },
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).unfocus();
+      },
+      onPanUpdate: (details){
+        if(details.delta.dy > 0){
+          if(scrollController.offset <= scrollController.position.minScrollExtent){
+            Navigator.of(context).pop();
+          }
+        }
+      },
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
         child: Container(
           color: Colors.transparent,
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                InkWell(
-                  hoverColor: Colors.transparent,
-                  highlightColor: Colors.transparent,
-                  splashColor: Colors.transparent,
-                  focusColor: Colors.transparent,
-                  onTap: () {
-                    setState(() {
-                      viewFullScreen = true;
-                    });
-                  },
-                  child: Container(
-                    decoration: const BoxDecoration(
-                      color: ColorSystem.white,
-                      shape: BoxShape.circle,
-                    ),
-                    padding: const EdgeInsets.all(SizeSystem.size10),
-                    child: Transform.rotate(
-                      angle: pi / 2,
-                      child: SvgPicture.asset(IconSystem.leftArrow),
-                    ),
+          child: Column(
+            children: [
+              InkWell(
+                hoverColor: Colors.transparent,
+                highlightColor: Colors.transparent,
+                splashColor: Colors.transparent,
+                focusColor: Colors.transparent,
+                onTap: () {
+                  setState(() {
+                    viewFullScreen = true;
+                  });
+                },
+                child: Container(
+                  decoration: const BoxDecoration(
+                    color: ColorSystem.white,
+                    shape: BoxShape.circle,
+                  ),
+                  padding: const EdgeInsets.all(SizeSystem.size10),
+                  child: Transform.rotate(
+                    angle: pi / 2,
+                    child: SvgPicture.asset(IconSystem.leftArrow),
                   ),
                 ),
-                const SizedBox(
-                  height: SizeSystem.size24,
-                ),
-                Container(
-                  padding: const EdgeInsets.only(top: PaddingSystem.padding48),
-                  decoration: const BoxDecoration(
-                      color: ColorSystem.white,
-                      borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(SizeSystem.size32),
-                          topRight: Radius.circular(SizeSystem.size32))),
-                  child: Column(
-                    children: [
-                      const Text(
-                        'Customer',
-                        style: TextStyle(
-                          color: ColorSystem.primary,
-                          fontSize: SizeSystem.size34,
-                          fontFamily: kRubik,
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      const Padding(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: PaddingSystem.padding40),
-                        child: Text(
-                          'Please enter your phone number to search a customer',
-                          textAlign: TextAlign.center,
+              ),
+              const SizedBox(
+                height: SizeSystem.size24,
+              ),
+              Expanded(
+                child: SingleChildScrollView(
+                  controller: scrollController,
+                  physics: const ClampingScrollPhysics(),
+                  child: Container(
+                    padding:
+                        const EdgeInsets.only(top: PaddingSystem.padding48),
+                    decoration: const BoxDecoration(
+                        color: ColorSystem.white,
+                        borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(SizeSystem.size32),
+                            topRight: Radius.circular(SizeSystem.size32))),
+                    child: Column(
+                      children: [
+                        const Text(
+                          'Customer',
                           style: TextStyle(
-                              color: ColorSystem.primary,
-                              fontSize: SizeSystem.size16),
+                            color: ColorSystem.primary,
+                            fontSize: SizeSystem.size34,
+                            fontFamily: kRubik,
+                          ),
                         ),
-                      ),
-                      const SizedBox(
-                        height: 40,
-                      ),
-                      FutureBuilder(
-                        future: futureCustomers,
-                        builder: (BuildContext context,
-                            AsyncSnapshot<dynamic> snapshot) {
-                          return Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              if (showPhoneField)
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: PaddingSystem.padding48),
-                                  child: GuitarCentreInputField(
-                                    focusNode: phoneFocusNode,
-                                    textEditingController:
-                                        phoneNumberController,
-                                    label: 'Phone',
-                                    hintText: '(123) 456-7890',
-                                    textInputType: TextInputType.number,
-                                    inputFormatters: [
-                                      PhoneInputFormatter(
-                                        mask: '(###) ###-####',
-                                      ),
-                                    ],
-                                    leadingIcon: IconSystem.phone,
-                                    suffixIcon: isLoadingPhone
-                                        ? const Center(
-                                            child: SizedBox(
-                                              width: 20,
-                                              height: 20,
-                                              child:
-                                                  CircularProgressIndicator(),
-                                            ),
-                                          )
-                                        : hasRecords != null
-                                            ? hasRecords!
-                                                ? Column(
-                                                    mainAxisSize:
-                                                        MainAxisSize.min,
-                                                    children: [
-                                                      const SizedBox(
-                                                        height: 8,
-                                                      ),
-                                                      SvgPicture.asset(
-                                                        IconSystem.checkmark,
-                                                        color: ColorSystem
-                                                            .additionalGreen,
-                                                      ),
-                                                    ],
-                                                  )
-                                                : searchingByPhoneNumber
-                                                    ? Column(
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        const Padding(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: PaddingSystem.padding40),
+                          child: Text(
+                            'Please enter your phone number to search a customer',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                color: ColorSystem.primary,
+                                fontSize: SizeSystem.size16),
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 40,
+                        ),
+                        FutureBuilder(
+                          future: futureCustomers,
+                          builder: (BuildContext context,
+                              AsyncSnapshot<dynamic> snapshot) {
+                            return Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                if (showPhoneField)
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: PaddingSystem.padding48),
+                                    child: GuitarCentreInputField(
+                                      focusNode: phoneFocusNode,
+                                      textEditingController:
+                                          phoneNumberController,
+                                      label: 'Phone',
+                                      hintText: '(123) 456-7890',
+                                      textInputType: TextInputType.number,
+                                      inputFormatters: [
+                                        PhoneInputFormatter(
+                                          mask: '(###) ###-####',
+                                        ),
+                                      ],
+                                      leadingIcon: IconSystem.phone,
+                                      suffixIcon: hasRecords != null
+                                          ? hasRecords!
+                                              ? Column(
+                                                  mainAxisSize:
+                                                      MainAxisSize.min,
+                                                  children: [
+                                                    const SizedBox(
+                                                      height: 8,
+                                                    ),
+                                                    SvgPicture.asset(
+                                                      IconSystem.checkmark,
+                                                      color: ColorSystem
+                                                          .additionalGreen,
+                                                    ),
+                                                  ],
+                                                )
+                                              : searchingByPhoneNumber
+                                                  ? InkWell(
+                                                      onTap: () {
+                                                        phoneNumberController
+                                                            .clear();
+                                                        setState(() {
+                                                          hasRecords = null;
+                                                        });
+                                                      },
+                                                      focusColor:
+                                                          Colors.transparent,
+                                                      splashColor:
+                                                          Colors.transparent,
+                                                      hoverColor:
+                                                          Colors.transparent,
+                                                      highlightColor:
+                                                          Colors.transparent,
+                                                      child: Column(
                                                         mainAxisSize:
                                                             MainAxisSize.min,
                                                         children: const [
@@ -275,193 +282,204 @@ class _CustomerLookupWidgetState extends State<CustomerLookupWidget> {
                                                                 .complimentary,
                                                           ),
                                                         ],
-                                                      )
-                                                    : const SizedBox.shrink()
-                                            : const SizedBox.shrink(),
+                                                      ),
+                                                    )
+                                                  : const SizedBox.shrink()
+                                          : const SizedBox.shrink(),
+                                    ),
                                   ),
-                                ),
-                              if (showEmailField)
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: PaddingSystem.padding48),
-                                  child: GuitarCentreInputField(
-                                    focusNode: emailFocusNode,
-                                    textEditingController: emailController,
-                                    label: 'Email',
-                                    hintText: 'abc@xyz.com',
-                                    textInputType: TextInputType.emailAddress,
-                                    leadingIcon: IconSystem.messageOutline,
-                                    onChanged: (email) {
-                                      this.email = email;
+                                if (showEmailField)
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: PaddingSystem.padding48),
+                                    child: GuitarCentreInputField(
+                                      focusNode: emailFocusNode,
+                                      textEditingController: emailController,
+                                      label: 'Email',
+                                      hintText: 'abc@xyz.com',
+                                      textInputType: TextInputType.emailAddress,
+                                      leadingIcon: IconSystem.messageOutline,
+                                      onChanged: (email) {
+                                        this.email = email;
+                                      },
+                                      suffixIcon: hasRecords != null
+                                          ? hasRecords!
+                                              ? Column(
+                                                  mainAxisSize:
+                                                      MainAxisSize.min,
+                                                  children: [
+                                                    const SizedBox(
+                                                      height: 8,
+                                                    ),
+                                                    SvgPicture.asset(
+                                                      IconSystem.checkmark,
+                                                      color: ColorSystem
+                                                          .additionalGreen,
+                                                      height: 24,
+                                                    ),
+                                                  ],
+                                                )
+                                              : !searchingByPhoneNumber
+                                                  ? InkWell(
+                                                      onTap: () {
+                                                        emailController.clear();
+                                                        setState(() {
+                                                          hasRecords = null;
+                                                        });
+                                                      },
+                                                      focusColor:
+                                                          Colors.transparent,
+                                                      splashColor:
+                                                          Colors.transparent,
+                                                      hoverColor:
+                                                          Colors.transparent,
+                                                      highlightColor:
+                                                          Colors.transparent,
+                                                      child: Column(
+                                                        mainAxisSize:
+                                                            MainAxisSize.min,
+                                                        children: const [
+                                                          SizedBox(
+                                                            height: 8,
+                                                          ),
+                                                          Icon(
+                                                            CupertinoIcons
+                                                                .clear_circled,
+                                                            color: ColorSystem
+                                                                .complimentary,
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    )
+                                                  : const SizedBox.shrink()
+                                          : const SizedBox.shrink(),
+                                    ),
+                                  ),
+                                if (customers.isNotEmpty)
+                                  ListView.builder(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: PaddingSystem.padding40,
+                                    ),
+                                    shrinkWrap: true,
+                                    physics:
+                                        const NeverScrollableScrollPhysics(),
+                                    itemCount: customers.length,
+                                    itemBuilder:
+                                        (BuildContext context, int index) {
+                                      return CustomerDetailsCard(
+                                        customerId: customers[index].id,
+                                        firstName: customers[index].firstName,
+                                        lastName: customers[index].lastName,
+                                        email: customers[index].email,
+                                        phone: customers[index].phone,
+                                        preferredInstrument: customers[index]
+                                            .preferredInstrument,
+                                        lastTransactionDate: customers[index]
+                                            .lastTransactionDate,
+                                        ltv: customers[index].lifetimeNetUnits,
+                                        averageProductValue: customers[index]
+                                            .lifeTimeNetSalesAmount,
+                                        customerLevel:
+                                            customers[index].medianLTVNet,
+                                      );
                                     },
-                                    suffixIcon: isLoadingEmail
-                                        ? const Center(
-                                            child: SizedBox(
-                                              width: 20,
-                                              height: 20,
-                                              child:
-                                                  CircularProgressIndicator(),
-                                            ),
-                                          )
-                                        : hasRecords != null
-                                            ? hasRecords!
-                                                ? Column(
-                                                    mainAxisSize:
-                                                        MainAxisSize.min,
-                                                    children: [
-                                                      const SizedBox(
-                                                        height: 8,
-                                                      ),
-                                                      SvgPicture.asset(
-                                                        IconSystem.checkmark,
-                                                        color: ColorSystem
-                                                            .additionalGreen,
-                                                        height: 24,
-                                                      ),
-                                                    ],
-                                                  )
-                                                : !searchingByPhoneNumber
-                                                    ? Column(
-                                                        mainAxisSize:
-                                                            MainAxisSize.min,
-                                                        children: const [
-                                                          SizedBox(
-                                                            height: 8,
-                                                          ),
-                                                          Icon(
-                                                            CupertinoIcons
-                                                                .clear_circled,
-                                                            color: ColorSystem
-                                                                .complimentary,
-                                                          ),
-                                                        ],
-                                                      )
-                                                    : const SizedBox.shrink()
-                                            : const SizedBox.shrink(),
                                   ),
-                                ),
-                              if (customers.isNotEmpty)
-                                ListView.builder(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: PaddingSystem.padding40,
-                                  ),
-                                  shrinkWrap: true,
-                                  physics: const NeverScrollableScrollPhysics(),
-                                  itemCount: customers.length,
-                                  itemBuilder:
-                                      (BuildContext context, int index) {
-                                    return CustomerDetailsCard(
-                                      customerId: customers[index].id,
-                                      firstName: customers[index].firstName,
-                                      lastName: customers[index].lastName,
-                                      email: customers[index].email,
-                                      phone: customers[index].phone,
-                                      preferredInstrument:
-                                          customers[index].preferredInstrument,
-                                      lastTransactionDate:
-                                          customers[index].lastTransactionDate,
-                                      ltv: customers[index].lifetimeNetUnits,
-                                      averageProductValue: customers[index]
-                                          .lifeTimeNetSalesAmount,
-                                      customerLevel:
-                                          customers[index].medianLTVNet,
-                                    );
-                                  },
-                                ),
-                            ],
-                          );
-                        },
-                      ),
-                      const SizedBox(
-                        height: 40,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: PaddingSystem.padding48),
-                        child: TextButton(
-                          style: ButtonStyle(
-                            shape: MaterialStateProperty.resolveWith<
-                                    RoundedRectangleBorder>(
-                                (states) => RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(12))),
-                            backgroundColor:
-                                MaterialStateProperty.resolveWith<Color>(
-                              (Set<MaterialState> states) {
-                                if (states.contains(MaterialState.pressed) ||
-                                    !states.contains(MaterialState.disabled)) {
-                                  return ColorSystem.primary;
-                                } else if (states
-                                    .contains(MaterialState.disabled)) {
+                              ],
+                            );
+                          },
+                        ),
+                        const SizedBox(
+                          height: 40,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: PaddingSystem.padding48),
+                          child: TextButton(
+                            style: ButtonStyle(
+                              shape: MaterialStateProperty.resolveWith<
+                                      RoundedRectangleBorder>(
+                                  (states) => RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12))),
+                              backgroundColor:
+                                  MaterialStateProperty.resolveWith<Color>(
+                                (Set<MaterialState> states) {
+                                  if (states.contains(MaterialState.pressed) ||
+                                      !states
+                                          .contains(MaterialState.disabled)) {
+                                    return ColorSystem.primary;
+                                  } else if (states
+                                      .contains(MaterialState.disabled)) {
+                                    return ColorSystem.primary
+                                        .withOpacity(OpacitySystem.opacity01);
+                                  }
                                   return ColorSystem.primary
                                       .withOpacity(OpacitySystem.opacity01);
-                                }
-                                return ColorSystem.primary
-                                    .withOpacity(OpacitySystem.opacity01);
-                              },
+                                },
+                              ),
                             ),
-                          ),
-                          onPressed: hasRecords != null && !hasRecords!
-                              ? () async {
-                                  try {
-                                    await launchUrlString(
-                                        'salesforce1://sObject/Account/view');
-                                  } catch (e) {
-                                    print(e);
+                            onPressed: hasRecords != null && !hasRecords!
+                                ? () async {
+                                    try {
+                                      await launchUrlString(
+                                          'salesforce1://sObject/Account/view');
+                                    } catch (e) {
+                                      print(e);
+                                    }
                                   }
-                                }
-                              : null,
-                          child: Padding(
-                            padding:
-                                const EdgeInsets.all(PaddingSystem.padding8),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: const [
-                                Text(
-                                  '+ADD NEW CUSTOMER',
-                                  style: TextStyle(
-                                      color: ColorSystem.white,
-                                      fontSize: SizeSystem.size18),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: PaddingSystem.padding48,
-                            vertical: PaddingSystem.padding20),
-                        child: InkWell(
-                          onTap: () {
-                            Navigator.push(context, MaterialPageRoute(
-                                builder: (BuildContext context) {
-                              return const SearchScreen();
-                            }));
-                          },
-                          focusColor: Colors.transparent,
-                          splashColor: Colors.transparent,
-                          highlightColor: Colors.transparent,
-                          hoverColor: Colors.transparent,
-                          child: TextFormField(
-                            enabled: false,
-                            decoration: const InputDecoration(
-                              hintText: 'Search Name',
-                              hintStyle: TextStyle(
-                                color: ColorSystem.secondary,
-                                fontSize: SizeSystem.size18,
+                                : null,
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.all(PaddingSystem.padding8),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: const [
+                                  Text(
+                                    '+ADD NEW CUSTOMER',
+                                    style: TextStyle(
+                                        color: ColorSystem.white,
+                                        fontSize: SizeSystem.size18),
+                                  ),
+                                ],
                               ),
                             ),
                           ),
                         ),
-                      ),
-                      const SizedBox(
-                        height: 200,
-                      ),
-                    ],
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: PaddingSystem.padding48,
+                              vertical: PaddingSystem.padding20),
+                          child: InkWell(
+                            onTap: () {
+                              Navigator.push(context, MaterialPageRoute(
+                                  builder: (BuildContext context) {
+                                return const SearchScreen();
+                              }));
+                            },
+                            focusColor: Colors.transparent,
+                            splashColor: Colors.transparent,
+                            highlightColor: Colors.transparent,
+                            hoverColor: Colors.transparent,
+                            child: TextFormField(
+                              enabled: false,
+                              decoration: const InputDecoration(
+                                hintText: 'Search Name',
+                                hintStyle: TextStyle(
+                                  color: ColorSystem.secondary,
+                                  fontSize: SizeSystem.size18,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 200,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),

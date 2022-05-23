@@ -10,13 +10,16 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:salesforce_spo/common_widgets/notched_bottom_navigation_bar.dart';
 import 'package:salesforce_spo/design_system/design_system.dart';
 import 'package:salesforce_spo/presentation/intermediate_widgets/customer_lookup_widget.dart';
+import 'package:salesforce_spo/presentation/screens/promos_screen.dart';
 import 'package:salesforce_spo/presentation/tabs/home_tab.dart';
 import 'package:salesforce_spo/services/storage/shared_preferences_service.dart';
 import 'package:salesforce_spo/utils/constants.dart';
 
+import 'presentation/screens/client_landing_screen.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await _acquireToken();
+  // await _acquireToken();
   runApp(const MyApp());
 }
 
@@ -42,7 +45,8 @@ Future<String> getResult({bool isAcquireToken = true}) async {
   try {
     if (isAcquireToken) {
       userAdModel = await pca.acquireToken(scopes: kScopes);
-      SharedPreferenceService().setKey(key: 'agent_email', value: '${userAdModel?.mail}');
+      SharedPreferenceService()
+          .setKey(key: 'agent_email', value: '${userAdModel?.mail}');
       // userAdModel.
     } else {
       userAdModel = await pca.acquireTokenSilent(scopes: kScopes);
@@ -76,7 +80,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const HomeScreen(),
+      home: const ClientLandingScreen(),
     );
   }
 }
@@ -118,7 +122,7 @@ class _HomeScreenState extends State<HomeScreen> {
       extendBodyBehindAppBar: true,
       appBar: getAppBar,
       body: TabHome(
-        agentName: userAdModel?.givenName ?? 'John Doe',
+        agentName: userAdModel?.givenName ?? 'there',
       ),
       bottomNavigationBar: NotchedBottomNavigationBar(
         actions: [
@@ -183,13 +187,12 @@ class _HomeScreenState extends State<HomeScreen> {
                 context: context,
                 builder: (BuildContext context) {
                   return DraggableScrollableSheet(
-                    snap: true,
                     initialChildSize: 0.9,
                     minChildSize: 0.9,
                     maxChildSize: 1.0,
                     builder: (BuildContext context,
                         ScrollController scrollController) {
-                      return const CustomerLookupWidget();
+                      return CustomerLookupWidget();
                     },
                   );
                 },
