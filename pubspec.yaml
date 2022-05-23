@@ -37,6 +37,7 @@ flutter:
   assets:
     - assets/icons/
     - assets/icons/music_icons/
+    - assets/icons/landing_icons/
 
   fonts:
     - family: Rubik
