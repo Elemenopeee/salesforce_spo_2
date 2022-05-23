@@ -32,9 +32,7 @@ const List<String> kScopes = [
 UserAdModel? userAdModel;
 
 Future<void> _acquireToken() async {
-  SharedPreferenceService()
-      .setKey(key: 'agent_email', value: 'ankit.kumar@guitarcenter.com');
-  // await getResult();
+  await getResult();
 }
 
 Future<String> getResult({bool isAcquireToken = true}) async {
@@ -43,6 +41,8 @@ Future<String> getResult({bool isAcquireToken = true}) async {
   try {
     if (isAcquireToken) {
       userAdModel = await pca.acquireToken(scopes: kScopes);
+      SharedPreferenceService()
+          .setKey(key: 'agent_email', value: 'ankit.kumar@guitarcenter.com');
 
       // userAdModel.
     } else {
