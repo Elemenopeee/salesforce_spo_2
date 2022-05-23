@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:ui';
 
 import 'package:azure_ad_authentication/azure_ad_authentication.dart';
@@ -43,7 +42,8 @@ Future<String> getResult({bool isAcquireToken = true}) async {
     if (isAcquireToken) {
       userAdModel = await pca.acquireToken(scopes: kScopes);
       SharedPreferenceService()
-          .setKey(key: 'agent_email', value: '${userAdModel?.mail}');
+          .setKey(key: 'agent_email', value: 'ankit.kumar@guitarcenter.com');
+
       // userAdModel.
     } else {
       userAdModel = await pca.acquireTokenSilent(scopes: kScopes);

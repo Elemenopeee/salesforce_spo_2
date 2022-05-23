@@ -29,7 +29,7 @@ abstract class Endpoints {
   }
 
   static String getCustomerSearchByName(String name, int offset) {
-    return '$kBaseURL$kCustomerSearchByName%27%25$name%25%27 LIMIT 5 OFFSET 0';
+    return '$kBaseURL$kCustomerSearchByName%27%25$name%25%27 LIMIT 20 OFFSET $offset';
   }
 
   static String getCustomerAllOrders(String email, int offset) {

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:salesforce_spo/common_widgets/order_widget.dart';
 import 'package:salesforce_spo/models/order.dart';
-import 'package:salesforce_spo/presentation/tabs/open_orders.dart';
 import 'package:salesforce_spo/services/networking/endpoints.dart';
 import 'package:salesforce_spo/services/networking/networking_service.dart';
 import 'package:salesforce_spo/services/storage/shared_preferences_service.dart';
@@ -80,7 +79,7 @@ class _AllOrderTabState extends State<AllOrderTab>
                 amount: '\$ ${allOrders[index].orderAmount.toString()}',
                 date: formattedDate(allOrders[index].createdDate ??
                     DateTime.now().toString()),
-                items: '${allOrders[index].items} items',
+                items: allOrders[index].items ?? 0,
                 orderId: allOrders[index].orderNumber ?? '--',
                 orderPercentage: '',
                 showStatusLabel: true,

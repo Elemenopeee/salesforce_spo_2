@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:intl/intl.dart';
 import 'package:salesforce_spo/design_system/design_system.dart';
 import 'package:salesforce_spo/utils/enums/music_instrument_enum.dart';
 import 'package:url_launcher/url_launcher_string.dart';
@@ -37,6 +38,12 @@ class CustomerDetailsCard extends StatefulWidget {
 }
 
 class _CustomerDetailsCardState extends State<CustomerDetailsCard> {
+
+  String formattedNumber(double value) {
+    var f = NumberFormat.compact(locale: "en_US");
+    return f.format(value);
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -70,7 +77,7 @@ class _CustomerDetailsCardState extends State<CustomerDetailsCard> {
                       ),
                       children: [
                         TextSpan(
-                          text: '${widget.firstName} ${widget.lastName} •',
+                          text: '${widget.firstName ?? '--'} ${widget.lastName ?? '--'} •',
                           style: const TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: SizeSystem.size16,
@@ -167,10 +174,10 @@ class _CustomerDetailsCardState extends State<CustomerDetailsCard> {
           ),
           Row(children: [
             if (widget.ltv != null)
-              CustomerMicroDetails(label: 'LTV', value: widget.ltv!.toString()),
+              CustomerMicroDetails(label: 'LTV', value: formattedNumber(widget.ltv!).toLowerCase()),
             if (widget.averageProductValue != null)
               CustomerMicroDetails(
-                  label: 'AOV', value: widget.averageProductValue!.toString()),
+                  label: 'AOV', value: formattedNumber(widget.averageProductValue!).toLowerCase()),
             if (widget.preferredInstrument != null)
               CustomerMicroDetails(
                 label: widget.preferredInstrument!,
