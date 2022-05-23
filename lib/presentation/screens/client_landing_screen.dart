@@ -27,7 +27,40 @@ class _ClientLandingScreenState extends State<ClientLandingScreen> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              getAppBar(),
+              Padding(
+                padding: const EdgeInsets.only(
+                    left: PaddingSystem.padding20,
+                    right: PaddingSystem.padding20,
+                    top: PaddingSystem.padding20),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    SvgPicture.asset(
+                      LandingImages.drawer,
+                      height: SizeSystem.size20,
+                      width: SizeSystem.size20,
+                      color: const Color(0xFF888888),
+                    ),
+                    const Text(
+                      "CLIENT",
+                      style: TextStyle(
+                          fontSize: SizeSystem.size14,
+                          fontWeight: FontWeight.w700,
+                          color: Color(0xFF222222),
+                          fontFamily: kRubik),
+                    ),
+                    const Text(
+                      "LEAVE",
+                      style: TextStyle(
+                        fontSize: SizeSystem.size14,
+                        fontWeight: FontWeight.w700,
+                        color: Color(0xFF888888),
+                        fontFamily: kRubik,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
               const SizedBox(
                 height: SizeSystem.size30,
               ),
@@ -153,43 +186,6 @@ class _ClientLandingScreenState extends State<ClientLandingScreen> {
             ],
           ),
         ),
-      ),
-    );
-  }
-
-  Widget getAppBar() {
-    return Padding(
-      padding: const EdgeInsets.only(
-          left: PaddingSystem.padding20,
-          right: PaddingSystem.padding20,
-          top: PaddingSystem.padding20),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          SvgPicture.asset(
-            LandingImages.drawer,
-            height: SizeSystem.size20,
-            width: SizeSystem.size20,
-            color: const Color(0xFF888888),
-          ),
-          const Text(
-            "CLIENT",
-            style: TextStyle(
-                fontSize: SizeSystem.size14,
-                fontWeight: FontWeight.w700,
-                color: Color(0xFF222222),
-                fontFamily: kRubik),
-          ),
-          const Text(
-            "LEAVE",
-            style: TextStyle(
-              fontSize: SizeSystem.size14,
-              fontWeight: FontWeight.w700,
-              color: Color(0xFF888888),
-              fontFamily: kRubik,
-            ),
-          ),
-        ],
       ),
     );
   }

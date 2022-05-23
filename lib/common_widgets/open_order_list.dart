@@ -59,7 +59,7 @@ class OpenOrderList extends StatelessWidget {
             color: ColorSystem.greyBg,
           ),
           child:
-          SvgPicture.asset(listOfOrderImage[index], color: Colors.black87),
+              SvgPicture.asset(listOfOrderImage[index], color: Colors.black87),
         ),
       ],
     );
