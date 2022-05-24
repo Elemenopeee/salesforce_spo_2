@@ -54,4 +54,7 @@ abstract class ColorSystem {
 
   /// note bg  light blue color
   static const Color noteBlueColor = Color(0xFFF2F8FF);
+
+  /// more light for grey
+  static const Color secondaryGreyBg = Color(0xFFF6F6F6);
 }
