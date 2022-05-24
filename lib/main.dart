@@ -150,7 +150,7 @@ class _HomeScreenState extends State<HomeScreen> {
               IconSystem.feed,
               width: 24,
               height: 24,
-              color: ColorSystem.white,
+              color: ColorSystem.primary,
             ),
           ),
           IconButton(
@@ -161,7 +161,7 @@ class _HomeScreenState extends State<HomeScreen> {
               IconSystem.sparkle,
               width: 24,
               height: 24,
-              color: ColorSystem.white,
+              color: ColorSystem.primary,
             ),
           ),
           IconButton(

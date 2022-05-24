@@ -48,65 +48,38 @@ class _TabHomeState extends State<TabHome> with SingleTickerProviderStateMixin {
       child: SingleChildScrollView(
         child: Column(
           children: [
-            // const AppBarCustom(),
-            const SizedBox(
-              height: 30,
-            ),
             ProfileContainer(
               agentName: widget.agentName,
             ),
             const SizedBox(
-              height: 20,
+              height: SizeSystem.size20,
             ),
             const ProgressContainer(),
             const SizedBox(
-              height: 36,
+              height: SizeSystem.size36,
             ),
-            Column(
-              children: [
-                CustomTabBarExtended(
-                  padding: const EdgeInsets.symmetric(horizontal: 30),
-                  height: 40,
-                  containerColor: Colors.grey.withOpacity(0.1),
-                  containerBorderRadius: 10.0,
-                  tabBorderRadius: 10.0,
-                  tabOneName: "Open Orders",
-                  tabTwoName: "All Orders",
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.shade300,
-                      offset: const Offset(
-                        0.0,
-                        1.0,
-                      ),
-                      blurRadius: 2,
-                      spreadRadius: 2,
-                    )
-                  ],
-                  tabController: _tabController,
-                  tabColor: Colors.white,
-                  labelColor: Colors.black,
-                  unSelectLabelColor: Colors.grey,
-                  labelTextStyle: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontFamily: kRubik,
-                  ),
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: SizeSystem.size28,
+                vertical: SizeSystem.size14,
+              ),
+              child: SvgPicture.asset(IconSystem.inProgress),
+            ),
+            const SizedBox(
+              height: SizeSystem.size36,
+            ),
+            const Center(
+              child: Text(
+                'We are under progress',
+                style: TextStyle(
+                  color: ColorSystem.secondary,
+                  fontSize: SizeSystem.size12,
+                  fontFamily: kRubik,
                 ),
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 28, vertical: 14),
-                  child: SizedBox(
-                    height: 360,
-                    child: TabBarView(
-                      controller: _tabController,
-                      children: const [
-                        OpenOrderTab(),
-                        AllOrderTab(),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
+              ),
+            ),
+            const SizedBox(
+              height: SizeSystem.size36,
             ),
           ],
         ),
@@ -181,28 +154,15 @@ class _ProfileContainerState extends State<ProfileContainer> {
             ],
           ),
           const Spacer(),
-          Stack(
-            children: [
-              Container(
-                height: 60,
-                width: 60,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(25),
-                  color: Colors.pinkAccent,
-                ),
-              ),
-              Positioned(
-                top: 42,
-                child: Container(
-                  height: 15,
-                  width: 15,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(50),
-                    color: Colors.green,
-                  ),
-                ),
-              ),
-            ],
+          Container(
+            height: SizeSystem.size60,
+            width: SizeSystem.size60,
+            child: SvgPicture.asset(
+              IconSystem.userPlaceholder,
+            ),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(SizeSystem.size24),
+            ),
           ),
         ],
       ),
@@ -233,17 +193,26 @@ class _ProgressContainerState extends State<ProgressContainer> {
     if (agentMail != null) {
       var response =
           await HttpService().doGet(path: Endpoints.getTotalSales(agentMail));
-      totalSales = response.data['records'][0]['Sales'];
+      try {
+        totalSales = response.data['records'][0]['Sales'];
+      }
+      catch (e) {
+        print(e);
+      }
     }
   }
 
   Future<void> _getTotalCommission() async {
     var agentMail = await SharedPreferenceService().getValue('agent_email');
-    print(agentMail);
     if (agentMail != null) {
       var response = await HttpService()
           .doGet(path: Endpoints.getTotalCommission(agentMail));
-      totalCommission = response.data['records'][0]['commission'];
+      try{
+        totalCommission = response.data['records'][0]['commission'];
+      }
+      catch (e) {
+        print(e);
+      }
     }
   }
 
@@ -254,9 +223,14 @@ class _ProgressContainerState extends State<ProgressContainer> {
           await HttpService().doGet(path: Endpoints.getTodaysSales(agentMail));
       List<dynamic> records = response.data['records'];
       if (records.isNotEmpty) {
-        var saleData = records.firstWhere(
-            (element) => element['Gross_Sales_Yesterday__c'] != null);
-        todaysSale = saleData['Gross_Sales_Yesterday__c'];
+        try{
+          var saleData = records.firstWhere(
+                  (element) => element['Gross_Sales_Yesterday__c'] != null);
+          todaysSale = saleData['Gross_Sales_Yesterday__c'];
+        }
+        catch (e){
+          print(e);
+        }
       }
     }
   }
@@ -269,9 +243,14 @@ class _ProgressContainerState extends State<ProgressContainer> {
       List<dynamic> records = response.data['records'];
 
       if (records.isNotEmpty) {
-        var commissionData = records.firstWhere(
-            (element) => element['Comm_Amount_Yesterday__c'] != null);
-        todaysCommission = commissionData['Comm_Amount_Yesterday__c'];
+        try {
+          var commissionData = records.firstWhere(
+                  (element) => element['Comm_Amount_Yesterday__c'] != null);
+          todaysCommission = commissionData['Comm_Amount_Yesterday__c'];
+        }
+        catch (e){
+          print(e);
+        }
       }
     }
   }
@@ -594,3 +573,43 @@ List<PieChartSectionData> showingSections(double today, double total) {
     }
   });
 }
+
+// CustomTabBarExtended(
+// padding: const EdgeInsets.symmetric(horizontal: 30),
+// height: 40,
+// containerColor: Colors.grey.withOpacity(0.1),
+// containerBorderRadius: 10.0,
+// tabBorderRadius: 10.0,
+// tabOneName: "Open Orders",
+// tabTwoName: "All Orders",
+// boxShadow: [
+// BoxShadow(
+// color: Colors.grey.shade300,
+// offset: const Offset(
+// 0.0,
+// 1.0,
+// ),
+// blurRadius: 2,
+// spreadRadius: 2,
+// )
+// ],
+// tabController: _tabController,
+// tabColor: Colors.white,
+// labelColor: Colors.black,
+// unSelectLabelColor: Colors.grey,
+// labelTextStyle: const TextStyle(
+// fontWeight: FontWeight.bold,
+// fontFamily: kRubik,
+// ),
+// ),
+
+// SizedBox(
+// height: 360,
+// child: TabBarView(
+// controller: _tabController,
+// children: const [
+// OpenOrderTab(),
+// AllOrderTab(),
+// ],
+// ),
+// )

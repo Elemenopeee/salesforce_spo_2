@@ -387,9 +387,9 @@ class _CustomerLookupWidgetState extends State<CustomerLookupWidget> {
                                             .preferredInstrument,
                                         lastTransactionDate: customers[index]
                                             .lastTransactionDate,
-                                        ltv: customers[index].lifetimeNetUnits,
+                                        ltv: customers[index].lifeTimeNetSalesAmount,
                                         averageProductValue: customers[index]
-                                            .lifeTimeNetSalesAmount,
+                                            .lifetimeNetUnits,
                                         customerLevel:
                                             customers[index].medianLTVNet,
                                       );
