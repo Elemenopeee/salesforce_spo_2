@@ -11,13 +11,15 @@ class NoteWidget extends StatelessWidget {
   final String tag2;
   final String date;
   final Color bgColor;
+  final bool pinned;
   const NoteWidget(
       {Key? key,
       required this.note,
       required this.tag1,
       required this.tag2,
       required this.date,
-      required this.bgColor})
+      required this.bgColor,
+      required this.pinned})
       : super(key: key);
 
   @override
@@ -36,7 +38,7 @@ class NoteWidget extends StatelessWidget {
           Text(
             note,
             style: const TextStyle(
-                fontSize: SizeSystem.size14, fontFamily: kRubik),
+                fontSize: SizeSystem.size12, fontFamily: kRubik),
           ),
           const SizedBox(
             height: SizeSystem.size20,
@@ -48,7 +50,7 @@ class NoteWidget extends StatelessWidget {
                   text: TextSpan(
                       style: const TextStyle(
                           color: ColorSystem.secondary,
-                          fontSize: SizeSystem.size14,
+                          fontSize: SizeSystem.size12,
                           fontFamily: kRubik),
                       children: [
                     TextSpan(text: tag1),
@@ -60,7 +62,7 @@ class NoteWidget extends StatelessWidget {
                 style: const TextStyle(
                     color: ColorSystem.secondary,
                     fontFamily: kRubik,
-                    fontSize: SizeSystem.size14),
+                    fontSize: SizeSystem.size12),
               )
             ],
           ),

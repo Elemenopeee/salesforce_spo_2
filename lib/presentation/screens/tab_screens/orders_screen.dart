@@ -25,7 +25,7 @@ class OrdersScreen extends StatelessWidget {
                 const Text(
                   "Open Orders",
                   style: TextStyle(
-                    fontSize: SizeSystem.size18,
+                    fontSize: SizeSystem.size16,
                     fontFamily: kRubik,
                   ),
                 ),

@@ -26,7 +26,7 @@ class ActivityScreen extends StatelessWidget {
                 const Text(
                   "Abandoned Cart",
                   style: TextStyle(
-                    fontSize: SizeSystem.size18,
+                    fontSize: SizeSystem.size16,
                     fontFamily: kRubik,
                   ),
                 ),
