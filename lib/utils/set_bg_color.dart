@@ -10,11 +10,20 @@ Color setBackgroundColor({required int index}) {
     return ColorSystem.notePinkColor;
   }
 
-  if (index == 2 || index % 2 == 0) {
+  if (index == 2) {
     return ColorSystem.noteYellowColor;
   }
-  if (index % 3 == 0) {
+
+  if (index == 3) {
     return ColorSystem.noteBlueColor;
+  }
+
+  if (index % 2 == 0) {
+    return ColorSystem.noteYellowColor;
+  }
+
+  if (index % 3 != 0) {
+    return ColorSystem.notePinkColor;
   }
 
   return ColorSystem.noteBlueColor;

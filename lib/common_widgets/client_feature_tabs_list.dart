@@ -1,9 +1,19 @@
+import 'package:dotted_decoration/dotted_decoration.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:r_dotted_line_border/r_dotted_line_border.dart';
+import 'package:salesforce_spo/common_widgets/open_order_list.dart';
+import 'package:salesforce_spo/design_system/primitives/padding_system.dart';
+import 'package:salesforce_spo/presentation/screens/tab_screens/case_screen.dart';
+import 'package:salesforce_spo/presentation/screens/tab_screens/notes_screen.dart';
+import 'package:salesforce_spo/presentation/screens/tab_screens/promos_screen.dart';
 
 import '../design_system/primitives/color_system.dart';
 import '../design_system/primitives/landing_images.dart';
 import '../design_system/primitives/size_system.dart';
+import '../presentation/screens/tab_screens/activity_screen.dart';
+import '../presentation/screens/tab_screens/history_screen.dart';
+import '../presentation/screens/tab_screens/orders_screen.dart';
 import '../utils/constants.dart';
 
 class ClientFeatureTabsList extends StatefulWidget {
@@ -13,8 +23,10 @@ class ClientFeatureTabsList extends StatefulWidget {
   State<ClientFeatureTabsList> createState() => _ClientFeatureTabsListState();
 }
 
-class _ClientFeatureTabsListState extends State<ClientFeatureTabsList> {
+class _ClientFeatureTabsListState extends State<ClientFeatureTabsList>
+    with SingleTickerProviderStateMixin {
   int selectedIndex = 0;
+  late TabController _tabController;
 
   var listOfFeatureImages = [
     LandingImages.activityLite,
@@ -44,76 +56,136 @@ class _ClientFeatureTabsListState extends State<ClientFeatureTabsList> {
   ];
 
   @override
+  void initState() {
+    _tabController = TabController(length: 6, vsync: this);
+    _tabController.addListener(() {
+      setState(() {
+        selectedIndex = _tabController.index;
+      });
+    });
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 100,
-      width: double.infinity,
-      child: ListView.builder(
-          itemCount: listOfFeature.length,
-          shrinkWrap: true,
-          scrollDirection: Axis.horizontal,
-          padding: EdgeInsets.zero,
-          itemBuilder: (context, index) {
-            return Row(
-              children: [
-                const SizedBox(
-                  width: SizeSystem.size18,
-                ),
-                getSingleFeatureList(context, index),
-              ],
-            );
-          }),
+    return
+        // give the tab bar a height [can change hheight to preferred height]
+        SizedBox(
+      height: MediaQuery.of(context).size.height,
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: PaddingSystem.padding10),
+        child: Column(children: [
+          TabBar(
+            padding: EdgeInsets.zero,
+            labelPadding:
+                const EdgeInsets.symmetric(horizontal: PaddingSystem.padding0),
+            isScrollable: true,
+            controller: _tabController,
+            indicator: BoxDecoration(
+              border: RDottedLineBorder(
+                  top: const BorderSide(
+                    color: ColorSystem.black,
+                  ),
+                  left: const BorderSide(
+                    color: ColorSystem.black,
+                  ),
+                  right: const BorderSide(
+                    color: ColorSystem.black,
+                  )),
+              // borderRadius: BorderRadius.circular(10)
+            ),
+            labelColor: ColorSystem.white,
+            unselectedLabelColor: ColorSystem.black,
+            onTap: (index) {
+              setState(() {
+                selectedIndex = _tabController.index;
+              });
+            },
+            tabs: [
+              getSingleFeatureList(context, 0),
+              getSingleFeatureList(context, 1),
+              getSingleFeatureList(context, 2),
+              getSingleFeatureList(context, 3),
+              getSingleFeatureList(context, 4),
+              getSingleFeatureList(context, 5),
+            ],
+          ),
+
+          // tab bar view here
+          Expanded(
+            child: TabBarView(controller: _tabController, children: [
+              ActivityScreen(),
+              OrdersScreen(),
+              OrderHistoryList(),
+              NotesList(),
+              CasesProductList(),
+              PromosList(),
+            ]),
+          )
+        ]),
+      ),
     );
   }
 
   Widget getSingleFeatureList(BuildContext context, int index) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
-      children: [
-        InkWell(
-          onTap: () {
-            setState(() {
-              selectedIndex = index;
-            });
-          },
-          child: Column(
-            children: [
-              Container(
-                height: 60,
-                width: 60,
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: (selectedIndex == index)
-                        ? Colors.black
-                        : Colors.transparent,
-                  ),
-                  borderRadius: BorderRadius.circular(15),
-                  color: ColorSystem.greyBg,
-                ),
-                child: Center(
-                  child: SvgPicture.asset(
-                    (selectedIndex == index)
-                        ? listOfFeatureDarkImages[index]
-                        : listOfFeatureImages[index],
-                  ),
-                ),
-              ),
-              const SizedBox(
-                height: 15,
-              ),
-              Text(
-                listOfFeature[index],
-                style: TextStyle(
-                    color: (selectedIndex == index)
-                        ? ColorSystem.primary
-                        : ColorSystem.secondary,
-                    fontFamily: kRubik,
-                    fontSize: SizeSystem.size14),
-              ),
-            ],
+    return Tab(
+        height: 100,
+        child: Container(
+          margin: const EdgeInsets.only(bottom: PaddingSystem.padding0),
+          padding: EdgeInsets.symmetric(
+            horizontal: (selectedIndex == index)
+                ? PaddingSystem.padding4
+                : PaddingSystem.padding8,
           ),
-        ),
-      ],
-    );
+          decoration: BoxDecoration(
+              border: RDottedLineBorder(
+                  bottom: (selectedIndex == index)
+                      ? BorderSide.none
+                      : const BorderSide(color: Colors.black))),
+          child: InkWell(
+            onTap: () {
+              setState(() {
+                selectedIndex = index;
+                _tabController.index = index;
+              });
+            },
+            child: Column(
+              children: [
+                Container(
+                  height: 60,
+                  width: 60,
+                  margin: const EdgeInsets.only(
+                    top: PaddingSystem.padding5,
+                  ),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15),
+                    color: selectedIndex == index
+                        ? ColorSystem.white
+                        : ColorSystem.greyBg,
+                  ),
+                  child: Center(
+                    child: SvgPicture.asset(
+                      (selectedIndex == index)
+                          ? listOfFeatureDarkImages[index]
+                          : listOfFeatureImages[index],
+                    ),
+                  ),
+                ),
+                // const SizedBox(
+                //   height: 5,
+                // ),
+                Text(
+                  listOfFeature[index],
+                  style: TextStyle(
+                      color: (selectedIndex == index)
+                          ? ColorSystem.primary
+                          : ColorSystem.secondary,
+                      fontFamily: kRubik,
+                      fontSize: SizeSystem.size14),
+                )
+              ],
+            ),
+          ),
+        ));
   }
 }
