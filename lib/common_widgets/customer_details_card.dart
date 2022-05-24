@@ -38,10 +38,27 @@ class CustomerDetailsCard extends StatefulWidget {
 }
 
 class _CustomerDetailsCardState extends State<CustomerDetailsCard> {
-
   String formattedNumber(double value) {
     var f = NumberFormat.compact(locale: "en_US");
     return f.format(value);
+  }
+
+  String formatPhoneNumber(String number) {
+    if (number.length == 10 && !number.contains(')')) {
+      var formattedNumber = '(' +
+          number.substring(0, 3) +
+          ') ' +
+          number.substring(3, 6) +
+          '-' +
+          number.substring(6, 10);
+      return formattedNumber;
+    } else {
+      return number;
+    }
+  }
+
+  String formatDate(String date) {
+    return DateFormat('MM-dd-yyyy').format(DateTime.parse(date));
   }
 
   @override
@@ -77,7 +94,7 @@ class _CustomerDetailsCardState extends State<CustomerDetailsCard> {
                       ),
                       children: [
                         TextSpan(
-                          text: '${widget.firstName ?? '--'} ${widget.lastName ?? '--'} •',
+                          text: '${widget.firstName} ${widget.lastName} •',
                           style: const TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: SizeSystem.size16,
@@ -134,7 +151,7 @@ class _CustomerDetailsCardState extends State<CustomerDetailsCard> {
                         if (widget.lastTransactionDate != null)
                           TextSpan(
                             text:
-                                ' • Visited on : ${widget.lastTransactionDate!}',
+                                ' • Visited on : ${formatDate(widget.lastTransactionDate!)}',
                             style: const TextStyle(
                               fontSize: SizeSystem.size12,
                               color: ColorSystem.secondary,
@@ -159,7 +176,7 @@ class _CustomerDetailsCardState extends State<CustomerDetailsCard> {
                   ),
                   if (widget.phone != null)
                     Text(
-                      widget.phone!,
+                      formatPhoneNumber(widget.phone!),
                       style: const TextStyle(
                         fontSize: SizeSystem.size12,
                         color: ColorSystem.primary,
@@ -174,10 +191,14 @@ class _CustomerDetailsCardState extends State<CustomerDetailsCard> {
           ),
           Row(children: [
             if (widget.ltv != null)
-              CustomerMicroDetails(label: 'LTV', value: formattedNumber(widget.ltv!).toLowerCase()),
+              CustomerMicroDetails(
+                  label: 'LTV',
+                  value: formattedNumber(widget.ltv!).toLowerCase()),
             if (widget.averageProductValue != null)
               CustomerMicroDetails(
-                  label: 'AOV', value: formattedNumber(widget.averageProductValue!).toLowerCase()),
+                  label: 'AOV',
+                  value: formattedNumber(widget.averageProductValue!)
+                      .toLowerCase()),
             if (widget.preferredInstrument != null)
               CustomerMicroDetails(
                 label: widget.preferredInstrument!,
@@ -219,13 +240,11 @@ class _CustomerMicroDetailsState extends State<CustomerMicroDetails> {
             borderRadius: BorderRadius.circular(PaddingSystem.padding10),
             color: ColorSystem.secondary.withOpacity(OpacitySystem.opacity01)),
         child: widget.icon ??
-            Text(
-              '\$${widget.value}',
-              style: const TextStyle(
-                color: ColorSystem.primary,
-                fontFamily: kRubik,
-              )
-            ),
+            Text('\$${widget.value}',
+                style: const TextStyle(
+                  color: ColorSystem.primary,
+                  fontFamily: kRubik,
+                )),
       ),
       const SizedBox(
         height: SizeSystem.size10,
@@ -245,9 +264,9 @@ class _CustomerMicroDetailsState extends State<CustomerMicroDetails> {
 Color getCustomerLevelColor(String level) {
   switch (level) {
     case 'LOW':
-      return ColorSystem.additionalYellow;
-    case 'MEDIUM':
       return ColorSystem.lavender;
+    case 'MEDIUM':
+      return ColorSystem.additionalYellow;
     case 'HIGH':
       return ColorSystem.complimentary;
     default:

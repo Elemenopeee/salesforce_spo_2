@@ -42,8 +42,8 @@ class Customer extends AppUser {
   factory Customer.fromJson({required Map<String, dynamic> json}) {
     return Customer._(
       id: json['Id'],
-      firstName: json['FirstName'],
-      lastName: json['LastName'],
+      firstName: json['FirstName'] ?? '--',
+      lastName: json['LastName'] ?? '--',
       email: json['accountEmail__c'],
       phone: json['accountPhone__c'],
       lastTransactionDate: json['Last_Transaction_Date__c'],

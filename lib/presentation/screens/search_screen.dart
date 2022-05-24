@@ -1,3 +1,4 @@
+import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -27,8 +28,8 @@ class _SearchScreenState extends State<SearchScreen> {
   Future<void>? futureCustomers;
 
   Future<void> getCustomer(int offset) async {
-
-    if(offset == 0){
+    isLoadingData = true;
+    if (offset == 0) {
       customers.clear();
     }
 
@@ -63,13 +64,20 @@ class _SearchScreenState extends State<SearchScreen> {
             height: SizeSystem.size20,
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20,),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 40,
+              vertical: 20,
+            ),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 InkWell(
                   onTap: Navigator.of(context).pop,
-                  child: SvgPicture.asset(IconSystem.back, width: 20, height: 20,),
+                  child: SvgPicture.asset(
+                    IconSystem.back,
+                    width: 20,
+                    height: 20,
+                  ),
                   focusColor: Colors.transparent,
                   splashColor: Colors.transparent,
                   hoverColor: Colors.transparent,
@@ -80,10 +88,20 @@ class _SearchScreenState extends State<SearchScreen> {
                 ),
                 Expanded(
                   child: TextFormField(
-                    onChanged: (name){
+                    onChanged: (name) {
                       offset = 0;
                       this.name = name;
-                      if(this.name.length >= 3){
+                      EasyDebounce.cancelAll();
+                      if (this.name.length >= 3) {
+                        EasyDebounce.debounce(
+                            'search_name_debounce',
+                            Duration(seconds: 1),
+                            () {
+                          setState(() {
+                            futureCustomers = getCustomer(offset);
+                          });
+                        });
+
                         setState(() {
                           futureCustomers = getCustomer(offset);
                         });
@@ -111,39 +129,39 @@ class _SearchScreenState extends State<SearchScreen> {
             child: FutureBuilder(
               future: futureCustomers,
               builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
-                switch(snapshot.connectionState){
+                switch (snapshot.connectionState) {
                   case ConnectionState.waiting:
                   case ConnectionState.active:
                   case ConnectionState.none:
                   case ConnectionState.done:
-
-                    if(isLoadingData && customers.isEmpty){
-                      return const Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    }
-
-                    return ListView.builder(
-                      controller: scrollController,
-                      padding: const EdgeInsets.symmetric(horizontal: 30),
-                      shrinkWrap: true,
-                      itemCount: customers.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        return CustomerDetailsCard(
-                          customerId: customers[index].id,
-                          firstName: customers[index].firstName,
-                          lastName: customers[index].lastName,
-                          email: customers[index].email,
-                          phone: customers[index].phone,
-                          preferredInstrument:
-                          customers[index].preferredInstrument,
-                          lastTransactionDate: customers[index].lastTransactionDate,
-                          ltv: customers[index].lifetimeNetUnits,
-                          averageProductValue: customers[index].lifeTimeNetSalesAmount,
-                          customerLevel: customers[index].medianLTVNet,
-                        );
-                      },
+                  if (isLoadingData && customers.isEmpty) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
                     );
+                  }
+                  return ListView.builder(
+                    controller: scrollController,
+                    padding: const EdgeInsets.symmetric(horizontal: 30),
+                    shrinkWrap: true,
+                    itemCount: customers.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return CustomerDetailsCard(
+                        customerId: customers[index].id,
+                        firstName: customers[index].firstName,
+                        lastName: customers[index].lastName,
+                        email: customers[index].email,
+                        phone: customers[index].phone,
+                        preferredInstrument:
+                        customers[index].preferredInstrument,
+                        lastTransactionDate:
+                        customers[index].lastTransactionDate,
+                        ltv: customers[index].lifeTimeNetSalesAmount,
+                        averageProductValue:
+                        customers[index].lifetimeNetUnits,
+                        customerLevel: customers[index].medianLTVNet,
+                      );
+                    },
+                  );
                 }
               },
             ),
@@ -153,22 +171,20 @@ class _SearchScreenState extends State<SearchScreen> {
     );
   }
 
-  void scrollListener(){
+  void scrollListener() {
     var maxExtent = scrollController.position.maxScrollExtent;
     var loadingPosition = maxExtent - (maxExtent * 0.4);
-    if(scrollController.position.extentAfter < loadingPosition && !isLoadingData){
+    if (scrollController.position.extentAfter < loadingPosition &&
+        !isLoadingData) {
       offset = offset + 20;
-      print('Here');
-      print('Offset $offset');
-      setState((){
-        isLoadingData = true;
+      setState(() {
         futureCustomers = getCustomer(offset);
       });
     }
   }
 
   @override
-  void dispose(){
+  void dispose() {
     scrollController.removeListener(scrollListener);
     scrollController.dispose();
     super.dispose();
