@@ -30,4 +30,18 @@ abstract class ColorSystem {
 
   // lavender 2
   static const Color lavender2 = Color(0xFF7265E3);
+
+  /// Additional Grey Background color
+  static const Color greyBg = Color(0xFFF4F6FA);
+
+  /// Additional Pink Background color
+  static const Color pink = Color(0xFFFF9B90);
+
+  /// Additional Purple Background color
+  static const Color purple = Color(0xFFAF8EFF);
+
+  /// Additional Text color
+  static const Color primaryTextColor = Color(0xFF2D3142);
+
+
 }
