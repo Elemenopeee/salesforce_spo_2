@@ -24,16 +24,9 @@ class RelatedOfferList extends StatelessWidget {
           itemCount: listOfOffersImage.length,
           shrinkWrap: true,
           scrollDirection: Axis.horizontal,
-          padding: EdgeInsets.zero,
+          padding: const EdgeInsets.symmetric(horizontal: SizeSystem.size18),
           itemBuilder: (context, index) {
-            return Row(
-              children: [
-                const SizedBox(
-                  width: SizeSystem.size18,
-                ),
-                getSingleOfferList(context, index),
-              ],
-            );
+            return getSingleOfferList(context, index);
           }),
     );
   }
@@ -58,7 +51,7 @@ class RelatedOfferList extends StatelessWidget {
             color: ColorSystem.greyBg,
           ),
           child: Padding(
-            padding:  const EdgeInsets.symmetric(
+            padding: const EdgeInsets.symmetric(
                 horizontal: PaddingSystem.padding10,
                 vertical: PaddingSystem.padding10),
             child: Column(
@@ -77,6 +70,9 @@ class RelatedOfferList extends StatelessWidget {
               ],
             ),
           ),
+        ),
+        const SizedBox(
+          width: SizeSystem.size18,
         ),
       ],
     );

@@ -29,16 +29,9 @@ class OpenOrderList extends StatelessWidget {
         itemCount: listOfOrderImage.length,
         shrinkWrap: true,
         scrollDirection: Axis.horizontal,
-        padding: EdgeInsets.zero,
+        padding: const EdgeInsets.symmetric(horizontal: SizeSystem.size18),
         itemBuilder: (context, index) {
-          return Row(
-            children: [
-              const SizedBox(
-                width: SizeSystem.size18,
-              ),
-              getSingleOpenOrderList(context, index),
-            ],
-          );
+          return getSingleOpenOrderList(context, index);
         },
       ),
     );
@@ -60,6 +53,9 @@ class OpenOrderList extends StatelessWidget {
           ),
           child:
               SvgPicture.asset(listOfOrderImage[index], color: Colors.black87),
+        ),
+        const SizedBox(
+          width: SizeSystem.size18,
         ),
       ],
     );

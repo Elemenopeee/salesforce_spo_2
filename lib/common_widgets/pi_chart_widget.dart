@@ -6,12 +6,12 @@ import '../presentation/screens/chart/sector.dart';
 class PieChartWidget extends StatelessWidget {
   final List<Sector> sectors;
 
-   PieChartWidget(this.sectors);
+  PieChartWidget(this.sectors);
 
   @override
   Widget build(BuildContext context) {
     return AspectRatio(
-        aspectRatio: 9.0,
+        aspectRatio: 0.99,
         child: PieChart(PieChartData(
           sections: _chartSections(sectors),
           centerSpaceRadius: 15.0,

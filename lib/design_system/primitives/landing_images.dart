@@ -1,3 +1,5 @@
+///Temporary Class
+
 class LandingImages {
   static const activityLite = "assets/icons/landing_icons/ic_activity_lite.svg";
   static const activityDark = "assets/icons/landing_icons/ic_activity_dark.svg";

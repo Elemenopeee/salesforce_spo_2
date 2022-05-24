@@ -27,16 +27,9 @@ class RecommendationList extends StatelessWidget {
           itemCount: listOfRecommendationImage.length,
           shrinkWrap: true,
           scrollDirection: Axis.horizontal,
-          padding: EdgeInsets.zero,
+          padding: const EdgeInsets.symmetric(horizontal: SizeSystem.size18),
           itemBuilder: (context, index) {
-            return Row(
-              children: [
-                const SizedBox(
-                  width: SizeSystem.size18,
-                ),
-                getSingleRecommendationList(context, index),
-              ],
-            );
+            return getSingleRecommendationList(context, index);
           }),
     );
   }
@@ -59,6 +52,9 @@ class RecommendationList extends StatelessWidget {
             listOfRecommendationImage[index],
             color: Colors.black87,
           ),
+        ),
+        const SizedBox(
+          width: SizeSystem.size18,
         ),
       ],
     );

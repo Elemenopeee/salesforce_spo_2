@@ -1,64 +1,68 @@
 import 'package:flutter/material.dart';
 import 'package:salesforce_spo/design_system/design_system.dart';
+import 'package:salesforce_spo/models/order_history_model.dart';
 
 class OrderHistoryList extends StatelessWidget {
   OrderHistoryList({Key? key}) : super(key: key);
 
-  var orderStatus = [
-    "Order Placed",
-    "Order Cancelled",
-    "Refund Initiated",
-    "Transaction failed",
-    "Order Delivered",
-    "Order Delivered",
-    "Order Delivered",
-  ];
-  var orderItemName = [
-    "Yamaha MX-100 Guitar",
-    "Yamaha MX-100 Guitar",
-    "Yamaha MX-100 Guitar",
-    "Yamaha MX-100 Guitar",
-    "Yamaha MX-100 Guitar",
-    "Yamaha MX-100 Guitar",
-    "Yamaha MX-100 Guitar",
-  ];
-  var orderDate = [
-    "20-Mar-2022",
-    "20-Mar-2022",
-    "20-Mar-2022",
-    "20-Mar-2022",
-    "20-Mar-2022",
-    "20-Mar-2022",
-    "20-Mar-2022",
+  List<OrderHistoryModel?> orderHistoryData = [
+    OrderHistoryModel(
+      orderStatus: "Order Placed",
+      orderItemsName: "Yamaha MX-100 Guitar",
+      date: "20-Mar-2022",
+    ),
+    OrderHistoryModel(
+      orderStatus: "Order Cancelled",
+      orderItemsName: "Yamaha MX-100 Guitar",
+      date: "20-Mar-2022",
+    ),
+    OrderHistoryModel(
+      orderStatus: "Refund Initiated",
+      orderItemsName: "Yamaha MX-100 Guitar",
+      date: "20-Mar-2022",
+    ),
+    OrderHistoryModel(
+      orderStatus: "Transaction failed",
+      orderItemsName: "Yamaha MX-100 Guitar",
+      date: "20-Mar-2022",
+    ),
+    OrderHistoryModel(
+      orderStatus: "Order Delivered",
+      orderItemsName: "Yamaha MX-100 Guitar",
+      date: "20-Mar-2022",
+    ),
+    OrderHistoryModel(
+      orderStatus: "Order Delivered",
+      orderItemsName: "Yamaha MX-100 Guitar",
+      date: "20-Mar-2022",
+    ),
+    OrderHistoryModel(
+      orderStatus: "Order Delivered",
+      orderItemsName: "Yamaha MX-100 Guitar",
+      date: "20-Mar-2022",
+    ),
   ];
 
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-        itemCount: orderStatus.length,
+        itemCount: orderHistoryData.length,
+        physics: const NeverScrollableScrollPhysics(),
         shrinkWrap: true,
         itemBuilder: (context, index) {
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              getSingleFeatureList(context, index),
-              const Divider(
-                thickness: 1,
-                color: ColorSystem.greyBg,
-              )
-            ],
-          );
+          return getSingleFeatureList(context, index);
         });
   }
 
   Widget getSingleFeatureList(BuildContext context, int index) {
+    var item = orderHistoryData[index];
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 50),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            orderStatus[index],
+            item?.orderStatus ?? "",
             style: const TextStyle(
                 fontSize: 18, color: ColorSystem.primaryTextColor),
           ),
@@ -66,7 +70,7 @@ class OrderHistoryList extends StatelessWidget {
             height: 05,
           ),
           Text(
-            orderItemName[index],
+            item?.orderItemsName ?? "",
             style: const TextStyle(
                 fontSize: 18, color: ColorSystem.primaryTextColor),
           ),
@@ -74,9 +78,13 @@ class OrderHistoryList extends StatelessWidget {
             height: 05,
           ),
           Text(
-            orderDate[index],
+            item?.date ?? "",
             style: const TextStyle(fontSize: 16, color: ColorSystem.secondary),
           ),
+          const Divider(
+            thickness: 1,
+            color: ColorSystem.greyBg,
+          )
         ],
       ),
     );

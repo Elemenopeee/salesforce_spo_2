@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
@@ -49,16 +50,9 @@ class _ClientFeatureTabsListState extends State<ClientFeatureTabsList> {
           itemCount: listOfFeature.length,
           shrinkWrap: true,
           scrollDirection: Axis.horizontal,
-          padding: EdgeInsets.zero,
+          padding: const EdgeInsets.symmetric(horizontal: SizeSystem.size18),
           itemBuilder: (context, index) {
-            return Row(
-              children: [
-                const SizedBox(
-                  width: SizeSystem.size18,
-                ),
-                getSingleFeatureList(context, index),
-              ],
-            );
+            return getSingleFeatureList(context, index);
           }),
     );
   }
@@ -109,6 +103,9 @@ class _ClientFeatureTabsListState extends State<ClientFeatureTabsList> {
               ),
             ],
           ),
+        ),
+        const SizedBox(
+          width: SizeSystem.size18,
         ),
       ],
     );
