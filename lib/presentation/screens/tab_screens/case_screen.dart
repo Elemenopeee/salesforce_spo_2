@@ -45,7 +45,9 @@ class _CasesProductListState extends State<CasesProductList> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: PaddingSystem.padding10),
+      padding: const EdgeInsets.symmetric(
+          horizontal: PaddingSystem.padding10,
+          vertical: PaddingSystem.padding20),
       child: SizedBox(
         height: MediaQuery.of(context).size.height * 0.83,
         width: double.infinity,
@@ -54,7 +56,7 @@ class _CasesProductListState extends State<CasesProductList> {
             physics: const NeverScrollableScrollPhysics(),
             gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
               maxCrossAxisExtent: 200,
-              childAspectRatio: 4 / 5,
+              childAspectRatio: 0.7,
               crossAxisSpacing: SizeSystem.size8,
               mainAxisSpacing: SizeSystem.size0,
             ),
@@ -74,7 +76,7 @@ class _CasesProductListState extends State<CasesProductList> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
-          height: MediaQuery.of(context).size.height * 0.19,
+          height: MediaQuery.of(context).size.height * 0.20,
           width: MediaQuery.of(context).size.height * 0.20,
           decoration: BoxDecoration(
             border: Border.all(

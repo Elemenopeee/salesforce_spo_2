@@ -50,7 +50,6 @@ class _GetBannerState extends State<GetBanner> {
             physics: const BouncingScrollPhysics(),
             children: [
               // PieChartWidget(industrySectors),
-
               // Container(
               // width: 50,
               // margin: const EdgeInsets.symmetric(horizontal: 50),
@@ -137,8 +136,10 @@ class _GetBannerState extends State<GetBanner> {
                         vertical: PaddingSystem.padding20),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             RichText(
                               textAlign: TextAlign.center,
@@ -166,25 +167,28 @@ class _GetBannerState extends State<GetBanner> {
                                 ],
                               ),
                             ),
-                            //               const Spacer(),
-                            SvgPicture.asset(
-                              IconSystem.badge,
-                              height: 15,
-                              width: 15,
-                              color: ColorSystem.complimentary,
-                            ),
-                            const SizedBox(
-                              width: 04,
-                            ),
-                            const Text(
-                              "High",
-                              style: TextStyle(
-                                fontFamily: kRubik,
-                                fontWeight: FontWeight.w600,
-                                color: ColorSystem.complimentary,
-                                fontSize: SizeSystem.size12,
-                              ),
-                            ),
+                            Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  SvgPicture.asset(
+                                    IconSystem.badge,
+                                    height: 15,
+                                    width: 15,
+                                    color: ColorSystem.complimentary,
+                                  ),
+                                  const SizedBox(
+                                    width: 04,
+                                  ),
+                                  const Text(
+                                    "High",
+                                    style: TextStyle(
+                                      fontFamily: kRubik,
+                                      fontWeight: FontWeight.w600,
+                                      color: ColorSystem.complimentary,
+                                      fontSize: SizeSystem.size12,
+                                    ),
+                                  ),
+                                ])
                           ],
                         ),
                         const SizedBox(

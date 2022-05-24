@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:salesforce_spo/common_widgets/promo.dart';
+import 'package:salesforce_spo/design_system/primitives/padding_system.dart';
 
 import '../../../common_widgets/note.dart';
 import '../../../models/promo_model.dart';
@@ -27,14 +28,16 @@ class PromosList extends StatelessWidget {
               'https://static.guitarcenter.com/static/gc/2021/page-dynamic/services/lessons/mobile/gc-md-ad-open-house-07-19-21.jpg',
           date: '22-Mar-2022')
     ];
-    return ListView.builder(
-        shrinkWrap: true,
-        itemCount: list.length,
-        itemBuilder: (context, index) {
-          return Promo(
-              title: list[index].title,
-              imgURL: list[index].imgUrl,
-              date: list[index].date);
-        });
+    return Container(
+        margin: const EdgeInsets.only(top: PaddingSystem.padding20),
+        child: ListView.builder(
+            shrinkWrap: true,
+            itemCount: list.length,
+            itemBuilder: (context, index) {
+              return Promo(
+                  title: list[index].title,
+                  imgURL: list[index].imgUrl,
+                  date: list[index].date);
+            }));
   }
 }
