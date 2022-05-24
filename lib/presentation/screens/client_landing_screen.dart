@@ -9,6 +9,7 @@ import 'package:salesforce_spo/design_system/design_system.dart';
 import 'package:salesforce_spo/design_system/primitives/landing_images.dart';
 
 import '../../utils/constants.dart';
+import 'tab_screens/case_screen.dart';
 
 class ClientLandingScreen extends StatefulWidget {
   const ClientLandingScreen({Key? key}) : super(key: key);
@@ -40,6 +41,7 @@ class _ClientLandingScreenState extends State<ClientLandingScreen> {
               const SizedBox(
                 height: SizeSystem.size25,
               ),
+              CasesProductList(),
               Padding(
                 padding: const EdgeInsets.symmetric(
                     horizontal: PaddingSystem.padding20),

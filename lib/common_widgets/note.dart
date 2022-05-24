@@ -3,6 +3,8 @@ import 'package:salesforce_spo/design_system/primitives/color_system.dart';
 import 'package:salesforce_spo/design_system/primitives/padding_system.dart';
 import 'package:salesforce_spo/design_system/primitives/size_system.dart';
 
+import '../utils/constants.dart';
+
 class NoteWidget extends StatelessWidget {
   final String note;
   final String tag1;
@@ -33,7 +35,8 @@ class NoteWidget extends StatelessWidget {
         children: [
           Text(
             note,
-            style: const TextStyle(fontSize: SizeSystem.size14),
+            style: const TextStyle(
+                fontSize: SizeSystem.size14, fontFamily: kRubik),
           ),
           const SizedBox(
             height: SizeSystem.size20,
@@ -45,7 +48,8 @@ class NoteWidget extends StatelessWidget {
                   text: TextSpan(
                       style: const TextStyle(
                           color: ColorSystem.secondary,
-                          fontSize: SizeSystem.size14),
+                          fontSize: SizeSystem.size14,
+                          fontFamily: kRubik),
                       children: [
                     TextSpan(text: tag1),
                     const TextSpan(text: ' | '),
@@ -54,7 +58,9 @@ class NoteWidget extends StatelessWidget {
               Text(
                 date,
                 style: const TextStyle(
-                    color: ColorSystem.secondary, fontSize: SizeSystem.size14),
+                    color: ColorSystem.secondary,
+                    fontFamily: kRubik,
+                    fontSize: SizeSystem.size14),
               )
             ],
           ),
