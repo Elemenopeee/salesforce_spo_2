@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:salesforce_spo/common_widgets/promo.dart';
 
-import '../../common_widgets/note.dart';
-import '../../models/promo_model.dart';
+import '../../../common_widgets/note.dart';
+import '../../../models/promo_model.dart';
 
 class PromosList extends StatelessWidget {
   const PromosList({Key? key}) : super(key: key);

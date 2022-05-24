@@ -3,6 +3,8 @@ import 'package:salesforce_spo/design_system/primitives/color_system.dart';
 import 'package:salesforce_spo/design_system/primitives/padding_system.dart';
 import 'package:salesforce_spo/design_system/primitives/size_system.dart';
 
+import '../utils/constants.dart';
+
 class Promo extends StatelessWidget {
   final String title;
   final String imgURL;
@@ -43,8 +45,8 @@ class Promo extends StatelessWidget {
                         title,
                         style: const TextStyle(
                             color: ColorSystem.black,
-                            fontWeight: FontWeight.bold,
-                            fontSize: SizeSystem.size16),
+                            fontSize: SizeSystem.size16,
+                            fontFamily: kRubik),
                       ),
                       const SizedBox(
                         height: SizeSystem.size10,
@@ -53,7 +55,8 @@ class Promo extends StatelessWidget {
                         date,
                         style: const TextStyle(
                             fontSize: SizeSystem.size14,
-                            color: ColorSystem.secondary),
+                            color: ColorSystem.secondary,
+                            fontFamily: kRubik),
                       ),
                     ]),
               ),
