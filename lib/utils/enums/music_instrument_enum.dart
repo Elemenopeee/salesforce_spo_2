@@ -13,7 +13,7 @@ enum MusicInstrumentEnum {
   flute,
   marchingPercussion,
   oboe,
-  orchestra,
+  orchestral,
   saxophone,
   trombone,
   trumpet,
@@ -28,6 +28,7 @@ abstract class MusicInstrument{
   static MusicInstrumentEnum getMusicInstrumentFromString(String instrumentName){
     switch(instrumentName){
       case 'Acoustic Guitar':
+      case 'Guitar':
         return MusicInstrumentEnum.acousticGuitar;
       case 'Bass Guitar':
         return MusicInstrumentEnum.bassGuitar;
@@ -41,7 +42,7 @@ abstract class MusicInstrument{
         return MusicInstrumentEnum.clarinet;
       case 'Double Bass':
         return MusicInstrumentEnum.doubleBass;
-      case 'Drum Kit':
+      case 'Drum':
         return MusicInstrumentEnum.drumKit;
       case 'Electric Guitar':
         return MusicInstrumentEnum.electricGuitar;
@@ -51,8 +52,8 @@ abstract class MusicInstrument{
         return MusicInstrumentEnum.marchingPercussion;
       case 'Oboe':
         return MusicInstrumentEnum.oboe;
-      case 'Orchestra':
-        return MusicInstrumentEnum.orchestra;
+      case 'Band & Orchestral':
+        return MusicInstrumentEnum.orchestral;
       case 'Saxophone':
         return MusicInstrumentEnum.saxophone;
       case 'Trombone':
@@ -98,7 +99,7 @@ abstract class MusicInstrument{
         return MusicIconsSystem.marchingPercussion;
       case MusicInstrumentEnum.oboe:
         return MusicIconsSystem.oboe;
-      case MusicInstrumentEnum.orchestra:
+      case MusicInstrumentEnum.orchestral:
         return MusicIconsSystem.orchestra;
       case MusicInstrumentEnum.saxophone:
         return MusicIconsSystem.saxophone;
@@ -115,7 +116,7 @@ abstract class MusicInstrument{
       case MusicInstrumentEnum.woodWing:
         return MusicIconsSystem.woodWing;
       case MusicInstrumentEnum.unknown:
-        return MusicIconsSystem.acousticGuitar;
+        return '--';
     }
   }
 

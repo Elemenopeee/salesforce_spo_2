@@ -47,6 +47,14 @@ class _SearchScreenState extends State<SearchScreen> {
     }
   }
 
+  double aovCalculator(double? ltv, double? lnt) {
+    if (ltv != null && lnt != null) {
+      return ltv / lnt;
+    } else {
+      return 0;
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -101,10 +109,6 @@ class _SearchScreenState extends State<SearchScreen> {
                             futureCustomers = getCustomer(offset);
                           });
                         });
-
-                        setState(() {
-                          futureCustomers = getCustomer(offset);
-                        });
                       }
                     },
                     decoration: const InputDecoration(
@@ -136,7 +140,9 @@ class _SearchScreenState extends State<SearchScreen> {
                   case ConnectionState.done:
                   if (isLoadingData && customers.isEmpty) {
                     return const Center(
-                      child: CircularProgressIndicator(),
+                      child: CircularProgressIndicator(
+                        color: ColorSystem.primary,
+                      ),
                     );
                   }
                   return ListView.builder(
@@ -147,17 +153,19 @@ class _SearchScreenState extends State<SearchScreen> {
                     itemBuilder: (BuildContext context, int index) {
                       return CustomerDetailsCard(
                         customerId: customers[index].id,
-                        firstName: customers[index].firstName,
-                        lastName: customers[index].lastName,
+                        name: customers[index].name ?? '--',
                         email: customers[index].email,
                         phone: customers[index].phone,
                         preferredInstrument:
-                        customers[index].preferredInstrument,
+                        customers[index].primaryInstrument,
                         lastTransactionDate:
                         customers[index].lastTransactionDate,
-                        ltv: customers[index].lifeTimeNetSalesAmount,
-                        averageProductValue:
-                        customers[index].lifetimeNetUnits,
+                        ltv: customers[index].lifeTimeNetSalesAmount ?? 0,
+                        averageProductValue: aovCalculator(
+                            customers[index]
+                                .lifeTimeNetSalesAmount,
+                            customers[index]
+                                .lifetimeNetTransactions),
                         customerLevel: customers[index].medianLTVNet,
                       );
                     },
@@ -176,7 +184,7 @@ class _SearchScreenState extends State<SearchScreen> {
     var loadingPosition = maxExtent - (maxExtent * 0.4);
     if (scrollController.position.extentAfter < loadingPosition &&
         !isLoadingData) {
-      offset = offset + 20;
+      offset = offset + 10;
       setState(() {
         futureCustomers = getCustomer(offset);
       });

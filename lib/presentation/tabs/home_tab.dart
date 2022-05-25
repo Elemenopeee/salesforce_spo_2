@@ -37,7 +37,6 @@ class _TabHomeState extends State<TabHome> with SingleTickerProviderStateMixin {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
     _tabController?.dispose();
   }
@@ -70,7 +69,7 @@ class _TabHomeState extends State<TabHome> with SingleTickerProviderStateMixin {
             ),
             const Center(
               child: Text(
-                'We are under progress',
+                'Work in progress',
                 style: TextStyle(
                   color: ColorSystem.secondary,
                   fontSize: SizeSystem.size12,
@@ -280,8 +279,8 @@ class _ProgressContainerState extends State<ProgressContainer> {
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text(
+            children: const [
+              Text(
                 "Metrics of Month",
                 style: TextStyle(
                   fontSize: 20,
@@ -292,7 +291,7 @@ class _ProgressContainerState extends State<ProgressContainer> {
               ),
               Icon(
                 Icons.more_horiz_outlined,
-                color: Colors.grey.withOpacity(0.4),
+                color: Colors.white,
                 size: 40,
               ),
             ],
