@@ -19,6 +19,7 @@ class GuitarCentreInputField extends StatelessWidget {
   final FocusNode? focusNode;
   final TextEditingController? textEditingController;
   final Widget? suffixIcon;
+  final String? Function(String?)? validator;
 
   /// This widget has been made for guitar centre.
   /// Widget comprises of label, masked formatter, validation and state management.
@@ -38,6 +39,7 @@ class GuitarCentreInputField extends StatelessWidget {
     this.focusNode,
     this.textEditingController,
     this.suffixIcon,
+    this.validator,
     Key? key,
   }) : super(key: key);
 
@@ -61,6 +63,7 @@ class GuitarCentreInputField extends StatelessWidget {
         ),
         Expanded(
           child: TextFormField(
+            validator: validator,
             controller: textEditingController,
             focusNode: focusNode,
             initialValue: initialText,
