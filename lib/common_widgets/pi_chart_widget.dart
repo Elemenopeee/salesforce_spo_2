@@ -21,7 +21,7 @@ class PieChartWidget extends StatelessWidget {
   List<PieChartSectionData> _chartSections(List<Sector> sectors) {
     final List<PieChartSectionData> list = [];
     for (var sector in sectors) {
-      const double radius = 30.0;
+      const double radius = 20.0;
       final data = PieChartSectionData(
         color: sector.color,
         value: sector.value,

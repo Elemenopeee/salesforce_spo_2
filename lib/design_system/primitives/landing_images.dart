@@ -9,6 +9,7 @@ class LandingImages {
   static const notes = "assets/icons/landing_icons/ic_notes.svg";
   static const cases = "assets/icons/landing_icons/ic_cases.svg";
   static const drawer = "assets/icons/landing_icons/ic_drawer.svg";
+  static const barChartSvg = "assets/icons/landing_icons/bar_chart.svg";
   static const guitarSolidIcon =
       "assets/icons/landing_icons/ic_guitar_solid_icon.svg";
   static const icBgGuitar = "assets/icons/landing_icons/bg_guitar.jpg";
