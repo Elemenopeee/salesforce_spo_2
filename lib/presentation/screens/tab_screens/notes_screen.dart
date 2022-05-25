@@ -16,7 +16,7 @@ class NotesList extends StatelessWidget {
           tag1: 'Engaging',
           tag2: 'Intresed in Accessories',
           date: '20-Mar-2022',
-          expanded: false),
+          expanded: true),
       NoteModel(
           note: 'She hates Hip - Hop',
           tag1: 'Guitar',
