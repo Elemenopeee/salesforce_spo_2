@@ -119,7 +119,7 @@ class _HomeScreenState extends State<HomeScreen> {
       extendBodyBehindAppBar: true,
       appBar: getAppBar,
       body: TabHome(
-        agentName: userAdModel?.givenName ?? 'there',
+        agentName: userAdModel?.givenName ?? 'there,',
       ),
       bottomNavigationBar: NotchedBottomNavigationBar(
         actions: [
@@ -127,19 +127,27 @@ class _HomeScreenState extends State<HomeScreen> {
             focusColor: Colors.transparent,
             splashColor: Colors.transparent,
             onPressed: () {
-              // showModalBottomSheet(
-              //     isScrollControlled: true,
-              //     context: context,
-              //     builder: (BuildContext context) {
-              //       return const CustomerLookupWidget();
-              //     },
-              //     backgroundColor: Colors.transparent);
+              showModalBottomSheet(
+                  isScrollControlled: true,
+                  context: context,
+                  builder: (BuildContext context) {
+                    return DraggableScrollableSheet(
+                      initialChildSize: 0.9,
+                      minChildSize: 0.9,
+                      maxChildSize: 1.0,
+                      builder: (BuildContext context,
+                          ScrollController scrollController) {
+                        return const CustomerLookupWidget();
+                      },
+                    );
+                  },
+                  backgroundColor: Colors.transparent);
             },
             icon: SvgPicture.asset(
               IconSystem.user,
               width: 24,
               height: 24,
-              color: ColorSystem.white,
+              color: ColorSystem.primary,
             ),
           ),
           IconButton(
@@ -172,31 +180,17 @@ class _HomeScreenState extends State<HomeScreen> {
               IconSystem.more,
               width: 24,
               height: 24,
-              color: ColorSystem.white,
+              color: ColorSystem.primary,
             ),
           ),
         ],
         centerButton: FloatingActionButton(
           backgroundColor: ColorSystem.primary,
           onPressed: () async {
-            showModalBottomSheet(
-                isScrollControlled: true,
-                context: context,
-                builder: (BuildContext context) {
-                  return DraggableScrollableSheet(
-                    initialChildSize: 0.9,
-                    minChildSize: 0.9,
-                    maxChildSize: 1.0,
-                    builder: (BuildContext context,
-                        ScrollController scrollController) {
-                      return CustomerLookupWidget();
-                    },
-                  );
-                },
-                backgroundColor: Colors.transparent);
+
           },
           child: SvgPicture.asset(
-            IconSystem.user,
+            IconSystem.plus,
             width: 24,
             height: 24,
             color: ColorSystem.white,
