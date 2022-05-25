@@ -14,14 +14,14 @@ class PieChartWidget extends StatelessWidget {
         aspectRatio: 0.99,
         child: PieChart(PieChartData(
           sections: _chartSections(sectors),
-          centerSpaceRadius: 15.0,
+          centerSpaceRadius: 20.0,
         )));
   }
 
   List<PieChartSectionData> _chartSections(List<Sector> sectors) {
     final List<PieChartSectionData> list = [];
     for (var sector in sectors) {
-      const double radius = 30.0;
+      const double radius = 20.0;
       final data = PieChartSectionData(
         color: sector.color,
         value: sector.value,
