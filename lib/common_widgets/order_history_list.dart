@@ -64,22 +64,25 @@ class OrderHistoryList extends StatelessWidget {
           Text(
             item?.orderStatus ?? "",
             style: const TextStyle(
-                fontSize: 18, color: ColorSystem.primaryTextColor),
+                fontSize: SizeSystem.size18,
+                color: ColorSystem.primaryTextColor),
           ),
           const SizedBox(
-            height: 05,
+            height: SizeSystem.size5,
           ),
           Text(
             item?.orderItemsName ?? "",
             style: const TextStyle(
-                fontSize: 18, color: ColorSystem.primaryTextColor),
+                fontSize: SizeSystem.size18,
+                color: ColorSystem.primaryTextColor),
           ),
           const SizedBox(
-            height: 05,
+            height: SizeSystem.size5,
           ),
           Text(
             item?.date ?? "",
-            style: const TextStyle(fontSize: 16, color: ColorSystem.secondary),
+            style: const TextStyle(
+                fontSize: SizeSystem.size16, color: ColorSystem.secondary),
           ),
           const Divider(
             thickness: 1,
