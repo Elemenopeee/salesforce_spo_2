@@ -10,7 +10,6 @@ import '../design_system/primitives/padding_system.dart';
 import '../design_system/primitives/size_system.dart';
 import '../presentation/screens/chart/sector.dart';
 import '../utils/constants.dart';
-import 'bar_chart_widget.dart';
 
 class GetBanner extends StatefulWidget {
   final Color? bannerOneColor;
@@ -29,16 +28,6 @@ class GetBanner extends StatefulWidget {
 }
 
 class _GetBannerState extends State<GetBanner> {
-  late PageController _pageController;
-
-  int activePage = 0;
-
-  @override
-  void initState() {
-    super.initState();
-    _pageController = PageController(viewportFraction: 0.8);
-  }
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -49,75 +38,71 @@ class _GetBannerState extends State<GetBanner> {
             shrinkWrap: true,
             physics: const BouncingScrollPhysics(),
             children: [
-              // PieChartWidget(industrySectors),
-              // Container(
-              // width: 50,
-              // margin: const EdgeInsets.symmetric(horizontal: 50),
-              // padding: const EdgeInsets.symmetric(
-              //   vertical: PaddingSystem.padding20,
-              //   horizontal: PaddingSystem.padding20,
-              // ),
-              // decoration: BoxDecoration(
-              //   color: ColorSystem.purple,
-              //   borderRadius: BorderRadius.circular(20),
-              // ),
-              // child: Column(
-              //   crossAxisAlignment: CrossAxisAlignment.start,
-              //   children: [
-              //     const Text(
-              //       "ACCESSORIES",
-              //       style: TextStyle(
-              //         fontFamily: kRubik,
-              //         fontWeight: FontWeight.w600,
-              //         color: ColorSystem.white,
-              //         fontSize: SizeSystem.size12,
-              //       ),
-              //     ),
               Container(
-                  margin: const EdgeInsets.symmetric(
-                      vertical: PaddingSystem.padding5),
-                  decoration: BoxDecoration(
-                    color: ColorSystem.purple,
-                    borderRadius: BorderRadius.circular(20),
+                margin: const EdgeInsets.symmetric(
+                    vertical: PaddingSystem.padding5),
+                decoration: BoxDecoration(
+                  color: ColorSystem.purple,
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: SizeSystem.size40,
+                      vertical: SizeSystem.size20),
+                  child: Column(
+                    // crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Center(
+                        child: Text(
+                          "ACCESSORIES",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontFamily: kRubik,
+                            fontWeight: FontWeight.w600,
+                            color: ColorSystem.white,
+                            fontSize: SizeSystem.size12,
+                          ),
+                        ),
+                      ),
+                      Expanded(child: PieChartWidget(industrySectors)),
+                      RichText(
+                        textAlign: TextAlign.start,
+                        text: const TextSpan(
+                          style: TextStyle(
+                            fontFamily: kRubik,
+                          ),
+                          children: [
+                            TextSpan(
+                              text: '37% ',
+                              style: TextStyle(
+                                fontWeight: FontWeight.w700,
+                                fontSize: SizeSystem.size14,
+                                color: ColorSystem.white,
+                              ),
+                            ),
+                            TextSpan(
+                              text: '/ 42',
+                              style: TextStyle(
+                                fontWeight: FontWeight.w700,
+                                fontSize: SizeSystem.size10,
+                                color: ColorSystem.white,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Text(
+                        "\$57k Spent",
+                        style: TextStyle(
+                          fontFamily: kRubik,
+                          color: ColorSystem.white.withOpacity(0.4),
+                          fontSize: SizeSystem.size12,
+                        ),
+                      ),
+                    ],
                   ),
-                  child: PieChartWidget(industrySectors)),
-              //     RichText(
-              //       textAlign: TextAlign.center,
-              //       text: const TextSpan(
-              //         style: TextStyle(
-              //           fontFamily: kRubik,
-              //         ),
-              //         children: [
-              //           TextSpan(
-              //             text: '37% ',
-              //             style: TextStyle(
-              //               fontWeight: FontWeight.w700,
-              //               fontSize: SizeSystem.size14,
-              //               color: ColorSystem.white,
-              //             ),
-              //           ),
-              //           TextSpan(
-              //             text: '/ 42',
-              //             style: TextStyle(
-              //               fontWeight: FontWeight.w700,
-              //               fontSize: SizeSystem.size10,
-              //               color: ColorSystem.white,
-              //             ),
-              //           ),
-              //         ],
-              //       ),
-              //     ),
-              //     Text(
-              //       "\$57k Spent",
-              //       style: TextStyle(
-              //         fontFamily: kRubik,
-              //         color: ColorSystem.white.withOpacity(0.4),
-              //         fontSize: SizeSystem.size12,
-              //       ),
-              //     ),
-              //   ],
-              // ),
-              // ),
+                ),
+              ),
               Container(
                 margin: const EdgeInsets.symmetric(
                     horizontal: PaddingSystem.padding10),
@@ -136,10 +121,8 @@ class _GetBannerState extends State<GetBanner> {
                         vertical: PaddingSystem.padding20),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             RichText(
                               textAlign: TextAlign.center,
@@ -167,28 +150,27 @@ class _GetBannerState extends State<GetBanner> {
                                 ],
                               ),
                             ),
-                            Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  SvgPicture.asset(
-                                    IconSystem.badge,
-                                    height: 15,
-                                    width: 15,
-                                    color: ColorSystem.complimentary,
-                                  ),
-                                  const SizedBox(
-                                    width: 04,
-                                  ),
-                                  const Text(
-                                    "High",
-                                    style: TextStyle(
-                                      fontFamily: kRubik,
-                                      fontWeight: FontWeight.w600,
-                                      color: ColorSystem.complimentary,
-                                      fontSize: SizeSystem.size12,
-                                    ),
-                                  ),
-                                ])
+                            const SizedBox(
+                              width: 20,
+                            ),
+                            SvgPicture.asset(
+                              IconSystem.badge,
+                              height: 15,
+                              width: 15,
+                              color: ColorSystem.complimentary,
+                            ),
+                            const SizedBox(
+                              width: 04,
+                            ),
+                            const Text(
+                              "High",
+                              style: TextStyle(
+                                fontFamily: kRubik,
+                                fontWeight: FontWeight.w600,
+                                color: ColorSystem.complimentary,
+                                fontSize: SizeSystem.size12,
+                              ),
+                            ),
                           ],
                         ),
                         const SizedBox(
@@ -416,165 +398,77 @@ class _GetBannerState extends State<GetBanner> {
                 ),
               ),
               Container(
-                  margin: const EdgeInsets.symmetric(
-                      vertical: PaddingSystem.padding5),
+                margin: const EdgeInsets.symmetric(
+                    vertical: PaddingSystem.padding5),
+                decoration: BoxDecoration(
+                  color: ColorSystem.pink,
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Padding(
                   padding: const EdgeInsets.symmetric(
-                      vertical: PaddingSystem.padding20,
-                      horizontal: PaddingSystem.padding20),
-                  decoration: BoxDecoration(
-                    color: ColorSystem.pink,
-                    borderRadius: BorderRadius.circular(20),
+                      horizontal: SizeSystem.size40,
+                      vertical: SizeSystem.size20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        "ORDER\nFREQUENCY",
+                        style: TextStyle(
+                          fontFamily: kRubik,
+                          fontWeight: FontWeight.w600,
+                          color: ColorSystem.white,
+                          fontSize: SizeSystem.size12,
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 05,
+                      ),
+                      const Spacer(),
+                      SvgPicture.asset(
+                        LandingImages.guitar,
+                        height: 50,
+                        width: 40,
+                        color: Colors.red,
+                      ),
+                      const Spacer(),
+                      RichText(
+                        textAlign: TextAlign.center,
+                        text: const TextSpan(
+                          style: TextStyle(
+                            fontFamily: kRubik,
+                          ),
+                          children: [
+                            TextSpan(
+                              text: '\$300% ',
+                              style: TextStyle(
+                                fontWeight: FontWeight.w700,
+                                fontSize: SizeSystem.size14,
+                                color: ColorSystem.white,
+                              ),
+                            ),
+                            TextSpan(
+                              text: '/Order',
+                              style: TextStyle(
+                                fontWeight: FontWeight.w700,
+                                fontSize: SizeSystem.size10,
+                                color: ColorSystem.white,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Text(
+                        "Weekly 1",
+                        style: TextStyle(
+                          fontFamily: kRubik,
+                          color: ColorSystem.white.withOpacity(0.4),
+                          fontSize: SizeSystem.size12,
+                        ),
+                      ),
+                    ],
                   ),
-                  child: BarChartWidget()),
+                ),
+              ),
             ]));
-  }
-
-  Widget getThirdContainer() {
-    return Expanded(
-      child: Row(
-        children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                "L. PURCHASE",
-                style: TextStyle(
-                  fontFamily: kRubik,
-                  color: ColorSystem.secondary,
-                  fontWeight: FontWeight.w500,
-                  fontSize: SizeSystem.size10,
-                ),
-              ),
-              const SizedBox(
-                height: SizeSystem.size5,
-              ),
-              RichText(
-                text: const TextSpan(
-                  style: TextStyle(
-                    fontFamily: kRubik,
-                  ),
-                  children: [
-                    TextSpan(
-                      text: '1.5 ',
-                      style: TextStyle(
-                        color: ColorSystem.primary,
-                        fontWeight: FontWeight.w700,
-                        fontSize: SizeSystem.size24,
-                      ),
-                    ),
-                    TextSpan(
-                      text: 'k',
-                      style: TextStyle(
-                        color: ColorSystem.primary,
-                        // fontWeight: FontWeight.w700,
-                        fontSize: SizeSystem.size12,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(
-            height: 50,
-            child: VerticalDivider(
-              color: Color.fromRGBO(0, 0, 0, 0.04),
-              thickness: 1,
-            ),
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                "LTV",
-                style: TextStyle(
-                  fontFamily: kRubik,
-                  color: ColorSystem.secondary,
-                  fontWeight: FontWeight.w500,
-                  fontSize: SizeSystem.size10,
-                ),
-              ),
-              const SizedBox(
-                height: SizeSystem.size5,
-              ),
-              RichText(
-                text: const TextSpan(
-                  style: TextStyle(
-                    fontFamily: kRubik,
-                  ),
-                  children: [
-                    TextSpan(
-                      text: '105.5 ',
-                      style: TextStyle(
-                        color: ColorSystem.primary,
-                        fontWeight: FontWeight.w700,
-                        fontSize: SizeSystem.size24,
-                      ),
-                    ),
-                    TextSpan(
-                      text: 'k',
-                      style: TextStyle(
-                        color: ColorSystem.primary,
-                        // fontWeight: FontWeight.w700,
-                        fontSize: SizeSystem.size12,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(
-            height: 50,
-            child: VerticalDivider(
-              color: Color.fromRGBO(0, 0, 0, 0.04),
-              thickness: 1,
-            ),
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                "AVG. ORDER",
-                style: TextStyle(
-                  fontFamily: kRubik,
-                  color: ColorSystem.secondary,
-                  fontWeight: FontWeight.w500,
-                  fontSize: SizeSystem.size10,
-                ),
-              ),
-              const SizedBox(
-                height: SizeSystem.size5,
-              ),
-              RichText(
-                text: const TextSpan(
-                  style: TextStyle(
-                    fontFamily: kRubik,
-                  ),
-                  children: [
-                    TextSpan(
-                      text: '26.2 ',
-                      style: TextStyle(
-                        color: ColorSystem.primary,
-                        fontWeight: FontWeight.w700,
-                        fontSize: SizeSystem.size24,
-                      ),
-                    ),
-                    TextSpan(
-                      text: 'k',
-                      style: TextStyle(
-                        color: ColorSystem.primary,
-                        // fontWeight: FontWeight.w700,
-                        fontSize: SizeSystem.size12,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
   }
 }
