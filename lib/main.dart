@@ -14,7 +14,7 @@ import 'presentation/screens/client_landing_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // await _acquireToken();
+  await _acquireToken();
   runApp(const MyApp());
 }
 
