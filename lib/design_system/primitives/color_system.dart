@@ -57,4 +57,6 @@ abstract class ColorSystem {
 
   /// more light for grey
   static const Color secondaryGreyBg = Color(0xFFF6F6F6);
+  // Additional dark ochre
+  static const Color darkOchre = Color(0xFFE57511);
 }

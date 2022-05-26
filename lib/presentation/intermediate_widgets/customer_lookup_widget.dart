@@ -24,6 +24,8 @@ class CustomerLookupWidget extends StatefulWidget {
 }
 
 class _CustomerLookupWidgetState extends State<CustomerLookupWidget> {
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+
   String phone = '';
   String email = '';
 
@@ -90,6 +92,8 @@ class _CustomerLookupWidgetState extends State<CustomerLookupWidget> {
     } else {
       hasRecords = true;
     }
+
+    formKey.currentState?.validate();
     setState(() {});
   }
 
@@ -97,13 +101,11 @@ class _CustomerLookupWidgetState extends State<CustomerLookupWidget> {
   void initState() {
     super.initState();
     phoneNumberController.addListener(() {
-      if (phoneFocusNode.hasFocus) {
-        phone = phoneNumberController.text;
-        phone = phone.replaceAll('(', '');
-        phone = phone.replaceAll(')', '');
-        phone = phone.replaceAll('-', '');
-        phone = phone.replaceAll(' ', '');
-      }
+      phone = phoneNumberController.text;
+      phone = phone.replaceAll('(', '');
+      phone = phone.replaceAll(')', '');
+      phone = phone.replaceAll('-', '');
+      phone = phone.replaceAll(' ', '');
       searchingByPhoneNumber = true;
       if (phone.length >= 10) {
         setState(() {
@@ -111,8 +113,6 @@ class _CustomerLookupWidgetState extends State<CustomerLookupWidget> {
         });
       }
     });
-
-    emailController.addListener(() {});
 
     emailFocusNode.addListener(() {
       if (!emailFocusNode.hasFocus) {
@@ -128,15 +128,24 @@ class _CustomerLookupWidgetState extends State<CustomerLookupWidget> {
     });
   }
 
+  double aovCalculator(double? ltv, double? lnt) {
+    if (ltv != null && lnt != null) {
+      return ltv / lnt;
+    } else {
+      return 0;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).unfocus();
       },
-      onPanUpdate: (details){
-        if(details.delta.dy > 0){
-          if(scrollController.offset <= scrollController.position.minScrollExtent){
+      onPanUpdate: (details) {
+        if (details.delta.dy > 0) {
+          if (scrollController.offset <=
+              scrollController.position.minScrollExtent) {
             Navigator.of(context).pop();
           }
         }
@@ -157,15 +166,24 @@ class _CustomerLookupWidgetState extends State<CustomerLookupWidget> {
                     viewFullScreen = true;
                   });
                 },
-                child: Container(
-                  decoration: const BoxDecoration(
-                    color: ColorSystem.white,
-                    shape: BoxShape.circle,
-                  ),
-                  padding: const EdgeInsets.all(SizeSystem.size10),
-                  child: Transform.rotate(
-                    angle: pi / 2,
-                    child: SvgPicture.asset(IconSystem.leftArrow),
+                child: InkWell(
+                  focusColor: Colors.transparent,
+                  highlightColor: Colors.transparent,
+                  hoverColor: Colors.transparent,
+                  splashColor: Colors.transparent,
+                  onTap: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Container(
+                    decoration: const BoxDecoration(
+                      color: ColorSystem.white,
+                      shape: BoxShape.circle,
+                    ),
+                    padding: const EdgeInsets.all(SizeSystem.size10),
+                    child: Transform.rotate(
+                      angle: -pi / 2,
+                      child: SvgPicture.asset(IconSystem.leftArrow),
+                    ),
                   ),
                 ),
               ),
@@ -218,143 +236,202 @@ class _CustomerLookupWidgetState extends State<CustomerLookupWidget> {
                             return Column(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                if (showPhoneField)
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: PaddingSystem.padding48),
-                                    child: GuitarCentreInputField(
-                                      focusNode: phoneFocusNode,
-                                      textEditingController:
-                                          phoneNumberController,
-                                      label: 'Phone',
-                                      hintText: '(123) 456-7890',
-                                      textInputType: TextInputType.number,
-                                      inputFormatters: [
-                                        PhoneInputFormatter(
-                                          mask: '(###) ###-####',
+                                Form(
+                                  key: formKey,
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      if (showPhoneField)
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal:
+                                                  PaddingSystem.padding48),
+                                          child: GuitarCentreInputField(
+                                            focusNode: phoneFocusNode,
+                                            textEditingController:
+                                                phoneNumberController,
+                                            label: 'Phone',
+                                            hintText: '(123) 456-7890',
+                                            textInputType: TextInputType.number,
+                                            inputFormatters: [
+                                              PhoneInputFormatter(
+                                                mask: '(###) ###-####',
+                                              ),
+                                            ],
+                                            validator: (error) {
+                                              if (hasRecords != null) {
+                                                if (!hasRecords! &&
+                                                    searchingByPhoneNumber) {
+                                                  return 'No data found';
+                                                } else {
+                                                  return null;
+                                                }
+                                              } else {
+                                                return null;
+                                              }
+                                            },
+                                            leadingIcon: IconSystem.phone,
+                                            suffixIcon: hasRecords != null
+                                                ? hasRecords!
+                                                    ? Column(
+                                                        mainAxisSize:
+                                                            MainAxisSize.min,
+                                                        children: [
+                                                          const SizedBox(
+                                                            height: 8,
+                                                          ),
+                                                          SvgPicture.asset(
+                                                            IconSystem
+                                                                .checkmark,
+                                                            color: ColorSystem
+                                                                .additionalGreen,
+                                                            height: 24,
+                                                          ),
+                                                        ],
+                                                      )
+                                                    : searchingByPhoneNumber
+                                                        ? InkWell(
+                                                            onTap: () {
+                                                              phoneNumberController
+                                                                  .clear();
+                                                              setState(() {
+                                                                hasRecords =
+                                                                    null;
+                                                                showEmailField =
+                                                                    true;
+                                                              });
+                                                              formKey
+                                                                  .currentState
+                                                                  ?.validate();
+                                                            },
+                                                            focusColor: Colors
+                                                                .transparent,
+                                                            splashColor: Colors
+                                                                .transparent,
+                                                            hoverColor: Colors
+                                                                .transparent,
+                                                            highlightColor:
+                                                                Colors
+                                                                    .transparent,
+                                                            child: Column(
+                                                              mainAxisSize:
+                                                                  MainAxisSize
+                                                                      .min,
+                                                              children: const [
+                                                                SizedBox(
+                                                                  height: 8,
+                                                                ),
+                                                                Icon(
+                                                                  CupertinoIcons
+                                                                      .clear,
+                                                                  color: ColorSystem
+                                                                      .complimentary,
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          )
+                                                        : const SizedBox
+                                                            .shrink()
+                                                : const SizedBox.shrink(),
+                                          ),
                                         ),
-                                      ],
-                                      leadingIcon: IconSystem.phone,
-                                      suffixIcon: hasRecords != null
-                                          ? hasRecords!
-                                              ? Column(
-                                                  mainAxisSize:
-                                                      MainAxisSize.min,
-                                                  children: [
-                                                    const SizedBox(
-                                                      height: 8,
-                                                    ),
-                                                    SvgPicture.asset(
-                                                      IconSystem.checkmark,
-                                                      color: ColorSystem
-                                                          .additionalGreen,
-                                                    ),
-                                                  ],
-                                                )
-                                              : searchingByPhoneNumber
-                                                  ? InkWell(
-                                                      onTap: () {
-                                                        phoneNumberController
-                                                            .clear();
-                                                        setState(() {
-                                                          hasRecords = null;
-                                                        });
-                                                      },
-                                                      focusColor:
-                                                          Colors.transparent,
-                                                      splashColor:
-                                                          Colors.transparent,
-                                                      hoverColor:
-                                                          Colors.transparent,
-                                                      highlightColor:
-                                                          Colors.transparent,
-                                                      child: Column(
+                                      if (showEmailField)
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal:
+                                                  PaddingSystem.padding48),
+                                          child: GuitarCentreInputField(
+                                            focusNode: emailFocusNode,
+                                            textEditingController:
+                                                emailController,
+                                            label: 'Email',
+                                            hintText: 'abc@xyz.com',
+                                            textInputType:
+                                                TextInputType.emailAddress,
+                                            leadingIcon:
+                                                IconSystem.messageOutline,
+                                            onChanged: (email) {
+                                              this.email = email;
+                                            },
+                                            validator: (error) {
+                                              if (hasRecords != null) {
+                                                if (!hasRecords! &&
+                                                    !searchingByPhoneNumber) {
+                                                  return 'No data found';
+                                                } else {
+                                                  return null;
+                                                }
+                                              } else {
+                                                return null;
+                                              }
+                                            },
+                                            suffixIcon: hasRecords != null
+                                                ? hasRecords!
+                                                    ? Column(
                                                         mainAxisSize:
                                                             MainAxisSize.min,
-                                                        children: const [
-                                                          SizedBox(
+                                                        children: [
+                                                          const SizedBox(
                                                             height: 8,
                                                           ),
-                                                          Icon(
-                                                            CupertinoIcons
-                                                                .clear_circled,
+                                                          SvgPicture.asset(
+                                                            IconSystem
+                                                                .checkmark,
                                                             color: ColorSystem
-                                                                .complimentary,
+                                                                .additionalGreen,
+                                                            height: 24,
                                                           ),
                                                         ],
-                                                      ),
-                                                    )
-                                                  : const SizedBox.shrink()
-                                          : const SizedBox.shrink(),
-                                    ),
+                                                      )
+                                                    : !searchingByPhoneNumber
+                                                        ? InkWell(
+                                                            onTap: () {
+                                                              emailController
+                                                                  .clear();
+                                                              setState(() {
+                                                                hasRecords =
+                                                                    null;
+                                                                showPhoneField =
+                                                                    true;
+                                                              });
+                                                              formKey
+                                                                  .currentState
+                                                                  ?.validate();
+                                                            },
+                                                            focusColor: Colors
+                                                                .transparent,
+                                                            splashColor: Colors
+                                                                .transparent,
+                                                            hoverColor: Colors
+                                                                .transparent,
+                                                            highlightColor:
+                                                                Colors
+                                                                    .transparent,
+                                                            child: Column(
+                                                              mainAxisSize:
+                                                                  MainAxisSize
+                                                                      .min,
+                                                              children: const [
+                                                                SizedBox(
+                                                                  height: 8,
+                                                                ),
+                                                                Icon(
+                                                                  CupertinoIcons
+                                                                      .clear,
+                                                                  color: ColorSystem
+                                                                      .complimentary,
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          )
+                                                        : const SizedBox
+                                                            .shrink()
+                                                : const SizedBox.shrink(),
+                                          ),
+                                        ),
+                                    ],
                                   ),
-                                if (showEmailField)
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: PaddingSystem.padding48),
-                                    child: GuitarCentreInputField(
-                                      focusNode: emailFocusNode,
-                                      textEditingController: emailController,
-                                      label: 'Email',
-                                      hintText: 'abc@xyz.com',
-                                      textInputType: TextInputType.emailAddress,
-                                      leadingIcon: IconSystem.messageOutline,
-                                      onChanged: (email) {
-                                        this.email = email;
-                                      },
-                                      suffixIcon: hasRecords != null
-                                          ? hasRecords!
-                                              ? Column(
-                                                  mainAxisSize:
-                                                      MainAxisSize.min,
-                                                  children: [
-                                                    const SizedBox(
-                                                      height: 8,
-                                                    ),
-                                                    SvgPicture.asset(
-                                                      IconSystem.checkmark,
-                                                      color: ColorSystem
-                                                          .additionalGreen,
-                                                      height: 24,
-                                                    ),
-                                                  ],
-                                                )
-                                              : !searchingByPhoneNumber
-                                                  ? InkWell(
-                                                      onTap: () {
-                                                        emailController.clear();
-                                                        setState(() {
-                                                          hasRecords = null;
-                                                        });
-                                                      },
-                                                      focusColor:
-                                                          Colors.transparent,
-                                                      splashColor:
-                                                          Colors.transparent,
-                                                      hoverColor:
-                                                          Colors.transparent,
-                                                      highlightColor:
-                                                          Colors.transparent,
-                                                      child: Column(
-                                                        mainAxisSize:
-                                                            MainAxisSize.min,
-                                                        children: const [
-                                                          SizedBox(
-                                                            height: 8,
-                                                          ),
-                                                          Icon(
-                                                            CupertinoIcons
-                                                                .clear_circled,
-                                                            color: ColorSystem
-                                                                .complimentary,
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    )
-                                                  : const SizedBox.shrink()
-                                          : const SizedBox.shrink(),
-                                    ),
-                                  ),
+                                ),
                                 if (customers.isNotEmpty)
                                   ListView.builder(
                                     padding: const EdgeInsets.symmetric(
@@ -368,17 +445,21 @@ class _CustomerLookupWidgetState extends State<CustomerLookupWidget> {
                                         (BuildContext context, int index) {
                                       return CustomerDetailsCard(
                                         customerId: customers[index].id,
-                                        firstName: customers[index].firstName,
-                                        lastName: customers[index].lastName,
+                                        name: customers[index].name ?? '--',
                                         email: customers[index].email,
                                         phone: customers[index].phone,
-                                        preferredInstrument: customers[index]
-                                            .preferredInstrument,
+                                        preferredInstrument:
+                                            customers[index].primaryInstrument,
                                         lastTransactionDate: customers[index]
                                             .lastTransactionDate,
-                                        ltv: customers[index].lifetimeNetUnits,
-                                        averageProductValue: customers[index]
-                                            .lifeTimeNetSalesAmount,
+                                        ltv: customers[index]
+                                                .lifeTimeNetSalesAmount ??
+                                            0,
+                                        averageProductValue: aovCalculator(
+                                            customers[index]
+                                                .lifeTimeNetSalesAmount,
+                                            customers[index]
+                                                .lifetimeNetTransactions),
                                         customerLevel:
                                             customers[index].medianLTVNet,
                                       );

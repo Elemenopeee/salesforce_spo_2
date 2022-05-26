@@ -30,4 +30,8 @@ abstract class IconSystem {
   static const String notePinBg = 'assets/icons/not_pin_bg.svg';
   static const String pinDark = 'assets/icons/pin_black.svg';
   static const String trash = 'assets/icons/trash.svg';
+  static const String noSales = 'assets/icons/no_sales.svg';
+  static const String noCommission = 'assets/icons/no_commission.svg';
+  static const String inProgress = 'assets/icons/in_progress.svg';
+  static const String userPlaceholder = 'assets/icons/user_placeholder.svg';
 }

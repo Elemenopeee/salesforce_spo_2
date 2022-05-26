@@ -23,6 +23,7 @@ dependencies:
   fl_chart: ^0.50.6
   r_dotted_line_border: ^0.1.1
   flutter_slidable:
+  easy_debounce: ^2.0.2+1
 
 dev_dependencies:
   flutter_launcher_icons: ^0.9.2

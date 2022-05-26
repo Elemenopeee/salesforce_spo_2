@@ -39,7 +39,6 @@ class _TabHomeState extends State<TabHome> with SingleTickerProviderStateMixin {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
     _tabController?.dispose();
   }
@@ -50,65 +49,38 @@ class _TabHomeState extends State<TabHome> with SingleTickerProviderStateMixin {
       child: SingleChildScrollView(
         child: Column(
           children: [
-            // const AppBarCustom(),
-            const SizedBox(
-              height: 30,
-            ),
             ProfileContainer(
               agentName: widget.agentName,
             ),
             const SizedBox(
-              height: 20,
+              height: SizeSystem.size20,
             ),
             const ProgressContainer(),
             const SizedBox(
-              height: 36,
+              height: SizeSystem.size36,
             ),
-            Column(
-              children: [
-                CustomTabBarExtended(
-                  padding: const EdgeInsets.symmetric(horizontal: 30),
-                  height: 40,
-                  containerColor: Colors.grey.withOpacity(0.1),
-                  containerBorderRadius: 10.0,
-                  tabBorderRadius: 10.0,
-                  tabOneName: "Open Orders",
-                  tabTwoName: "All Orders",
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.shade300,
-                      offset: const Offset(
-                        0.0,
-                        1.0,
-                      ),
-                      blurRadius: 2,
-                      spreadRadius: 2,
-                    )
-                  ],
-                  tabController: _tabController,
-                  tabColor: Colors.white,
-                  labelColor: Colors.black,
-                  unSelectLabelColor: Colors.grey,
-                  labelTextStyle: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontFamily: kRubik,
-                  ),
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: SizeSystem.size28,
+                vertical: SizeSystem.size14,
+              ),
+              child: SvgPicture.asset(IconSystem.inProgress),
+            ),
+            const SizedBox(
+              height: SizeSystem.size36,
+            ),
+            const Center(
+              child: Text(
+                'Work in progress',
+                style: TextStyle(
+                  color: ColorSystem.secondary,
+                  fontSize: SizeSystem.size12,
+                  fontFamily: kRubik,
                 ),
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 28, vertical: 14),
-                  child: SizedBox(
-                    height: 360,
-                    child: TabBarView(
-                      controller: _tabController,
-                      children: const [
-                        OpenOrderTab(),
-                        AllOrderTab(),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
+              ),
+            ),
+            const SizedBox(
+              height: SizeSystem.size36,
             ),
           ],
         ),
@@ -183,28 +155,15 @@ class _ProfileContainerState extends State<ProfileContainer> {
             ],
           ),
           const Spacer(),
-          Stack(
-            children: [
-              Container(
-                height: 60,
-                width: 60,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(25),
-                  color: Colors.pinkAccent,
-                ),
-              ),
-              Positioned(
-                top: 42,
-                child: Container(
-                  height: 15,
-                  width: 15,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(50),
-                    color: Colors.green,
-                  ),
-                ),
-              ),
-            ],
+          Container(
+            height: SizeSystem.size60,
+            width: SizeSystem.size60,
+            child: SvgPicture.asset(
+              IconSystem.userPlaceholder,
+            ),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(SizeSystem.size24),
+            ),
           ),
         ],
       ),
@@ -232,46 +191,63 @@ class _ProgressContainerState extends State<ProgressContainer> {
 
   Future<void> _getTotalSales() async {
     var agentMail = await SharedPreferenceService().getValue('agent_email');
-    if(agentMail != null){
-      var response = await HttpService().doGet(path: Endpoints.getTotalSales(agentMail));
-      totalSales = response.data['records'][0]['Sales'];
+    if (agentMail != null) {
+      var response =
+          await HttpService().doGet(path: Endpoints.getTotalSales(agentMail));
+      try {
+        totalSales = response.data['records'][0]['Sales'];
+      } catch (e) {
+        print(e);
+      }
     }
   }
 
   Future<void> _getTotalCommission() async {
     var agentMail = await SharedPreferenceService().getValue('agent_email');
-    print(agentMail);
-    if(agentMail != null){
-      var response =
-      await HttpService().doGet(path: Endpoints.getTotalCommission(agentMail));
-      totalCommission = response.data['records'][0]['commission'];
+    if (agentMail != null) {
+      var response = await HttpService()
+          .doGet(path: Endpoints.getTotalCommission(agentMail));
+      try {
+        totalCommission = response.data['records'][0]['commission'];
+      } catch (e) {
+        print(e);
+      }
     }
   }
 
   Future<void> _getTodaysSale() async {
     var agentMail = await SharedPreferenceService().getValue('agent_email');
-    if(agentMail != null){
-      var response = await HttpService().doGet(path: Endpoints.getTodaysSales(agentMail));
-      log('Response is ------------>> ${response.data}');
+    if (agentMail != null) {
+      var response =
+          await HttpService().doGet(path: Endpoints.getTodaysSales(agentMail));
       List<dynamic> records = response.data['records'];
       if (records.isNotEmpty) {
-        var saleData = records.firstWhere((element) => element['Gross_Sales_Yesterday__c'] != null);
-        todaysSale = saleData['Gross_Sales_Yesterday__c'];
+        try {
+          var saleData = records.firstWhere(
+              (element) => element['Gross_Sales_Yesterday__c'] != null);
+          todaysSale = saleData['Gross_Sales_Yesterday__c'];
+        } catch (e) {
+          print(e);
+        }
       }
     }
   }
 
   Future<void> _getTodaysCommission() async {
     var agentMail = await SharedPreferenceService().getValue('agent_email');
-    if(agentMail != null){
-      var response =
-      await HttpService().doGet(path: Endpoints.getTodaysCommission(agentMail));
-      log('Response is ------------>> ${response.data}');
+    if (agentMail != null) {
+      var response = await HttpService()
+          .doGet(path: Endpoints.getTodaysCommission(agentMail));
       List<dynamic> records = response.data['records'];
 
       if (records.isNotEmpty) {
-        var commissionData = records.firstWhere((element) => element['Comm_Amount_Yesterday__c'] != null);
-        todaysCommission = commissionData['Comm_Amount_Yesterday__c'];
+        try {
+          var commissionData = records.firstWhere(
+              (element) => element['Comm_Amount_Yesterday__c'] != null);
+          todaysCommission = commissionData['Comm_Amount_Yesterday__c'];
+        } catch (e) {
+          print(e);
+        }
       }
     }
   }
@@ -301,8 +277,8 @@ class _ProgressContainerState extends State<ProgressContainer> {
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text(
+            children: const [
+              Text(
                 "Metrics of Month",
                 style: TextStyle(
                   fontSize: 20,
@@ -313,7 +289,7 @@ class _ProgressContainerState extends State<ProgressContainer> {
               ),
               Icon(
                 Icons.more_horiz_outlined,
-                color: Colors.grey.withOpacity(0.4),
+                color: Colors.white,
                 size: 40,
               ),
             ],
@@ -361,13 +337,17 @@ class _ProgressContainerState extends State<ProgressContainer> {
                               child: SizedBox(
                                 height: 80,
                                 width: 100,
-                                child: PieChart(
-                                  PieChartData(
-                                    sections: showingSections(todaysSale, totalSales),
-                                    centerSpaceColor: const Color(0xFF8C80F8),
-                                    centerSpaceRadius: 24,
-                                  ),
-                                ),
+                                child: totalSales == 0 && totalCommission == 0
+                                    ? SvgPicture.asset(IconSystem.noSales)
+                                    : PieChart(
+                                        PieChartData(
+                                          sections: showingSections(
+                                              todaysSale, totalSales),
+                                          centerSpaceColor:
+                                              const Color(0xFF8C80F8),
+                                          centerSpaceRadius: 24,
+                                        ),
+                                      ),
                               ),
                             ),
                             const SizedBox(
@@ -378,7 +358,10 @@ class _ProgressContainerState extends State<ProgressContainer> {
                               crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
                                 Text(
-                                  totalSales == 0 ? '--' : formattedNumber(totalSales).toLowerCase(),
+                                  totalSales == 0
+                                      ? '--'
+                                      : formattedNumber(totalSales)
+                                          .toLowerCase(),
                                   style: const TextStyle(
                                     fontSize: SizeSystem.size24,
                                     color: ColorSystem.white,
@@ -387,7 +370,9 @@ class _ProgressContainerState extends State<ProgressContainer> {
                                   ),
                                 ),
                                 Text(
-                                  todaysSale == 0 ? '--' : formattedNumber(todaysSale),
+                                  todaysSale == 0
+                                      ? '--'
+                                      : formattedNumber(todaysSale),
                                   style: const TextStyle(
                                     fontSize: SizeSystem.size14,
                                     color: ColorSystem.white,
@@ -471,13 +456,18 @@ class _ProgressContainerState extends State<ProgressContainer> {
                               child: SizedBox(
                                 height: 80,
                                 width: 100,
-                                child: PieChart(
-                                  PieChartData(
-                                    sections: showingSections(todaysCommission, totalCommission),
-                                    centerSpaceColor: const Color(0xFFAF8EFF),
-                                    centerSpaceRadius: 24,
-                                  ),
-                                ),
+                                child: totalSales == 0 && totalCommission == 0
+                                    ? SvgPicture.asset(IconSystem.noCommission)
+                                    : PieChart(
+                                        PieChartData(
+                                          sections: showingSections(
+                                              todaysCommission,
+                                              totalCommission),
+                                          centerSpaceColor:
+                                              const Color(0xFFAF8EFF),
+                                          centerSpaceRadius: 24,
+                                        ),
+                                      ),
                               ),
                             ),
                             const SizedBox(
@@ -488,7 +478,10 @@ class _ProgressContainerState extends State<ProgressContainer> {
                               crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
                                 Text(
-                                  totalCommission == 0 ? '--' : formattedNumber(totalCommission).toLowerCase(),
+                                  totalCommission == 0
+                                      ? '--'
+                                      : formattedNumber(totalCommission)
+                                          .toLowerCase(),
                                   style: const TextStyle(
                                     fontSize: SizeSystem.size24,
                                     color: ColorSystem.white,
@@ -497,7 +490,9 @@ class _ProgressContainerState extends State<ProgressContainer> {
                                   ),
                                 ),
                                 Text(
-                                  todaysCommission == 0 ? '--' : formattedNumber(todaysCommission),
+                                  todaysCommission == 0
+                                      ? '--'
+                                      : formattedNumber(todaysCommission),
                                   style: const TextStyle(
                                     fontSize: SizeSystem.size14,
                                     color: ColorSystem.white,
@@ -547,7 +542,7 @@ class _ProgressContainerState extends State<ProgressContainer> {
   }
 }
 
-List<PieChartSectionData> showingSections(double todaysSale, double totalSale) {
+List<PieChartSectionData> showingSections(double today, double total) {
   return List.generate(2, (i) {
     const fontSize = 0.0;
     const radius = 10.0;
@@ -555,7 +550,7 @@ List<PieChartSectionData> showingSections(double todaysSale, double totalSale) {
       case 0:
         return PieChartSectionData(
           color: const Color(0xFF7FE3F0),
-          value: todaysSale,
+          value: today,
           radius: radius,
           titleStyle: const TextStyle(
             fontSize: fontSize,
@@ -564,7 +559,7 @@ List<PieChartSectionData> showingSections(double todaysSale, double totalSale) {
       case 1:
         return PieChartSectionData(
           color: const Color(0xFF5763A9),
-          value: totalSale,
+          value: total,
           radius: radius,
           titleStyle: const TextStyle(
             fontSize: fontSize,
@@ -576,45 +571,42 @@ List<PieChartSectionData> showingSections(double todaysSale, double totalSale) {
   });
 }
 
-List<Color> gradientColors = [
-  const Color(0xff23b6e6),
-  const Color(0xff02d39a),
-];
+// CustomTabBarExtended(
+// padding: const EdgeInsets.symmetric(horizontal: 30),
+// height: 40,
+// containerColor: Colors.grey.withOpacity(0.1),
+// containerBorderRadius: 10.0,
+// tabBorderRadius: 10.0,
+// tabOneName: "Open Orders",
+// tabTwoName: "All Orders",
+// boxShadow: [
+// BoxShadow(
+// color: Colors.grey.shade300,
+// offset: const Offset(
+// 0.0,
+// 1.0,
+// ),
+// blurRadius: 2,
+// spreadRadius: 2,
+// )
+// ],
+// tabController: _tabController,
+// tabColor: Colors.white,
+// labelColor: Colors.black,
+// unSelectLabelColor: Colors.grey,
+// labelTextStyle: const TextStyle(
+// fontWeight: FontWeight.bold,
+// fontFamily: kRubik,
+// ),
+// ),
 
-LineChartData mainData() {
-  return LineChartData(
-    titlesData: FlTitlesData(
-      show: false
-    ),
-    gridData: FlGridData(
-      show: false,
-    ),
-    borderData: FlBorderData(
-      show: false,
-    ),
-    // minX: 0,
-    // maxX: 11,
-    // minY: 0,
-    // maxY: 6,
-    lineBarsData: [
-      LineChartBarData(
-        color: Color(0xFF7265E3),
-        spots: const [
-          FlSpot(0, 3),
-          FlSpot(2.6, 2),
-          FlSpot(4.9, 5),
-          FlSpot(6.8, 3.1),
-          FlSpot(8, 4),
-          FlSpot(9.5, 3),
-          FlSpot(11, 4),
-        ],
-        isCurved: true,
-        barWidth: 5,
-        isStrokeCapRound: true,
-        dotData: FlDotData(
-          show: false,
-        ),
-      ),
-    ],
-  );
-}
+// SizedBox(
+// height: 360,
+// child: TabBarView(
+// controller: _tabController,
+// children: const [
+// OpenOrderTab(),
+// AllOrderTab(),
+// ],
+// ),
+// )
