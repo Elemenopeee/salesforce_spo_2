@@ -128,18 +128,13 @@ class _HomeScreenState extends State<HomeScreen> {
             splashColor: Colors.transparent,
             onPressed: () {
               showModalBottomSheet(
+                constraints: BoxConstraints(
+                  maxHeight: MediaQuery.of(context).size.height * 0.9
+                ),
                   isScrollControlled: true,
                   context: context,
                   builder: (BuildContext context) {
-                    return DraggableScrollableSheet(
-                      initialChildSize: 0.9,
-                      minChildSize: 0.9,
-                      maxChildSize: 1.0,
-                      builder: (BuildContext context,
-                          ScrollController scrollController) {
-                        return const CustomerLookupWidget();
-                      },
-                    );
+                    return const CustomerLookupWidget();
                   },
                   backgroundColor: Colors.transparent);
             },

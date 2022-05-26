@@ -7,6 +7,7 @@ import '../../design_system/design_system.dart';
 import '../../models/customer.dart';
 import '../../services/networking/endpoints.dart';
 import '../../services/networking/networking_service.dart';
+import '../../services/networking/http_response.dart';
 
 class SearchScreen extends StatefulWidget {
   const SearchScreen({Key? key}) : super(key: key);
@@ -38,10 +39,30 @@ class _SearchScreenState extends State<SearchScreen> {
       tokenRequired: true,
     );
     isLoadingData = false;
+    resultSorter(data);
+  }
+
+  void resultSorter(HttpResponse data){
+    var temporaryCustomersList = <Customer>[];
+
     try {
       for (var record in data.data['records']) {
-        customers.add(Customer.fromJson(json: record));
+        temporaryCustomersList.add(Customer.fromJson(json: record));
       }
+
+      if(temporaryCustomersList.isNotEmpty){
+        temporaryCustomersList.sort((a,b) {
+          if(a.name != null &&  b.name != null){
+            return a.name!.compareTo(b.name!);
+          }
+          else {
+            return -1;
+          }
+        });
+      }
+
+      customers.addAll(temporaryCustomersList);
+
     } catch (error) {
       print(error);
     }
