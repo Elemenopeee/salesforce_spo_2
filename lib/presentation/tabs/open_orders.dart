@@ -79,10 +79,11 @@ class _OpenOrderTabState extends State<OpenOrderTab>
                 amount: '\$ ${openOrders[index].orderAmount.toString()}',
                 date: formattedDate(openOrders[index].createdDate ??
                     DateTime.now().toString()),
-                items: '${openOrders[index].items} items',
+                items: openOrders[index].items ?? 0,
                 orderId: openOrders[index].orderNumber ?? '--',
                 orderPercentage: '',
                 orderStatus: openOrders[index].orderStatus ?? '--',
+                showStatusLabel: true,
               );
             },
             separatorBuilder: (BuildContext context, int index) {

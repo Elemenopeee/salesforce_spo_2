@@ -1,4 +1,6 @@
+import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../common_widgets/customer_details_card.dart';
 import '../../design_system/design_system.dart';
@@ -26,19 +28,30 @@ class _SearchScreenState extends State<SearchScreen> {
   Future<void>? futureCustomers;
 
   Future<void> getCustomer(int offset) async {
+    isLoadingData = true;
+    if (offset == 0) {
+      customers.clear();
+    }
+
     var data = await HttpService().doGet(
       path: Endpoints.getCustomerSearchByName(name, offset),
       tokenRequired: true,
     );
-
-    customers.clear();
-
+    isLoadingData = false;
     try {
       for (var record in data.data['records']) {
         customers.add(Customer.fromJson(json: record));
       }
     } catch (error) {
       print(error);
+    }
+  }
+
+  double aovCalculator(double? ltv, double? lnt) {
+    if (ltv != null && lnt != null) {
+      return ltv / lnt;
+    } else {
+      return 0;
     }
   }
 
@@ -55,68 +68,108 @@ class _SearchScreenState extends State<SearchScreen> {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          SizedBox(
-            height: 20,
+          const SizedBox(
+            height: SizeSystem.size20,
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20,),
-            child: TextFormField(
-              onChanged: (name){
-                this.name = name;
-                if(this.name.length >= 3){
-                  setState(() {
-                    futureCustomers = getCustomer(offset);
-                  });
-                }
-              },
-              decoration: const InputDecoration(
-                hintText: 'Search Name',
-                hintStyle: TextStyle(
-                  color: ColorSystem.secondary,
-                  fontSize: SizeSystem.size18,
-                ),
-                focusedBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(
-                    color: ColorSystem.primary,
-                    width: 1,
+            padding: const EdgeInsets.symmetric(
+              horizontal: 40,
+              vertical: 20,
+            ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                InkWell(
+                  onTap: Navigator.of(context).pop,
+                  child: SvgPicture.asset(
+                    IconSystem.back,
+                    width: 20,
+                    height: 20,
                   ),
+                  focusColor: Colors.transparent,
+                  splashColor: Colors.transparent,
+                  hoverColor: Colors.transparent,
+                  highlightColor: Colors.transparent,
                 ),
-              ),
+                const SizedBox(
+                  width: SizeSystem.size20,
+                ),
+                Expanded(
+                  child: TextFormField(
+                    onChanged: (name) {
+                      offset = 0;
+                      this.name = name;
+                      EasyDebounce.cancelAll();
+                      if (this.name.length >= 3) {
+                        EasyDebounce.debounce(
+                            'search_name_debounce',
+                            Duration(seconds: 1),
+                            () {
+                          setState(() {
+                            futureCustomers = getCustomer(offset);
+                          });
+                        });
+                      }
+                    },
+                    decoration: const InputDecoration(
+                      hintText: 'Search Name',
+                      hintStyle: TextStyle(
+                        color: ColorSystem.secondary,
+                        fontSize: SizeSystem.size18,
+                      ),
+                      focusedBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(
+                          color: ColorSystem.primary,
+                          width: 1,
+                        ),
+                      ),
+                    ),
+                  ),
+                )
+              ],
             ),
           ),
           Expanded(
             child: FutureBuilder(
               future: futureCustomers,
               builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
-                switch(snapshot.connectionState){
+                switch (snapshot.connectionState) {
                   case ConnectionState.waiting:
                   case ConnectionState.active:
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
                   case ConnectionState.none:
                   case ConnectionState.done:
-                    return ListView.builder(
-                      controller: scrollController,
-                      padding: const EdgeInsets.symmetric(horizontal: 30),
-                      shrinkWrap: true,
-                      itemCount: customers.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        return CustomerDetailsCard(
-                          customerId: customers[index].id,
-                          firstName: customers[index].firstName,
-                          lastName: customers[index].lastName,
-                          email: customers[index].email,
-                          phone: customers[index].phone,
-                          preferredInstrument:
-                          customers[index].preferredInstrument,
-                          lastTransactionDate: customers[index].lastTransactionDate,
-                          ltv: customers[index].lifetimeNetUnits,
-                          averageProductValue: customers[index].lifeTimeNetSalesAmount,
-                          customerLevel: customers[index].medianLTVNet,
-                        );
-                      },
+                  if (isLoadingData && customers.isEmpty) {
+                    return const Center(
+                      child: CircularProgressIndicator(
+                        color: ColorSystem.primary,
+                      ),
                     );
+                  }
+                  return ListView.builder(
+                    controller: scrollController,
+                    padding: const EdgeInsets.symmetric(horizontal: 30),
+                    shrinkWrap: true,
+                    itemCount: customers.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return CustomerDetailsCard(
+                        customerId: customers[index].id,
+                        name: customers[index].name ?? '--',
+                        email: customers[index].email,
+                        phone: customers[index].phone,
+                        preferredInstrument:
+                        customers[index].primaryInstrument,
+                        lastTransactionDate:
+                        customers[index].lastTransactionDate,
+                        ltv: customers[index].lifeTimeNetSalesAmount ?? 0,
+                        averageProductValue: aovCalculator(
+                            customers[index]
+                                .lifeTimeNetSalesAmount,
+                            customers[index]
+                                .lifetimeNetTransactions),
+                        customerLevel: customers[index].medianLTVNet,
+                      );
+                    },
+                  );
                 }
               },
             ),
@@ -126,20 +179,20 @@ class _SearchScreenState extends State<SearchScreen> {
     );
   }
 
-  void scrollListener(){
+  void scrollListener() {
     var maxExtent = scrollController.position.maxScrollExtent;
     var loadingPosition = maxExtent - (maxExtent * 0.4);
-    if(scrollController.position.extentAfter < loadingPosition && !isLoadingData){
-      offset = offset + 20;
-      setState((){
-        isLoadingData = true;
+    if (scrollController.position.extentAfter < loadingPosition &&
+        !isLoadingData) {
+      offset = offset + 10;
+      setState(() {
         futureCustomers = getCustomer(offset);
       });
     }
   }
 
   @override
-  void dispose(){
+  void dispose() {
     scrollController.removeListener(scrollListener);
     scrollController.dispose();
     super.dispose();

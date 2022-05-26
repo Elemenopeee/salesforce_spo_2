@@ -1,3 +1,4 @@
+import 'package:salesforce_spo/utils/constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SharedPreferenceService {
@@ -9,7 +10,7 @@ class SharedPreferenceService {
 
   /// Set user auth token
   void setUserToken({required String authToken}) {
-    setKey(key: 'token', value: authToken);
+    setKey(key: kAccessTokenKey, value: authToken);
   }
 
   /// Get user auth token

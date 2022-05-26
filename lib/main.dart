@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:ui';
 
 import 'package:azure_ad_authentication/azure_ad_authentication.dart';
@@ -42,7 +41,9 @@ Future<String> getResult({bool isAcquireToken = true}) async {
   try {
     if (isAcquireToken) {
       userAdModel = await pca.acquireToken(scopes: kScopes);
-      SharedPreferenceService().setKey(key: 'agent_email', value: '${userAdModel?.mail}');
+      SharedPreferenceService()
+          .setKey(key: 'agent_email', value: '${userAdModel?.mail}');
+
       // userAdModel.
     } else {
       userAdModel = await pca.acquireTokenSilent(scopes: kScopes);
@@ -118,7 +119,7 @@ class _HomeScreenState extends State<HomeScreen> {
       extendBodyBehindAppBar: true,
       appBar: getAppBar,
       body: TabHome(
-        agentName: userAdModel?.givenName ?? 'John Doe',
+        agentName: userAdModel?.givenName ?? 'there,',
       ),
       bottomNavigationBar: NotchedBottomNavigationBar(
         actions: [
@@ -126,19 +127,27 @@ class _HomeScreenState extends State<HomeScreen> {
             focusColor: Colors.transparent,
             splashColor: Colors.transparent,
             onPressed: () {
-              // showModalBottomSheet(
-              //     isScrollControlled: true,
-              //     context: context,
-              //     builder: (BuildContext context) {
-              //       return const CustomerLookupWidget();
-              //     },
-              //     backgroundColor: Colors.transparent);
+              showModalBottomSheet(
+                  isScrollControlled: true,
+                  context: context,
+                  builder: (BuildContext context) {
+                    return DraggableScrollableSheet(
+                      initialChildSize: 0.9,
+                      minChildSize: 0.9,
+                      maxChildSize: 1.0,
+                      builder: (BuildContext context,
+                          ScrollController scrollController) {
+                        return const CustomerLookupWidget();
+                      },
+                    );
+                  },
+                  backgroundColor: Colors.transparent);
             },
             icon: SvgPicture.asset(
               IconSystem.user,
               width: 24,
               height: 24,
-              color: ColorSystem.white,
+              color: ColorSystem.primary,
             ),
           ),
           IconButton(
@@ -149,7 +158,7 @@ class _HomeScreenState extends State<HomeScreen> {
               IconSystem.feed,
               width: 24,
               height: 24,
-              color: ColorSystem.white,
+              color: ColorSystem.primary,
             ),
           ),
           IconButton(
@@ -160,7 +169,7 @@ class _HomeScreenState extends State<HomeScreen> {
               IconSystem.sparkle,
               width: 24,
               height: 24,
-              color: ColorSystem.white,
+              color: ColorSystem.primary,
             ),
           ),
           IconButton(
@@ -171,32 +180,17 @@ class _HomeScreenState extends State<HomeScreen> {
               IconSystem.more,
               width: 24,
               height: 24,
-              color: ColorSystem.white,
+              color: ColorSystem.primary,
             ),
           ),
         ],
         centerButton: FloatingActionButton(
           backgroundColor: ColorSystem.primary,
           onPressed: () async {
-            showModalBottomSheet(
-                isScrollControlled: true,
-                context: context,
-                builder: (BuildContext context) {
-                  return DraggableScrollableSheet(
-                    snap: true,
-                    initialChildSize: 0.9,
-                    minChildSize: 0.9,
-                    maxChildSize: 1.0,
-                    builder: (BuildContext context,
-                        ScrollController scrollController) {
-                      return const CustomerLookupWidget();
-                    },
-                  );
-                },
-                backgroundColor: Colors.transparent);
+
           },
           child: SvgPicture.asset(
-            IconSystem.user,
+            IconSystem.plus,
             width: 24,
             height: 24,
             color: ColorSystem.white,

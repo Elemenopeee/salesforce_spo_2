@@ -26,4 +26,8 @@ abstract class IconSystem {
   static const String sun = 'assets/icons/sun.svg';
   static const String user = 'assets/icons/user.svg';
   static const String walk = 'assets/icons/walk.svg';
+  static const String noSales = 'assets/icons/no_sales.svg';
+  static const String noCommission = 'assets/icons/no_commission.svg';
+  static const String inProgress = 'assets/icons/in_progress.svg';
+  static const String userPlaceholder = 'assets/icons/user_placeholder.svg';
 }

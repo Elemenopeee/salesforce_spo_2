@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:salesforce_spo/services/networking/endpoints.dart';
@@ -15,12 +14,19 @@ class HttpService {
       {required String path,
       Map<String, dynamic>? params,
       bool tokenRequired = true}) async {
+    String? accessToken =
+        await SharedPreferenceService().getUserToken(key: kAccessTokenKey);
 
-    var tokenApi = await doPost(
-        path: '${Endpoints.kBaseURL}$authURL',
-        body: authJson, headers: authHeaders);
+    if (accessToken == null) {
+      var tokenApi = await doPost(
+          path: '${Endpoints.kBaseURL}$authURL',
+          body: authJson,
+          headers: authHeaders);
 
-    var accessToken = tokenApi.data['access_token'] ;
+      String accessToken = tokenApi.data['access_token'];
+
+      SharedPreferenceService().setUserToken(authToken: accessToken);
+    }
 
     try {
       Map<String, String> headers = {};
@@ -29,10 +35,7 @@ class HttpService {
         // SharedPreferenceService sharedPreferences = SharedPreferenceService();
         // GET TOKEN
         // String? token = await sharedPreferences.getUserToken(key: 'token');
-        headers.putIfAbsent(
-            'Authorization',
-            () =>
-                'OAuth $accessToken');
+        headers.putIfAbsent('Authorization', () => 'OAuth $accessToken');
       }
       // var uri = Uri.https(kBaseURL, path, params);
       final response = await http.get(Uri.parse(path), headers: headers);
@@ -47,6 +50,24 @@ class HttpService {
           return HttpResponse(status: true, message: '', data: data);
         case 401: // token expired
         case 403:
+          var tokenApi = await doPost(
+              path: '${Endpoints.kBaseURL}$authURL',
+              body: authJson,
+              headers: authHeaders);
+
+          String accessToken = tokenApi.data['access_token'];
+          SharedPreferenceService().setUserToken(authToken: accessToken);
+
+          final response = await http.get(Uri.parse(path), headers: headers);
+          dynamic data; // set decoded body response
+          if (response.body.isNotEmpty) {
+            data = json.decode(response.body);
+          }
+
+          if (response.statusCode == 200) {
+            return HttpResponse(status: true, message: '', data: data);
+          }
+
           return HttpResponse(status: false, message: '');
         case 400:
           return HttpResponse(status: false, message: '');
@@ -69,10 +90,9 @@ class HttpService {
       {required String path,
       dynamic body,
       dynamic params,
-        dynamic headers,
+      dynamic headers,
       bool tokenRequired = false}) async {
     try {
-
       // check if token is required then add bearer token in header
       // if (tokenRequired) {
       //   SharedPreferenceService sharedPreferences = SharedPreferenceService();
@@ -80,8 +100,8 @@ class HttpService {
       //   String? token = await sharedPreferences.getUserToken(key: 'token');
       //   headers.putIfAbsent('Authorization', () => 'Bearer $token');
       // }
-      final response = await http.post(Uri.parse(path),
-          body: body, headers: headers);
+      final response =
+          await http.post(Uri.parse(path), body: body, headers: headers);
 
       print(response.statusCode);
       print('Here ${response.body}');

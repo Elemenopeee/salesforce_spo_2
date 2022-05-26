@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:salesforce_spo/design_system/design_system.dart';
 import 'package:salesforce_spo/design_system/primitives/color_system.dart';
 import 'package:salesforce_spo/utils/constants.dart';
@@ -7,7 +8,7 @@ class OrderWidget extends StatelessWidget {
   final String name;
   final String amount;
   final String date;
-  final String items;
+  final double items;
   final String orderId;
   final String orderPercentage;
   final String? orderStatus;
@@ -24,6 +25,14 @@ class OrderWidget extends StatelessWidget {
     this.orderStatus,
     this.showStatusLabel = false,
   }) : super(key: key);
+
+  String _formattedNumber(double value) {
+    var f = NumberFormat.compact(locale: "en_US");
+    return f.format(value);
+  }
+
+  String get _formattedItems =>
+      '${_formattedNumber(items)} ${items > 1 ? 'items' : 'item'}';
 
   @override
   Widget build(BuildContext context) {
@@ -80,7 +89,7 @@ class OrderWidget extends StatelessWidget {
                           color: orderStatus == 'Draft'
                               ? ColorSystem.complimentary.withOpacity(0.2)
                               : orderStatus == 'Completed'
-                                  ? ColorSystem.additionalGreen
+                                  ? ColorSystem.additionalGreen.withOpacity(0.2)
                                   : ColorSystem.white,
                         ),
                         padding: const EdgeInsets.symmetric(
@@ -125,7 +134,7 @@ class OrderWidget extends StatelessWidget {
                 height: 04,
               ),
               Text(
-                items,
+                _formattedItems,
                 style: const TextStyle(
                   fontSize: 12,
                   fontFamily: kRubik,
