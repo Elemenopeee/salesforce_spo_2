@@ -7,10 +7,8 @@ import '../utils/constants.dart';
 
 class Promo extends StatelessWidget {
   final String title;
-  final String imgURL;
   final String date;
-  const Promo(
-      {Key? key, required this.title, required this.imgURL, required this.date})
+  const Promo({Key? key, required this.title, required this.date})
       : super(key: key);
 
   @override
@@ -27,13 +25,6 @@ class Promo extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(10),
-                child: Image.network(imgURL,
-                    height: SizeSystem.size70,
-                    width: SizeSystem.size70,
-                    fit: BoxFit.cover),
-              ),
               const SizedBox(
                 width: SizeSystem.size20,
               ),
