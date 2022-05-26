@@ -2,16 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:salesforce_spo/common_widgets/client_feature_tabs_list.dart';
 import 'package:salesforce_spo/common_widgets/get_banner.dart';
-import 'package:salesforce_spo/common_widgets/open_order_list.dart';
-import 'package:salesforce_spo/common_widgets/recommendation_list.dart';
-import 'package:salesforce_spo/common_widgets/related_offer_list.dart';
 import 'package:salesforce_spo/design_system/design_system.dart';
 import 'package:salesforce_spo/design_system/primitives/landing_images.dart';
-import 'package:salesforce_spo/presentation/screens/tab_screens/notes_screen.dart';
-import 'package:salesforce_spo/presentation/screens/tab_screens/promos_screen.dart';
-
 import '../../utils/constants.dart';
-import 'tab_screens/case_screen.dart';
 
 class ClientLandingScreen extends StatefulWidget {
   const ClientLandingScreen({Key? key}) : super(key: key);
