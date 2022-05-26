@@ -118,7 +118,7 @@ class _ClientFeatureTabsListState extends State<ClientFeatureTabsList>
               OrderHistoryList(),
               NotesList(),
               CasesProductList(),
-              PromosList(),
+              PromoList(),
             ]),
           )
         ]),
