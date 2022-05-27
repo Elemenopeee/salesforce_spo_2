@@ -1,15 +1,14 @@
 import 'dart:developer';
-import 'dart:ui';
 
 import 'package:azure_ad_authentication/azure_ad_authentication.dart';
 import 'package:azure_ad_authentication/exeption.dart';
 import 'package:azure_ad_authentication/model/user_ad.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:salesforce_spo/common_widgets/notched_bottom_navigation_bar.dart';
 import 'package:salesforce_spo/design_system/design_system.dart';
 import 'package:salesforce_spo/presentation/intermediate_widgets/customer_lookup_widget.dart';
+import 'package:salesforce_spo/presentation/screens/recent_order_history_tab.dart';
 import 'package:salesforce_spo/presentation/tabs/home_tab.dart';
 import 'package:salesforce_spo/utils/constants.dart';
 
@@ -77,7 +76,8 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const HomeScreen(),
+      debugShowCheckedModeBanner: false,
+      home: const RecentOrderHistoryTab(),
     );
   }
 }
@@ -118,8 +118,8 @@ class _HomeScreenState extends State<HomeScreen> {
       backgroundColor: Colors.white,
       extendBodyBehindAppBar: true,
       appBar: getAppBar,
-      body: TabHome(
-        agentName: userAdModel?.givenName ?? 'John Doe',
+      body: const TabHome(
+        agentName: 'John Doe',
       ),
       bottomNavigationBar: NotchedBottomNavigationBar(
         actions: [
@@ -127,13 +127,13 @@ class _HomeScreenState extends State<HomeScreen> {
             focusColor: Colors.transparent,
             splashColor: Colors.transparent,
             onPressed: () {
-              // showModalBottomSheet(
-              //     isScrollControlled: true,
-              //     context: context,
-              //     builder: (BuildContext context) {
-              //       return const CustomerLookupWidget();
-              //     },
-              //     backgroundColor: Colors.transparent);
+              showModalBottomSheet(
+                  isScrollControlled: true,
+                  context: context,
+                  builder: (BuildContext context) {
+                    return const CustomerLookupWidget();
+                  },
+                  backgroundColor: Colors.transparent);
             },
             icon: SvgPicture.asset(
               IconSystem.user,
