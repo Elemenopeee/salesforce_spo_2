@@ -1,11 +1,10 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:salesforce_spo/common_widgets/feature_tab_widget.dart';
+import 'package:salesforce_spo/models/feature_tab_model.dart';
 
 import '../design_system/primitives/color_system.dart';
 import '../design_system/primitives/landing_images.dart';
 import '../design_system/primitives/size_system.dart';
-import '../utils/constants.dart';
 
 class ClientFeatureTabsList extends StatefulWidget {
   const ClientFeatureTabsList({Key? key}) : super(key: key);
@@ -17,28 +16,32 @@ class ClientFeatureTabsList extends StatefulWidget {
 class _ClientFeatureTabsListState extends State<ClientFeatureTabsList> {
   int selectedList = 0;
 
-  var listOfFeatureImages = [
-    LandingImages.activityLite,
-    LandingImages.orderLite,
-    LandingImages.history,
-    LandingImages.notes,
-    LandingImages.cases,
-  ];
-
-  var listOfFeatureDarkImages = [
-    LandingImages.activityDark,
-    LandingImages.orderDark,
-    LandingImages.history,
-    LandingImages.notes,
-    LandingImages.cases,
-  ];
-
-  var listOfFeature = [
-    "Activity",
-    "Orders",
-    "History",
-    "Notes",
-    "Cases",
+  List<FeatureTabModel> featureTabData = [
+    FeatureTabModel(
+      selectedImgUrl: LandingImages.activityLite,
+      unSelectedImgUrl: LandingImages.activityDark,
+      featureTabName: "Activity",
+    ),
+    FeatureTabModel(
+      selectedImgUrl: LandingImages.orderLite,
+      unSelectedImgUrl: LandingImages.orderDark,
+      featureTabName: "Orders",
+    ),
+    FeatureTabModel(
+      selectedImgUrl: LandingImages.history,
+      unSelectedImgUrl: LandingImages.history,
+      featureTabName: "History",
+    ),
+    FeatureTabModel(
+      selectedImgUrl: LandingImages.notes,
+      unSelectedImgUrl: LandingImages.notes,
+      featureTabName: "Notes",
+    ),
+    FeatureTabModel(
+      selectedImgUrl: LandingImages.cases,
+      unSelectedImgUrl: LandingImages.cases,
+      featureTabName: "Cases",
+    ),
   ];
 
   @override
@@ -47,67 +50,31 @@ class _ClientFeatureTabsListState extends State<ClientFeatureTabsList> {
       height: 100,
       width: double.infinity,
       child: ListView.builder(
-          itemCount: listOfFeature.length,
+          itemCount: featureTabData.length,
           shrinkWrap: true,
           scrollDirection: Axis.horizontal,
           padding: const EdgeInsets.symmetric(horizontal: SizeSystem.size18),
           itemBuilder: (context, index) {
-            return getSingleFeatureList(context, index);
+            var item = featureTabData[index];
+            return FeatureTabWidget(
+              image: (selectedList == index)
+                  ? item.selectedImgUrl
+                  : item.unSelectedImgUrl,
+              borderColor:
+                  (selectedList == index) ? Colors.black : Colors.transparent,
+              borderRadius: BorderRadius.circular(SizeSystem.size15),
+              onTap: () {
+                setState(() {
+                  (selectedList = index);
+                });
+              },
+              containerBgColor: ColorSystem.greyBg,
+              tabName: item.featureTabName,
+              textColor: (selectedList == index)
+                  ? ColorSystem.primary
+                  : ColorSystem.secondary,
+            );
           }),
-    );
-  }
-
-  Widget getSingleFeatureList(BuildContext context, int index) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
-      children: [
-        InkWell(
-          onTap: () {
-            setState(() {
-              selectedList = index;
-            });
-          },
-          child: Column(
-            children: [
-              Container(
-                height: 60,
-                width: 60,
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: (selectedList == index)
-                        ? Colors.black
-                        : Colors.transparent,
-                  ),
-                  borderRadius: BorderRadius.circular(15),
-                  color: ColorSystem.greyBg,
-                ),
-                child: Center(
-                  child: SvgPicture.asset(
-                    (selectedList == index)
-                        ? listOfFeatureDarkImages[index]
-                        : listOfFeatureImages[index],
-                  ),
-                ),
-              ),
-              const SizedBox(
-                height: 15,
-              ),
-              Text(
-                listOfFeature[index],
-                style: TextStyle(
-                    color: (selectedList == index)
-                        ? ColorSystem.primary
-                        : ColorSystem.secondary,
-                    fontFamily: kRubik,
-                    fontSize: SizeSystem.size14),
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(
-          width: SizeSystem.size18,
-        ),
-      ],
     );
   }
 }

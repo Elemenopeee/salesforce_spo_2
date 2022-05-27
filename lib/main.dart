@@ -77,7 +77,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       debugShowCheckedModeBanner: false,
-      home:  const CasesTab(),
+      home: const CasesTab(),
     );
   }
 }

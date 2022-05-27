@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:salesforce_spo/common_widgets/order_history_widget.dart';
 import 'package:salesforce_spo/design_system/design_system.dart';
 import 'package:salesforce_spo/models/order_history_model.dart';
 
@@ -50,46 +51,12 @@ class OrderHistoryList extends StatelessWidget {
         physics: const NeverScrollableScrollPhysics(),
         shrinkWrap: true,
         itemBuilder: (context, index) {
-          return getSingleFeatureList(context, index);
+          var item = orderHistoryData[index];
+          return OrderHistoryWidget(
+            orderItemsName: item?.orderStatus,
+            orderStatus: item?.orderStatus,
+            orderDate: item?.date,
+          );
         });
-  }
-
-  Widget getSingleFeatureList(BuildContext context, int index) {
-    var item = orderHistoryData[index];
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 50),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            item?.orderStatus ?? "",
-            style: const TextStyle(
-                fontSize: SizeSystem.size18,
-                color: ColorSystem.primaryTextColor),
-          ),
-          const SizedBox(
-            height: SizeSystem.size5,
-          ),
-          Text(
-            item?.orderItemsName ?? "",
-            style: const TextStyle(
-                fontSize: SizeSystem.size18,
-                color: ColorSystem.primaryTextColor),
-          ),
-          const SizedBox(
-            height: SizeSystem.size5,
-          ),
-          Text(
-            item?.date ?? "",
-            style: const TextStyle(
-                fontSize: SizeSystem.size16, color: ColorSystem.secondary),
-          ),
-          const Divider(
-            thickness: 1,
-            color: ColorSystem.greyBg,
-          )
-        ],
-      ),
-    );
   }
 }

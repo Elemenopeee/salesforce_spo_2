@@ -2,10 +2,6 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
 class BarChartWidget extends StatelessWidget {
-  // final List<Sector> sectors;
-  //
-  // BarChartWidget(this.sectors);
-
   @override
   Widget build(BuildContext context) {
     return AspectRatio(
