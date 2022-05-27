@@ -45,6 +45,6 @@ abstract class ColorSystem {
   /// Additional Text color
   static const Color primaryTextColor = Color(0xFF2D3142);
 
-
-
+  ///Divider Color
+  static const Color greyDivider = Color(0xFFEEEEEE);
 }

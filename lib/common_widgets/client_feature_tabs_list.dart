@@ -18,19 +18,19 @@ class _ClientFeatureTabsListState extends State<ClientFeatureTabsList> {
 
   List<FeatureTabModel> featureTabData = [
     FeatureTabModel(
-      selectedImgUrl: LandingImages.activityLite,
-      unSelectedImgUrl: LandingImages.activityDark,
-      featureTabName: "Activity",
-    ),
-    FeatureTabModel(
       selectedImgUrl: LandingImages.orderLite,
       unSelectedImgUrl: LandingImages.orderDark,
       featureTabName: "Orders",
     ),
     FeatureTabModel(
+      selectedImgUrl: LandingImages.activityLite,
+      unSelectedImgUrl: LandingImages.activityDark,
+      featureTabName: "Recom.",
+    ),
+    FeatureTabModel(
       selectedImgUrl: LandingImages.history,
       unSelectedImgUrl: LandingImages.history,
-      featureTabName: "History",
+      featureTabName: "Recent",
     ),
     FeatureTabModel(
       selectedImgUrl: LandingImages.notes,
@@ -38,8 +38,8 @@ class _ClientFeatureTabsListState extends State<ClientFeatureTabsList> {
       featureTabName: "Notes",
     ),
     FeatureTabModel(
-      selectedImgUrl: LandingImages.cases,
-      unSelectedImgUrl: LandingImages.cases,
+      selectedImgUrl: LandingImages.casesLight,
+      unSelectedImgUrl: LandingImages.casesDark,
       featureTabName: "Cases",
     ),
   ];

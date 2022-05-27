@@ -1,18 +1,27 @@
 class CasesProductModel {
-  final String productName;
-  final String productStatus;
-  final String productImgUrl;
+  final String? casesName;
+  final String? casesDate;
+  final String? casesStatus;
+  final String? caseNumber;
+  final String? casePriorityStatus;
+  final String? userName;
 
-  CasesProductModel({
-    required this.productName,
-    required this.productStatus,
-    required this.productImgUrl,
-  });
+  CasesProductModel(
+      {this.casesName,
+      this.casesDate,
+      this.casesStatus,
+      this.caseNumber,
+      this.casePriorityStatus,
+      this.userName});
 
   factory CasesProductModel.fromJson(Map<String, dynamic> json) {
     return CasesProductModel(
-        productName: json['productName'],
-        productStatus: json['productStatus'],
-        productImgUrl: json['productImgUrl']);
+      casesName: json['casesName'],
+      casesDate: json['casesDate'],
+      casesStatus: json['casesStatus'],
+      caseNumber: json['caseNumber'],
+      casePriorityStatus: json['casePriorityStatus'],
+      userName: json['userName'],
+    );
   }
 }

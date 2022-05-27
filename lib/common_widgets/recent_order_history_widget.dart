@@ -1,31 +1,35 @@
 import 'package:flutter/material.dart';
+import 'package:salesforce_spo/utils/constants.dart';
 
 import '../design_system/primitives/color_system.dart';
 import '../design_system/primitives/size_system.dart';
 
-class OrderHistoryWidget extends StatelessWidget {
-  final String? orderStatus;
-  final String? orderItemsName;
+class RecentOrderHistoryWidget extends StatelessWidget {
+  final String? orderTitle;
+  final String? orderDescription;
   final String? orderDate;
 
-  const OrderHistoryWidget({
+  const RecentOrderHistoryWidget({
     Key? key,
-    this.orderStatus,
-    this.orderItemsName,
     this.orderDate,
+    this.orderTitle,
+    this.orderDescription,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: SizeSystem.size50),
+      padding: const EdgeInsets.only(
+          left: SizeSystem.size50, right: SizeSystem.size20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            orderStatus!,
+            orderTitle!,
             style: const TextStyle(
-              fontSize: SizeSystem.size18,
+              fontSize: SizeSystem.size14,
+              fontFamily: kRubik,
+              fontWeight: FontWeight.w600,
               color: ColorSystem.primaryTextColor,
             ),
           ),
@@ -33,9 +37,10 @@ class OrderHistoryWidget extends StatelessWidget {
             height: SizeSystem.size5,
           ),
           Text(
-            orderItemsName!,
+            orderDescription!,
             style: const TextStyle(
-              fontSize: SizeSystem.size18,
+              fontSize: SizeSystem.size14,
+              fontFamily: kRubik,
               color: ColorSystem.primaryTextColor,
             ),
           ),
@@ -45,7 +50,8 @@ class OrderHistoryWidget extends StatelessWidget {
           Text(
             orderDate!,
             style: const TextStyle(
-              fontSize: SizeSystem.size16,
+              fontSize: SizeSystem.size12,
+              fontFamily: kRubik,
               color: ColorSystem.secondary,
             ),
           ),

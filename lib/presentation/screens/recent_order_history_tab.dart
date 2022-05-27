@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:salesforce_spo/common_widgets/order_history_list.dart';
+import 'package:salesforce_spo/common_widgets/recent_order_history_list.dart';
 
 import '../../common_widgets/client_feature_tabs_list.dart';
 import '../../common_widgets/get_banner.dart';
@@ -9,8 +9,8 @@ import '../../design_system/primitives/padding_system.dart';
 import '../../design_system/primitives/size_system.dart';
 import '../../utils/constants.dart';
 
-class OrderHistoryTab extends StatelessWidget {
-  const OrderHistoryTab({Key? key}) : super(key: key);
+class RecentOrderHistoryTab extends StatelessWidget {
+  const RecentOrderHistoryTab({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -66,7 +66,7 @@ class OrderHistoryTab extends StatelessWidget {
               const SizedBox(
                 height: SizeSystem.size25,
               ),
-              OrderHistoryList(),
+              RecentOrderHistoryList(),
             ],
           ),
         ),

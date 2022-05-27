@@ -8,13 +8,13 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:salesforce_spo/common_widgets/notched_bottom_navigation_bar.dart';
 import 'package:salesforce_spo/design_system/design_system.dart';
 import 'package:salesforce_spo/presentation/intermediate_widgets/customer_lookup_widget.dart';
-import 'package:salesforce_spo/presentation/screens/cases_tab.dart';
+import 'package:salesforce_spo/presentation/screens/recent_order_history_tab.dart';
 import 'package:salesforce_spo/presentation/tabs/home_tab.dart';
 import 'package:salesforce_spo/utils/constants.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // await _acquireToken();
+  await _acquireToken();
   runApp(const MyApp());
 }
 
@@ -77,7 +77,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       debugShowCheckedModeBanner: false,
-      home: const CasesTab(),
+      home: const RecentOrderHistoryTab(),
     );
   }
 }

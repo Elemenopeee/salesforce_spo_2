@@ -3,9 +3,6 @@ import 'package:salesforce_spo/common_widgets/cases_product_widget.dart';
 import 'package:salesforce_spo/design_system/design_system.dart';
 import 'package:salesforce_spo/models/cases_product_model.dart';
 
-import '../design_system/primitives/landing_images.dart';
-import '../design_system/primitives/music_icons_system.dart';
-
 class CasesProductList extends StatefulWidget {
   const CasesProductList({Key? key}) : super(key: key);
 
@@ -16,34 +13,28 @@ class CasesProductList extends StatefulWidget {
 class _CasesProductListState extends State<CasesProductList> {
   List<CasesProductModel> casesProductData = [
     CasesProductModel(
-      productName: "Product Name",
-      productStatus: "Broken Product",
-      productImgUrl: LandingImages.verticalGuitar1,
+      caseNumber: "111212332",
+      casesDate: "MM-DD-YYYY",
+      casePriorityStatus: "High",
+      casesName: "Social Service",
+      casesStatus: "New",
+      userName: "Ankit",
     ),
     CasesProductModel(
-      productName: "Product Name",
-      productStatus: "Returned",
-      productImgUrl: LandingImages.verticalGuitar2,
+      caseNumber: "111212332",
+      casesDate: "MM-DD-YYYY",
+      casePriorityStatus: "Medium",
+      casesName: "Customer Service",
+      casesStatus: "New",
+      userName: "Ankit",
     ),
     CasesProductModel(
-      productName: "Guitar Name",
-      productStatus: "Refund initiated",
-      productImgUrl: LandingImages.verticalGuitar3,
-    ),
-    CasesProductModel(
-      productName: "Guitar Name",
-      productStatus: "Wrong Product",
-      productImgUrl: MusicIconsSystem.doubleBass,
-    ),
-    CasesProductModel(
-      productName: "Product Name",
-      productStatus: "Returned",
-      productImgUrl: MusicIconsSystem.electricGuitar,
-    ),
-    CasesProductModel(
-      productName: "Product Name",
-      productStatus: "Refund initiated",
-      productImgUrl: LandingImages.verticalGuitar3,
+      caseNumber: "111212332",
+      casesDate: "MM-DD-YYYY",
+      casePriorityStatus: "Low",
+      casesName: "Sales",
+      casesStatus: "New",
+      userName: "Ankit",
     ),
   ];
 
@@ -56,21 +47,21 @@ class _CasesProductListState extends State<CasesProductList> {
       child: SizedBox(
         height: MediaQuery.of(context).size.height * 0.83,
         width: double.infinity,
-        child: GridView.builder(
-            itemCount: casesProductData.length,
+        child: ListView.builder(
+            itemCount: 3,
             physics: const NeverScrollableScrollPhysics(),
-            gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-              maxCrossAxisExtent: 200,
-              childAspectRatio: 4 / 5,
-              crossAxisSpacing: 07,
-              mainAxisSpacing: 00,
-            ),
+            shrinkWrap: true,
             itemBuilder: (context, index) {
               var item = casesProductData[index];
               return CasesProductWidget(
-                productImage: item.productImgUrl,
-                productName: item.productName,
-                productStatus: item.productStatus,
+                caseNumber: item.caseNumber,
+                casePriorityStatus: item.casePriorityStatus,
+                casesDate: item.casesDate,
+                casesName: item.casesName,
+                casesStatus: item.casesStatus,
+                statusContainerColor: const Color.fromRGBO(232, 16, 27, 0.1),
+                statusFontColor: ColorSystem.complimentary,
+                userName: item.userName,
               );
             }),
       ),

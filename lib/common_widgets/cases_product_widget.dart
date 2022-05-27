@@ -1,62 +1,129 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 
 import '../design_system/primitives/color_system.dart';
 import '../design_system/primitives/size_system.dart';
 import '../utils/constants.dart';
 
 class CasesProductWidget extends StatelessWidget {
-  final String? productImage;
-  final String? productName;
-  final String? productStatus;
+  final String? casesName;
+  final String? casesDate;
+  final String? casesStatus;
+  final String? caseNumber;
+  final String? casePriorityStatus;
+  final String? userName;
+  final Color? statusContainerColor;
+  final Color? statusFontColor;
 
   const CasesProductWidget({
     Key? key,
-    this.productImage,
-    this.productName,
-    this.productStatus,
+    this.casesName,
+    this.casesDate,
+    this.casesStatus,
+    this.caseNumber,
+    this.casePriorityStatus,
+    this.userName,
+    this.statusContainerColor,
+    this.statusFontColor,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: SizeSystem.size8),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            height: MediaQuery.of(context).size.height * 0.19,
-            width: MediaQuery.of(context).size.height * 0.21,
-            decoration: BoxDecoration(
-              border: Border.all(
-                color: Colors.transparent,
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: SizeSystem.size15),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    casesName!,
+                    style: const TextStyle(
+                      fontSize: SizeSystem.size14,
+                      fontFamily: kRubik,
+                      color: ColorSystem.primaryTextColor,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  const SizedBox(
+                    height: SizeSystem.size5,
+                  ),
+                  Text(
+                    casesDate!,
+                    style: const TextStyle(
+                      fontSize: SizeSystem.size12,
+                      color: ColorSystem.secondary,
+                      fontFamily: kRubik,
+                    ),
+                  ),
+                  const SizedBox(
+                    height: SizeSystem.size5,
+                  ),
+                  Text(
+                    '${"Last Updated By: "}${userName!}',
+                    style: const TextStyle(
+                      fontSize: SizeSystem.size12,
+                      color: ColorSystem.secondary,
+                      fontFamily: kRubik,
+                    ),
+                  ),
+                ],
               ),
-              borderRadius: BorderRadius.circular(15),
-              color: ColorSystem.secondaryGreyBg,
-            ),
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: SizeSystem.size5),
-              child: SvgPicture.asset(productImage!, color: Colors.black87),
-            ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Container(
+                    height: SizeSystem.size15,
+                    width: SizeSystem.size50,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(SizeSystem.size5),
+                      color: statusContainerColor,
+                      // const Color.fromRGBO(232, 16, 27, 0.1)
+                    ),
+                    child: Center(
+                      child: Text(
+                        casePriorityStatus!,
+                        style: TextStyle(
+                          fontSize: SizeSystem.size10,
+                          color: statusFontColor!,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: SizeSystem.size5,
+                  ),
+                  Text(
+                    '${"Cases Number: "}${caseNumber!}',
+                    style: const TextStyle(
+                      fontSize: SizeSystem.size12,
+                      color: ColorSystem.secondary,
+                      fontFamily: kRubik,
+                    ),
+                  ),
+                  const SizedBox(
+                    height: SizeSystem.size5,
+                  ),
+                  Text(
+                    '${"Status: "}${casesStatus!}',
+                    style: const TextStyle(
+                      fontSize: SizeSystem.size12,
+                      color: ColorSystem.secondary,
+                      fontFamily: kRubik,
+                    ),
+                  ),
+                ],
+              ),
+            ],
           ),
-          const SizedBox(
-            height: SizeSystem.size10,
-          ),
-          Text(
-            productName!,
-            style: const TextStyle(
-                fontSize: SizeSystem.size16, fontFamily: kRubik),
-          ),
-          const SizedBox(
-            height: SizeSystem.size10,
-          ),
-          Text(
-            productStatus!,
-            style: const TextStyle(
-                fontSize: SizeSystem.size13, fontFamily: kRubik),
-          ),
-        ],
-      ),
+        ),
+        const Divider(
+          thickness: 1,
+          color: ColorSystem.greyDivider,
+        ),
+      ],
     );
   }
 }
