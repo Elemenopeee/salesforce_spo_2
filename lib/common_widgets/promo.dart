@@ -8,8 +8,11 @@ import '../utils/constants.dart';
 class Promo extends StatelessWidget {
   final String title;
   final String date;
-  const Promo({Key? key, required this.title, required this.date})
-      : super(key: key);
+  const Promo({
+    Key? key,
+    required this.title,
+    required this.date,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -53,9 +56,6 @@ class Promo extends StatelessWidget {
               ),
             ],
           ),
-          const Divider(
-            thickness: 1,
-          )
         ],
       ),
     );
