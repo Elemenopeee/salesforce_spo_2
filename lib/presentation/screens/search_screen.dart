@@ -123,9 +123,7 @@ class _SearchScreenState extends State<SearchScreen> {
                       EasyDebounce.cancelAll();
                       if (this.name.length >= 3) {
                         EasyDebounce.debounce(
-                            'search_name_debounce',
-                            Duration(seconds: 1),
-                            () {
+                            'search_name_debounce', Duration(seconds: 1), () {
                           setState(() {
                             futureCustomers = getCustomer(offset);
                           });
@@ -159,38 +157,36 @@ class _SearchScreenState extends State<SearchScreen> {
                   case ConnectionState.active:
                   case ConnectionState.none:
                   case ConnectionState.done:
-                  if (isLoadingData && customers.isEmpty) {
-                    return const Center(
-                      child: CircularProgressIndicator(
-                        color: ColorSystem.primary,
-                      ),
-                    );
-                  }
-                  return ListView.builder(
-                    controller: scrollController,
-                    padding: const EdgeInsets.symmetric(horizontal: 30),
-                    shrinkWrap: true,
-                    itemCount: customers.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return CustomerDetailsCard(
-                        customerId: customers[index].id,
-                        name: customers[index].name ?? '--',
-                        email: customers[index].email,
-                        phone: customers[index].phone,
-                        preferredInstrument:
-                        customers[index].primaryInstrument,
-                        lastTransactionDate:
-                        customers[index].lastTransactionDate,
-                        ltv: customers[index].lifeTimeNetSalesAmount ?? 0,
-                        averageProductValue: aovCalculator(
-                            customers[index]
-                                .lifeTimeNetSalesAmount,
-                            customers[index]
-                                .lifetimeNetTransactions),
-                        customerLevel: customers[index].medianLTVNet,
+                    if (isLoadingData && customers.isEmpty) {
+                      return const Center(
+                        child: CircularProgressIndicator(
+                          color: ColorSystem.primary,
+                        ),
                       );
-                    },
-                  );
+                    }
+                    return ListView.builder(
+                      controller: scrollController,
+                      padding: const EdgeInsets.symmetric(horizontal: 30),
+                      shrinkWrap: true,
+                      itemCount: customers.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return CustomerDetailsCard(
+                          customerId: customers[index].id,
+                          name: customers[index].name ?? '--',
+                          email: customers[index].email,
+                          phone: customers[index].phone,
+                          preferredInstrument:
+                              customers[index].primaryInstrument,
+                          lastTransactionDate:
+                              customers[index].lastTransactionDate,
+                          ltv: customers[index].lifeTimeNetSalesAmount ?? 0,
+                          averageProductValue: aovCalculator(
+                              customers[index].lifeTimeNetSalesAmount,
+                              customers[index].lifetimeNetTransactions),
+                          customerLevel: customers[index].medianLTVNet,
+                        );
+                      },
+                    );
                 }
               },
             ),

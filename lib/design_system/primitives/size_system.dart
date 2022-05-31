@@ -6,6 +6,7 @@ abstract class SizeSystem {
   static const double size4 = 4.0;
   static const double size5 = 5.0;
   static const double size6 = 6.0;
+  static const double size7 = 7.0;
   static const double size8 = 8.0;
   static const double size10 = 10.0;
   static const double size12 = 12.0;
@@ -27,5 +28,6 @@ abstract class SizeSystem {
   static const double size40 = 40.0;
   static const double size48 = 48.0;
   static const double size50 = 50.0;
+  static const double size70 = 70.0;
   static const double size60 = 60.0;
 }

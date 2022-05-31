@@ -43,6 +43,9 @@ abstract class ColorSystem {
   /// Additional Purple Background color
   static const Color purple = Color(0xFFAF8EFF);
 
+  /// Additional Purple ochre
+  static const Color purpleOchre = Color(0xFF5C34DC);
+
   /// Additional Text color
   static const Color primaryTextColor = Color(0xFF2D3142);
 
@@ -55,13 +58,13 @@ abstract class ColorSystem {
   /// note bg  light blue color
   static const Color noteBlueColor = Color(0xFFF2F8FF);
 
-  // Additional dark ochre
-  static const Color darkOchre = Color(0xFFE57511);
-
-  // Additional purple
-  static const Color purpleDarker = Color(0xFF5C34DC);
-
   /// more light for grey
   static const Color secondaryGreyBg = Color(0xFFF6F6F6);
 
+  // Additional dark ochre
+  static const Color darkOchre = Color(0xFFE57511);
+
+
+  ///Divider Color
+  static const Color greyDivider = Color(0xFFEEEEEE);
 }

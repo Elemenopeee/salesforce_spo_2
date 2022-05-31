@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -194,8 +196,7 @@ class _ProgressContainerState extends State<ProgressContainer> {
           await HttpService().doGet(path: Endpoints.getTotalSales(agentMail));
       try {
         totalSales = response.data['records'][0]['Sales'];
-      }
-      catch (e) {
+      } catch (e) {
         print(e);
       }
     }
@@ -206,10 +207,9 @@ class _ProgressContainerState extends State<ProgressContainer> {
     if (agentMail != null) {
       var response = await HttpService()
           .doGet(path: Endpoints.getTotalCommission(agentMail));
-      try{
+      try {
         totalCommission = response.data['records'][0]['commission'];
-      }
-      catch (e) {
+      } catch (e) {
         print(e);
       }
     }
@@ -222,12 +222,11 @@ class _ProgressContainerState extends State<ProgressContainer> {
           await HttpService().doGet(path: Endpoints.getTodaysSales(agentMail));
       List<dynamic> records = response.data['records'];
       if (records.isNotEmpty) {
-        try{
+        try {
           var saleData = records.firstWhere(
-                  (element) => element['Gross_Sales_Yesterday__c'] != null);
+              (element) => element['Gross_Sales_Yesterday__c'] != null);
           todaysSale = saleData['Gross_Sales_Yesterday__c'];
-        }
-        catch (e){
+        } catch (e) {
           print(e);
         }
       }
@@ -244,10 +243,9 @@ class _ProgressContainerState extends State<ProgressContainer> {
       if (records.isNotEmpty) {
         try {
           var commissionData = records.firstWhere(
-                  (element) => element['Comm_Amount_Yesterday__c'] != null);
+              (element) => element['Comm_Amount_Yesterday__c'] != null);
           todaysCommission = commissionData['Comm_Amount_Yesterday__c'];
-        }
-        catch (e){
+        } catch (e) {
           print(e);
         }
       }

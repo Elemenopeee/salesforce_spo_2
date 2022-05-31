@@ -67,50 +67,50 @@ class _ClientFeatureTabsListState extends State<ClientFeatureTabsList>
   @override
   Widget build(BuildContext context) {
     return
-        // give the tab bar a height [can change hheight to preferred height]
-        SizedBox(
-      height: MediaQuery.of(context).size.height,
-      child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: PaddingSystem.padding10),
-        child: Column(children: [
-          TabBar(
-            padding: EdgeInsets.zero,
-            labelPadding:
-                const EdgeInsets.symmetric(horizontal: PaddingSystem.padding0),
-            isScrollable: true,
-            controller: _tabController,
-            indicator: const BoxDecoration(),
-            labelColor: ColorSystem.white,
-            unselectedLabelColor: ColorSystem.black,
-            onTap: (index) {
-              setState(() {
-                selectedIndex = _tabController.index;
-              });
-            },
-            tabs: [
-              getSingleFeatureList(context, 0),
-              getSingleFeatureList(context, 1),
-              getSingleFeatureList(context, 2),
-              getSingleFeatureList(context, 3),
-              getSingleFeatureList(context, 4),
-              getSingleFeatureList(context, 5),
-            ],
-          ),
+      // give the tab bar a height [can change hheight to preferred height]
+      SizedBox(
+        height: MediaQuery.of(context).size.height,
+        child: Container(
+          margin: const EdgeInsets.symmetric(horizontal: PaddingSystem.padding10),
+          child: Column(children: [
+            TabBar(
+              padding: EdgeInsets.zero,
+              labelPadding:
+              const EdgeInsets.symmetric(horizontal: PaddingSystem.padding0),
+              isScrollable: true,
+              controller: _tabController,
+              indicator: const BoxDecoration(),
+              labelColor: ColorSystem.white,
+              unselectedLabelColor: ColorSystem.black,
+              onTap: (index) {
+                setState(() {
+                  selectedIndex = _tabController.index;
+                });
+              },
+              tabs: [
+                getSingleFeatureList(context, 0),
+                getSingleFeatureList(context, 1),
+                getSingleFeatureList(context, 2),
+                getSingleFeatureList(context, 3),
+                getSingleFeatureList(context, 4),
+                getSingleFeatureList(context, 5),
+              ],
+            ),
 
-          // tab bar view here
-          Expanded(
-            child: TabBarView(controller: _tabController, children: [
-              ActivityScreen(),
-              OrdersScreen(),
-              OrderHistoryList(),
-              NotesList(),
-              CasesProductList(),
-              PromoList(),
-            ]),
-          )
-        ]),
-      ),
-    );
+            // tab bar view here
+            Expanded(
+              child: TabBarView(controller: _tabController, children: [
+                ActivityScreen(),
+                OrdersScreen(),
+                OrderHistoryList(),
+                NotesList(),
+                CasesProductList(),
+                PromoList(),
+              ]),
+            )
+          ]),
+        ),
+      );
   }
 
   Widget getSingleFeatureList(BuildContext context, int index) {
@@ -206,7 +206,7 @@ class _ClientFeatureTabsListState extends State<ClientFeatureTabsList>
                 width: 100,
                 height: 10,
                 color:
-                    selectedIndex == index ? Colors.white : Colors.transparent,
+                selectedIndex == index ? Colors.white : Colors.transparent,
               ),
             ),
             Positioned(
@@ -215,7 +215,7 @@ class _ClientFeatureTabsListState extends State<ClientFeatureTabsList>
                 width: 10,
                 height: 98,
                 color:
-                    selectedIndex == index ? Colors.transparent : Colors.white,
+                selectedIndex == index ? Colors.transparent : Colors.white,
               ),
             ),
             Positioned(
@@ -224,7 +224,7 @@ class _ClientFeatureTabsListState extends State<ClientFeatureTabsList>
                 width: 10,
                 height: 98,
                 color:
-                    selectedIndex == index ? Colors.transparent : Colors.white,
+                selectedIndex == index ? Colors.transparent : Colors.white,
               ),
             ),
             Positioned(
@@ -233,7 +233,7 @@ class _ClientFeatureTabsListState extends State<ClientFeatureTabsList>
                 width: 100,
                 height: 10,
                 color:
-                    selectedIndex == index ? Colors.transparent : Colors.white,
+                selectedIndex == index ? Colors.transparent : Colors.white,
               ),
             ),
           ],
