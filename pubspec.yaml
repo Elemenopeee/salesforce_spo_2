@@ -21,7 +21,10 @@ dependencies:
   azure_ad_authentication: ^1.0.3
   intl: ^0.17.0
   fl_chart: ^0.50.6
+  expandable: ^5.0.1
   easy_debounce: ^2.0.2+1
+  flutter_slidable:
+  dotted_border: ^2.0.0+2
 
 dev_dependencies:
   flutter_launcher_icons: ^0.9.2
@@ -37,6 +40,7 @@ flutter:
   assets:
     - assets/icons/
     - assets/icons/music_icons/
+    - assets/icons/landing_icons/
 
   fonts:
     - family: Rubik

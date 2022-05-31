@@ -24,4 +24,5 @@ abstract class PaddingSystem {
   static const double padding38 = 38.0;
   static const double padding40 = 40.0;
   static const double padding48 = 48.0;
+  static const double padding50 = 50.0;
 }

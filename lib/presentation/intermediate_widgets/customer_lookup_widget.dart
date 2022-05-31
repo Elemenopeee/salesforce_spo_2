@@ -554,11 +554,10 @@ class _CustomerLookupWidgetState extends State<CustomerLookupWidget> {
                     ],
                   ),
                 ),
-              ),
-            ],
+              ),],
+            ),
           ),
         ),
-      ),
-    );
+      );
   }
 }
