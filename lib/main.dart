@@ -1,21 +1,21 @@
-import 'dart:ui';
+import 'dart:developer';
 
+import 'package:azure_ad_authentication/azure_ad_authentication.dart';
+import 'package:azure_ad_authentication/exeption.dart';
+import 'package:azure_ad_authentication/model/user_ad.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:salesforce_spo/common_widgets/client_feature_tabs_list.dart';
 import 'package:salesforce_spo/common_widgets/notched_bottom_navigation_bar.dart';
 import 'package:salesforce_spo/design_system/design_system.dart';
 import 'package:salesforce_spo/presentation/intermediate_widgets/customer_lookup_widget.dart';
+import 'package:salesforce_spo/presentation/screens/client_landing_screen.dart';
 import 'package:salesforce_spo/presentation/tabs/home_tab.dart';
-import 'package:salesforce_spo/services/storage/shared_preferences_service.dart';
 import 'package:salesforce_spo/utils/constants.dart';
-
-import 'presentation/screens/client_landing_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // await _acquireToken();
-  SharedPreferenceService()
-      .setKey(key: 'agent_email', value: 'ankit.kumar@guitarcenter.com');
+  await _acquireToken();
   runApp(const MyApp());
 }
 
@@ -29,42 +29,43 @@ const List<String> kScopes = [
   "https://graph.microsoft.com/Calendars.ReadWrite",
 ];
 
-// UserAdModel? userAdModel;
+UserAdModel? userAdModel;
 
-// Future<void> _acquireToken() async {
-//   await getResult();
-// }
+Future<void> _acquireToken() async {
+  await getResult();
+}
 
-// Future<String> getResult({bool isAcquireToken = true}) async {
-//   AzureAdAuthentication pca = await intPca();
-//   String? res;
-//   try {
-//     if (isAcquireToken) {
-//       userAdModel = await pca.acquireToken(scopes: kScopes);
-//
-//
-//       // userAdModel.
-//     } else {
-//       userAdModel = await pca.acquireTokenSilent(scopes: kScopes);
-//     }
-//   } on MsalUserCancelledException {
-//     res = "User cancelled";
-//   } on MsalNoAccountException {
-//     res = "no account";
-//   } on MsalInvalidConfigurationException {
-//     res = "invalid config";
-//   } on MsalInvalidScopeException {
-//     res = "Invalid scope";
-//   } on MsalException {
-//     res = "Error getting token. Unspecified reason";
-//   }
-//   return (userAdModel?.toJson().toString() ?? res)!;
-// }
+Future<String> getResult({bool isAcquireToken = true}) async {
+  AzureAdAuthentication pca = await intPca();
+  String? res;
+  try {
+    if (isAcquireToken) {
+      userAdModel = await pca.acquireToken(scopes: kScopes);
+      print(userAdModel?.id);
+      log(userAdModel!.toJson().toString());
 
-// Future<AzureAdAuthentication> intPca() async {
-//   return await AzureAdAuthentication.createPublicClientApplication(
-//       clientId: _clientId, authority: _authority);
-// }
+      // userAdModel.
+    } else {
+      userAdModel = await pca.acquireTokenSilent(scopes: kScopes);
+    }
+  } on MsalUserCancelledException {
+    res = "User cancelled";
+  } on MsalNoAccountException {
+    res = "no account";
+  } on MsalInvalidConfigurationException {
+    res = "invalid config";
+  } on MsalInvalidScopeException {
+    res = "Invalid scope";
+  } on MsalException {
+    res = "Error getting token. Unspecified reason";
+  }
+  return (userAdModel?.toJson().toString() ?? res)!;
+}
+
+Future<AzureAdAuthentication> intPca() async {
+  return await AzureAdAuthentication.createPublicClientApplication(
+      clientId: _clientId, authority: _authority);
+}
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -72,11 +73,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'GC Customer Connect Sandbox',
+      title: 'Salesforce SPO',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const ClientLandingScreen(),
+      debugShowCheckedModeBanner: false,
+      home:  ClientLandingScreen(),
     );
   }
 }
@@ -90,21 +92,21 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   get getAppBar => AppBar(
-        toolbarHeight: 80,
-        leadingWidth: double.infinity,
-        backgroundColor: Colors.white,
-        elevation: 0,
-        centerTitle: true,
-        title: const Text(
-          "HOME",
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w500,
-            color: Colors.black,
-            fontFamily: kRubik,
-          ),
-        ),
-      );
+    toolbarHeight: 80,
+    leadingWidth: double.infinity,
+    backgroundColor: Colors.white,
+    elevation: 0,
+    centerTitle: true,
+    title: const Text(
+      "HOME",
+      style: TextStyle(
+        fontSize: 18,
+        fontWeight: FontWeight.w500,
+        color: Colors.black,
+        fontFamily: kRubik,
+      ),
+    ),
+  );
 
   @override
   void initState() {
@@ -117,9 +119,8 @@ class _HomeScreenState extends State<HomeScreen> {
       backgroundColor: Colors.white,
       extendBodyBehindAppBar: true,
       appBar: getAppBar,
-      body: TabHome(
-        agentName: 'there,'
-        // userAdModel?.givenName ?? 'there,',
+      body: const TabHome(
+        agentName: 'John Doe',
       ),
       bottomNavigationBar: NotchedBottomNavigationBar(
         actions: [
@@ -139,7 +140,7 @@ class _HomeScreenState extends State<HomeScreen> {
               IconSystem.user,
               width: 24,
               height: 24,
-              color: ColorSystem.primary,
+              color: ColorSystem.white,
             ),
           ),
           IconButton(
@@ -150,7 +151,7 @@ class _HomeScreenState extends State<HomeScreen> {
               IconSystem.feed,
               width: 24,
               height: 24,
-              color: ColorSystem.primary,
+              color: ColorSystem.white,
             ),
           ),
           IconButton(
@@ -161,7 +162,7 @@ class _HomeScreenState extends State<HomeScreen> {
               IconSystem.sparkle,
               width: 24,
               height: 24,
-              color: ColorSystem.primary,
+              color: ColorSystem.white,
             ),
           ),
           IconButton(
@@ -172,15 +173,32 @@ class _HomeScreenState extends State<HomeScreen> {
               IconSystem.more,
               width: 24,
               height: 24,
-              color: ColorSystem.primary,
+              color: ColorSystem.white,
             ),
           ),
         ],
         centerButton: FloatingActionButton(
           backgroundColor: ColorSystem.primary,
-          onPressed: () async {},
+          onPressed: () async {
+            showModalBottomSheet(
+                isScrollControlled: true,
+                context: context,
+                builder: (BuildContext context) {
+                  return DraggableScrollableSheet(
+                    snap: true,
+                    initialChildSize: 0.9,
+                    minChildSize: 0.9,
+                    maxChildSize: 1.0,
+                    builder: (BuildContext context,
+                        ScrollController scrollController) {
+                      return const CustomerLookupWidget();
+                    },
+                  );
+                },
+                backgroundColor: Colors.transparent);
+          },
           child: SvgPicture.asset(
-            IconSystem.plus,
+            IconSystem.user,
             width: 24,
             height: 24,
             color: ColorSystem.white,
