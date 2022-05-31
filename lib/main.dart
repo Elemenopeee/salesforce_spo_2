@@ -14,6 +14,8 @@ import 'package:salesforce_spo/presentation/tabs/home_tab.dart';
 import 'package:salesforce_spo/services/storage/shared_preferences_service.dart';
 import 'package:salesforce_spo/utils/constants.dart';
 
+import 'presentation/screens/client_landing_screen.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await _acquireToken();
