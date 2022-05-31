@@ -61,4 +61,7 @@ abstract class ColorSystem {
   // Additional purple
   static const Color purpleDarker = Color(0xFF5C34DC);
 
+  /// more light for grey
+  static const Color secondaryGreyBg = Color(0xFFF6F6F6);
+
 }
