@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:salesforce_spo/design_system/design_system.dart';
+import 'package:salesforce_spo/utils/constant_functions.dart';
 import 'package:salesforce_spo/utils/enums/music_instrument_enum.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
@@ -61,16 +62,6 @@ class _CustomerDetailsCardState extends State<CustomerDetailsCard> {
 
   String formatDate(String date) {
     return DateFormat('MM-dd-yyyy').format(DateTime.parse(date));
-  }
-
-  String getCustomerLevel(double ltv) {
-    if (ltv <= 500) {
-      return 'LOW';
-    } else if (ltv > 500 && ltv <= 1000) {
-      return 'MEDIUM';
-    } else {
-      return 'HIGH';
-    }
   }
 
   @override
@@ -291,18 +282,5 @@ class _CustomerMicroDetailsState extends State<CustomerMicroDetails> {
         ),
       )
     ]);
-  }
-}
-
-Color getCustomerLevelColor(String level) {
-  switch (level) {
-    case 'LOW':
-      return ColorSystem.purple;
-    case 'MEDIUM':
-      return ColorSystem.darkOchre;
-    case 'HIGH':
-      return ColorSystem.complimentary;
-    default:
-      return ColorSystem.complimentary;
   }
 }

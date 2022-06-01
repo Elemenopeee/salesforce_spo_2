@@ -10,6 +10,7 @@ import 'package:salesforce_spo/design_system/design_system.dart';
 import 'package:salesforce_spo/models/customer.dart';
 import 'package:salesforce_spo/services/networking/endpoints.dart';
 import 'package:salesforce_spo/services/networking/networking_service.dart';
+import 'package:salesforce_spo/utils/constant_functions.dart';
 import 'package:salesforce_spo/utils/constants.dart';
 import 'package:salesforce_spo/utils/phone_input_formatter.dart';
 import 'package:url_launcher/url_launcher_string.dart';
@@ -126,14 +127,6 @@ class _CustomerLookupWidgetState extends State<CustomerLookupWidget> {
         }
       }
     });
-  }
-
-  double aovCalculator(double? ltv, double? lnt) {
-    if (ltv != null && lnt != null) {
-      return ltv / lnt;
-    } else {
-      return 0;
-    }
   }
 
   @override
