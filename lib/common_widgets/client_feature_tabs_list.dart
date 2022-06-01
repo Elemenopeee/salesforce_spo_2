@@ -155,7 +155,7 @@ class _ClientFeatureTabsListState extends State<ClientFeatureTabsList>
                               borderRadius: BorderRadius.circular(15),
                               color: selectedIndex == index
                                   ? ColorSystem.white
-                                  : ColorSystem.greyBg,
+                                  : ColorSystem.culturedGrey,
                             ),
                             child: Center(
                               child: SvgPicture.asset(

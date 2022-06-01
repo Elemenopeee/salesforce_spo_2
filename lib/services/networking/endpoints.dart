@@ -23,6 +23,8 @@ abstract class Endpoints {
       '/services/data/v53.0/query/?q=SELECT CaseNumber,Case_Subtype__c,Case_Type__c,DAX_Order_Number__c,Id,Priority,Reason,Status,Account.Name,Owner.Name FROM Case where AccountId =';
   static String kClientPromos =
       '/services/data/v53.0/query/?q=SELECT CreatedBy.Name,CreatedDate,Subject FROM EmailMessage where RelatedToId = ';
+  static String kClientBasicDetails =
+  '/services/data/v53.0/query/?q=SELECT id,name,firstname,lastname,accountEmail__c,Brand_Code__c,accountPhone__c,Last_Transaction_Date__c,Lifetime_Net_Sales_Amount__c,Lifetime_Net_Sales_Transactions__c, (select Total_Amount__c from GC_Orders__r  where Order_Status__c = \'Completed\' Order by lastmodifieddate desc limit 1)Primary_Instrument_Category__c,epsilon_customer_brand_key__c,Lessons_Customer__c,Open_Box_Purchaser__c,Loyalty_Customer__c,Used_Purchaser__c,Synchrony_Customer__c,Vintage_Purchaser__c  from account where Id=';
 
   static String getCustomerSearchByPhone(String phone) {
     return '$kBaseURL$kCustomerSearchByPhone\'$phone\'';
@@ -66,5 +68,9 @@ abstract class Endpoints {
 
   static String getClientPromos(String relatedToId) {
     return '$kBaseURL$kClientPromos${'\'$relatedToId\''}';
+  }
+
+  static String getClientBasicDetails(String clientId){
+    return '$kBaseURL$kClientBasicDetails${'\'$clientId\''}';
   }
 }

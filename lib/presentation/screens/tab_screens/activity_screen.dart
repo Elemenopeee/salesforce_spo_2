@@ -177,7 +177,7 @@ class AbandonedCartList extends StatelessWidget {
               color: Colors.transparent,
             ),
             borderRadius: BorderRadius.circular(15),
-            color: ColorSystem.greyBg,
+            color: ColorSystem.culturedGrey,
           ),
           child: SvgPicture.asset(
             listOfRecommendationImage[index],
@@ -239,7 +239,7 @@ class BrowsingtList extends StatelessWidget {
               color: Colors.transparent,
             ),
             borderRadius: BorderRadius.circular(15),
-            color: ColorSystem.greyBg,
+            color: ColorSystem.culturedGrey,
           ),
           child:
               SvgPicture.asset(listOfOrderImage[index], color: Colors.black87),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:salesforce_spo/common_widgets/client_feature_tabs_list.dart';
-import 'package:salesforce_spo/common_widgets/get_banner.dart';
+import 'package:salesforce_spo/common_widgets/client_carousel.dart';
 import 'package:salesforce_spo/design_system/design_system.dart';
 import 'package:salesforce_spo/design_system/primitives/landing_images.dart';
 import '../../utils/constants.dart';
@@ -26,7 +26,7 @@ class _ClientLandingScreenState extends State<ClientLandingScreen> {
               const SizedBox(
                 height: SizeSystem.size30,
               ),
-              const GetBanner(),
+              const ClientCarousel(),
               // const GetCarouselBanner(),
               const SizedBox(
                 height: SizeSystem.size30,

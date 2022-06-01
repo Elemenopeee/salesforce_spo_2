@@ -56,7 +56,7 @@ class OpenOrderList extends StatelessWidget {
               color: Colors.transparent,
             ),
             borderRadius: BorderRadius.circular(15),
-            color: ColorSystem.greyBg,
+            color: ColorSystem.culturedGrey,
           ),
           child:
           SvgPicture.asset(listOfOrderImage[index], color: Colors.black87),
