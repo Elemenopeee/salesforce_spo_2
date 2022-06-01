@@ -1,7 +1,11 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:intl/intl.dart';
 import 'package:salesforce_spo/common_widgets/pi_chart_widget.dart';
+import 'package:salesforce_spo/models/customer.dart';
+import 'package:salesforce_spo/services/networking/endpoints.dart';
+import 'package:salesforce_spo/services/networking/networking_service.dart';
 
 import '../design_system/primitives/color_system.dart';
 import '../design_system/primitives/icon_system.dart';
@@ -9,6 +13,7 @@ import '../design_system/primitives/landing_images.dart';
 import '../design_system/primitives/padding_system.dart';
 import '../design_system/primitives/size_system.dart';
 import '../presentation/screens/chart/sector.dart';
+import '../utils/constant_functions.dart';
 import '../utils/constants.dart';
 
 class ClientCarousel extends StatefulWidget {
@@ -30,14 +35,46 @@ class ClientCarousel extends StatefulWidget {
 class _ClientCarouselState extends State<ClientCarousel> {
   late Future _futureClientDetails;
 
+  Customer? customer;
+
   Future<void> getClientBasicDetails() async {
     var clientId = '0014M00001nv3BwQAI';
 
+    var response = await HttpService()
+        .doGet(path: Endpoints.getClientBasicDetails(clientId));
+
+    customer = Customer.fromJson(json: response.data['records'][0]);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _futureClientDetails = getClientBasicDetails();
   }
 
   @override
   Widget build(BuildContext context) {
-    return const ClientPrimaryDetails(clientName: '',);
+    return FutureBuilder(
+      future: _futureClientDetails,
+      builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+        switch(snapshot.connectionState){
+          case ConnectionState.none:
+          case ConnectionState.waiting:
+          case ConnectionState.active:
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          case ConnectionState.done:
+            return ClientPrimaryDetails(
+              clientName: customer?.name ?? '--',
+              primaryInstrument: customer?.primaryInstrument,
+              ltv: customer?.lifeTimeNetSalesAmount,
+              netTransactions: customer?.lifetimeNetTransactions,
+              lastVisitDate: customer?.lastTransactionDate,
+            );
+        }
+      },
+    );
   }
 }
 
@@ -48,7 +85,7 @@ class ClientPrimaryDetails extends StatelessWidget {
   final double? lastPurchaseValue;
   final double? ltv;
   final double? netTransactions;
-  final double? lastVisitDate;
+  final String? lastVisitDate;
 
   const ClientPrimaryDetails({
     Key? key,
@@ -60,6 +97,19 @@ class ClientPrimaryDetails extends StatelessWidget {
     this.netTransactions,
     this.lastVisitDate,
   }) : super(key: key);
+
+  String formatDate(String date) {
+    return DateFormat('dd-MMM-yyyy').format(DateTime.parse(date));
+  }
+
+  String formattedNumber(double value) {
+    var f = NumberFormat.compact(locale: "en_US");
+    try {
+      return f.format(value);
+    } catch (e) {
+      return '0';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -87,13 +137,13 @@ class ClientPrimaryDetails extends StatelessWidget {
             children: [
               RichText(
                 textAlign: TextAlign.center,
-                text: const TextSpan(
-                  style: TextStyle(
+                text: TextSpan(
+                  style: const TextStyle(
                     fontFamily: kRubik,
                   ),
                   children: [
                     TextSpan(
-                      text: 'Jessica Mendez ',
+                      text: '$clientName ',
                       style: TextStyle(
                         fontWeight: FontWeight.w700,
                         fontSize: SizeSystem.size16,
@@ -111,6 +161,7 @@ class ClientPrimaryDetails extends StatelessWidget {
                   ],
                 ),
               ),
+              if(ltv != null)
               Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -118,17 +169,17 @@ class ClientPrimaryDetails extends StatelessWidget {
                     IconSystem.badge,
                     height: 15,
                     width: 15,
-                    color: ColorSystem.complimentary,
+                    color: getCustomerLevelColor(getCustomerLevel(ltv!)),
                   ),
                   const SizedBox(
                     width: SizeSystem.size4,
                   ),
-                  const Text(
-                    "High",
+                  Text(
+                    getCustomerLevel(ltv!),
                     style: TextStyle(
                       fontFamily: kRubik,
                       fontWeight: FontWeight.w600,
-                      color: ColorSystem.complimentary,
+                      color: getCustomerLevelColor(getCustomerLevel(ltv!)),
                       fontSize: SizeSystem.size12,
                     ),
                   ),
@@ -183,8 +234,8 @@ class ClientPrimaryDetails extends StatelessWidget {
                   const SizedBox(
                     height: SizeSystem.size4,
                   ),
-                  const Text(
-                    "Visited on : 12-Mar-2022",
+                  Text(
+                    "Visited on : ${lastVisitDate != null ? formatDate(lastVisitDate!) : '--'}",
                     style: TextStyle(
                       fontFamily: kRubik,
                       color: ColorSystem.primary,
@@ -265,25 +316,17 @@ class ClientPrimaryDetails extends StatelessWidget {
                     height: SizeSystem.size4,
                   ),
                   RichText(
-                    text: const TextSpan(
-                      style: TextStyle(
+                    text: TextSpan(
+                      style: const TextStyle(
                         fontFamily: kRubik,
                       ),
                       children: [
                         TextSpan(
-                          text: '105.5',
-                          style: TextStyle(
+                          text: ltv != null ? formattedNumber(ltv!) : '--',
+                          style: const TextStyle(
                             color: ColorSystem.primary,
                             fontWeight: FontWeight.w700,
                             fontSize: SizeSystem.size24,
-                          ),
-                        ),
-                        TextSpan(
-                          text: 'k',
-                          style: TextStyle(
-                            color: ColorSystem.primary,
-                            // fontWeight: FontWeight.w700,
-                            fontSize: SizeSystem.size12,
                           ),
                         ),
                       ],
@@ -314,20 +357,20 @@ class ClientPrimaryDetails extends StatelessWidget {
                     height: SizeSystem.size4,
                   ),
                   RichText(
-                    text: const TextSpan(
-                      style: TextStyle(
+                    text: TextSpan(
+                      style: const TextStyle(
                         fontFamily: kRubik,
                       ),
                       children: [
                         TextSpan(
-                          text: '26.2',
-                          style: TextStyle(
+                          text: formattedNumber(aovCalculator(ltv, netTransactions)),
+                          style: const TextStyle(
                             color: ColorSystem.primary,
                             fontWeight: FontWeight.w700,
                             fontSize: SizeSystem.size24,
                           ),
                         ),
-                        TextSpan(
+                        const TextSpan(
                           text: 'k',
                           style: TextStyle(
                             color: ColorSystem.primary,
