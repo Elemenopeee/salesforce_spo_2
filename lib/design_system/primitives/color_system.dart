@@ -43,6 +43,8 @@ abstract class ColorSystem {
   /// Additional Purple Background color
   static const Color purple = Color(0xFFAF8EFF);
 
+  static const Color purpleSecondary = Color(0xFF5C34DC);
+
   /// Additional Text color
   static const Color primaryTextColor = Color(0xFF2D3142);
 
@@ -63,5 +65,10 @@ abstract class ColorSystem {
 
   /// more light for grey
   static const Color secondaryGreyBg = Color(0xFFF6F6F6);
+
+  ///Priority container Background color
+  static const Color redLiteBg = Color.fromRGBO(232, 16, 27, 0.1);
+  static const Color orangeLiteBg = Color.fromRGBO(229, 117, 17, 0.1);
+  static const Color purpleLiteBg = Color.fromRGBO(92, 52, 220, 0.1);
 
 }

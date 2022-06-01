@@ -13,7 +13,7 @@ class NoteWidget extends StatelessWidget {
   final String tag1;
   final String tag2;
   final String date;
-  final Color bgColor;
+  final Color? bgColor;
   final bool pinned;
   const NoteWidget(
       {Key? key,
@@ -21,7 +21,7 @@ class NoteWidget extends StatelessWidget {
       required this.tag1,
       required this.tag2,
       required this.date,
-      required this.bgColor,
+       this.bgColor,
       required this.pinned})
       : super(key: key);
 
@@ -149,7 +149,7 @@ class NoteWidget extends StatelessWidget {
         // All actions are defined in the children parameter.
         children: [
           Container(
-            margin: EdgeInsets.symmetric(horizontal: PaddingSystem.padding20),
+            margin: const EdgeInsets.symmetric(horizontal: PaddingSystem.padding20),
             child: IconButton(
                 onPressed: () {},
                 icon: SvgPicture.asset(
@@ -158,7 +158,7 @@ class NoteWidget extends StatelessWidget {
                 )),
           ),
           Container(
-            margin: EdgeInsets.symmetric(horizontal: PaddingSystem.padding20),
+            margin: const EdgeInsets.symmetric(horizontal: PaddingSystem.padding20),
             child: IconButton(
                 onPressed: () {}, icon: SvgPicture.asset(IconSystem.pinDark)),
           ),

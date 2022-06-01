@@ -1,5 +1,4 @@
 abstract class Endpoints {
-
   static String kBaseURL = 'https://gcinc--tracuat.my.salesforce.com';
   static String kCustomerSearchByPhone =
       '/services/data/v53.0/query/?q=SELECT id,name,firstname,lastname,accountEmail__c,accountPhone__c,Last_Transaction_Date__c,Lifetime_Net_Sales_Amount__c,Lifetime_Net_Sales_Transactions__c,Primary_Instrument_Category__c,Max_ltv_net_dlrs_Formula__c,Median_ltv_net_dlrs_Formula__c, Avg_ltv_net_dlrs_Formula__c from account where accountPhone__c=';
@@ -23,6 +22,10 @@ abstract class Endpoints {
       '/services/data/v53.0/query/?q=SELECT CaseNumber,Case_Subtype__c,Case_Type__c,DAX_Order_Number__c,Id,Priority,Reason,Status,Account.Name,Owner.Name FROM Case where AccountId =';
   static String kClientPromos =
       '/services/data/v53.0/query/?q=SELECT CreatedBy.Name,CreatedDate,Subject FROM EmailMessage where RelatedToId = ';
+  static String kClientNoteByID =
+      '/services/data/v53.0/query/?q=SELECT Id,ContentDocumentId FROM ContentDocumentLink WHERE LinkedEntityId = ';
+  static String kClientNotes =
+      '/services/data/v53.0/query/?q=SELECT Id, Title, FileType, TextPreview, Content FROM ContentNote WHERE Id IN ';
 
   static String getCustomerSearchByPhone(String phone) {
     return '$kBaseURL$kCustomerSearchByPhone\'$phone\'';
@@ -66,5 +69,13 @@ abstract class Endpoints {
 
   static String getClientPromos(String relatedToId) {
     return '$kBaseURL$kClientPromos${'\'$relatedToId\''}';
+  }
+
+  static String getClientNotesById(String relatedToId) {
+    return '$kBaseURL$kClientNoteByID${'\'$relatedToId\''}';
+  }
+
+  static String getClientNotes(String relatedToId) {
+    return '$kBaseURL$kClientNotes${'\'$relatedToId\''}';
   }
 }

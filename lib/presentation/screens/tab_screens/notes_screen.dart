@@ -3,81 +3,99 @@ import 'package:salesforce_spo/models/note_model.dart';
 
 import '../../../common_widgets/note.dart';
 import '../../../design_system/primitives/padding_system.dart';
+import '../../../services/networking/endpoints.dart';
+import '../../../services/networking/networking_service.dart';
 import '../../../utils/set_bg_color.dart';
 
-class NotesList extends StatelessWidget {
+class NotesList extends StatefulWidget {
   const NotesList({Key? key}) : super(key: key);
 
   @override
+  State<NotesList> createState() => _NotesListState();
+}
+
+class _NotesListState extends State<NotesList> {
+  List<NoteModel> noteList = [];
+
+  bool isLoading = true;
+
+  late Future<void> _futureNotes;
+
+  int offset = 0;
+
+  bool isLoadingData = false;
+
+  ScrollController scrollController = ScrollController();
+
+  @override
+  void initState() {
+    getNotesList(offset);
+    _futureNotes = getNotesList(offset);
+    super.initState();
+  }
+
+  Future<void> getNotesList(int offset) async {
+    var linkedEntityId = ('0014M00001nv3BwQAI');
+    var response = await HttpService()
+        .doGet(path: Endpoints.getClientNotesById(linkedEntityId));
+    isLoadingData = false;
+    try {
+      for (var notes in response.data['records']) {
+        noteList.add(NoteModel.fromJson(notes));
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    List<NoteModel> list = [
-      NoteModel(
-          note: 'Anything thats blue grabs her Interest',
-          tag1: 'Engaging',
-          tag2: 'Intresed in Accessories',
-          date: '20-Mar-2022',
-          expanded: true),
-      NoteModel(
-          note: 'She hates Hip - Hop',
-          tag1: 'Guitar',
-          tag2: 'Follow on Service',
-          date: '22-Mar-2022',
-          expanded: false),
-      NoteModel(
-          note: 'Anything thats blue grabs her Interest',
-          tag1: 'Engaging',
-          tag2: 'Intresed in Accessories',
-          date: '23-Mar-2022',
-          expanded: false),
-      NoteModel(
-          note: 'Anything thats blue grabs her Interest',
-          tag1: 'Engaging',
-          tag2: 'Intresed in Accessories',
-          date: '23-Mar-2022',
-          expanded: false),
-      NoteModel(
-        note: 'Anything thats blue grabs her Interest',
-        tag1: 'Engaging',
-        tag2: 'Intresed in Accessories',
-        date: '23-Mar-2022',
-        expanded: false,
-      ),
-      NoteModel(
-        note: 'Anything thats blue grabs her Interest',
-        tag1: 'Engaging',
-        tag2: 'Intresed in Accessories',
-        date: '23-Mar-2022',
-        expanded: false,
-      ),
-      NoteModel(
-        note: 'Anything thats blue grabs her Interest',
-        tag1: 'Engaging',
-        tag2: 'Intresed in Accessories',
-        date: '23-Mar-2022',
-        expanded: false,
-      ),
-      NoteModel(
-        note: 'Anything thats blue grabs her Interest',
-        tag1: 'Engaging',
-        tag2: 'Intresed in Accessories',
-        date: '23-Mar-2022',
-        expanded: false,
-      ),
-    ];
-    return Container(
-        margin: const EdgeInsets.only(top: PaddingSystem.padding20),
-        child: ListView.builder(
-            shrinkWrap: true,
-            itemCount: list.length,
-            itemBuilder: (context, index) {
-              return NoteWidget(
-                note: list[index].note,
-                tag1: list[index].tag1,
-                tag2: list[index].tag2,
-                date: list[index].date,
-                bgColor: setBackgroundColor(index: index),
-                pinned: list[index].expanded,
-              );
-            }));
+    return FutureBuilder(
+        future: _futureNotes,
+        builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting &&
+              noteList.isEmpty) {
+            return const Center(
+              child: Center(child: CircularProgressIndicator()),
+            );
+          } else {
+            return Container(
+                margin: const EdgeInsets.only(top: PaddingSystem.padding20),
+                child: ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: noteList.length,
+                    itemBuilder: (context, index) {
+                      // return Container();
+                      return NoteWidget(
+                        note: noteList[index].title ?? "--",
+                        tag1: noteList[index].textPreview ?? "--",
+                        tag2: noteList[index].fileType ?? "--",
+                        date: "",
+                        bgColor: setBackgroundColor(index: index),
+                        pinned: true,
+                      );
+                    }));
+          }
+        });
+  }
+
+  void scrollListener() {
+    var maxExtent = scrollController.position.maxScrollExtent;
+    var loadingPosition = maxExtent - (maxExtent * 0.4);
+    if (scrollController.position.extentAfter < loadingPosition &&
+        !isLoadingData) {
+      offset = offset + 20;
+      setState(() {
+        isLoadingData = true;
+        _futureNotes = getNotesList(offset);
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    scrollController.removeListener(scrollListener);
+    scrollController.dispose();
+    super.dispose();
   }
 }
