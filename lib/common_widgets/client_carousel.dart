@@ -273,19 +273,11 @@ class ClientPrimaryDetails extends StatelessWidget {
                       ),
                       children: [
                         TextSpan(
-                          text: '1.5',
+                          text: '--',
                           style: TextStyle(
                             color: ColorSystem.primary,
                             fontWeight: FontWeight.w700,
                             fontSize: SizeSystem.size24,
-                          ),
-                        ),
-                        TextSpan(
-                          text: 'k',
-                          style: TextStyle(
-                            color: ColorSystem.primary,
-                            // fontWeight: FontWeight.w700,
-                            fontSize: SizeSystem.size12,
                           ),
                         ),
                       ],
@@ -368,14 +360,6 @@ class ClientPrimaryDetails extends StatelessWidget {
                             color: ColorSystem.primary,
                             fontWeight: FontWeight.w700,
                             fontSize: SizeSystem.size24,
-                          ),
-                        ),
-                        const TextSpan(
-                          text: 'k',
-                          style: TextStyle(
-                            color: ColorSystem.primary,
-                            // fontWeight: FontWeight.w700,
-                            fontSize: SizeSystem.size12,
                           ),
                         ),
                       ],
