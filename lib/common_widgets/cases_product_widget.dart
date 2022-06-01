@@ -78,10 +78,10 @@ class CasesProductWidget extends StatelessWidget {
                   ),
                   // priorityStatus(casePriorityStatus ?? ""),
                   const SizedBox(
-                    height: SizeSystem.size5,
+                    height: SizeSystem.size4,
                   ),
                   Text(
-                    '${"Cases Number: "}${caseNumber ?? ""}',
+                    '${"Case Number: "}${caseNumber ?? ""}',
                     style: const TextStyle(
                       fontSize: SizeSystem.size12,
                       color: ColorSystem.secondary,
@@ -89,7 +89,7 @@ class CasesProductWidget extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(
-                    height: SizeSystem.size5,
+                    height: SizeSystem.size4,
                   ),
                   Text(
                     '${"Status: "}${casesStatus ?? ""}',

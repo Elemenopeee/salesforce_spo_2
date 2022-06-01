@@ -32,7 +32,7 @@ class Case {
 
   factory Case.fromJson(Map<String, dynamic> json) {
     return Case._(
-      createdDate: json['createdDate'],
+      createdDate: json['CreatedDate'],
       attributes: Attributes.fromJson(json['attributes']),
       caseNumber: json['CaseNumber'],
       caseSubtypeC: json['Case_Subtype__c'],

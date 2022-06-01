@@ -46,8 +46,10 @@ class _CasesProductListState extends State<CasesProductList> {
     }
   }
 
-  DateTime now = DateTime.now();
-  String formattedDate = DateFormat('dd-MM-yyyy').format(DateTime.now());
+  String formattedDate(String date) {
+    var dateTime = DateTime.parse(date);
+    return DateFormat('MM-dd-yyyy').format(dateTime);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -76,8 +78,8 @@ class _CasesProductListState extends State<CasesProductList> {
                     var item = casesList[index];
                     return CasesProductWidget(
                       caseNumber: item.caseNumber ?? '--',
-                      casesDate: item.createdDate ?? formattedDate ?? '--',
-                      casePriorityStatus: casesList[index].priority ?? '--',
+                      casesDate: item.createdDate == null ? '--' : formattedDate(item.createdDate!),
+                      casePriorityStatus: item.priority ?? '--',
                       casesReason: item.reason ?? '--',
                       casesStatus: item.status ?? '--',
                       userName: item.account?.name ?? '--',

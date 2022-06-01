@@ -45,8 +45,10 @@ class _PromoListState extends State<PromoList> {
     }
   }
 
-  DateTime now = DateTime.now();
-  String formattedDate = DateFormat('dd-MM-yyyy').format(DateTime.now());
+  String formattedDate(String date) {
+    var dateTime = DateTime.parse(date);
+    return DateFormat('MM-dd-yyyy').format(dateTime);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -66,9 +68,8 @@ class _PromoListState extends State<PromoList> {
                 itemBuilder: (context, index) {
                   var item = promosList[index];
                   return Promo(
-                    title: item.promoAttributes?.type ?? "--",
-                    date:
-                        item.createdDate ?? formattedDate ?? '--',
+                    title: item.subject ?? "--",
+                    date: item.createdDate == null ? '--' : formattedDate(item.createdDate!),
                   );
                 },
                 separatorBuilder: (BuildContext context, int index) {

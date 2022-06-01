@@ -19,7 +19,7 @@ abstract class Endpoints {
   static String kAgentTodaysCommission =
       '/services/data/v53.0/query/?q=SELECT email,Comm_Amount_MTD__c,Comm_Amount_Yesterday__c, CreatedDate, LastModifiedDate FROM User where email =';
   static String kClientCases =
-      '/services/data/v53.0/query/?q=SELECT CaseNumber,Case_Subtype__c,Case_Type__c,DAX_Order_Number__c,Id,Priority,Reason,Status,Account.Name,Owner.Name FROM Case where AccountId =';
+      '/services/data/v53.0/query/?q=SELECT CaseNumber,Case_Subtype__c,Case_Type__c,DAX_Order_Number__c,Id,Priority,Reason,Status,Account.Name,Owner.Name,CreatedDate,LastModifiedDate FROM Case where AccountId =';
   static String kClientPromos =
       '/services/data/v53.0/query/?q=SELECT CreatedBy.Name,CreatedDate,Subject FROM EmailMessage where RelatedToId = ';
   static String kClientNoteByID =
