@@ -35,7 +35,7 @@ abstract class ColorSystem {
   static const Color black = Color(0xFF000000);
 
   /// Additional Grey Background color
-  static const Color greyBg = Color(0xFFF4F6FA);
+  static const Color culturedGrey = Color(0xFFF4F6FA);
 
   /// Additional Pink Background color
   static const Color pink = Color(0xFFFF9B90);
