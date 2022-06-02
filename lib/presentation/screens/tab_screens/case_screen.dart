@@ -72,7 +72,7 @@ class _CasesProductListState extends State<CasesProductList> {
                 width: double.infinity,
                 child: ListView.separated(
                   itemCount: casesList.length,
-                  physics: const NeverScrollableScrollPhysics(),
+                  //physics: const NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
                   itemBuilder: (context, index) {
                     var item = casesList[index];
