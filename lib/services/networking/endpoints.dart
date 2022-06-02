@@ -29,7 +29,7 @@ abstract class Endpoints {
   static String kClientActivity =
       '/services/data/v53.0/query/?q=SELECT Id, ActivityDate, Priority, WhatId,What.Name,Owner.Name, Status, Subject, TaskSubtype, Type,CompletedDateTime FROM Task WHERE WhatId = ';
   static String kClientOpenOrders =
-      'q=select Id,Name, CreatedDate,Total__c,(select Image_URL1__c  from GC_Order_Line_Items__r) from GC_Order__c where Customer__c = ';
+      '/services/data/v53.0/query/?q=select Id,Name, CreatedDate,Total__c,(select Image_URL1__c  from GC_Order_Line_Items__r) from GC_Order__c where Customer__c = ';
 
   static String getCustomerSearchByPhone(String phone) {
     return '$kBaseURL$kCustomerSearchByPhone\'$phone\'';
