@@ -64,7 +64,7 @@ class _PromoListState extends State<PromoList> {
               child: ListView.separated(
                 shrinkWrap: true,
                 itemCount: promosList.length,
-                physics: const NeverScrollableScrollPhysics(),
+                // physics: const NeverScrollableScrollPhysics(),
                 itemBuilder: (context, index) {
                   var item = promosList[index];
                   return Promo(
