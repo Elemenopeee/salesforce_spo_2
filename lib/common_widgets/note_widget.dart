@@ -14,6 +14,8 @@ class NoteWidget extends StatelessWidget {
   final String name;
   final Color? bgColor;
   final bool pinned;
+  final String? description;
+
   const NoteWidget({
     Key? key,
     required this.note,
@@ -21,6 +23,7 @@ class NoteWidget extends StatelessWidget {
     required this.date,
     this.bgColor,
     required this.pinned,
+    this.description,
   }) : super(key: key);
 
   @override
@@ -62,15 +65,16 @@ class NoteWidget extends StatelessWidget {
                   visible: pinned,
                   child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: const [
+                      children: [
                         Text(
-                          'Jessica  is a gutiar geerk, and loves acoustic guitar, loves the color blue, she hates hip- hop related stuff, so try to avoid that. She is Enrolled in Beginner Classes, and a active store vistior, so try to up sell her the next lessons.the color blue, she hates hip- hop related stuff, so try to avoid that. She is Enrolled in Beginner Classes',
-                          style: TextStyle(
-                              fontSize: SizeSystem.size12,
-                              color: ColorSystem.secondary,
-                              fontFamily: kRubik),
+                          description ?? '--',
+                          style: const TextStyle(
+                            fontSize: SizeSystem.size12,
+                            color: ColorSystem.secondary,
+                            fontFamily: kRubik,
+                          ),
                         ),
-                        SizedBox(
+                        const SizedBox(
                           height: SizeSystem.size20,
                         ),
                       ]),
@@ -86,8 +90,6 @@ class NoteWidget extends StatelessWidget {
                                 fontFamily: kRubik),
                             children: [
                           TextSpan(text: name),
-                          const TextSpan(text: ', '),
-                          const TextSpan(text: "GM West Village Store"),
                         ])),
                     Text(
                       date,
