@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:salesforce_spo/models/note.dart';
 import 'package:salesforce_spo/models/note_model.dart';
 
-import '../../../common_widgets/note.dart';
+import '../../../common_widgets/note_widget.dart';
 import '../../../design_system/primitives/padding_system.dart';
 import '../../../services/networking/endpoints.dart';
 import '../../../services/networking/networking_service.dart';
@@ -16,6 +18,7 @@ class NotesList extends StatefulWidget {
 
 class _NotesListState extends State<NotesList> {
   List<NoteModel> noteList = [];
+  List<Note> noteIds = [];
 
   bool isLoading = true;
 
@@ -27,20 +30,34 @@ class _NotesListState extends State<NotesList> {
 
   ScrollController scrollController = ScrollController();
 
+  String formattedDate(String date) {
+    var dateTime = DateTime.parse(date);
+    return DateFormat('MM-dd-yyyy').format(dateTime);
+  }
+
   @override
   void initState() {
-    getNotesList(offset);
     _futureNotes = getNotesList(offset);
     super.initState();
   }
 
   Future<void> getNotesList(int offset) async {
     var linkedEntityId = ('0014M00001nv3BwQAI');
+
     var response = await HttpService()
         .doGet(path: Endpoints.getClientNotesById(linkedEntityId));
+    var responseNotes =
+        await HttpService().doGet(path: Endpoints.getClientNotes(""));
+
+    print(responseNotes.data);
+    print("dajnjdacjudncvdnvduvnsuvnfuvsuvsvsuvsv");
+
     isLoadingData = false;
     try {
-      for (var notes in response.data['records']) {
+      for (var note in response.data['records']) {
+        noteIds.add(Note.fromJson(note));
+      }
+      for (var notes in responseNotes.data['records']) {
         noteList.add(NoteModel.fromJson(notes));
       }
     } catch (e) {
@@ -64,13 +81,15 @@ class _NotesListState extends State<NotesList> {
                 child: ListView.builder(
                     shrinkWrap: true,
                     itemCount: noteList.length,
+                    scrollDirection: Axis.vertical,
                     itemBuilder: (context, index) {
-                      // return Container();
+                      var noteItem = noteList[index];
                       return NoteWidget(
-                        note: noteList[index].title ?? "--",
-                        tag1: noteList[index].textPreview ?? "--",
-                        tag2: noteList[index].fileType ?? "--",
-                        date: "",
+                        name: noteItem.lastModifiedBy?.name ?? "--",
+                        note: noteItem.title ?? "--",
+                        date: noteItem.createdDate == null
+                            ? '--'
+                            : formattedDate(noteItem.createdDate!),
                         bgColor: setBackgroundColor(index: index),
                         pinned: true,
                       );

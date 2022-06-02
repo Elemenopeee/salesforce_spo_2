@@ -10,26 +10,24 @@ import '../utils/constants.dart';
 
 class NoteWidget extends StatelessWidget {
   final String note;
-  final String tag1;
-  final String tag2;
   final String date;
+  final String name;
   final Color? bgColor;
   final bool pinned;
-  const NoteWidget(
-      {Key? key,
-      required this.note,
-      required this.tag1,
-      required this.tag2,
-      required this.date,
-       this.bgColor,
-      required this.pinned})
-      : super(key: key);
+  const NoteWidget({
+    Key? key,
+    required this.note,
+    required this.name,
+    required this.date,
+    this.bgColor,
+    required this.pinned,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Slidable(
       key: ValueKey(note),
-      enabled: !pinned,
+      // enabled: !pinned,
       startActionPane: ActionPane(
         // A motion is a widget used to control how the pane animates.
         motion: const ScrollMotion(),
@@ -44,7 +42,7 @@ class NoteWidget extends StatelessWidget {
             horizontal: PaddingSystem.padding10),
         decoration: BoxDecoration(
             color: bgColor,
-            border: !pinned ? null : Border.all(color: ColorSystem.black),
+            // border: !pinned ? null : Border.all(color: ColorSystem.black),
             borderRadius: BorderRadius.circular(SizeSystem.size20)),
         child: Stack(children: [
           Container(
@@ -75,16 +73,6 @@ class NoteWidget extends StatelessWidget {
                         SizedBox(
                           height: SizeSystem.size20,
                         ),
-                        Text(
-                          'John Doe, GM West Village Store',
-                          style: TextStyle(
-                              fontSize: SizeSystem.size10,
-                              color: ColorSystem.secondary,
-                              fontFamily: kRubik),
-                        ),
-                        SizedBox(
-                          height: SizeSystem.size10,
-                        ),
                       ]),
                 ),
                 Row(
@@ -92,16 +80,14 @@ class NoteWidget extends StatelessWidget {
                   children: [
                     RichText(
                         text: TextSpan(
-                            style: TextStyle(
-                                color: pinned
-                                    ? ColorSystem.black
-                                    : ColorSystem.secondary,
-                                fontSize: SizeSystem.size12,
+                            style: const TextStyle(
+                                fontSize: SizeSystem.size10,
+                                color: ColorSystem.secondary,
                                 fontFamily: kRubik),
                             children: [
-                          TextSpan(text: tag1),
-                          const TextSpan(text: ' | '),
-                          TextSpan(text: tag2),
+                          TextSpan(text: name),
+                          const TextSpan(text: ', '),
+                          const TextSpan(text: "GM West Village Store"),
                         ])),
                     Text(
                       date,
@@ -117,26 +103,6 @@ class NoteWidget extends StatelessWidget {
               ],
             ),
           ),
-          Visibility(
-            visible: pinned,
-            child: Positioned(
-                top: SizeSystem.size0,
-                right: SizeSystem.size0,
-                child: SvgPicture.asset(
-                  IconSystem.notePinBg,
-                  color: ColorSystem.black,
-                )),
-          ),
-          Visibility(
-            visible: pinned,
-            child: Positioned(
-                top: SizeSystem.size6,
-                right: SizeSystem.size8,
-                child: SvgPicture.asset(
-                  IconSystem.pin,
-                  color: ColorSystem.white,
-                )),
-          ),
         ]),
       ),
       endActionPane: ActionPane(
@@ -149,7 +115,8 @@ class NoteWidget extends StatelessWidget {
         // All actions are defined in the children parameter.
         children: [
           Container(
-            margin: const EdgeInsets.symmetric(horizontal: PaddingSystem.padding20),
+            margin:
+                const EdgeInsets.symmetric(horizontal: PaddingSystem.padding20),
             child: IconButton(
                 onPressed: () {},
                 icon: SvgPicture.asset(
@@ -158,7 +125,8 @@ class NoteWidget extends StatelessWidget {
                 )),
           ),
           Container(
-            margin: const EdgeInsets.symmetric(horizontal: PaddingSystem.padding20),
+            margin:
+                const EdgeInsets.symmetric(horizontal: PaddingSystem.padding20),
             child: IconButton(
                 onPressed: () {}, icon: SvgPicture.asset(IconSystem.pinDark)),
           ),
