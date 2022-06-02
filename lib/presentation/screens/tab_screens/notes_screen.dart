@@ -48,7 +48,7 @@ class _NotesListState extends State<NotesList> {
         .doGet(path: Endpoints.getClientNotesById(linkedEntityId));
     var responseNotes =
         await HttpService().doGet(path: Endpoints.getClientNotes(""));
-    
+
     isLoadingData = false;
     try {
       for (var note in response.data['records']) {
