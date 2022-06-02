@@ -1,16 +1,18 @@
-class PromoModel {
-  final String title;
-  final String imgUrl;
-  final String date;
+import 'package:salesforce_spo/models/promo_attributes.dart';
+import 'package:salesforce_spo/models/promo_attributes.dart';
 
-  PromoModel({
-    required this.title,
-    required this.imgUrl,
-    required this.date,
-  });
+class PromoModel {
+  final PromoAttributes? promoAttributes;
+  final String? createdDate;
+  final String? subject;
+
+  PromoModel._({this.promoAttributes, this.createdDate, this.subject});
 
   factory PromoModel.fromJson(Map<String, dynamic> json) {
-    return PromoModel(
-        title: json['title'], imgUrl: json['imgUrl'], date: json['date']);
+    return PromoModel._(
+      createdDate: json['CreatedDate'],
+      promoAttributes: PromoAttributes.fromJson(json['attributes']),
+      subject: json['Subject'],
+    );
   }
 }
