@@ -9,9 +9,9 @@ import 'package:salesforce_spo/presentation/screens/tab_screens/promos_screen.da
 import '../design_system/primitives/color_system.dart';
 import '../design_system/primitives/landing_images.dart';
 import '../design_system/primitives/size_system.dart';
-import '../presentation/screens/tab_screens/activity_screen.dart';
+import '../presentation/screens/tab_screens/activity_tab.dart';
 import '../presentation/screens/tab_screens/history_screen.dart';
-import '../presentation/screens/tab_screens/orders_screen.dart';
+import '../presentation/screens/tab_screens/orders_tab.dart';
 import '../utils/constants.dart';
 
 class ClientFeatureTabsList extends StatefulWidget {
@@ -100,9 +100,9 @@ class _ClientFeatureTabsListState extends State<ClientFeatureTabsList>
           // tab bar view here
           Expanded(
             child: TabBarView(controller: _tabController, children: [
-              ActivityScreen(),
-              OrdersScreen(),
+              OrdersTab(),
               OrderHistoryList(),
+              ActivityTab(),
               NotesList(),
               CasesProductList(),
               PromoList(),

@@ -29,7 +29,6 @@ class _NotesListState extends State<NotesList> {
 
   @override
   void initState() {
-    getNotesList(offset);
     _futureNotes = getNotesList(offset);
     super.initState();
   }

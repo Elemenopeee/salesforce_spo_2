@@ -8,8 +8,17 @@ import '../../../design_system/primitives/padding_system.dart';
 import '../../../design_system/primitives/size_system.dart';
 import '../../../utils/constants.dart';
 
-class OrdersScreen extends StatelessWidget {
-  const OrdersScreen({Key? key}) : super(key: key);
+class OrdersTab extends StatefulWidget {
+  const OrdersTab({Key? key}) : super(key: key);
+
+  @override
+  State<OrdersTab> createState() => _OrdersTabState();
+}
+
+class _OrdersTabState extends State<OrdersTab> {
+
+  var clientId = '0014M00001ntpzMQAQ';
+
 
   @override
   Widget build(BuildContext context) {
