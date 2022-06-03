@@ -55,7 +55,7 @@ class RelatedOfferList extends StatelessWidget {
                 ),
                 fit: BoxFit.cover),
             borderRadius: BorderRadius.circular(20),
-            color: ColorSystem.greyBg,
+            color: ColorSystem.culturedGrey,
           ),
           child: Padding(
             padding:  const EdgeInsets.symmetric(

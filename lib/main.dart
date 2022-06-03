@@ -10,11 +10,12 @@ import 'package:salesforce_spo/design_system/design_system.dart';
 import 'package:salesforce_spo/presentation/intermediate_widgets/customer_lookup_widget.dart';
 import 'package:salesforce_spo/presentation/screens/client_landing_screen.dart';
 import 'package:salesforce_spo/presentation/tabs/home_tab.dart';
+import 'package:salesforce_spo/services/storage/shared_preferences_service.dart';
 import 'package:salesforce_spo/utils/constants.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await _acquireToken();
+  // await _acquireToken();
   runApp(const MyApp());
 }
 
@@ -40,8 +41,8 @@ Future<String> getResult({bool isAcquireToken = true}) async {
   try {
     if (isAcquireToken) {
       userAdModel = await pca.acquireToken(scopes: kScopes);
-      print(userAdModel?.id);
-      log(userAdModel!.toJson().toString());
+      SharedPreferenceService()
+          .setKey(key: 'agent_email', value: '${userAdModel?.mail}');
 
       // userAdModel.
     } else {
@@ -72,12 +73,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Salesforce SPO',
+      title: 'GC Customer Connect Sandbox',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      debugShowCheckedModeBanner: false,
-      home:  ClientLandingScreen(),
+      home: const ClientLandingScreen(),
     );
   }
 }
@@ -118,8 +118,8 @@ class _HomeScreenState extends State<HomeScreen> {
       backgroundColor: Colors.white,
       extendBodyBehindAppBar: true,
       appBar: getAppBar,
-      body: const TabHome(
-        agentName: 'John Doe',
+      body: TabHome(
+        agentName: userAdModel?.givenName ?? 'there,',
       ),
       bottomNavigationBar: NotchedBottomNavigationBar(
         actions: [
@@ -128,6 +128,9 @@ class _HomeScreenState extends State<HomeScreen> {
             splashColor: Colors.transparent,
             onPressed: () {
               showModalBottomSheet(
+                constraints: BoxConstraints(
+                  maxHeight: MediaQuery.of(context).size.height * 0.9
+                ),
                   isScrollControlled: true,
                   context: context,
                   builder: (BuildContext context) {
@@ -139,7 +142,7 @@ class _HomeScreenState extends State<HomeScreen> {
               IconSystem.user,
               width: 24,
               height: 24,
-              color: ColorSystem.white,
+              color: ColorSystem.primary,
             ),
           ),
           IconButton(
@@ -150,7 +153,7 @@ class _HomeScreenState extends State<HomeScreen> {
               IconSystem.feed,
               width: 24,
               height: 24,
-              color: ColorSystem.white,
+              color: ColorSystem.primary,
             ),
           ),
           IconButton(
@@ -161,7 +164,7 @@ class _HomeScreenState extends State<HomeScreen> {
               IconSystem.sparkle,
               width: 24,
               height: 24,
-              color: ColorSystem.white,
+              color: ColorSystem.primary,
             ),
           ),
           IconButton(
@@ -172,32 +175,17 @@ class _HomeScreenState extends State<HomeScreen> {
               IconSystem.more,
               width: 24,
               height: 24,
-              color: ColorSystem.white,
+              color: ColorSystem.primary,
             ),
           ),
         ],
         centerButton: FloatingActionButton(
           backgroundColor: ColorSystem.primary,
           onPressed: () async {
-            showModalBottomSheet(
-                isScrollControlled: true,
-                context: context,
-                builder: (BuildContext context) {
-                  return DraggableScrollableSheet(
-                    snap: true,
-                    initialChildSize: 0.9,
-                    minChildSize: 0.9,
-                    maxChildSize: 1.0,
-                    builder: (BuildContext context,
-                        ScrollController scrollController) {
-                      return const CustomerLookupWidget();
-                    },
-                  );
-                },
-                backgroundColor: Colors.transparent);
+
           },
           child: SvgPicture.asset(
-            IconSystem.user,
+            IconSystem.plus,
             width: 24,
             height: 24,
             color: ColorSystem.white,

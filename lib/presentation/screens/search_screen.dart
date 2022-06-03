@@ -1,6 +1,7 @@
 import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:salesforce_spo/utils/constant_functions.dart';
 
 import '../../common_widgets/customer_details_card.dart';
 import '../../design_system/design_system.dart';
@@ -65,14 +66,6 @@ class _SearchScreenState extends State<SearchScreen> {
 
     } catch (error) {
       print(error);
-    }
-  }
-
-  double aovCalculator(double? ltv, double? lnt) {
-    if (ltv != null && lnt != null) {
-      return ltv / lnt;
-    } else {
-      return 0;
     }
   }
 
