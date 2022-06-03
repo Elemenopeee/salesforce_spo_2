@@ -274,7 +274,7 @@ class ClientPrimaryDetails extends StatelessWidget {
                       ),
                       children: [
                         TextSpan(
-                          text: lastPurchaseValue != null ? formattedNumber(lastPurchaseValue!) : '--',
+                          text: lastPurchaseValue != null ? '\$${formattedNumber(lastPurchaseValue!)}' : '--',
                           style: const TextStyle(
                             color: ColorSystem.primary,
                             fontWeight: FontWeight.w700,
@@ -315,7 +315,7 @@ class ClientPrimaryDetails extends StatelessWidget {
                       ),
                       children: [
                         TextSpan(
-                          text: ltv != null ? formattedNumber(ltv!) : '--',
+                          text: ltv != null ? '\$${formattedNumber(ltv!)}' : '--',
                           style: const TextStyle(
                             color: ColorSystem.primary,
                             fontWeight: FontWeight.w700,
@@ -356,7 +356,7 @@ class ClientPrimaryDetails extends StatelessWidget {
                       ),
                       children: [
                         TextSpan(
-                          text: formattedNumber(aovCalculator(ltv, netTransactions)),
+                          text: '\$${formattedNumber(aovCalculator(ltv, netTransactions))}',
                           style: const TextStyle(
                             color: ColorSystem.primary,
                             fontWeight: FontWeight.w700,
