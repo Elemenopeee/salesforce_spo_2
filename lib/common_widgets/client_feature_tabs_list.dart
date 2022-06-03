@@ -107,8 +107,6 @@ class _ClientFeatureTabsListState extends State<ClientFeatureTabsList>
             child: TabBarView(controller: _tabController, children: [
               OrdersTab(customerId: widget.customerId,),
               RecommendationScreen(),
-              // OrdersScreen(),
-              OrderHistoryList(),
               ActivityTab(customerID: widget.customerId,),
               NotesList(customerID: widget.customerId,),
               CasesProductList(customerID: widget.customerId,),

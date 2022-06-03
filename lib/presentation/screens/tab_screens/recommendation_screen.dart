@@ -45,7 +45,7 @@ class _RecommendationScreenState extends State<RecommendationScreen>
             containerColor: Colors.grey.withOpacity(0.1),
             containerBorderRadius: 10.0,
             tabBorderRadius: 10.0,
-            tabOneName: "Browser History",
+            tabOneName: "Browsing History",
             tabTwoName: "Buy Again",
             tabThreeName: "Cart",
             boxShadow: [

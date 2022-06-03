@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:salesforce_spo/design_system/design_system.dart';
 
@@ -23,21 +24,24 @@ class CartProductWidget extends StatelessWidget {
               color: Colors.transparent,
             ),
             borderRadius: BorderRadius.circular(15),
-            color: ColorSystem.greyBg,
+            color: ColorSystem.culturedGrey,
           ),
-          child: Image.network(
-            productImage,
-            color: Colors.black87,
-            height: 150,
+          child: SizedBox(
             width: 150,
+            height: 150,
+            child: CachedNetworkImage(
+              imageUrl: productImage,
+            ),
           ),
         ),
         const SizedBox(
           height: SizeSystem.size5,
         ),
-        FittedBox(
+        SizedBox(
+          width: 150,
           child: Text(
             productName,
+            overflow: TextOverflow.ellipsis,
             style: const TextStyle(
               fontSize: SizeSystem.size12,
               color: ColorSystem.primaryTextColor,
