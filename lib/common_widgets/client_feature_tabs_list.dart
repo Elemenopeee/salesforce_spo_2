@@ -1,10 +1,12 @@
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:salesforce_spo/common_widgets/recommendation_list.dart';
 import 'package:salesforce_spo/design_system/primitives/padding_system.dart';
 import 'package:salesforce_spo/presentation/screens/tab_screens/case_screen.dart';
 import 'package:salesforce_spo/presentation/screens/tab_screens/notes_screen.dart';
 import 'package:salesforce_spo/presentation/screens/tab_screens/promos_screen.dart';
+import 'package:salesforce_spo/presentation/screens/tab_screens/recommendation_screen.dart';
 
 import '../design_system/primitives/color_system.dart';
 import '../design_system/primitives/landing_images.dart';
@@ -104,6 +106,8 @@ class _ClientFeatureTabsListState extends State<ClientFeatureTabsList>
           Expanded(
             child: TabBarView(controller: _tabController, children: [
               OrdersTab(customerId: widget.customerId,),
+              RecommendationScreen(),
+              // OrdersScreen(),
               OrderHistoryList(),
               ActivityTab(customerID: widget.customerId,),
               NotesList(customerID: widget.customerId,),
