@@ -1,8 +1,6 @@
-import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
-import 'package:salesforce_spo/common_widgets/pi_chart_widget.dart';
 import 'package:salesforce_spo/models/customer.dart';
 import 'package:salesforce_spo/services/networking/endpoints.dart';
 import 'package:salesforce_spo/services/networking/networking_service.dart';
@@ -12,11 +10,14 @@ import '../design_system/primitives/icon_system.dart';
 import '../design_system/primitives/landing_images.dart';
 import '../design_system/primitives/padding_system.dart';
 import '../design_system/primitives/size_system.dart';
-import '../presentation/screens/chart/sector.dart';
 import '../utils/constant_functions.dart';
 import '../utils/constants.dart';
+import '../utils/enums/music_instrument_enum.dart';
 
 class ClientCarousel extends StatefulWidget {
+
+  final String customerId;
+
   final Color? bannerOneColor;
   final Color? bannerTwoOColor;
   final Color? bannerThreeColor;
@@ -26,6 +27,7 @@ class ClientCarousel extends StatefulWidget {
     this.bannerOneColor,
     this.bannerTwoOColor,
     this.bannerThreeColor,
+    required this.customerId,
   }) : super(key: key);
 
   @override
@@ -38,10 +40,8 @@ class _ClientCarouselState extends State<ClientCarousel> {
   Customer? customer;
 
   Future<void> getClientBasicDetails() async {
-    var clientId = '0014M00001nv3BwQAI';
-
     var response = await HttpService()
-        .doGet(path: Endpoints.getClientBasicDetails(clientId));
+        .doGet(path: Endpoints.getClientBasicDetails(widget.customerId));
 
     customer = Customer.fromJson(json: response.data['records'][0]);
   }
@@ -62,7 +62,9 @@ class _ClientCarouselState extends State<ClientCarousel> {
           case ConnectionState.waiting:
           case ConnectionState.active:
             return const Center(
-              child: CircularProgressIndicator(),
+              child: CircularProgressIndicator(
+                color: ColorSystem.primary,
+              ),
             );
           case ConnectionState.done:
             return ClientPrimaryDetails(
@@ -71,6 +73,7 @@ class _ClientCarouselState extends State<ClientCarousel> {
               ltv: customer?.lifeTimeNetSalesAmount,
               netTransactions: customer?.lifetimeNetTransactions,
               lastVisitDate: customer?.lastTransactionDate,
+              lastPurchaseValue: customer?.lastPurchaseValue,
             );
         }
       },
@@ -144,13 +147,13 @@ class ClientPrimaryDetails extends StatelessWidget {
                   children: [
                     TextSpan(
                       text: '$clientName ',
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontWeight: FontWeight.w700,
                         fontSize: SizeSystem.size16,
                         color: ColorSystem.primaryTextColor,
                       ),
                     ),
-                    TextSpan(
+                    const TextSpan(
                       text: '• GC',
                       style: TextStyle(
                         fontWeight: FontWeight.w700,
@@ -194,11 +197,9 @@ class ClientPrimaryDetails extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              SvgPicture.asset(
-                LandingImages.guitarSolidIcon,
-                width: SizeSystem.size24,
-                height: SizeSystem.size24,
-              ),
+              SvgPicture.asset(MusicInstrument.getInstrumentIcon(
+                  MusicInstrument.getMusicInstrumentFromString(
+                      primaryInstrument!))),
               const SizedBox(
                 width: SizeSystem.size10,
               ),
@@ -207,20 +208,20 @@ class ClientPrimaryDetails extends StatelessWidget {
                 children: [
                   RichText(
                     textAlign: TextAlign.center,
-                    text: const TextSpan(
-                      style: TextStyle(
+                    text: TextSpan(
+                      style: const TextStyle(
                         fontFamily: kRubik,
                       ),
                       children: [
                         TextSpan(
-                          text: 'Guitarist |',
-                          style: TextStyle(
+                          text: '${primaryInstrument ?? '--'} |',
+                          style: const TextStyle(
                             fontSize: SizeSystem.size12,
                             color: ColorSystem.primary,
                             fontFamily: kRubik,
                           ),
                         ),
-                        TextSpan(
+                        const TextSpan(
                           text: ' Buy Used',
                           style: TextStyle(
                             fontSize: SizeSystem.size12,
@@ -235,7 +236,7 @@ class ClientPrimaryDetails extends StatelessWidget {
                     height: SizeSystem.size4,
                   ),
                   Text(
-                    "Visited on : ${lastVisitDate != null ? formatDate(lastVisitDate!) : '--'}",
+                    "Last purchase : ${lastVisitDate != null ? formatDate(lastVisitDate!) : '--'}",
                     style: TextStyle(
                       fontFamily: kRubik,
                       color: ColorSystem.primary,
@@ -267,14 +268,14 @@ class ClientPrimaryDetails extends StatelessWidget {
                     height: SizeSystem.size4,
                   ),
                   RichText(
-                    text: const TextSpan(
-                      style: TextStyle(
+                    text: TextSpan(
+                      style: const TextStyle(
                         fontFamily: kRubik,
                       ),
                       children: [
                         TextSpan(
-                          text: '--',
-                          style: TextStyle(
+                          text: lastPurchaseValue != null ? formattedNumber(lastPurchaseValue!) : '--',
+                          style: const TextStyle(
                             color: ColorSystem.primary,
                             fontWeight: FontWeight.w700,
                             fontSize: SizeSystem.size24,

@@ -15,7 +15,10 @@ import '../presentation/screens/tab_screens/orders_tab.dart';
 import '../utils/constants.dart';
 
 class ClientFeatureTabsList extends StatefulWidget {
-  const ClientFeatureTabsList({Key? key}) : super(key: key);
+
+  final String customerId;
+
+  const ClientFeatureTabsList({required this.customerId, Key? key}) : super(key: key);
 
   @override
   State<ClientFeatureTabsList> createState() => _ClientFeatureTabsListState();
@@ -100,12 +103,12 @@ class _ClientFeatureTabsListState extends State<ClientFeatureTabsList>
           // tab bar view here
           Expanded(
             child: TabBarView(controller: _tabController, children: [
-              OrdersTab(),
+              OrdersTab(customerId: widget.customerId,),
               OrderHistoryList(),
-              ActivityTab(),
-              NotesList(),
-              CasesProductList(),
-              PromoList(),
+              ActivityTab(customerID: widget.customerId,),
+              NotesList(customerID: widget.customerId,),
+              CasesProductList(customerID: widget.customerId,),
+              PromoList(customerID: widget.customerId,),
             ]),
           )
         ]),

@@ -15,7 +15,7 @@ import 'package:salesforce_spo/utils/constants.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // await _acquireToken();
+  await _acquireToken();
   runApp(const MyApp());
 }
 
@@ -77,7 +77,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const ClientLandingScreen(),
+      home: const HomeScreen(),
     );
   }
 }

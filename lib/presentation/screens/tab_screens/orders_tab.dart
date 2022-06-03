@@ -14,14 +14,16 @@ import '../../../design_system/primitives/size_system.dart';
 import '../../../utils/constants.dart';
 
 class OrdersTab extends StatefulWidget {
-  const OrdersTab({Key? key}) : super(key: key);
+
+  final String customerId;
+
+  const OrdersTab({required this.customerId, Key? key}) : super(key: key);
 
   @override
   State<OrdersTab> createState() => _OrdersTabState();
 }
 
 class _OrdersTabState extends State<OrdersTab> {
-  var clientId = '0014M00001ntpzMQAQ';
 
   late Future<void> _futureOpenOrders;
   late Future<void> _futureOrderHistory;
@@ -31,7 +33,7 @@ class _OrdersTabState extends State<OrdersTab> {
 
   Future<void> getClientOpenOrders() async {
     var response = await HttpService()
-        .doGet(path: Endpoints.getClientOpenOrders(clientId));
+        .doGet(path: Endpoints.getClientOpenOrders(widget.customerId));
 
     try {
       for (var record in response.data['records']) {
@@ -44,7 +46,7 @@ class _OrdersTabState extends State<OrdersTab> {
 
   Future<void> getClientOrderHistory() async {
     var response = await HttpService()
-        .doGet(path: Endpoints.getClientOrderHistory(clientId));
+        .doGet(path: Endpoints.getClientOrderHistory(widget.customerId));
 
     try {
       for (var record in response.data['records']) {
@@ -83,16 +85,21 @@ class _OrdersTabState extends State<OrdersTab> {
           case ConnectionState.waiting:
           case ConnectionState.active:
             return const Center(
-              child: CircularProgressIndicator(),
+              child: CircularProgressIndicator(
+                color: ColorSystem.primary,
+              ),
             );
           case ConnectionState.done:
 
             if(openOrders.isEmpty && pastOrders.isEmpty){
               return Column(
                 children: [
+                  const SizedBox(
+                    height: SizeSystem.size50,
+                  ),
                   SvgPicture.asset(IconSystem.noDataFound),
                   const SizedBox(
-                    height: SizeSystem.size10,
+                    height: SizeSystem.size24,
                   ),
                   const Text(
                     'NO DATA FOUND!',
@@ -100,6 +107,7 @@ class _OrdersTabState extends State<OrdersTab> {
                       color: ColorSystem.primary,
                       fontWeight: FontWeight.bold,
                       fontFamily: kRubik,
+                      fontSize: SizeSystem.size20,
                     ),
                   )
                 ],
@@ -399,7 +407,7 @@ class InstrumentsTile extends StatelessWidget {
               color: Colors.transparent,
             ),
             borderRadius: BorderRadius.circular(SizeSystem.size12),
-            color: ColorSystem.greyBg,
+            color: ColorSystem.culturedGrey,
           ),
           child: Image(
             image: imageProvider,
@@ -534,7 +542,7 @@ class InstrumentsTile extends StatelessWidget {
                       color: Colors.transparent,
                     ),
                     borderRadius: BorderRadius.circular(SizeSystem.size12),
-                    color: ColorSystem.greyBg,
+                    color: ColorSystem.culturedGrey,
                   ),
                   child: Center(
                     child: Text(

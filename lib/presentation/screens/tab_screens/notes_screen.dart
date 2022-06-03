@@ -1,16 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 import 'package:salesforce_spo/models/note.dart';
 import 'package:salesforce_spo/models/note_model.dart';
 
 import '../../../common_widgets/note_widget.dart';
+import '../../../design_system/design_system.dart';
+import '../../../design_system/primitives/icon_system.dart';
 import '../../../design_system/primitives/padding_system.dart';
 import '../../../services/networking/endpoints.dart';
 import '../../../services/networking/networking_service.dart';
+import '../../../utils/constants.dart';
 import '../../../utils/set_bg_color.dart';
 
 class NotesList extends StatefulWidget {
-  const NotesList({Key? key}) : super(key: key);
+
+  final String customerID;
+
+  const NotesList({Key? key, required this.customerID}) : super(key: key);
 
   @override
   State<NotesList> createState() => _NotesListState();
@@ -42,10 +49,9 @@ class _NotesListState extends State<NotesList> {
   }
 
   Future<void> getNotesList(int offset) async {
-    var linkedEntityId = ('0014M00001nv3BwQAI');
 
     var response = await HttpService()
-        .doGet(path: Endpoints.getClientNotesById(linkedEntityId));
+        .doGet(path: Endpoints.getClientNotesById(widget.customerID));
     var responseNotes =
         await HttpService().doGet(path: Endpoints.getClientNotes(""));
     isLoadingData = false;
@@ -69,9 +75,35 @@ class _NotesListState extends State<NotesList> {
           if (snapshot.connectionState == ConnectionState.waiting &&
               noteList.isEmpty) {
             return const Center(
-              child: Center(child: CircularProgressIndicator()),
+              child: Center(child: CircularProgressIndicator(
+                color: ColorSystem.primary,
+              )),
             );
           } else {
+
+            if(noteList.isEmpty){
+              return Column(
+                children: [
+                  const SizedBox(
+                    height: SizeSystem.size50,
+                  ),
+                  SvgPicture.asset(IconSystem.noDataFound),
+                  const SizedBox(
+                    height: SizeSystem.size24,
+                  ),
+                  const Text(
+                    'NO DATA FOUND!',
+                    style: TextStyle(
+                      color: ColorSystem.primary,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: kRubik,
+                      fontSize: SizeSystem.size20,
+                    ),
+                  )
+                ],
+              );
+            }
+
             return Container(
                 margin: const EdgeInsets.only(top: PaddingSystem.padding20),
                 child: ListView.builder(

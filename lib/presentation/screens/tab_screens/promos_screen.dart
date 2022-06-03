@@ -11,7 +11,12 @@ import '../../../services/networking/networking_service.dart';
 import '../../../utils/constants.dart';
 
 class PromoList extends StatefulWidget {
-  const PromoList({Key? key}) : super(key: key);
+  final String customerID;
+
+  const PromoList({
+    Key? key,
+    required this.customerID,
+  }) : super(key: key);
 
   @override
   _PromoListState createState() => _PromoListState();
@@ -36,9 +41,8 @@ class _PromoListState extends State<PromoList> {
   }
 
   Future<void> getPromosList(int offset) async {
-    var relatedToId = ('0014M00001g0fPMQAY');
-    var response =
-        await HttpService().doGet(path: Endpoints.getClientPromos(relatedToId));
+    var response = await HttpService()
+        .doGet(path: Endpoints.getClientPromos(widget.customerID));
     isLoadingData = false;
     try {
       for (var promos in response.data['records']) {
@@ -61,15 +65,21 @@ class _PromoListState extends State<PromoList> {
         builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting &&
               promosList.isEmpty) {
-            return const Center(child: CircularProgressIndicator());
+            return const Center(
+                child: CircularProgressIndicator(
+              color: ColorSystem.primary,
+            ));
           } else {
-
-            if(snapshot.connectionState == ConnectionState.done && promosList.isEmpty){
+            if (snapshot.connectionState == ConnectionState.done &&
+                promosList.isEmpty) {
               return Column(
                 children: [
+                  const SizedBox(
+                    height: SizeSystem.size50,
+                  ),
                   SvgPicture.asset(IconSystem.noDataFound),
                   const SizedBox(
-                    height: SizeSystem.size10,
+                    height: SizeSystem.size24,
                   ),
                   const Text(
                     'NO DATA FOUND!',
@@ -77,6 +87,7 @@ class _PromoListState extends State<PromoList> {
                       color: ColorSystem.primary,
                       fontWeight: FontWeight.bold,
                       fontFamily: kRubik,
+                      fontSize: SizeSystem.size20,
                     ),
                   )
                 ],
@@ -93,7 +104,9 @@ class _PromoListState extends State<PromoList> {
                   var item = promosList[index];
                   return Promo(
                     title: item.subject ?? "--",
-                    date: item.createdDate == null ? '--' : formattedDate(item.createdDate!),
+                    date: item.createdDate == null
+                        ? '--'
+                        : formattedDate(item.createdDate!),
                   );
                 },
                 separatorBuilder: (BuildContext context, int index) {

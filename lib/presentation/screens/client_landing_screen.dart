@@ -7,7 +7,10 @@ import 'package:salesforce_spo/design_system/primitives/landing_images.dart';
 import '../../utils/constants.dart';
 
 class ClientLandingScreen extends StatefulWidget {
-  const ClientLandingScreen({Key? key}) : super(key: key);
+
+  final String customerID;
+
+  const ClientLandingScreen({required this.customerID, Key? key}) : super(key: key);
 
   @override
   _ClientLandingScreenState createState() => _ClientLandingScreenState();
@@ -26,12 +29,12 @@ class _ClientLandingScreenState extends State<ClientLandingScreen> {
               const SizedBox(
                 height: SizeSystem.size30,
               ),
-              const ClientCarousel(),
+               ClientCarousel(customerId: widget.customerID,),
               // const GetCarouselBanner(),
               const SizedBox(
                 height: SizeSystem.size30,
               ),
-              const ClientFeatureTabsList(),
+              ClientFeatureTabsList(customerId: widget.customerID,),
             ],
           ),
         ),

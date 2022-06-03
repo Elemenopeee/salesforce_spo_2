@@ -15,7 +15,10 @@ import '../../../design_system/primitives/size_system.dart';
 import '../../../utils/constants.dart';
 
 class ActivityTab extends StatefulWidget {
-  const ActivityTab({Key? key}) : super(key: key);
+
+  final String customerID;
+
+  const ActivityTab({Key? key, required this.customerID}) : super(key: key);
 
   @override
   State<ActivityTab> createState() => _ActivityTabState();
@@ -27,9 +30,8 @@ class _ActivityTabState extends State<ActivityTab> {
   late Future<void> _futureActivity;
 
   Future<void> getClientActivity() async {
-    var clientId = '0014M00001nv3BwQAI';
     var response =
-        await HttpService().doGet(path: Endpoints.getClientActivity(clientId));
+        await HttpService().doGet(path: Endpoints.getClientActivity(widget.customerID));
 
     for (var record in response.data['records']) {
       activities.add(ClientActivity.fromJson(record));
@@ -99,16 +101,21 @@ class _ActivityTabState extends State<ActivityTab> {
           case ConnectionState.waiting:
           case ConnectionState.active:
             return const Center(
-              child: CircularProgressIndicator(),
+              child: CircularProgressIndicator(
+                color: ColorSystem.primary,
+              ),
             );
           case ConnectionState.done:
 
             if(activities.isEmpty){
               return Column(
                 children: [
+                  const SizedBox(
+                    height: SizeSystem.size50,
+                  ),
                   SvgPicture.asset(IconSystem.noDataFound),
                   const SizedBox(
-                    height: SizeSystem.size10,
+                    height: SizeSystem.size24,
                   ),
                   const Text(
                     'NO DATA FOUND!',
@@ -116,6 +123,7 @@ class _ActivityTabState extends State<ActivityTab> {
                       color: ColorSystem.primary,
                       fontWeight: FontWeight.bold,
                       fontFamily: kRubik,
+                      fontSize: SizeSystem.size20,
                     ),
                   )
                 ],
@@ -283,7 +291,7 @@ class AbandonedCartList extends StatelessWidget {
               color: Colors.transparent,
             ),
             borderRadius: BorderRadius.circular(15),
-            color: ColorSystem.greyBg,
+            color: ColorSystem.culturedGrey,
           ),
           child: SvgPicture.asset(
             listOfRecommendationImage[index],
@@ -345,7 +353,7 @@ class BrowsingtList extends StatelessWidget {
               color: Colors.transparent,
             ),
             borderRadius: BorderRadius.circular(15),
-            color: ColorSystem.greyBg,
+            color: ColorSystem.culturedGrey,
           ),
           child:
               SvgPicture.asset(listOfOrderImage[index], color: Colors.black87),

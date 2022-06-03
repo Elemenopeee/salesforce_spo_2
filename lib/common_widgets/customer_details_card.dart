@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:salesforce_spo/design_system/design_system.dart';
+import 'package:salesforce_spo/presentation/screens/client_landing_screen.dart';
 import 'package:salesforce_spo/utils/constant_functions.dart';
 import 'package:salesforce_spo/utils/enums/music_instrument_enum.dart';
 import 'package:url_launcher/url_launcher_string.dart';
@@ -68,11 +69,19 @@ class _CustomerDetailsCardState extends State<CustomerDetailsCard> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () async {
-        try {
-          await launchUrlString(
-              'salesforce1://sObject/${widget.customerId}/view');
-        } catch (e) {
-          print(e);
+
+        if(widget.customerId == null){
+          try {
+            await launchUrlString(
+                'salesforce1://sObject/${widget.customerId}/view');
+          } catch (e) {
+            print(e);
+          }
+        }
+        else {
+          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) {
+            return ClientLandingScreen(customerID: widget.customerId!,);
+          }));
         }
       },
       child: Container(
@@ -254,8 +263,8 @@ class _CustomerMicroDetailsState extends State<CustomerMicroDetails> {
             borderRadius: BorderRadius.circular(PaddingSystem.padding10),
             color: ColorSystem.secondary.withOpacity(OpacitySystem.opacity01)),
         child: widget.icon ??
-            Text(
-              '\$${widget.value}',
+             Text(
+              widget.value,
               style: const TextStyle(
                 color: ColorSystem.primary,
                 fontFamily: kRubik,

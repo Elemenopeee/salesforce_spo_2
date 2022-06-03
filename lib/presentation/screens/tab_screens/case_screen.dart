@@ -12,7 +12,10 @@ import '../../../services/networking/networking_service.dart';
 import '../../../utils/constants.dart';
 
 class CasesProductList extends StatefulWidget {
-  const CasesProductList({Key? key}) : super(key: key);
+
+  final String customerID;
+
+  const CasesProductList({Key? key, required this.customerID}) : super(key: key);
 
   @override
   _CasesProductListState createState() => _CasesProductListState();
@@ -37,9 +40,8 @@ class _CasesProductListState extends State<CasesProductList> {
   }
 
   Future<void> getCasesList(int offset) async {
-    var accountId = ('0014M00001nv3BwQAI');
     var response =
-        await HttpService().doGet(path: Endpoints.getClientCases(accountId));
+        await HttpService().doGet(path: Endpoints.getClientCases(widget.customerID));
     isLoadingData = false;
     try {
       for (var cases in response.data['records']) {
@@ -63,23 +65,29 @@ class _CasesProductListState extends State<CasesProductList> {
           if (snapshot.connectionState == ConnectionState.waiting &&
               casesList.isEmpty) {
             return const Center(
-              child: Center(child: CircularProgressIndicator()),
+              child: Center(child: CircularProgressIndicator(
+                color: ColorSystem.primary,
+              )),
             );
           } else {
 
             if(snapshot.connectionState == ConnectionState.done && casesList.isEmpty){
               return Column(
                 children: [
+                  const SizedBox(
+                    height: SizeSystem.size50,
+                  ),
                   SvgPicture.asset(IconSystem.noDataFound),
                   const SizedBox(
-                    height: SizeSystem.size10,
+                    height: SizeSystem.size24,
                   ),
-                   const Text(
+                  const Text(
                     'NO DATA FOUND!',
                     style: TextStyle(
                       color: ColorSystem.primary,
                       fontWeight: FontWeight.bold,
                       fontFamily: kRubik,
+                      fontSize: SizeSystem.size20,
                     ),
                   )
                 ],
