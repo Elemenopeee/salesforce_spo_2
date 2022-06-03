@@ -100,8 +100,9 @@ class _ClientFeatureTabsListState extends State<ClientFeatureTabsList>
           // tab bar view here
           Expanded(
             child: TabBarView(controller: _tabController, children: [
-              OrdersScreen(),
+              OrdersTab(),
               OrderHistoryList(),
+              ActivityTab(),
               NotesList(),
               CasesProductList(),
               PromoList(),
