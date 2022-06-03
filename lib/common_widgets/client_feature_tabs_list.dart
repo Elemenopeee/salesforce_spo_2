@@ -9,6 +9,7 @@ import 'package:salesforce_spo/presentation/screens/tab_screens/promos_screen.da
 import '../design_system/primitives/color_system.dart';
 import '../design_system/primitives/landing_images.dart';
 import '../design_system/primitives/size_system.dart';
+import '../presentation/screens/tab_screens/activity_tab.dart';
 import '../presentation/screens/tab_screens/history_screen.dart';
 import '../presentation/screens/tab_screens/orders_screen.dart';
 import '../utils/constants.dart';
