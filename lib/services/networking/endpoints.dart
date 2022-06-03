@@ -25,7 +25,7 @@ abstract class Endpoints {
   static String kClientNoteByID =
       '/services/data/v53.0/query/?q=SELECT Id,ContentDocumentId FROM ContentDocumentLink WHERE LinkedEntityId = ';
   static String kClientNotes =
-      '/services/data/v53.0/query/?q=SELECT Id, Title, FileType, TextPreview, Content FROM ContentNote WHERE Id IN ';
+      '/services/data/v53.0/query/?q=SELECT Id, Title, FileType, TextPreview, Content, LastModifiedBy.Name,CreatedDate,LastModifiedDate FROM ContentNote WHERE Id IN ';
 
   static String getCustomerSearchByPhone(String phone) {
     return '$kBaseURL$kCustomerSearchByPhone\'$phone\'';
@@ -71,11 +71,24 @@ abstract class Endpoints {
     return '$kBaseURL$kClientPromos${'\'$relatedToId\''}';
   }
 
-  static String getClientNotesById(String relatedToId) {
-    return '$kBaseURL$kClientNoteByID${'\'$relatedToId\''}';
+  static String getClientNotesById(String linkedEntityId) {
+    return '$kBaseURL$kClientNoteByID${'\'$linkedEntityId\''}';
   }
 
-  static String getClientNotes(String relatedToId) {
-    return '$kBaseURL$kClientNotes${'\'$relatedToId\''}';
+  static String getClientNotes(String notesId) {
+    var listOfId = ['0696C000000qLknQAE', '0696C000000rxwUQAQ'];
+
+    var notesId = "";
+
+    for (var id in listOfId) {
+      var insertIds = '\'$id\'';
+      notesId = notesId + insertIds + ',';
+    }
+
+    if (notesId.isNotEmpty) {
+      notesId = notesId.substring(0, notesId.length - 1);
+    }
+
+    return '$kBaseURL$kClientNotes${'($notesId)'}';
   }
 }
