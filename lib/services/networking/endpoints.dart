@@ -1,6 +1,6 @@
 abstract class Endpoints {
-  static String kBaseURL = 'https://gcinc--tracuat.my.salesforce.com';
-
+  
+  static String kBaseURL = 'https://gcinc.my.salesforce.com';
   static String kCustomerSearchByPhone =
       '/services/data/v53.0/query/?q=SELECT id,name,firstname,lastname,accountEmail__c,accountPhone__c,Last_Transaction_Date__c,Lifetime_Net_Sales_Amount__c,Lifetime_Net_Sales_Transactions__c,Primary_Instrument_Category__c,Max_ltv_net_dlrs_Formula__c,Median_ltv_net_dlrs_Formula__c, Avg_ltv_net_dlrs_Formula__c from account where accountPhone__c=';
   static String kCustomerSearchByEmail =
