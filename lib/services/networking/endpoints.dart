@@ -29,7 +29,9 @@ abstract class Endpoints {
   static String kClientActivity =
       '/services/data/v53.0/query/?q=SELECT Id, ActivityDate, Priority, WhatId,What.Name,Owner.Name, Status, Subject, TaskSubtype, Type,CompletedDateTime FROM Task WHERE WhatId = ';
   static String kClientOpenOrders =
-      '/services/data/v53.0/query/?q=select Id,Name, CreatedDate,Total__c,(select Image_URL1__c  from GC_Order_Line_Items__r) from GC_Order__c where Customer__c = ';
+      '/services/data/v53.0/query/?q=select Id,Name, CreatedDate,Total__c,Order_Number__c,(select Image_URL1__c  from GC_Order_Line_Items__r) from GC_Order__c where Customer__c = ';
+  static String kClientOrderHistory =
+      '/services/data/v53.0/query/?q=select Id,Name, CreatedDate,Total__c,Order_Number__c,Order_Status__c,(select Image_URL__c  from GC_Order_Line_Items__r) from GC_Order__c where Customer__c = ';
 
   static String getCustomerSearchByPhone(String phone) {
     return '$kBaseURL$kCustomerSearchByPhone\'$phone\'';
@@ -100,8 +102,12 @@ abstract class Endpoints {
     return '$kBaseURL$kClientActivity${'\'$clientId\''}';
   }
 
-  static String getClientOpenOrders(String clientId){
+  static String getClientOpenOrders(String clientId) {
     return '$kBaseURL$kClientOpenOrders${'\'$clientId\' and Order_Status__c = \'Draft\' ORDER BY createddate desc limit 2 OFFSET 0'}';
+  }
+
+  static String getClientOrderHistory(String clientId) {
+    return '$kBaseURL$kClientOrderHistory${'\'$clientId\' and Order_Status__c!= \'Draft\' ORDER BY createddate desc limit 2 OFFSET 0'}';
   }
 
 }

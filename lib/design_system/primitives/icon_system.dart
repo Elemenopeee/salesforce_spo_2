@@ -34,5 +34,8 @@ abstract class IconSystem {
   static const String noCommission = 'assets/icons/no_commission.svg';
   static const String inProgress = 'assets/icons/in_progress.svg';
   static const String userPlaceholder = 'assets/icons/user_placeholder.svg';
-  static const String nothingFound = 'assets/icons/nothing_found.svg';
+  static const String noDataFound = 'assets/icons/no_data_found.svg';
+  static const String activityCompleted = 'assets/icons/activity_completed.svg';
+  static const String activityIncomplete = 'assets/icons/activity_incomplete.svg';
+  static const String activityGeneral = 'assets/icons/activity_general.svg';
 }

@@ -13,7 +13,7 @@ class NoDataFound extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(children: [
       const SizedBox(height: PaddingSystem.padding40),
-      SvgPicture.asset(IconSystem.nothingFound),
+      SvgPicture.asset(IconSystem.noDataFound),
       const SizedBox(height: PaddingSystem.padding20),
       const Text(
         'NO DATA FOUND !',
