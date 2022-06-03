@@ -26,6 +26,13 @@ abstract class Endpoints {
       '/services/data/v53.0/query/?q=SELECT Id,ContentDocumentId FROM ContentDocumentLink WHERE LinkedEntityId = ';
   static String kClientNotes =
       '/services/data/v53.0/query/?q=SELECT Id, Title, FileType, TextPreview, Content, LastModifiedBy.Name,CreatedDate,LastModifiedDate FROM ContentNote WHERE Id IN ';
+  static String kClientByNow =
+      '/services/data/v53.0/query/?q=SELECT id,lastmodifieddate,Order_Status__c,Customer__c,(select id, GC_Order__r.Site_Id__c,GC_Order__r.Name, GC_Order__c, GC_Order__r.Customer__r.PersonEmail, Description__c, Item_Id_formula__c, PIM_Sku__c , Item_Id__c, Condtion__c, Image_URL__c, Item_Price__c, Quantity__c, Warranty_Id__c, Warranty_Name__c,Warranty_price__c, Item_SKU__c,Warranty_style__c, Warranty_Enterprise_SkuId__c from GC_Order_Line_Items__r where Status__c != \'Deleted\') FROM GC_Order__c where Customer__c = ';
+
+  static String kClientCartByID =
+      '/services/data/v53.0/query/?q=SELECT Id, Customer__c,Cart_Sku_1__c, Cart_Sku_2__c, Cart_Sku_3__c, Cart_Sku_4__c, Cart_Sku_5__c, Cart_Sku_6__c, Cart_Sku_7__c, Cart_Sku_8__c, Cart_Sku_9__c FROM Lead where epsilon_customer_brand_key__c = ';
+  static String kClientCartProduct =
+      '/services/data/v53.0/query/?q=SELECT id,Brand__c,Name,Vender_Name__c,Standard_Unit_Cost__c,ProductImage__c FROM Product2 WHERE Item_ID__c in ';
 
   static String getCustomerSearchByPhone(String phone) {
     return '$kBaseURL$kCustomerSearchByPhone\'$phone\'';
@@ -90,5 +97,17 @@ abstract class Endpoints {
     }
 
     return '$kBaseURL$kClientNotes${'($notesId)'}';
+  }
+
+  static String getClientByNow(String customerId) {
+    return '$kBaseURL$kClientByNow${'\'$customerId\' and Order_Status__c = \'Completed\' Order by lastmodifieddate desc limit 1'}';
+  }
+
+  static String getClientCartById(String customerId) {
+    return '$kBaseURL$kClientCartByID${'\'$customerId\''}';
+  }
+
+  static String getClientCart(String cartsId) {
+    return '$kBaseURL$kClientCartProduct${'($cartsId)'}';
   }
 }

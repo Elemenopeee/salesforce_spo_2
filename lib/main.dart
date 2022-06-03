@@ -77,7 +77,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       debugShowCheckedModeBanner: false,
-      home:  ClientLandingScreen(),
+      home: ClientLandingScreen(),
     );
   }
 }
@@ -91,21 +91,21 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   get getAppBar => AppBar(
-    toolbarHeight: 80,
-    leadingWidth: double.infinity,
-    backgroundColor: Colors.white,
-    elevation: 0,
-    centerTitle: true,
-    title: const Text(
-      "HOME",
-      style: TextStyle(
-        fontSize: 18,
-        fontWeight: FontWeight.w500,
-        color: Colors.black,
-        fontFamily: kRubik,
-      ),
-    ),
-  );
+        toolbarHeight: 80,
+        leadingWidth: double.infinity,
+        backgroundColor: Colors.white,
+        elevation: 0,
+        centerTitle: true,
+        title: const Text(
+          "HOME",
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.w500,
+            color: Colors.black,
+            fontFamily: kRubik,
+          ),
+        ),
+      );
 
   @override
   void initState() {

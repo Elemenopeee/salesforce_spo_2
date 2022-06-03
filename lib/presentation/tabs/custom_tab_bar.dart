@@ -16,6 +16,7 @@ class CustomTabBarExtended extends StatefulWidget {
   final List<BoxShadow>? boxShadow;
   final String? tabOneName;
   final String? tabTwoName;
+  final String? tabThreeName;
   final TextStyle? labelTextStyle;
 
   CustomTabBarExtended({
@@ -31,6 +32,7 @@ class CustomTabBarExtended extends StatefulWidget {
     this.boxShadow,
     this.tabOneName,
     this.tabTwoName,
+    this.tabThreeName,
     this.tabColor,
     this.labelColor,
     this.unSelectLabelColor,
@@ -73,6 +75,9 @@ class _CustomTabBarExtendedState extends State<CustomTabBarExtended>
             ),
             Tab(
               text: widget.tabTwoName,
+            ),
+            Tab(
+              text: widget.tabThreeName,
             ),
           ],
         ),
