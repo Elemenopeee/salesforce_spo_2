@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 import 'package:salesforce_spo/common_widgets/promo.dart';
+import 'package:salesforce_spo/design_system/design_system.dart';
+import 'package:salesforce_spo/design_system/primitives/icon_system.dart';
 import 'package:salesforce_spo/design_system/primitives/padding_system.dart';
 import '../../../models/promo_model.dart';
 import '../../../services/networking/endpoints.dart';
 import '../../../services/networking/networking_service.dart';
+import '../../../utils/constants.dart';
 
 class PromoList extends StatefulWidget {
   const PromoList({Key? key}) : super(key: key);
@@ -59,6 +63,26 @@ class _PromoListState extends State<PromoList> {
               promosList.isEmpty) {
             return const Center(child: CircularProgressIndicator());
           } else {
+
+            if(snapshot.connectionState == ConnectionState.done && promosList.isEmpty){
+              return Column(
+                children: [
+                  SvgPicture.asset(IconSystem.noDataFound),
+                  const SizedBox(
+                    height: SizeSystem.size10,
+                  ),
+                  const Text(
+                    'NO DATA FOUND!',
+                    style: TextStyle(
+                      color: ColorSystem.primary,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: kRubik,
+                    ),
+                  )
+                ],
+              );
+            }
+
             return Container(
               margin: const EdgeInsets.only(top: PaddingSystem.padding20),
               child: ListView.separated(

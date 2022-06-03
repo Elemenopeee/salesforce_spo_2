@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
+import 'package:salesforce_spo/design_system/primitives/icon_system.dart';
 import 'package:salesforce_spo/design_system/primitives/size_system.dart';
 
 import '../../../common_widgets/cases_product_widget.dart';
+import '../../../design_system/primitives/color_system.dart';
 import '../../../models/case.dart';
 import '../../../services/networking/endpoints.dart';
 import '../../../services/networking/networking_service.dart';
+import '../../../utils/constants.dart';
 
 class CasesProductList extends StatefulWidget {
   const CasesProductList({Key? key}) : super(key: key);
@@ -62,6 +66,26 @@ class _CasesProductListState extends State<CasesProductList> {
               child: Center(child: CircularProgressIndicator()),
             );
           } else {
+
+            if(snapshot.connectionState == ConnectionState.done && casesList.isEmpty){
+              return Column(
+                children: [
+                  SvgPicture.asset(IconSystem.noDataFound),
+                  const SizedBox(
+                    height: SizeSystem.size10,
+                  ),
+                   const Text(
+                    'NO DATA FOUND!',
+                    style: TextStyle(
+                      color: ColorSystem.primary,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: kRubik,
+                    ),
+                  )
+                ],
+              );
+            }
+
             return Padding(
               padding: const EdgeInsets.symmetric(
                 horizontal: SizeSystem.size10,

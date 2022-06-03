@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -65,6 +64,31 @@ class _ActivityTabState extends State<ActivityTab> {
     }
   }
 
+  String getStatusIcon(
+      String? caseStatus, String? completedDate, String? activityDate) {
+    var dateNow = DateTime.now();
+
+    if (caseStatus == null) {
+      return IconSystem.activityGeneral;
+    } else {
+      if (completedDate == null) {
+        if (activityDate != null) {
+          var activityDateTime = DateTime.parse(activityDate);
+          if (activityDateTime.millisecondsSinceEpoch.toInt() <
+              dateNow.millisecondsSinceEpoch.toInt()) {
+            return IconSystem.activityIncomplete;
+          } else {
+            return IconSystem.activityGeneral;
+          }
+        } else {
+          return IconSystem.activityGeneral;
+        }
+      } else {
+        return IconSystem.activityCompleted;
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -78,6 +102,26 @@ class _ActivityTabState extends State<ActivityTab> {
               child: CircularProgressIndicator(),
             );
           case ConnectionState.done:
+
+            if(activities.isEmpty){
+              return Column(
+                children: [
+                  SvgPicture.asset(IconSystem.noDataFound),
+                  const SizedBox(
+                    height: SizeSystem.size10,
+                  ),
+                  const Text(
+                    'NO DATA FOUND!',
+                    style: TextStyle(
+                      color: ColorSystem.primary,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: kRubik,
+                    ),
+                  )
+                ],
+              );
+            }
+
             return ListView.separated(
               padding: const EdgeInsets.symmetric(
                 horizontal: SizeSystem.size20,
@@ -92,9 +136,12 @@ class _ActivityTabState extends State<ActivityTab> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         SvgPicture.asset(
-                          IconSystem.feed,
-                          width: SizeSystem.size20,
-                          height: SizeSystem.size20,
+                          getStatusIcon(
+                              activities[index].status,
+                              activities[index].completedDateTime,
+                              activities[index].activityDate),
+                          width: SizeSystem.size12,
+                          height: SizeSystem.size12,
                         ),
                         CustomPaint(
                           painter: LineDashedPainter(height: 58),
