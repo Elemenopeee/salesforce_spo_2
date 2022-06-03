@@ -110,4 +110,8 @@ abstract class Endpoints {
     return '$kBaseURL$kClientOrderHistory${'\'$clientId\' and Order_Status__c!= \'Draft\' ORDER BY createddate desc limit 2 OFFSET 0'}';
   }
 
+  static String getClientBasicDetails(String clientId){
+    return '$kBaseURL$kClientBasicDetails${'\'$clientId\''}';
+  }
+
 }
