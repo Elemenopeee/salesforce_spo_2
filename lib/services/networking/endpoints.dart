@@ -97,4 +97,17 @@ abstract class Endpoints {
 
     return '$kBaseURL$kClientNotes${'($notesId)'}';
   }
+
+  static String getClientActivity(String clientId) {
+    return '$kBaseURL$kClientActivity${'\'$clientId\''}';
+  }
+
+  static String getClientOpenOrders(String clientId) {
+    return '$kBaseURL$kClientOpenOrders${'\'$clientId\' and Order_Status__c = \'Draft\' ORDER BY createddate desc limit 2 OFFSET 0'}';
+  }
+
+  static String getClientOrderHistory(String clientId) {
+    return '$kBaseURL$kClientOrderHistory${'\'$clientId\' and Order_Status__c!= \'Draft\' ORDER BY createddate desc limit 2 OFFSET 0'}';
+  }
+
 }
