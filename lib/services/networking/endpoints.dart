@@ -25,7 +25,13 @@ abstract class Endpoints {
   static String kClientNoteByID =
       '/services/data/v53.0/query/?q=SELECT Id,ContentDocumentId FROM ContentDocumentLink WHERE LinkedEntityId = ';
   static String kClientNotes =
-      '/services/data/v53.0/query/?q=SELECT Id, Title, FileType, TextPreview, Content, LastModifiedBy.Name,CreatedDate,LastModifiedDate FROM ContentNote WHERE Id IN ';
+      '/services/data/v53.0/query/?q=SELECT Id, Title, FileType, TextPreview, Content FROM ContentNote WHERE Id IN ';
+  static String kClientActivity =
+      '/services/data/v53.0/query/?q=SELECT Id, ActivityDate, Priority, WhatId,What.Name,Owner.Name, Status, Subject, TaskSubtype, Type,CompletedDateTime FROM Task WHERE WhatId = ';
+  static String kClientOpenOrders =
+      '/services/data/v53.0/query/?q=select Id,Name, CreatedDate,Total__c,Order_Number__c,(select Image_URL1__c  from GC_Order_Line_Items__r) from GC_Order__c where Customer__c = ';
+  static String kClientOrderHistory =
+      '/services/data/v53.0/query/?q=select Id,Name, CreatedDate,Total__c,Order_Number__c,Order_Status__c,(select Image_URL__c  from GC_Order_Line_Items__r) from GC_Order__c where Customer__c = ';
 
   static String getCustomerSearchByPhone(String phone) {
     return '$kBaseURL$kCustomerSearchByPhone\'$phone\'';
