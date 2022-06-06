@@ -77,7 +77,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const HomeScreen(),
+      home: const ClientLandingScreen(customerID: '0014M00001nv3BwQAI',),
     );
   }
 }

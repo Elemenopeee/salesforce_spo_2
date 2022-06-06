@@ -13,7 +13,7 @@ class HttpService {
   Future<HttpResponse> doGet(
       {required String path,
       Map<String, dynamic>? params,
-      bool tokenRequired = true}) async {
+      bool tokenRequired = true, Map<String,String>? headers}) async {
     String? accessToken =
         await SharedPreferenceService().getUserToken(key: kAccessTokenKey);
 
@@ -29,16 +29,18 @@ class HttpService {
     }
 
     try {
-      Map<String, String> headers = {};
-      // check if token is required then add bearer token in header
-      if (tokenRequired) {
-        // SharedPreferenceService sharedPreferences = SharedPreferenceService();
-        // GET TOKEN
-        // String? token = await sharedPreferences.getUserToken(key: 'token');
-        headers.putIfAbsent('Authorization', () => 'OAuth $accessToken');
+      Map<String, String> localHeaders = {};
+      if(headers == null){
+        // check if token is required then add bearer token in header
+        if (tokenRequired) {
+          // SharedPreferenceService sharedPreferences = SharedPreferenceService();
+          // GET TOKEN
+          // String? token = await sharedPreferences.getUserToken(key: 'token');
+          localHeaders.putIfAbsent('Authorization', () => 'OAuth $accessToken');
+        }
       }
       // var uri = Uri.https(kBaseURL, path, params);
-      final response = await http.get(Uri.parse(path), headers: headers);
+      final response = await http.get(Uri.parse(path), headers: headers ?? localHeaders);
       dynamic data; // set decoded body response
       if (response.body.isNotEmpty) {
         data = json.decode(response.body);

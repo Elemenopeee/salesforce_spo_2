@@ -1,3 +1,5 @@
+import 'package:carousel_slider/carousel_slider.dart';
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
@@ -7,26 +9,18 @@ import 'package:salesforce_spo/services/networking/networking_service.dart';
 
 import '../design_system/primitives/color_system.dart';
 import '../design_system/primitives/icon_system.dart';
-import '../design_system/primitives/landing_images.dart';
 import '../design_system/primitives/padding_system.dart';
 import '../design_system/primitives/size_system.dart';
+import '../models/purchase_category.dart';
 import '../utils/constant_functions.dart';
 import '../utils/constants.dart';
 import '../utils/enums/music_instrument_enum.dart';
 
 class ClientCarousel extends StatefulWidget {
-
   final String customerId;
-
-  final Color? bannerOneColor;
-  final Color? bannerTwoOColor;
-  final Color? bannerThreeColor;
 
   const ClientCarousel({
     Key? key,
-    this.bannerOneColor,
-    this.bannerTwoOColor,
-    this.bannerThreeColor,
     required this.customerId,
   }) : super(key: key);
 
@@ -39,11 +33,24 @@ class _ClientCarouselState extends State<ClientCarousel> {
 
   Customer? customer;
 
+  late PurchaseCategory purchaseCategory;
+
   Future<void> getClientBasicDetails() async {
     var response = await HttpService()
         .doGet(path: Endpoints.getClientBasicDetails(widget.customerId));
 
     customer = Customer.fromJson(json: response.data['records'][0]);
+    await getClientChannelAndCategoryDetails();
+  }
+
+  Future<void> getClientChannelAndCategoryDetails() async {
+    var response = await HttpService().doGet(
+        path: Endpoints.getClientPurchaseChannelAndCategory('1000000000002'),
+        headers: kPurchaseChannelHeaders);
+
+    purchaseCategory = PurchaseCategory.fromJson(response.data);
+
+    Map<String, dynamic> someMap = {};
   }
 
   @override
@@ -57,7 +64,7 @@ class _ClientCarouselState extends State<ClientCarousel> {
     return FutureBuilder(
       future: _futureClientDetails,
       builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-        switch(snapshot.connectionState){
+        switch (snapshot.connectionState) {
           case ConnectionState.none:
           case ConnectionState.waiting:
           case ConnectionState.active:
@@ -67,18 +74,505 @@ class _ClientCarouselState extends State<ClientCarousel> {
               ),
             );
           case ConnectionState.done:
-            return ClientPrimaryDetails(
-              clientName: customer?.name ?? '--',
-              primaryInstrument: customer?.primaryInstrument,
-              ltv: customer?.lifeTimeNetSalesAmount,
-              netTransactions: customer?.lifetimeNetTransactions,
-              lastVisitDate: customer?.lastTransactionDate,
-              lastPurchaseValue: customer?.lastPurchaseValue,
+            return CarouselSlider(
+              items: [
+                ClientPrimaryDetails(
+                  clientName: customer?.name ?? '--',
+                  primaryInstrument: customer?.primaryInstrument,
+                  ltv: customer?.lifeTimeNetSalesAmount,
+                  netTransactions: customer?.lifetimeNetTransactions,
+                  lastVisitDate: customer?.lastTransactionDate,
+                  lastPurchaseValue: customer?.lastPurchaseValue,
+                ),
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: ClientAccessories(
+                    purchaseCategory: purchaseCategory,
+                  ),
+                ),
+                Align(alignment: Alignment.centerLeft,child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: ClientChannel(),
+                )),
+                ClientSales(),
+              ],
+              options: CarouselOptions(height: 168, viewportFraction: 0.7),
             );
         }
       },
     );
   }
+}
+
+class ClientChannel extends StatelessWidget {
+  const ClientChannel({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: MediaQuery.of(context).size.width * 0.6,
+      padding: const EdgeInsets.all(PaddingSystem.padding16),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(SizeSystem.size16),
+        color: const Color(0xFFFF9B90),
+      ),
+      child: Row(
+        children: [
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'CHANNEL',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: SizeSystem.size12,
+                  fontFamily: kRubik,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 1.5,
+                ),
+              ),
+              SizedBox(
+                height: 120,
+                width: 100,
+                child: PieChart(
+                  PieChartData(
+                    sections: showingSections(
+                      800,
+                      2000,
+                      colors: [
+                        Colors.white,
+                        Colors.red
+                      ]
+                    ),
+                    centerSpaceColor: const Color(0xFFFF9B90),
+                    centerSpaceRadius: 24,
+                  ),
+                ),
+              )
+            ],
+          ),
+          const SizedBox(
+            width: SizeSystem.size20,
+          ),
+          Expanded(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Text(
+                      '18.8k',
+                      maxLines: 2,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: SizeSystem.size24,
+                        fontFamily: kRubik,
+                      ),
+                    ),
+                    Text(
+                      'CC',
+                      maxLines: 2,
+                      style: TextStyle(
+                        color: Colors.white.withOpacity(0.7),
+                        fontSize: SizeSystem.size12,
+                        fontFamily: kRubik,
+                      ),
+                    ),
+                  ],
+                ),
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '2.8k',
+                      maxLines: 2,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: SizeSystem.size14,
+                        fontFamily: kRubik,
+                      ),
+                    ),
+                    Text(
+                      'Retail',
+                      maxLines: 2,
+                      style: TextStyle(
+                        color: Colors.white.withOpacity(0.7),
+                        fontSize: SizeSystem.size12,
+                        fontFamily: kRubik,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class ClientSales extends StatelessWidget {
+  const ClientSales({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: MediaQuery.of(context).size.width * 0.8,
+      padding: const EdgeInsets.all(PaddingSystem.padding16),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(SizeSystem.size16),
+        color: const Color(0xFF8C80F8),
+      ),
+      child: Row(
+        children: [
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'SALES',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: SizeSystem.size12,
+                  fontFamily: kRubik,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 1.5,
+                ),
+              ),
+              SizedBox(
+                height: 120,
+                width: 100,
+                child: PieChart(
+                  PieChartData(
+                    sections: showingSections(
+                      800,
+                      2000,
+                    ),
+                    centerSpaceColor: const Color(0xFF8C80F8),
+                    centerSpaceRadius: 24,
+                  ),
+                ),
+              )
+            ],
+          ),
+          const SizedBox(
+            width: SizeSystem.size12,
+          ),
+          Expanded(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '18.8k',
+                      maxLines: 2,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: SizeSystem.size24,
+                        fontFamily: kRubik,
+                      ),
+                    ),
+                    Text(
+                      'LTV',
+                      maxLines: 2,
+                      style: TextStyle(
+                        color: Colors.white.withOpacity(0.7),
+                        fontSize: SizeSystem.size12,
+                        fontFamily: kRubik,
+                      ),
+                    ),
+                  ],
+                ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            '0.2k',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: SizeSystem.size14,
+                              fontFamily: kRubik,
+                            ),
+                          ),
+                          Text(
+                            '0-12 Months',
+                            maxLines: 2,
+                            style: TextStyle(
+                              color: Colors.white.withOpacity(0.7),
+                              fontSize: SizeSystem.size12,
+                              fontFamily: kRubik,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Expanded(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            '2.22k',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: SizeSystem.size14,
+                              fontFamily: kRubik,
+                            ),
+                          ),
+                          Text(
+                            '12-24 Months',
+                            maxLines: 2,
+                            style: TextStyle(
+                              color: Colors.white.withOpacity(0.7),
+                              fontSize: SizeSystem.size12,
+                              fontFamily: kRubik,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                )
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+
+class ClientAccessories extends StatelessWidget {
+  final PurchaseCategory purchaseCategory;
+
+  const ClientAccessories({
+    Key? key,
+    required this.purchaseCategory,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: MediaQuery.of(context).size.width * 0.8,
+      padding: const EdgeInsets.all(PaddingSystem.padding16),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(SizeSystem.size16),
+        color: const Color(0xFF4C5980),
+      ),
+      child: Row(
+        children: [
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'ACCESSORIES',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: SizeSystem.size12,
+                  fontFamily: kRubik,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 1.5,
+                ),
+              ),
+              SizedBox(
+                height: 120,
+                width: 100,
+                child: PieChart(
+                  PieChartData(
+                    sections: showingSections(
+                      800,
+                      2000,
+                    ),
+                    centerSpaceColor: const Color(0xFF4C5980),
+                    centerSpaceRadius: 24,
+                  ),
+                ),
+              )
+            ],
+          ),
+          const SizedBox(
+            width: SizeSystem.size12,
+          ),
+          Expanded(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Expanded(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            '18.8k',
+                            maxLines: 2,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: SizeSystem.size24,
+                              fontFamily: kRubik,
+                            ),
+                          ),
+                          Text(
+                            'Drums & Accessories',
+                            maxLines: 2,
+                            style: TextStyle(
+                              color: Colors.white.withOpacity(0.7),
+                              fontSize: SizeSystem.size12,
+                              fontFamily: kRubik,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Expanded(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            '3.22k',
+                            maxLines: 2,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: SizeSystem.size14,
+                              fontFamily: kRubik,
+                            ),
+                          ),
+                          Text(
+                            'Folk & Traditional Instruments',
+                            maxLines: 2,
+                            style: TextStyle(
+                              color: Colors.white.withOpacity(0.7),
+                              fontSize: SizeSystem.size12,
+                              fontFamily: kRubik,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            '0.2k',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: SizeSystem.size14,
+                              fontFamily: kRubik,
+                            ),
+                          ),
+                          Text(
+                            'Drums & Accessories',
+                            maxLines: 2,
+                            style: TextStyle(
+                              color: Colors.white.withOpacity(0.7),
+                              fontSize: SizeSystem.size12,
+                              fontFamily: kRubik,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Expanded(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            '2.22k',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: SizeSystem.size14,
+                              fontFamily: kRubik,
+                            ),
+                          ),
+                          Text(
+                            'Folk & Traditional Instruments',
+                            maxLines: 2,
+                            style: TextStyle(
+                              color: Colors.white.withOpacity(0.7),
+                              fontSize: SizeSystem.size12,
+                              fontFamily: kRubik,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                )
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+List<PieChartSectionData> showingSections(double today, double total,
+    {List<Color>? colors}) {
+  return List.generate(2, (i) {
+    const fontSize = 0.0;
+    const radius = 28.0;
+    switch (i) {
+      case 0:
+        return PieChartSectionData(
+          color: colors?[0] ?? const Color(0xFF7FE3F0),
+          value: today,
+          radius: radius,
+          titleStyle: const TextStyle(
+            fontSize: fontSize,
+          ),
+        );
+      case 1:
+        return PieChartSectionData(
+          color: colors?[1] ?? const Color(0xFFFF7C6D),
+          value: total,
+          radius: radius,
+          titleStyle: const TextStyle(
+            fontSize: fontSize,
+          ),
+        );
+      default:
+        throw Error();
+    }
+  });
 }
 
 class ClientPrimaryDetails extends StatelessWidget {
@@ -123,7 +617,7 @@ class ClientPrimaryDetails extends StatelessWidget {
       ),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(
-          SizeSystem.size12,
+          SizeSystem.size16,
         ),
         color: ColorSystem.culturedGrey,
       ),
@@ -164,30 +658,30 @@ class ClientPrimaryDetails extends StatelessWidget {
                   ],
                 ),
               ),
-              if(ltv != null)
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  SvgPicture.asset(
-                    IconSystem.badge,
-                    height: 15,
-                    width: 15,
-                    color: getCustomerLevelColor(getCustomerLevel(ltv!)),
-                  ),
-                  const SizedBox(
-                    width: SizeSystem.size4,
-                  ),
-                  Text(
-                    getCustomerLevel(ltv!),
-                    style: TextStyle(
-                      fontFamily: kRubik,
-                      fontWeight: FontWeight.w600,
+              if (ltv != null)
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    SvgPicture.asset(
+                      IconSystem.badge,
+                      height: 15,
+                      width: 15,
                       color: getCustomerLevelColor(getCustomerLevel(ltv!)),
-                      fontSize: SizeSystem.size12,
                     ),
-                  ),
-                ],
-              )
+                    const SizedBox(
+                      width: SizeSystem.size4,
+                    ),
+                    Text(
+                      getCustomerLevel(ltv!),
+                      style: TextStyle(
+                        fontFamily: kRubik,
+                        fontWeight: FontWeight.w600,
+                        color: getCustomerLevelColor(getCustomerLevel(ltv!)),
+                        fontSize: SizeSystem.size12,
+                      ),
+                    ),
+                  ],
+                )
             ],
           ),
           const SizedBox(
@@ -237,7 +731,7 @@ class ClientPrimaryDetails extends StatelessWidget {
                   ),
                   Text(
                     "Last purchase : ${lastVisitDate != null ? formatDate(lastVisitDate!) : '--'}",
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontFamily: kRubik,
                       color: ColorSystem.primary,
                       fontSize: SizeSystem.size12,
@@ -274,7 +768,9 @@ class ClientPrimaryDetails extends StatelessWidget {
                       ),
                       children: [
                         TextSpan(
-                          text: lastPurchaseValue != null ? '\$${formattedNumber(lastPurchaseValue!)}' : '--',
+                          text: lastPurchaseValue != null
+                              ? '\$${formattedNumber(lastPurchaseValue!)}'
+                              : '--',
                           style: const TextStyle(
                             color: ColorSystem.primary,
                             fontWeight: FontWeight.w700,
@@ -315,7 +811,8 @@ class ClientPrimaryDetails extends StatelessWidget {
                       ),
                       children: [
                         TextSpan(
-                          text: ltv != null ? '\$${formattedNumber(ltv!)}' : '--',
+                          text:
+                              ltv != null ? '\$${formattedNumber(ltv!)}' : '--',
                           style: const TextStyle(
                             color: ColorSystem.primary,
                             fontWeight: FontWeight.w700,
@@ -356,7 +853,8 @@ class ClientPrimaryDetails extends StatelessWidget {
                       ),
                       children: [
                         TextSpan(
-                          text: '\$${formattedNumber(aovCalculator(ltv, netTransactions))}',
+                          text:
+                              '\$${formattedNumber(aovCalculator(ltv, netTransactions))}',
                           style: const TextStyle(
                             color: ColorSystem.primary,
                             fontWeight: FontWeight.w700,
