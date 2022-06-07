@@ -5,11 +5,10 @@ import 'package:azure_ad_authentication/exeption.dart';
 import 'package:azure_ad_authentication/model/user_ad.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:salesforce_spo/common_widgets/client_feature_tabs_list.dart';
 import 'package:salesforce_spo/common_widgets/notched_bottom_navigation_bar.dart';
 import 'package:salesforce_spo/design_system/design_system.dart';
 import 'package:salesforce_spo/presentation/intermediate_widgets/customer_lookup_widget.dart';
-import 'package:salesforce_spo/presentation/screens/client_landing_screen.dart';
+import 'package:salesforce_spo/presentation/screens/grace_task_screen.dart';
 import 'package:salesforce_spo/presentation/tabs/home_tab.dart';
 import 'package:salesforce_spo/utils/constants.dart';
 
@@ -78,7 +77,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       debugShowCheckedModeBanner: false,
-      home:  ClientLandingScreen(),
+      home: const GraceTaskScreen(),
     );
   }
 }
@@ -92,21 +91,21 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   get getAppBar => AppBar(
-        toolbarHeight: 80,
-        leadingWidth: double.infinity,
-        backgroundColor: Colors.white,
-        elevation: 0,
-        centerTitle: true,
-        title: const Text(
-          "HOME",
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w500,
-            color: Colors.black,
-            fontFamily: kRubik,
-          ),
-        ),
-      );
+    toolbarHeight: 80,
+    leadingWidth: double.infinity,
+    backgroundColor: Colors.white,
+    elevation: 0,
+    centerTitle: true,
+    title: const Text(
+      "HOME",
+      style: TextStyle(
+        fontSize: 18,
+        fontWeight: FontWeight.w500,
+        color: Colors.black,
+        fontFamily: kRubik,
+      ),
+    ),
+  );
 
   @override
   void initState() {
