@@ -1,19 +1,57 @@
-class GcOrderLine {
-  final String? productDescription;
-  final int? productPrice;
-  final String? productImage;
+import 'package:salesforce_spo/models/gc_order_line_record.dart';
 
-  GcOrderLine._({
-    this.productImage,
-    this.productPrice,
-    this.productDescription,
+// class GcOrderLine {
+//   GcOrderLineRecord? records;
+//
+//
+//   GcOrderLine._({
+//     this.records,
+//   });
+//
+//   GcOrderLine.fromJson(Map<String, dynamic> json) {
+//     records = json['records'];
+//
+//   }
+//
+//   Map<String, dynamic> toJson() {
+//     final Map<String, dynamic> data = <String, dynamic>{};
+//     data['records'] = records;
+//     return data;
+//   }
+// }
+
+class GcOrderLine {
+
+  final List<GcOrderLineRecord>? records;
+
+  GcOrderLine({this.records});
+}
+
+class GcOrderLineRecord {
+  String? productDescription;
+  double? productPrice;
+  String? productImage;
+
+  GcOrderLineRecord({
+    required this.productDescription,
+    required this.productPrice,
+    required this.productImage,
   });
 
-  factory GcOrderLine.fromJson(Map<String, dynamic> json) {
-    return GcOrderLine._(
-      productDescription: json['Description__c'],
-      productPrice: json['Item_Price__c'],
-      productImage: json['Image_URL__c'],
-    );
+  GcOrderLineRecord.fromJson(Map<String, dynamic> json) {
+    productDescription = json['Description__c'];
+    productImage = json['Image_URL__c'];
+    productPrice = json['Item_Price__c'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+
+    data['Description__c'] = productDescription;
+    data['Image_URL__c'] = productImage;
+    data['Item_Price__c'] = productPrice;
+
+    return data;
   }
 }
+

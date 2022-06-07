@@ -5,7 +5,7 @@ import 'package:salesforce_spo/design_system/design_system.dart';
 
 class BuyAgainProductWidget extends StatelessWidget {
   final String productName;
-  final int productPrice;
+  final double productPrice;
   final String productImage;
 
   const BuyAgainProductWidget({

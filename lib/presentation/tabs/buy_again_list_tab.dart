@@ -35,8 +35,6 @@ class _BuyAgainListTabState extends State<BuyAgainListTab> {
     var response =
         await HttpService().doGet(path: Endpoints.getClientByNow(customerId));
     isLoadingData = false;
-    print(response.data);
-    print("cdckdmckdmccmdkc");
     try {
       for (var byAgain in response.data['records']) {
         buyAgainData.add(BuyAgainModel.fromJson(byAgain));
@@ -64,8 +62,10 @@ class _BuyAgainListTabState extends State<BuyAgainListTab> {
                 padding: EdgeInsets.zero,
                 itemBuilder: (context, index) {
                   var item = buyAgainData[index];
-                  print(buyAgainData[index].gcOrderLine?.productPrice );
-                  print("nsedceacaec");
+                  print(buyAgainData[index]
+                      .gcOrderLineRecord
+                      ?.productDescription);
+                  print("final status");
                   return Row(
                     children: [
                       const SizedBox(
@@ -73,9 +73,10 @@ class _BuyAgainListTabState extends State<BuyAgainListTab> {
                       ),
                       BuyAgainProductWidget(
                         productName:
-                            item.gcOrderLine?.productDescription ?? "--",
-                        productPrice: item.gcOrderLine?.productPrice?? 0,
-                        productImage: item.gcOrderLine?.productImage ?? "",
+                            item.gcOrderLineRecord?.productDescription ?? "--",
+                        productPrice: item.gcOrderLineRecord?.productPrice ?? 0,
+                        productImage:
+                            item.gcOrderLineRecord?.productImage ?? "",
                       ),
                     ],
                   );
