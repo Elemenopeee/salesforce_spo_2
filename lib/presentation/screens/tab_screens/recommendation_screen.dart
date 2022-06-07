@@ -68,7 +68,7 @@ class _RecommendationScreenState extends State<RecommendationScreen>
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 15),
             child: SizedBox(
-              height: 200,
+              height: 400,
               child: TabBarView(
                 controller: _tabController,
                 children: [
@@ -79,40 +79,40 @@ class _RecommendationScreenState extends State<RecommendationScreen>
               ),
             ),
           ),
-          Padding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: PaddingSystem.padding20),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text(
-                  "Customer might also like",
-                  style: TextStyle(
-                    fontSize: SizeSystem.size18,
-                    fontFamily: kRubik,
-                  ),
-                ),
-                InkWell(
-                  onTap: () {},
-                  child: InkWell(
-                    onTap: () {},
-                    child: Text(
-                      "View All",
-                      style: TextStyle(
-                        fontSize: SizeSystem.size14,
-                        color: ColorSystem.secondary.withOpacity(0.4),
-                        fontFamily: kRubik,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(
-            height: 20,
-          ),
-          CustomerMightLikeList(),
+          // Padding(
+          //   padding:
+          //       const EdgeInsets.symmetric(horizontal: PaddingSystem.padding20),
+          //   child: Row(
+          //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          //     children: [
+          //       const Text(
+          //         "Customer might also like",
+          //         style: TextStyle(
+          //           fontSize: SizeSystem.size18,
+          //           fontFamily: kRubik,
+          //         ),
+          //       ),
+          //       InkWell(
+          //         onTap: () {},
+          //         child: InkWell(
+          //           onTap: () {},
+          //           child: Text(
+          //             "View All",
+          //             style: TextStyle(
+          //               fontSize: SizeSystem.size14,
+          //               color: ColorSystem.secondary.withOpacity(0.4),
+          //               fontFamily: kRubik,
+          //             ),
+          //           ),
+          //         ),
+          //       ),
+          //     ],
+          //   ),
+          // ),
+          // const SizedBox(
+          //   height: 20,
+          // ),
+          // CustomerMightLikeList(),
         ],
       ),
     );

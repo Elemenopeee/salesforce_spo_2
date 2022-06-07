@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:salesforce_spo/common_widgets/buy_again_product_widget.dart';
+import 'package:salesforce_spo/design_system/primitives/color_system.dart';
+import 'package:salesforce_spo/design_system/primitives/icon_system.dart';
+import 'package:salesforce_spo/utils/constants.dart';
 
 import '../../design_system/primitives/size_system.dart';
 import '../../models/buy_again_model.dart';
@@ -53,32 +57,25 @@ class _BuyAgainListTabState extends State<BuyAgainListTab> {
               buyAgainData.isEmpty) {
             return const Center(child: CircularProgressIndicator());
           } else {
-            return SizedBox(
-              height: 200,
-              child: ListView.builder(
-                itemCount: buyAgainData.length,
-                shrinkWrap: true,
-                scrollDirection: Axis.horizontal,
-                padding: EdgeInsets.zero,
-                itemBuilder: (context, index) {
-                  var item = buyAgainData[index];
-                  print(buyAgainData[index].gcOrderLine?.productPrice );
-                  print("nsedceacaec");
-                  return Row(
-                    children: const [
-                       SizedBox(
-                        width: SizeSystem.size18,
-                      ),
-                      // BuyAgainProductWidget(
-                      //   productName:
-                      //       item.gcOrderLine?.productDescription ?? "--",
-                      //   productPrice: item.gcOrderLine?.productPrice?? 0,
-                      //   productImage: item.gcOrderLine?.productImage ?? "",
-                      // ),
-                    ],
-                  );
-                },
-              ),
+            return Column(
+              children: [
+                const SizedBox(
+                  height: SizeSystem.size50,
+                ),
+                SvgPicture.asset(IconSystem.noDataFound),
+                const SizedBox(
+                  height: SizeSystem.size24,
+                ),
+                const Text(
+                  'NO DATA FOUND!',
+                  style: TextStyle(
+                    color: ColorSystem.primary,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: kRubik,
+                    fontSize: SizeSystem.size20,
+                  ),
+                )
+              ],
             );
           }
         });

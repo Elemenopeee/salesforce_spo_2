@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:salesforce_spo/common_widgets/browsing_history_widget.dart';
 import 'package:salesforce_spo/models/browsing_history_model.dart';
 import 'package:salesforce_spo/models/buy_again_model.dart';
 
+import '../../design_system/design_system.dart';
+import '../../design_system/primitives/icon_system.dart';
 import '../../design_system/primitives/landing_images.dart';
 import '../../design_system/primitives/music_icons_system.dart';
 import '../../design_system/primitives/size_system.dart';
 import '../../services/networking/endpoints.dart';
+import '../../utils/constants.dart';
 
 class BrowsingHistoryListTab extends StatefulWidget {
 
@@ -50,29 +54,25 @@ class _BrowsingHistoryListTabState extends State<BrowsingHistoryListTab> {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 200,
-      child: ListView.builder(
-        itemCount: browserHistoryData.length,
-        shrinkWrap: true,
-        scrollDirection: Axis.horizontal,
-        padding: EdgeInsets.zero,
-        itemBuilder: (context, index) {
-          var item = browserHistoryData[index];
-          return Row(
-            children: [
-              const SizedBox(
-                width: SizeSystem.size18,
-              ),
-              BrowsingHistoryWidget(
-                productName: item.productName ?? "",
-                productPrice: item.productPrice ?? "",
-                productImage: item.productImage ?? "",
-              ),
-            ],
-          );
-        },
-      ),
+    return Column(
+      children: [
+        const SizedBox(
+          height: SizeSystem.size50,
+        ),
+        SvgPicture.asset(IconSystem.noDataFound),
+        const SizedBox(
+          height: SizeSystem.size24,
+        ),
+        const Text(
+          'NO DATA FOUND!',
+          style: TextStyle(
+            color: ColorSystem.primary,
+            fontWeight: FontWeight.bold,
+            fontFamily: kRubik,
+            fontSize: SizeSystem.size20,
+          ),
+        )
+      ],
     );
   }
 }

@@ -3,6 +3,8 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
+import 'package:salesforce_spo/common_widgets/client_accessories_banner.dart';
+import 'package:salesforce_spo/models/client_metric.dart';
 import 'package:salesforce_spo/models/customer.dart';
 import 'package:salesforce_spo/services/networking/endpoints.dart';
 import 'package:salesforce_spo/services/networking/networking_service.dart';
@@ -15,6 +17,7 @@ import '../models/purchase_category.dart';
 import '../utils/constant_functions.dart';
 import '../utils/constants.dart';
 import '../utils/enums/music_instrument_enum.dart';
+import 'client_channel_banner.dart';
 
 class ClientCarousel extends StatefulWidget {
   final String customerId;
@@ -33,7 +36,8 @@ class _ClientCarouselState extends State<ClientCarousel> {
 
   Customer? customer;
 
-  late PurchaseCategory purchaseCategory;
+  List<ClientMetric> purchaseCategories = [];
+  List<ClientMetric> channels = [];
 
   Future<void> getClientBasicDetails() async {
     var response = await HttpService()
@@ -48,9 +52,26 @@ class _ClientCarouselState extends State<ClientCarousel> {
         path: Endpoints.getClientPurchaseChannelAndCategory('1000000000002'),
         headers: kPurchaseChannelHeaders);
 
-    purchaseCategory = PurchaseCategory.fromJson(response.data);
+    if (response.data != null) {
+      Map<String, dynamic> purchaseChannelMap =
+          response.data['PurchaseChannel'];
 
-    Map<String, dynamic> someMap = {};
+      purchaseChannelMap.forEach((key, value) {
+        channels.add(ClientMetric.fromPair(key, value));
+      });
+
+      channels.sort((a, b) => b.value.compareTo(a.value));
+
+      Map<String, dynamic> purchaseCategoriesMap =
+          response.data['PurchaseCategory'];
+
+      purchaseCategoriesMap.forEach((key, value) {
+        purchaseCategories.add(ClientMetric.fromPair(key, value));
+      });
+
+      purchaseCategories.sort((a, b) => b.value.compareTo(a.value));
+
+    }
   }
 
   @override
@@ -86,138 +107,24 @@ class _ClientCarouselState extends State<ClientCarousel> {
                 ),
                 Align(
                   alignment: Alignment.centerLeft,
-                  child: ClientAccessories(
-                    purchaseCategory: purchaseCategory,
+                  child: ClientAccessoriesBanner(
+                    accessories: purchaseCategories,
                   ),
                 ),
-                Align(alignment: Alignment.centerLeft,child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: ClientChannel(),
-                )),
+                Align(
+                    alignment: Alignment.centerLeft,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: ClientChannelBanner(
+                        details: channels,
+                      ),
+                    )),
                 ClientSales(),
               ],
               options: CarouselOptions(height: 168, viewportFraction: 0.7),
             );
         }
       },
-    );
-  }
-}
-
-class ClientChannel extends StatelessWidget {
-  const ClientChannel({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: MediaQuery.of(context).size.width * 0.6,
-      padding: const EdgeInsets.all(PaddingSystem.padding16),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(SizeSystem.size16),
-        color: const Color(0xFFFF9B90),
-      ),
-      child: Row(
-        children: [
-          Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                'CHANNEL',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: SizeSystem.size12,
-                  fontFamily: kRubik,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 1.5,
-                ),
-              ),
-              SizedBox(
-                height: 120,
-                width: 100,
-                child: PieChart(
-                  PieChartData(
-                    sections: showingSections(
-                      800,
-                      2000,
-                      colors: [
-                        Colors.white,
-                        Colors.red
-                      ]
-                    ),
-                    centerSpaceColor: const Color(0xFFFF9B90),
-                    centerSpaceRadius: 24,
-                  ),
-                ),
-              )
-            ],
-          ),
-          const SizedBox(
-            width: SizeSystem.size20,
-          ),
-          Expanded(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Text(
-                      '18.8k',
-                      maxLines: 2,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: SizeSystem.size24,
-                        fontFamily: kRubik,
-                      ),
-                    ),
-                    Text(
-                      'CC',
-                      maxLines: 2,
-                      style: TextStyle(
-                        color: Colors.white.withOpacity(0.7),
-                        fontSize: SizeSystem.size12,
-                        fontFamily: kRubik,
-                      ),
-                    ),
-                  ],
-                ),
-                Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      '2.8k',
-                      maxLines: 2,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: SizeSystem.size14,
-                        fontFamily: kRubik,
-                      ),
-                    ),
-                    Text(
-                      'Retail',
-                      maxLines: 2,
-                      style: TextStyle(
-                        color: Colors.white.withOpacity(0.7),
-                        fontSize: SizeSystem.size12,
-                        fontFamily: kRubik,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
     );
   }
 }
@@ -343,187 +250,6 @@ class ClientSales extends StatelessWidget {
                           ),
                           Text(
                             '12-24 Months',
-                            maxLines: 2,
-                            style: TextStyle(
-                              color: Colors.white.withOpacity(0.7),
-                              fontSize: SizeSystem.size12,
-                              fontFamily: kRubik,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                )
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-
-class ClientAccessories extends StatelessWidget {
-  final PurchaseCategory purchaseCategory;
-
-  const ClientAccessories({
-    Key? key,
-    required this.purchaseCategory,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: MediaQuery.of(context).size.width * 0.8,
-      padding: const EdgeInsets.all(PaddingSystem.padding16),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(SizeSystem.size16),
-        color: const Color(0xFF4C5980),
-      ),
-      child: Row(
-        children: [
-          Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                'ACCESSORIES',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: SizeSystem.size12,
-                  fontFamily: kRubik,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 1.5,
-                ),
-              ),
-              SizedBox(
-                height: 120,
-                width: 100,
-                child: PieChart(
-                  PieChartData(
-                    sections: showingSections(
-                      800,
-                      2000,
-                    ),
-                    centerSpaceColor: const Color(0xFF4C5980),
-                    centerSpaceRadius: 24,
-                  ),
-                ),
-              )
-            ],
-          ),
-          const SizedBox(
-            width: SizeSystem.size12,
-          ),
-          Expanded(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Expanded(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            '18.8k',
-                            maxLines: 2,
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: SizeSystem.size24,
-                              fontFamily: kRubik,
-                            ),
-                          ),
-                          Text(
-                            'Drums & Accessories',
-                            maxLines: 2,
-                            style: TextStyle(
-                              color: Colors.white.withOpacity(0.7),
-                              fontSize: SizeSystem.size12,
-                              fontFamily: kRubik,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Expanded(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            '3.22k',
-                            maxLines: 2,
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: SizeSystem.size14,
-                              fontFamily: kRubik,
-                            ),
-                          ),
-                          Text(
-                            'Folk & Traditional Instruments',
-                            maxLines: 2,
-                            style: TextStyle(
-                              color: Colors.white.withOpacity(0.7),
-                              fontSize: SizeSystem.size12,
-                              fontFamily: kRubik,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-                Row(
-                  children: [
-                    Expanded(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            '0.2k',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: SizeSystem.size14,
-                              fontFamily: kRubik,
-                            ),
-                          ),
-                          Text(
-                            'Drums & Accessories',
-                            maxLines: 2,
-                            style: TextStyle(
-                              color: Colors.white.withOpacity(0.7),
-                              fontSize: SizeSystem.size12,
-                              fontFamily: kRubik,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Expanded(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            '2.22k',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: SizeSystem.size14,
-                              fontFamily: kRubik,
-                            ),
-                          ),
-                          Text(
-                            'Folk & Traditional Instruments',
                             maxLines: 2,
                             style: TextStyle(
                               color: Colors.white.withOpacity(0.7),
