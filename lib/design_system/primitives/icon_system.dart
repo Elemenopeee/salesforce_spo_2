@@ -38,4 +38,9 @@ abstract class IconSystem {
   static const String activityCompleted = 'assets/icons/activity_completed.svg';
   static const String activityIncomplete = 'assets/icons/activity_incomplete.svg';
   static const String activityGeneral = 'assets/icons/activity_general.svg';
+  static const String briefCase = 'assets/icons/briefcase.svg';
+  static const String channelNotFound = 'assets/icons/channel_not_found.svg';
+  static const String accessoriesNotFound = 'assets/icons/accessories_not_found.svg';
+  static const String clientSalesNotFound = 'assets/icons/client_sales_not_found.svg';
+  static const String leaveIcon = 'assets/icons/leave.svg';
 }

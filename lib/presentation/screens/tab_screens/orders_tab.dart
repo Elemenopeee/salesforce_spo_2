@@ -75,7 +75,7 @@ class _OrdersTabState extends State<OrdersTab> {
     return FutureBuilder(
       future: Future.wait([
         _futureOpenOrders,
-        _futureOrderHistory,
+        // _futureOrderHistory,
       ]),
       builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
         switch (snapshot.connectionState) {
@@ -115,7 +115,7 @@ class _OrdersTabState extends State<OrdersTab> {
               children: [
                 if (openOrders.isNotEmpty)
                   const Padding(
-                    padding: const EdgeInsets.all(16.0),
+                    padding: EdgeInsets.all(16.0),
                     child: Text(
                       'Open Orders',
                       style: TextStyle(

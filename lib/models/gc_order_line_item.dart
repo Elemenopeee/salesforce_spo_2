@@ -1,16 +1,16 @@
-class GcOrderLine {
+class GcOrderLineItem {
   final String? productDescription;
-  final int? productPrice;
+  final double? productPrice;
   final String? productImage;
 
-  GcOrderLine._({
+  GcOrderLineItem._({
     this.productImage,
     this.productPrice,
     this.productDescription,
   });
 
-  factory GcOrderLine.fromJson(Map<String, dynamic> json) {
-    return GcOrderLine._(
+  factory GcOrderLineItem.fromJson(Map<String, dynamic> json) {
+    return GcOrderLineItem._(
       productDescription: json['Description__c'],
       productPrice: json['Item_Price__c'],
       productImage: json['Image_URL__c'],

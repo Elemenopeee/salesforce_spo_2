@@ -1,5 +1,6 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:salesforce_spo/models/client_metric.dart';
 import 'package:salesforce_spo/utils/constant_functions.dart';
 import 'package:salesforce_spo/utils/constants.dart';
@@ -50,7 +51,12 @@ class ClientAccessoriesBanner extends StatelessWidget {
                         ),
                       ),
                     )
-                  : const SizedBox.shrink()
+                  : Center(
+                      child: SvgPicture.asset(
+                        IconSystem.accessoriesNotFound,
+                        height: 120,
+                      ),
+                    ),
             ],
           ),
           const SizedBox(
@@ -59,7 +65,9 @@ class ClientAccessoriesBanner extends StatelessWidget {
           Expanded(
             child: accessories.isNotEmpty
                 ? Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment: accessories.length < 2
+                        ? MainAxisAlignment.center
+                        : MainAxisAlignment.spaceBetween,
                     children: [
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.end,
@@ -95,103 +103,112 @@ class ClientAccessoriesBanner extends StatelessWidget {
                           const SizedBox(
                             width: SizeSystem.size10,
                           ),
-                          if(accessories.length > 1)
-                          Expanded(
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  formattedNumber(accessories[1].value),
-                                  maxLines: 1,
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: SizeSystem.size14,
-                                    fontFamily: kRubik,
+                          if (accessories.length > 1)
+                            Expanded(
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    formattedNumber(accessories[1].value),
+                                    maxLines: 1,
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: SizeSystem.size14,
+                                      fontFamily: kRubik,
+                                    ),
                                   ),
-                                ),
-                                Text(
-                                  accessories[1].key,
-                                  overflow: TextOverflow.ellipsis,
-                                  maxLines: 1,
-                                  style: TextStyle(
-                                    color: Colors.white.withOpacity(0.7),
-                                    fontSize: SizeSystem.size12,
-                                    fontFamily: kRubik,
+                                  Text(
+                                    accessories[1].key,
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 1,
+                                    style: TextStyle(
+                                      color: Colors.white.withOpacity(0.7),
+                                      fontSize: SizeSystem.size12,
+                                      fontFamily: kRubik,
+                                    ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
-                          ),
                         ],
                       ),
-                      if(accessories.length > 2)
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  formattedNumber(accessories[2].value),
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: SizeSystem.size14,
-                                    fontFamily: kRubik,
+                      if (accessories.length > 2)
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    formattedNumber(accessories[2].value),
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: SizeSystem.size14,
+                                      fontFamily: kRubik,
+                                    ),
                                   ),
-                                ),
-                                Text(
-                                  accessories[2].key,
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(
-                                    color: Colors.white.withOpacity(0.7),
-                                    fontSize: SizeSystem.size12,
-                                    fontFamily: kRubik,
+                                  Text(
+                                    accessories[2].key,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      color: Colors.white.withOpacity(0.7),
+                                      fontSize: SizeSystem.size12,
+                                      fontFamily: kRubik,
+                                    ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
-                          ),
-                          const SizedBox(
-                            width: SizeSystem.size10,
-                          ),
-                          if(accessories.length > 3)
-                          Expanded(
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  formattedNumber(accessories[3].value),
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: SizeSystem.size14,
-                                    fontFamily: kRubik,
-                                  ),
-                                ),
-                                Text(
-                                  accessories[3].key,
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(
-                                    color: Colors.white.withOpacity(0.7),
-                                    fontSize: SizeSystem.size12,
-                                    fontFamily: kRubik,
-                                  ),
-                                ),
-                              ],
+                            const SizedBox(
+                              width: SizeSystem.size10,
                             ),
-                          ),
-                        ],
-                      ),
+                            if (accessories.length > 3)
+                              Expanded(
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      formattedNumber(accessories[3].value),
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: SizeSystem.size14,
+                                        fontFamily: kRubik,
+                                      ),
+                                    ),
+                                    Text(
+                                      accessories[3].key,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                        color: Colors.white.withOpacity(0.7),
+                                        fontSize: SizeSystem.size12,
+                                        fontFamily: kRubik,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                          ],
+                        ),
                     ],
                   )
-                : const SizedBox.shrink(),
+                : const Text(
+                    'No data generated yet',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: SizeSystem.size12,
+                      fontFamily: kRubik,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 1.5,
+                    ),
+                  ),
           ),
         ],
       ),

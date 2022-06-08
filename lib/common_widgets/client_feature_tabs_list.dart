@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:salesforce_spo/common_widgets/recommendation_list.dart';
 import 'package:salesforce_spo/design_system/primitives/padding_system.dart';
-import 'package:salesforce_spo/presentation/screens/tab_screens/case_screen.dart';
+import 'package:salesforce_spo/presentation/screens/tab_screens/cases_tab.dart';
 import 'package:salesforce_spo/presentation/screens/tab_screens/notes_screen.dart';
 import 'package:salesforce_spo/presentation/screens/tab_screens/promos_screen.dart';
 import 'package:salesforce_spo/presentation/screens/tab_screens/recommendation_screen.dart';

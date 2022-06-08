@@ -181,6 +181,8 @@ class _SearchScreenState extends State<SearchScreen> {
                             customers[index]
                                 .lifetimeNetTransactions),
                         customerLevel: customers[index].medianLTVNet,
+                        epsilonCustomerKey: customers[index]
+                            .epsilonCustomerBrandKey,
                       );
                     },
                   );

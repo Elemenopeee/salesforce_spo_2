@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 import 'package:salesforce_spo/common_widgets/client_accessories_banner.dart';
+import 'package:salesforce_spo/common_widgets/client_sales_banner.dart';
 import 'package:salesforce_spo/models/client_metric.dart';
 import 'package:salesforce_spo/models/customer.dart';
 import 'package:salesforce_spo/services/networking/endpoints.dart';
@@ -21,10 +22,12 @@ import 'client_channel_banner.dart';
 
 class ClientCarousel extends StatefulWidget {
   final String customerId;
+  final String epsilonCustomerKey;
 
   const ClientCarousel({
     Key? key,
     required this.customerId,
+    required this.epsilonCustomerKey,
   }) : super(key: key);
 
   @override
@@ -125,148 +128,6 @@ class _ClientCarouselState extends State<ClientCarousel> {
             );
         }
       },
-    );
-  }
-}
-
-class ClientSales extends StatelessWidget {
-  const ClientSales({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: MediaQuery.of(context).size.width * 0.8,
-      padding: const EdgeInsets.all(PaddingSystem.padding16),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(SizeSystem.size16),
-        color: const Color(0xFF8C80F8),
-      ),
-      child: Row(
-        children: [
-          Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                'SALES',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: SizeSystem.size12,
-                  fontFamily: kRubik,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 1.5,
-                ),
-              ),
-              SizedBox(
-                height: 120,
-                width: 100,
-                child: PieChart(
-                  PieChartData(
-                    sections: showingSections(
-                      800,
-                      2000,
-                    ),
-                    centerSpaceColor: const Color(0xFF8C80F8),
-                    centerSpaceRadius: 24,
-                  ),
-                ),
-              )
-            ],
-          ),
-          const SizedBox(
-            width: SizeSystem.size12,
-          ),
-          Expanded(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      '18.8k',
-                      maxLines: 2,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: SizeSystem.size24,
-                        fontFamily: kRubik,
-                      ),
-                    ),
-                    Text(
-                      'LTV',
-                      maxLines: 2,
-                      style: TextStyle(
-                        color: Colors.white.withOpacity(0.7),
-                        fontSize: SizeSystem.size12,
-                        fontFamily: kRubik,
-                      ),
-                    ),
-                  ],
-                ),
-                Row(
-                  children: [
-                    Expanded(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            '0.2k',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: SizeSystem.size14,
-                              fontFamily: kRubik,
-                            ),
-                          ),
-                          Text(
-                            '0-12 Months',
-                            maxLines: 2,
-                            style: TextStyle(
-                              color: Colors.white.withOpacity(0.7),
-                              fontSize: SizeSystem.size12,
-                              fontFamily: kRubik,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Expanded(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            '2.22k',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: SizeSystem.size14,
-                              fontFamily: kRubik,
-                            ),
-                          ),
-                          Text(
-                            '12-24 Months',
-                            maxLines: 2,
-                            style: TextStyle(
-                              color: Colors.white.withOpacity(0.7),
-                              fontSize: SizeSystem.size12,
-                              fontFamily: kRubik,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                )
-              ],
-            ),
-          ),
-        ],
-      ),
     );
   }
 }

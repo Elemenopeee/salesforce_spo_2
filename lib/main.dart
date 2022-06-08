@@ -77,10 +77,12 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const ClientLandingScreen(customerID: '0014M00001nv3BwQAI',),
+      home: const HomeScreen(),
     );
   }
 }
+
+// ClientLandingScreen(customerID: '0014M00001nv3BwQAI',),
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
