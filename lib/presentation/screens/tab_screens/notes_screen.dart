@@ -14,7 +14,6 @@ import '../../../utils/constants.dart';
 import '../../../utils/set_bg_color.dart';
 
 class NotesList extends StatefulWidget {
-
   final String customerID;
 
   const NotesList({Key? key, required this.customerID}) : super(key: key);
@@ -25,7 +24,10 @@ class NotesList extends StatefulWidget {
 
 class _NotesListState extends State<NotesList> {
   List<NoteModel> noteList = [];
-  List<Note> noteIds = [];
+
+  // List<Note> noteIds = [];
+
+  List<String> noteIds = [];
 
   bool isLoading = true;
 
@@ -49,22 +51,28 @@ class _NotesListState extends State<NotesList> {
   }
 
   Future<void> getNotesList(int offset) async {
-
     var response = await HttpService()
         .doGet(path: Endpoints.getClientNotesById(widget.customerID));
-    var responseNotes =
-        await HttpService().doGet(path: Endpoints.getClientNotes(""));
-    isLoadingData = false;
+
     try {
-      for (var note in response.data['records']) {
-        noteIds.add(Note.fromJson(note));
-      }
-      for (var notes in responseNotes.data['records']) {
-        noteList.add(NoteModel.fromJson(notes));
+      for (var record in response.data['records']) {
+        noteIds.add(record['ContentDocumentId']);
       }
     } catch (e) {
       print(e);
     }
+
+    var responseNotes =
+        await HttpService().doGet(path: Endpoints.getClientNotes(noteIds));
+
+    try{
+      for (var record in responseNotes.data['records'] ){
+        noteList.add(NoteModel.fromJson(record));
+      }
+    } catch (e) {
+      print(e);
+    }
+    isLoadingData = false;
   }
 
   @override
@@ -75,13 +83,13 @@ class _NotesListState extends State<NotesList> {
           if (snapshot.connectionState == ConnectionState.waiting &&
               noteList.isEmpty) {
             return const Center(
-              child: Center(child: CircularProgressIndicator(
+              child: Center(
+                  child: CircularProgressIndicator(
                 color: ColorSystem.primary,
               )),
             );
           } else {
-
-            if(noteList.isEmpty){
+            if (noteList.isEmpty) {
               return Column(
                 children: [
                   const SizedBox(

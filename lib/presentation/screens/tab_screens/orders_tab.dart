@@ -14,7 +14,6 @@ import '../../../design_system/primitives/size_system.dart';
 import '../../../utils/constants.dart';
 
 class OrdersTab extends StatefulWidget {
-
   final String customerId;
 
   const OrdersTab({required this.customerId, Key? key}) : super(key: key);
@@ -24,7 +23,6 @@ class OrdersTab extends StatefulWidget {
 }
 
 class _OrdersTabState extends State<OrdersTab> {
-
   late Future<void> _futureOpenOrders;
   late Future<void> _futureOrderHistory;
 
@@ -77,7 +75,7 @@ class _OrdersTabState extends State<OrdersTab> {
     return FutureBuilder(
       future: Future.wait([
         _futureOpenOrders,
-        _futureOrderHistory,
+        // _futureOrderHistory,
       ]),
       builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
         switch (snapshot.connectionState) {
@@ -90,8 +88,7 @@ class _OrdersTabState extends State<OrdersTab> {
               ),
             );
           case ConnectionState.done:
-
-            if(openOrders.isEmpty && pastOrders.isEmpty){
+            if (openOrders.isEmpty && pastOrders.isEmpty) {
               return Column(
                 children: [
                   const SizedBox(
@@ -116,222 +113,48 @@ class _OrdersTabState extends State<OrdersTab> {
 
             return ListView(
               children: [
-                if(openOrders.isNotEmpty)
-                const Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Text(
-                    'Open Orders',
-                    style: TextStyle(
-                      color: ColorSystem.primary,
-                      fontSize: SizeSystem.size16,
-                      fontFamily: kRubik,
+                if (openOrders.isNotEmpty)
+                  const Padding(
+                    padding: EdgeInsets.all(16.0),
+                    child: Text(
+                      'Open Orders',
+                      style: TextStyle(
+                        color: ColorSystem.primary,
+                        fontSize: SizeSystem.size16,
+                        fontFamily: kRubik,
+                      ),
                     ),
                   ),
-                ),
-                if(openOrders.isNotEmpty)
-                ListView.separated(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: openOrders.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: PaddingSystem.padding16,
-                        vertical: PaddingSystem.padding10,
-                      ),
-                      child: Row(
-                        children: [
-                          SvgPicture.asset(
-                            IconSystem.cart,
-                            color: Colors.black,
-                            width: SizeSystem.size16,
-                            height: SizeSystem.size16,
-                          ),
-                          const SizedBox(
-                            width: SizeSystem.size24,
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                openOrders[index].orderNumber ?? '--',
-                                style: const TextStyle(
-                                  color: ColorSystem.primary,
-                                  fontFamily: kRubik,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: SizeSystem.size12,
-                                ),
-                              ),
-                              const SizedBox(
-                                height: SizeSystem.size4,
-                              ),
-                              Text(
-                                '\$${openOrders[index].amount}',
-                                style: const TextStyle(
-                                  color: ColorSystem.primary,
-                                  fontFamily: kRubik,
-                                  fontSize: SizeSystem.size12,
-                                ),
-                              ),
-                              const SizedBox(
-                                height: SizeSystem.size4,
-                              ),
-                              Text(
-                                dateFormatter(openOrders[index].createdDate),
-                                style: const TextStyle(
-                                  color: ColorSystem.secondary,
-                                  fontFamily: kRubik,
-                                  fontSize: SizeSystem.size12,
-                                ),
-                              ),
-                            ],
-                          ),
-                          const Spacer(),
-                          InstrumentsTile(
-                            items: openOrders[index].items ?? [],
-                          ),
-                        ],
-                      ),
-                    );
-                  },
-                  separatorBuilder: (BuildContext context, int index) {
-                    return Container(
-                      height: 1,
-                      color: ColorSystem.secondary.withOpacity(0.3),
-                    );
-                  },
-                ),
-                if(openOrders.isNotEmpty)
-                Container(
-                  height: 1,
-                  color: ColorSystem.secondary.withOpacity(0.3),
-                ),
-                if(pastOrders.isNotEmpty)
-                const Padding(
-                  padding: EdgeInsets.all(SizeSystem.size16),
-                  child: Text(
-                    'Order History',
-                    style: TextStyle(
-                      color: ColorSystem.primary,
-                      fontSize: SizeSystem.size16,
-                      fontFamily: kRubik,
-                    ),
-                  ),
-                ),
-                if(pastOrders.isNotEmpty)
-                ListView.builder(
+                if (openOrders.isNotEmpty)
+                  ListView.separated(
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
-                    padding:
-                        const EdgeInsets.only(left: PaddingSystem.padding12),
-                    itemCount: pastOrders.length,
-                    itemBuilder: (context, index) {
-                      return index != 0
-                          ? Column(
-                              mainAxisSize: MainAxisSize.min,
+                    itemCount: openOrders.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: PaddingSystem.padding16,
+                          vertical: PaddingSystem.padding10,
+                        ),
+                        child: Row(
+                          children: [
+                            SvgPicture.asset(
+                              IconSystem.cart,
+                              color: Colors.black,
+                              width: SizeSystem.size16,
+                              height: SizeSystem.size16,
+                            ),
+                            const SizedBox(
+                              width: SizeSystem.size24,
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Row(
-                                  children: [
-                                    const DashGenerator(
-                                      numberOfDashes: 6,
-                                    ),
-                                    Expanded(
-                                      child: Container(
-                                        color: ColorSystem.secondary
-                                            .withOpacity(0.3),
-                                        height: 0.5,
-                                        padding: const EdgeInsets.only(
-                                          left: 10,
-                                          right: 20,
-                                        ),
-                                      ),
-                                    )
-                                  ],
-                                ),
-                                Row(
-                                  children: [
-                                    Icon(
-                                      pastOrders[index].orderStatus ==
-                                              'Completed'
-                                          ? CupertinoIcons.check_mark_circled
-                                          : CupertinoIcons.clear_circled,
-                                      color: pastOrders[index].orderStatus ==
-                                              'Completed'
-                                          ? ColorSystem.additionalGreen
-                                          : ColorSystem.complimentary,
-                                    ),
-                                    const SizedBox(
-                                      width: SizeSystem.size20,
-                                    ),
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          pastOrders[index].orderNumber ?? '--',
-                                          style: const TextStyle(
-                                            color: ColorSystem.primary,
-                                            fontFamily: kRubik,
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: SizeSystem.size12,
-                                          ),
-                                        ),
-                                        const SizedBox(
-                                          height: SizeSystem.size4,
-                                        ),
-                                        Text(
-                                          '\$${pastOrders[index].amount}',
-                                          style: const TextStyle(
-                                            color: ColorSystem.primary,
-                                            fontFamily: kRubik,
-                                            fontSize: SizeSystem.size12,
-                                          ),
-                                        ),
-                                        const SizedBox(
-                                          height: SizeSystem.size4,
-                                        ),
-                                        Text(
-                                          dateFormatter(
-                                              pastOrders[index].createdDate),
-                                          style: const TextStyle(
-                                            color: ColorSystem.secondary,
-                                            fontFamily: kRubik,
-                                            fontSize: SizeSystem.size12,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    const Spacer(),
-                                    InstrumentsTile(
-                                      items: pastOrders[index].items ?? [],
-                                    ),
-                                    const SizedBox(
-                                      width: SizeSystem.size16,
-                                    ),
-                                  ],
-                                )
-                              ],
-                            )
-                          : Row(
-                              children: [
-                                Icon(
-                                  pastOrders[index].orderStatus ==
-                                      'Completed'
-                                      ? CupertinoIcons.check_mark_circled
-                                      : CupertinoIcons.clear_circled,
-                                  color: pastOrders[index].orderStatus ==
-                                      'Completed'
-                                      ? ColorSystem.additionalGreen
-                                      : ColorSystem.complimentary,
-                                ),
-                                const SizedBox(
-                                  width: SizeSystem.size20,
-                                ),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisSize: MainAxisSize.min,
                                   children: [
                                     Text(
-                                      pastOrders[index].orderNumber ?? '--',
+                                      openOrders[index].orderNumber ?? '--',
                                       style: const TextStyle(
                                         color: ColorSystem.primary,
                                         fontFamily: kRubik,
@@ -339,47 +162,250 @@ class _OrdersTabState extends State<OrdersTab> {
                                         fontSize: SizeSystem.size12,
                                       ),
                                     ),
-                                    const SizedBox(
-                                      height: SizeSystem.size4,
-                                    ),
-                                    Text(
-                                      '\$${pastOrders[index].amount}',
-                                      style: const TextStyle(
-                                        color: ColorSystem.primary,
-                                        fontFamily: kRubik,
-                                        fontSize: SizeSystem.size12,
-                                      ),
-                                    ),
-                                    const SizedBox(
-                                      height: SizeSystem.size4,
-                                    ),
-                                    Text(
-                                      dateFormatter(
-                                          pastOrders[index].createdDate),
-                                      style: const TextStyle(
-                                        color: ColorSystem.secondary,
-                                        fontFamily: kRubik,
-                                        fontSize: SizeSystem.size12,
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: SizeSystem.size6),
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(
+                                              SizeSystem.size2),
+                                          color: ColorSystem.complimentary
+                                              .withOpacity(0.2),
+                                        ),
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: SizeSystem.size8,
+                                          vertical: SizeSystem.size2,
+                                        ),
+                                        child: const Text(
+                                          'Open',
+                                          style: TextStyle(
+                                            color: ColorSystem.complimentary,
+                                            fontSize: SizeSystem.size10,
+                                            fontFamily: kRubik,
+                                          ),
+                                        ),
                                       ),
                                     ),
                                   ],
                                 ),
-                                const Spacer(),
-                                InstrumentsTile(
-                                  items: pastOrders[index].items ?? [],
+                                const SizedBox(
+                                  height: SizeSystem.size4,
+                                ),
+                                Text(
+                                  '\$${openOrders[index].amount}',
+                                  style: const TextStyle(
+                                    color: ColorSystem.primary,
+                                    fontFamily: kRubik,
+                                    fontSize: SizeSystem.size12,
+                                  ),
                                 ),
                                 const SizedBox(
-                                  width: SizeSystem.size16,
+                                  height: SizeSystem.size4,
+                                ),
+                                Text(
+                                  dateFormatter(openOrders[index].createdDate),
+                                  style: const TextStyle(
+                                    color: ColorSystem.secondary,
+                                    fontFamily: kRubik,
+                                    fontSize: SizeSystem.size12,
+                                  ),
                                 ),
                               ],
-                            );
-                    }),
-                Container(
-                  height: 1,
-                  margin:
-                      const EdgeInsets.symmetric(vertical: PaddingSystem.padding10),
-                  color: ColorSystem.secondary.withOpacity(0.3),
-                ),
+                            ),
+                            const Spacer(),
+                            InstrumentsTile(
+                              items: openOrders[index].items ?? [],
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                    separatorBuilder: (BuildContext context, int index) {
+                      return Container(
+                        height: 1,
+                        color: ColorSystem.secondary.withOpacity(0.3),
+                      );
+                    },
+                  ),
+                if (openOrders.isNotEmpty)
+                  Container(
+                    height: 1,
+                    color: ColorSystem.secondary.withOpacity(0.3),
+                  ),
+                // if(pastOrders.isNotEmpty)
+                // const Padding(
+                //   padding: EdgeInsets.all(SizeSystem.size16),
+                //   child: Text(
+                //     'Order History',
+                //     style: TextStyle(
+                //       color: ColorSystem.primary,
+                //       fontSize: SizeSystem.size16,
+                //       fontFamily: kRubik,
+                //     ),
+                //   ),
+                // ),
+                // if(pastOrders.isNotEmpty)
+                // ListView.builder(
+                //     shrinkWrap: true,
+                //     physics: const NeverScrollableScrollPhysics(),
+                //     padding:
+                //         const EdgeInsets.only(left: PaddingSystem.padding12),
+                //     itemCount: pastOrders.length,
+                //     itemBuilder: (context, index) {
+                //       return index != 0
+                //           ? Column(
+                //               mainAxisSize: MainAxisSize.min,
+                //               children: [
+                //                 Row(
+                //                   children: [
+                //                     const DashGenerator(
+                //                       numberOfDashes: 6,
+                //                     ),
+                //                     Expanded(
+                //                       child: Container(
+                //                         color: ColorSystem.secondary
+                //                             .withOpacity(0.3),
+                //                         height: 0.5,
+                //                         padding: const EdgeInsets.only(
+                //                           left: 10,
+                //                           right: 20,
+                //                         ),
+                //                       ),
+                //                     )
+                //                   ],
+                //                 ),
+                //                 Row(
+                //                   children: [
+                //                     Icon(
+                //                       pastOrders[index].orderStatus ==
+                //                               'Completed'
+                //                           ? CupertinoIcons.check_mark_circled
+                //                           : CupertinoIcons.clear_circled,
+                //                       color: pastOrders[index].orderStatus ==
+                //                               'Completed'
+                //                           ? ColorSystem.additionalGreen
+                //                           : ColorSystem.complimentary,
+                //                     ),
+                //                     const SizedBox(
+                //                       width: SizeSystem.size20,
+                //                     ),
+                //                     Column(
+                //                       crossAxisAlignment:
+                //                           CrossAxisAlignment.start,
+                //                       children: [
+                //                         Text(
+                //                           pastOrders[index].orderNumber ?? '--',
+                //                           style: const TextStyle(
+                //                             color: ColorSystem.primary,
+                //                             fontFamily: kRubik,
+                //                             fontWeight: FontWeight.bold,
+                //                             fontSize: SizeSystem.size12,
+                //                           ),
+                //                         ),
+                //                         const SizedBox(
+                //                           height: SizeSystem.size4,
+                //                         ),
+                //                         Text(
+                //                           '\$${pastOrders[index].amount}',
+                //                           style: const TextStyle(
+                //                             color: ColorSystem.primary,
+                //                             fontFamily: kRubik,
+                //                             fontSize: SizeSystem.size12,
+                //                           ),
+                //                         ),
+                //                         const SizedBox(
+                //                           height: SizeSystem.size4,
+                //                         ),
+                //                         Text(
+                //                           dateFormatter(
+                //                               pastOrders[index].createdDate),
+                //                           style: const TextStyle(
+                //                             color: ColorSystem.secondary,
+                //                             fontFamily: kRubik,
+                //                             fontSize: SizeSystem.size12,
+                //                           ),
+                //                         ),
+                //                       ],
+                //                     ),
+                //                     const Spacer(),
+                //                     InstrumentsTile(
+                //                       items: pastOrders[index].items ?? [],
+                //                     ),
+                //                     const SizedBox(
+                //                       width: SizeSystem.size16,
+                //                     ),
+                //                   ],
+                //                 )
+                //               ],
+                //             )
+                //           : Row(
+                //               children: [
+                //                 Icon(
+                //                   pastOrders[index].orderStatus ==
+                //                       'Completed'
+                //                       ? CupertinoIcons.check_mark_circled
+                //                       : CupertinoIcons.clear_circled,
+                //                   color: pastOrders[index].orderStatus ==
+                //                       'Completed'
+                //                       ? ColorSystem.additionalGreen
+                //                       : ColorSystem.complimentary,
+                //                 ),
+                //                 const SizedBox(
+                //                   width: SizeSystem.size20,
+                //                 ),
+                //                 Column(
+                //                   crossAxisAlignment: CrossAxisAlignment.start,
+                //                   children: [
+                //                     Text(
+                //                       pastOrders[index].orderNumber ?? '--',
+                //                       style: const TextStyle(
+                //                         color: ColorSystem.primary,
+                //                         fontFamily: kRubik,
+                //                         fontWeight: FontWeight.bold,
+                //                         fontSize: SizeSystem.size12,
+                //                       ),
+                //                     ),
+                //                     const SizedBox(
+                //                       height: SizeSystem.size4,
+                //                     ),
+                //                     Text(
+                //                       '\$${pastOrders[index].amount}',
+                //                       style: const TextStyle(
+                //                         color: ColorSystem.primary,
+                //                         fontFamily: kRubik,
+                //                         fontSize: SizeSystem.size12,
+                //                       ),
+                //                     ),
+                //                     const SizedBox(
+                //                       height: SizeSystem.size4,
+                //                     ),
+                //                     Text(
+                //                       dateFormatter(
+                //                           pastOrders[index].createdDate),
+                //                       style: const TextStyle(
+                //                         color: ColorSystem.secondary,
+                //                         fontFamily: kRubik,
+                //                         fontSize: SizeSystem.size12,
+                //                       ),
+                //                     ),
+                //                   ],
+                //                 ),
+                //                 const Spacer(),
+                //                 InstrumentsTile(
+                //                   items: pastOrders[index].items ?? [],
+                //                 ),
+                //                 const SizedBox(
+                //                   width: SizeSystem.size16,
+                //                 ),
+                //               ],
+                //             );
+                //     }),
+                // Container(
+                //   height: 1,
+                //   margin:
+                //       const EdgeInsets.symmetric(vertical: PaddingSystem.padding10),
+                //   color: ColorSystem.secondary.withOpacity(0.3),
+                // ),
               ],
             );
         }

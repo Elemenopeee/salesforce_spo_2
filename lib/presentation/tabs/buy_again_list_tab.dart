@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:salesforce_spo/common_widgets/buy_again_product_widget.dart';
+import 'package:salesforce_spo/design_system/primitives/color_system.dart';
+import 'package:salesforce_spo/design_system/primitives/icon_system.dart';
+import 'package:salesforce_spo/models/gc_order_line_item.dart';
+import 'package:salesforce_spo/utils/constants.dart';
 
+import '../../common_widgets/product_widget.dart';
 import '../../design_system/primitives/size_system.dart';
-import '../../models/buy_again_model.dart';
 import '../../services/networking/endpoints.dart';
 import '../../services/networking/networking_service.dart';
 
@@ -12,9 +17,7 @@ class BuyAgainListTab extends StatefulWidget {
 }
 
 class _BuyAgainListTabState extends State<BuyAgainListTab> {
-  List<BuyAgainModel> buyAgainData = [];
-
-  bool isLoading = true;
+  List<GcOrderLineItem> products = [];
 
   late Future<void> _futureBuyAgain;
 
@@ -33,12 +36,16 @@ class _BuyAgainListTabState extends State<BuyAgainListTab> {
   Future<void> getByNowList(int offset) async {
     var customerId = ('0014M00001nv3BwQAI');
     var response =
-        await HttpService().doGet(path: Endpoints.getClientByNow(customerId));
-    isLoadingData = false;
+        await HttpService().doGet(path: Endpoints.getClientBuyAgain(customerId));
+
     try {
-      for (var byAgain in response.data['records']) {
-        buyAgainData.add(BuyAgainModel.fromJson(byAgain));
+
+      for(var record in response.data['records']){
+        for (var orderLineItemData in record['GC_Order_Line_Items__r']['records']){
+          products.add(GcOrderLineItem.fromJson(orderLineItemData));
+        }
       }
+
     } catch (e) {
       print(e);
     }
@@ -49,37 +56,70 @@ class _BuyAgainListTabState extends State<BuyAgainListTab> {
     return FutureBuilder(
         future: _futureBuyAgain,
         builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting &&
-              buyAgainData.isEmpty) {
-            return const Center(child: CircularProgressIndicator());
-          } else {
-            return SizedBox(
-              height: 200,
-              child: ListView.builder(
-                itemCount: buyAgainData.length,
-                shrinkWrap: true,
-                scrollDirection: Axis.horizontal,
-                padding: EdgeInsets.zero,
-                itemBuilder: (context, index) {
-                  var item = buyAgainData[index];
-                  print(buyAgainData[index].gcOrderLine?.productPrice );
-                  print("nsedceacaec");
-                  return Row(
-                    children: const [
-                       SizedBox(
-                        width: SizeSystem.size18,
+          switch(snapshot.connectionState){
+            case ConnectionState.none:
+            case ConnectionState.waiting:
+
+            case ConnectionState.active:
+              return const Center(
+                child: CircularProgressIndicator(
+                  color: ColorSystem.primary,
+                ),
+              );
+              break;
+            case ConnectionState.done:
+
+              if (products.isEmpty) {
+                return Column(
+                  children: [
+                    const SizedBox(
+                      height: SizeSystem.size50,
+                    ),
+                    SvgPicture.asset(IconSystem.noDataFound),
+                    const SizedBox(
+                      height: SizeSystem.size24,
+                    ),
+                    const Text(
+                      'NO DATA FOUND!',
+                      style: TextStyle(
+                        color: ColorSystem.primary,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: kRubik,
+                        fontSize: SizeSystem.size20,
                       ),
-                      // BuyAgainProductWidget(
-                      //   productName:
-                      //       item.gcOrderLine?.productDescription ?? "--",
-                      //   productPrice: item.gcOrderLine?.productPrice?? 0,
-                      //   productImage: item.gcOrderLine?.productImage ?? "",
-                      // ),
-                    ],
-                  );
-                },
-              ),
-            );
+                    )
+                  ],
+                );
+              }
+
+              return SizedBox(
+                height: 200,
+                child: ListView.builder(
+                  itemCount: products.length,
+                  shrinkWrap: true,
+                  scrollDirection: Axis.horizontal,
+                  padding: EdgeInsets.zero,
+                  itemBuilder: (context, index) {
+                    var item = products[index];
+                    return SizedBox(
+                      width: 180,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const SizedBox(
+                            width: SizeSystem.size18,
+                          ),
+                          ProductWidget(
+                            productName: item.productDescription ?? '',
+                            productPrice: item.productPrice ?? 0,
+                            productImage: item.productImage ?? '',
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+              );
           }
         });
   }

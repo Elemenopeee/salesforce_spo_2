@@ -2,11 +2,11 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:salesforce_spo/design_system/design_system.dart';
 
-class CartProductWidget extends StatelessWidget {
+class ProductWidget extends StatelessWidget {
   final String productName;
   final double productPrice;
   final String productImage;
-  const CartProductWidget({
+  const ProductWidget({
     Key? key,
     required this.productName,
     required this.productPrice,
@@ -19,19 +19,17 @@ class CartProductWidget extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
+          width: 160,
+          height: 160,
           decoration: BoxDecoration(
             border: Border.all(
               color: Colors.transparent,
             ),
-            borderRadius: BorderRadius.circular(15),
+            borderRadius: BorderRadius.circular(SizeSystem.size16),
             color: ColorSystem.culturedGrey,
           ),
-          child: SizedBox(
-            width: 150,
-            height: 150,
-            child: CachedNetworkImage(
-              imageUrl: productImage,
-            ),
+          child: CachedNetworkImage(
+            imageUrl: productImage,
           ),
         ),
         const SizedBox(
@@ -52,7 +50,7 @@ class CartProductWidget extends StatelessWidget {
           height: SizeSystem.size8,
         ),
         Text(
-          productPrice.toString(),
+          '\$ $productPrice',
           style: const TextStyle(
             fontSize: SizeSystem.size12,
             color: ColorSystem.primaryTextColor,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import '../design_system/primitives/color_system.dart';
 
@@ -31,4 +32,9 @@ double aovCalculator(double? ltv, double? lnt) {
   } else {
     return 0;
   }
+}
+
+String formattedNumber(double value) {
+  var f = NumberFormat.compact(locale: "en_US");
+  return f.format(value);
 }

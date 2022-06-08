@@ -76,6 +76,9 @@ class _CustomerLookupWidgetState extends State<CustomerLookupWidget> {
         path: Endpoints.getCustomerSearchByEmail(email),
         tokenRequired: true,
       );
+
+      print(Endpoints.getCustomerSearchByEmail(email));
+
       try {
         for (var record in data.data['records']) {
           customers.add(Customer.fromJson(json: record));
@@ -103,12 +106,8 @@ class _CustomerLookupWidgetState extends State<CustomerLookupWidget> {
     super.initState();
     phoneNumberController.addListener(() {
       phone = phoneNumberController.text;
-      phone = phone.replaceAll('(', '');
-      phone = phone.replaceAll(')', '');
-      phone = phone.replaceAll('-', '');
-      phone = phone.replaceAll(' ', '');
       searchingByPhoneNumber = true;
-      if (phone.length >= 10) {
+      if (phone.length >= 14) {
         setState(() {
           futureCustomers = getCustomer(searchingByPhoneNumber);
         });
@@ -185,8 +184,7 @@ class _CustomerLookupWidgetState extends State<CustomerLookupWidget> {
               ),
               Expanded(
                 child: Container(
-                  padding:
-                  const EdgeInsets.only(top: PaddingSystem.padding48),
+                  padding: const EdgeInsets.only(top: PaddingSystem.padding48),
                   decoration: const BoxDecoration(
                       color: ColorSystem.white,
                       borderRadius: BorderRadius.only(
@@ -238,11 +236,11 @@ class _CustomerLookupWidgetState extends State<CustomerLookupWidget> {
                                       Padding(
                                         padding: const EdgeInsets.symmetric(
                                             horizontal:
-                                            PaddingSystem.padding48),
+                                                PaddingSystem.padding48),
                                         child: GuitarCentreInputField(
                                           focusNode: phoneFocusNode,
                                           textEditingController:
-                                          phoneNumberController,
+                                              phoneNumberController,
                                           label: 'Phone',
                                           hintText: '(123) 456-7890',
                                           textInputType: TextInputType.number,
@@ -266,65 +264,60 @@ class _CustomerLookupWidgetState extends State<CustomerLookupWidget> {
                                           leadingIcon: IconSystem.phone,
                                           suffixIcon: hasRecords != null
                                               ? hasRecords!
-                                              ? Column(
-                                            mainAxisSize:
-                                            MainAxisSize.min,
-                                            children: [
-                                              const SizedBox(
-                                                height: 8,
-                                              ),
-                                              SvgPicture.asset(
-                                                IconSystem
-                                                    .checkmark,
-                                                color: ColorSystem
-                                                    .additionalGreen,
-                                                height: 24,
-                                              ),
-                                            ],
-                                          )
-                                              : searchingByPhoneNumber
-                                              ? InkWell(
-                                            onTap: () {
-                                              phoneNumberController
-                                                  .clear();
-                                              setState(() {
-                                                hasRecords =
-                                                null;
-                                                showEmailField =
-                                                true;
-                                              });
-                                              formKey
-                                                  .currentState
-                                                  ?.validate();
-                                            },
-                                            focusColor: Colors
-                                                .transparent,
-                                            splashColor: Colors
-                                                .transparent,
-                                            hoverColor: Colors
-                                                .transparent,
-                                            highlightColor:
-                                            Colors
-                                                .transparent,
-                                            child: Column(
-                                              mainAxisSize:
-                                              MainAxisSize
-                                                  .min,
-                                              children: const [
-                                                SizedBox(
-                                                  height: 8,
-                                                ),
-                                                Icon(
-                                                  CupertinoIcons
-                                                      .clear,
-                                                  color: ColorSystem
-                                                      .complimentary,
-                                                ),
-                                              ],
-                                            ),
-                                          )
-                                              : const SizedBox
-                                              .shrink()
+                                                  ? Column(
+                                                      mainAxisSize:
+                                                          MainAxisSize.min,
+                                                      children: [
+                                                        const SizedBox(
+                                                          height: 8,
+                                                        ),
+                                                        SvgPicture.asset(
+                                                          IconSystem.checkmark,
+                                                          color: ColorSystem
+                                                              .additionalGreen,
+                                                          height: 24,
+                                                        ),
+                                                      ],
+                                                    )
+                                                  : searchingByPhoneNumber
+                                                      ? InkWell(
+                                                          onTap: () {
+                                                            phoneNumberController
+                                                                .clear();
+                                                            setState(() {
+                                                              hasRecords = null;
+                                                              showEmailField =
+                                                                  true;
+                                                            });
+                                                            formKey.currentState
+                                                                ?.validate();
+                                                          },
+                                                          focusColor: Colors
+                                                              .transparent,
+                                                          splashColor: Colors
+                                                              .transparent,
+                                                          hoverColor: Colors
+                                                              .transparent,
+                                                          highlightColor: Colors
+                                                              .transparent,
+                                                          child: Column(
+                                                            mainAxisSize:
+                                                                MainAxisSize
+                                                                    .min,
+                                                            children: const [
+                                                              SizedBox(
+                                                                height: 8,
+                                                              ),
+                                                              Icon(
+                                                                CupertinoIcons
+                                                                    .clear,
+                                                                color: ColorSystem
+                                                                    .complimentary,
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        )
+                                                      : const SizedBox.shrink()
                                               : const SizedBox.shrink(),
                                         ),
                                       ),
@@ -332,17 +325,17 @@ class _CustomerLookupWidgetState extends State<CustomerLookupWidget> {
                                       Padding(
                                         padding: const EdgeInsets.symmetric(
                                             horizontal:
-                                            PaddingSystem.padding48),
+                                                PaddingSystem.padding48),
                                         child: GuitarCentreInputField(
                                           focusNode: emailFocusNode,
                                           textEditingController:
-                                          emailController,
+                                              emailController,
                                           label: 'Email',
                                           hintText: 'abc@xyz.com',
                                           textInputType:
-                                          TextInputType.emailAddress,
+                                              TextInputType.emailAddress,
                                           leadingIcon:
-                                          IconSystem.messageOutline,
+                                              IconSystem.messageOutline,
                                           onChanged: (email) {
                                             this.email = email;
                                           },
@@ -360,65 +353,60 @@ class _CustomerLookupWidgetState extends State<CustomerLookupWidget> {
                                           },
                                           suffixIcon: hasRecords != null
                                               ? hasRecords!
-                                              ? Column(
-                                            mainAxisSize:
-                                            MainAxisSize.min,
-                                            children: [
-                                              const SizedBox(
-                                                height: 8,
-                                              ),
-                                              SvgPicture.asset(
-                                                IconSystem
-                                                    .checkmark,
-                                                color: ColorSystem
-                                                    .additionalGreen,
-                                                height: 24,
-                                              ),
-                                            ],
-                                          )
-                                              : !searchingByPhoneNumber
-                                              ? InkWell(
-                                            onTap: () {
-                                              emailController
-                                                  .clear();
-                                              setState(() {
-                                                hasRecords =
-                                                null;
-                                                showPhoneField =
-                                                true;
-                                              });
-                                              formKey
-                                                  .currentState
-                                                  ?.validate();
-                                            },
-                                            focusColor: Colors
-                                                .transparent,
-                                            splashColor: Colors
-                                                .transparent,
-                                            hoverColor: Colors
-                                                .transparent,
-                                            highlightColor:
-                                            Colors
-                                                .transparent,
-                                            child: Column(
-                                              mainAxisSize:
-                                              MainAxisSize
-                                                  .min,
-                                              children: const [
-                                                SizedBox(
-                                                  height: 8,
-                                                ),
-                                                Icon(
-                                                  CupertinoIcons
-                                                      .clear,
-                                                  color: ColorSystem
-                                                      .complimentary,
-                                                ),
-                                              ],
-                                            ),
-                                          )
-                                              : const SizedBox
-                                              .shrink()
+                                                  ? Column(
+                                                      mainAxisSize:
+                                                          MainAxisSize.min,
+                                                      children: [
+                                                        const SizedBox(
+                                                          height: 8,
+                                                        ),
+                                                        SvgPicture.asset(
+                                                          IconSystem.checkmark,
+                                                          color: ColorSystem
+                                                              .additionalGreen,
+                                                          height: 24,
+                                                        ),
+                                                      ],
+                                                    )
+                                                  : !searchingByPhoneNumber
+                                                      ? InkWell(
+                                                          onTap: () {
+                                                            emailController
+                                                                .clear();
+                                                            setState(() {
+                                                              hasRecords = null;
+                                                              showPhoneField =
+                                                                  true;
+                                                            });
+                                                            formKey.currentState
+                                                                ?.validate();
+                                                          },
+                                                          focusColor: Colors
+                                                              .transparent,
+                                                          splashColor: Colors
+                                                              .transparent,
+                                                          hoverColor: Colors
+                                                              .transparent,
+                                                          highlightColor: Colors
+                                                              .transparent,
+                                                          child: Column(
+                                                            mainAxisSize:
+                                                                MainAxisSize
+                                                                    .min,
+                                                            children: const [
+                                                              SizedBox(
+                                                                height: 8,
+                                                              ),
+                                                              Icon(
+                                                                CupertinoIcons
+                                                                    .clear,
+                                                                color: ColorSystem
+                                                                    .complimentary,
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        )
+                                                      : const SizedBox.shrink()
                                               : const SizedBox.shrink(),
                                         ),
                                       ),
@@ -431,8 +419,7 @@ class _CustomerLookupWidgetState extends State<CustomerLookupWidget> {
                                     horizontal: PaddingSystem.padding40,
                                   ),
                                   shrinkWrap: true,
-                                  physics:
-                                  const NeverScrollableScrollPhysics(),
+                                  physics: const NeverScrollableScrollPhysics(),
                                   itemCount: customers.length,
                                   itemBuilder:
                                       (BuildContext context, int index) {
@@ -442,18 +429,21 @@ class _CustomerLookupWidgetState extends State<CustomerLookupWidget> {
                                       email: customers[index].email,
                                       phone: customers[index].phone,
                                       preferredInstrument:
-                                      customers[index].primaryInstrument,
-                                      lastTransactionDate: customers[index]
-                                          .lastTransactionDate,
+                                          customers[index].primaryInstrument,
+                                      lastTransactionDate:
+                                          customers[index].lastTransactionDate,
                                       ltv: customers[index]
-                                          .lifeTimeNetSalesAmount ?? 0,
+                                              .lifeTimeNetSalesAmount ??
+                                          0,
                                       averageProductValue: aovCalculator(
                                           customers[index]
                                               .lifeTimeNetSalesAmount,
                                           customers[index]
                                               .lifetimeNetTransactions),
                                       customerLevel:
-                                      customers[index].medianLTVNet,
+                                          customers[index].medianLTVNet,
+                                      epsilonCustomerKey: customers[index]
+                                          .epsilonCustomerBrandKey,
                                     );
                                   },
                                 ),
@@ -470,15 +460,14 @@ class _CustomerLookupWidgetState extends State<CustomerLookupWidget> {
                         child: TextButton(
                           style: ButtonStyle(
                             shape: MaterialStateProperty.resolveWith<
-                                RoundedRectangleBorder>(
-                                    (states) => RoundedRectangleBorder(
+                                    RoundedRectangleBorder>(
+                                (states) => RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(12))),
                             backgroundColor:
-                            MaterialStateProperty.resolveWith<Color>(
-                                  (Set<MaterialState> states) {
+                                MaterialStateProperty.resolveWith<Color>(
+                              (Set<MaterialState> states) {
                                 if (states.contains(MaterialState.pressed) ||
-                                    !states
-                                        .contains(MaterialState.disabled)) {
+                                    !states.contains(MaterialState.disabled)) {
                                   return ColorSystem.primary;
                                 } else if (states
                                     .contains(MaterialState.disabled)) {
@@ -492,17 +481,17 @@ class _CustomerLookupWidgetState extends State<CustomerLookupWidget> {
                           ),
                           onPressed: hasRecords != null && !hasRecords!
                               ? () async {
-                            try {
-                              await launchUrlString(
-                                  'salesforce1://sObject/Account/view');
-                            } catch (e) {
-                              print(e);
-                            }
-                          }
+                                  try {
+                                    await launchUrlString(
+                                        'salesforce1://sObject/Account/view');
+                                  } catch (e) {
+                                    print(e);
+                                  }
+                                }
                               : null,
                           child: Padding(
                             padding:
-                            const EdgeInsets.all(PaddingSystem.padding8),
+                                const EdgeInsets.all(PaddingSystem.padding8),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: const [
@@ -525,8 +514,8 @@ class _CustomerLookupWidgetState extends State<CustomerLookupWidget> {
                           onTap: () {
                             Navigator.push(context, MaterialPageRoute(
                                 builder: (BuildContext context) {
-                                  return const SearchScreen();
-                                }));
+                              return const SearchScreen();
+                            }));
                           },
                           focusColor: Colors.transparent,
                           splashColor: Colors.transparent,
@@ -547,10 +536,11 @@ class _CustomerLookupWidgetState extends State<CustomerLookupWidget> {
                     ],
                   ),
                 ),
-              ),],
-            ),
+              ),
+            ],
           ),
         ),
-      );
+      ),
+    );
   }
 }

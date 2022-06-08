@@ -19,6 +19,7 @@ class CustomerDetailsCard extends StatefulWidget {
   final double ltv;
   final double? averageProductValue;
   final String? customerLevel;
+  final String? epsilonCustomerKey;
 
   const CustomerDetailsCard({
     Key? key,
@@ -31,6 +32,7 @@ class CustomerDetailsCard extends StatefulWidget {
     this.ltv = 0,
     this.averageProductValue,
     this.customerLevel,
+    this.epsilonCustomerKey,
   }) : super(key: key);
 
   @override
@@ -40,9 +42,9 @@ class CustomerDetailsCard extends StatefulWidget {
 class _CustomerDetailsCardState extends State<CustomerDetailsCard> {
   String formattedNumber(double value) {
     var f = NumberFormat.compact(locale: "en_US");
-    try{
+    try {
       return f.format(value);
-    }catch (e){
+    } catch (e) {
       return '0';
     }
   }
@@ -69,18 +71,20 @@ class _CustomerDetailsCardState extends State<CustomerDetailsCard> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () async {
-
-        if(widget.customerId == null){
+        if (widget.customerId == null) {
           try {
             await launchUrlString(
                 'salesforce1://sObject/${widget.customerId}/view');
           } catch (e) {
             print(e);
           }
-        }
-        else {
-          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) {
-            return ClientLandingScreen(customerID: widget.customerId!,);
+        } else {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (BuildContext context) {
+            return ClientLandingScreen(
+              customerID: widget.customerId!,
+              epsilonCustomerKey: widget.epsilonCustomerKey!,
+            );
           }));
         }
       },
@@ -263,13 +267,11 @@ class _CustomerMicroDetailsState extends State<CustomerMicroDetails> {
             borderRadius: BorderRadius.circular(PaddingSystem.padding10),
             color: ColorSystem.secondary.withOpacity(OpacitySystem.opacity01)),
         child: widget.icon ??
-             Text(
-              widget.value,
-              style: const TextStyle(
-                color: ColorSystem.primary,
-                fontFamily: kRubik,
-              )
-            ),
+            Text(widget.value,
+                style: const TextStyle(
+                  color: ColorSystem.primary,
+                  fontFamily: kRubik,
+                )),
       ),
       const SizedBox(
         height: SizeSystem.size10,

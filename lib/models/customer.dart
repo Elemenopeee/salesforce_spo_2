@@ -25,6 +25,7 @@ class Customer extends AppUser {
   final String? medianLTVNet;
   final String? averageLTVNet;
   final double? lastPurchaseValue;
+  final String? epsilonCustomerBrandKey;
 
   Customer._({
     this.email,
@@ -41,6 +42,7 @@ class Customer extends AppUser {
     this.medianLTVNet,
     this.averageLTVNet,
     this.lastPurchaseValue,
+    this.epsilonCustomerBrandKey,
   });
 
   factory Customer.fromJson({required Map<String, dynamic> json}) {
@@ -58,7 +60,8 @@ class Customer extends AppUser {
       maxLTVNet: json['Max_ltv_net_dlrs_Formula__c'],
       medianLTVNet: json['Median_ltv_net_dlrs_Formula__c'],
       averageLTVNet: json['Avg_ltv_net_dlrs_Formula__c'],
-      lastPurchaseValue: json['GC_Orders__r']?['records']?[0]?['Total_Amount__c']
+      lastPurchaseValue: json['GC_Orders__r']?['records']?[0]?['Total_Amount__c'],
+      epsilonCustomerBrandKey: json['Epsilon_Customer_Brand_Key__c']
     );
   }
 }

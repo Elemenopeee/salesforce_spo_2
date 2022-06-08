@@ -1,33 +1,33 @@
+import 'package:carousel_slider/carousel_slider.dart';
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
+import 'package:salesforce_spo/common_widgets/client_accessories_banner.dart';
+import 'package:salesforce_spo/common_widgets/client_sales_banner.dart';
+import 'package:salesforce_spo/models/client_metric.dart';
 import 'package:salesforce_spo/models/customer.dart';
 import 'package:salesforce_spo/services/networking/endpoints.dart';
 import 'package:salesforce_spo/services/networking/networking_service.dart';
 
 import '../design_system/primitives/color_system.dart';
 import '../design_system/primitives/icon_system.dart';
-import '../design_system/primitives/landing_images.dart';
 import '../design_system/primitives/padding_system.dart';
 import '../design_system/primitives/size_system.dart';
+import '../models/purchase_category.dart';
 import '../utils/constant_functions.dart';
 import '../utils/constants.dart';
 import '../utils/enums/music_instrument_enum.dart';
+import 'client_channel_banner.dart';
 
 class ClientCarousel extends StatefulWidget {
-
   final String customerId;
-
-  final Color? bannerOneColor;
-  final Color? bannerTwoOColor;
-  final Color? bannerThreeColor;
+  final String epsilonCustomerKey;
 
   const ClientCarousel({
     Key? key,
-    this.bannerOneColor,
-    this.bannerTwoOColor,
-    this.bannerThreeColor,
     required this.customerId,
+    required this.epsilonCustomerKey,
   }) : super(key: key);
 
   @override
@@ -39,11 +39,42 @@ class _ClientCarouselState extends State<ClientCarousel> {
 
   Customer? customer;
 
+  List<ClientMetric> purchaseCategories = [];
+  List<ClientMetric> channels = [];
+
   Future<void> getClientBasicDetails() async {
     var response = await HttpService()
         .doGet(path: Endpoints.getClientBasicDetails(widget.customerId));
 
     customer = Customer.fromJson(json: response.data['records'][0]);
+    await getClientChannelAndCategoryDetails();
+  }
+
+  Future<void> getClientChannelAndCategoryDetails() async {
+    var response = await HttpService().doGet(
+        path: Endpoints.getClientPurchaseChannelAndCategory('1000000000002'),
+        headers: kPurchaseChannelHeaders);
+
+    if (response.data != null) {
+      Map<String, dynamic> purchaseChannelMap =
+          response.data['PurchaseChannel'];
+
+      purchaseChannelMap.forEach((key, value) {
+        channels.add(ClientMetric.fromPair(key, value));
+      });
+
+      channels.sort((a, b) => b.value.compareTo(a.value));
+
+      Map<String, dynamic> purchaseCategoriesMap =
+          response.data['PurchaseCategory'];
+
+      purchaseCategoriesMap.forEach((key, value) {
+        purchaseCategories.add(ClientMetric.fromPair(key, value));
+      });
+
+      purchaseCategories.sort((a, b) => b.value.compareTo(a.value));
+
+    }
   }
 
   @override
@@ -57,7 +88,7 @@ class _ClientCarouselState extends State<ClientCarousel> {
     return FutureBuilder(
       future: _futureClientDetails,
       builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-        switch(snapshot.connectionState){
+        switch (snapshot.connectionState) {
           case ConnectionState.none:
           case ConnectionState.waiting:
           case ConnectionState.active:
@@ -67,18 +98,68 @@ class _ClientCarouselState extends State<ClientCarousel> {
               ),
             );
           case ConnectionState.done:
-            return ClientPrimaryDetails(
-              clientName: customer?.name ?? '--',
-              primaryInstrument: customer?.primaryInstrument,
-              ltv: customer?.lifeTimeNetSalesAmount,
-              netTransactions: customer?.lifetimeNetTransactions,
-              lastVisitDate: customer?.lastTransactionDate,
-              lastPurchaseValue: customer?.lastPurchaseValue,
+            return CarouselSlider(
+              items: [
+                ClientPrimaryDetails(
+                  clientName: customer?.name ?? '--',
+                  primaryInstrument: customer?.primaryInstrument,
+                  ltv: customer?.lifeTimeNetSalesAmount,
+                  netTransactions: customer?.lifetimeNetTransactions,
+                  lastVisitDate: customer?.lastTransactionDate,
+                  lastPurchaseValue: customer?.lastPurchaseValue,
+                ),
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: ClientAccessoriesBanner(
+                    accessories: purchaseCategories,
+                  ),
+                ),
+                Align(
+                    alignment: Alignment.centerLeft,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: ClientChannelBanner(
+                        details: channels,
+                      ),
+                    )),
+                ClientSales(),
+              ],
+              options: CarouselOptions(height: 168, viewportFraction: 0.7),
             );
         }
       },
     );
   }
+}
+
+List<PieChartSectionData> showingSections(double today, double total,
+    {List<Color>? colors}) {
+  return List.generate(2, (i) {
+    const fontSize = 0.0;
+    const radius = 28.0;
+    switch (i) {
+      case 0:
+        return PieChartSectionData(
+          color: colors?[0] ?? const Color(0xFF7FE3F0),
+          value: today,
+          radius: radius,
+          titleStyle: const TextStyle(
+            fontSize: fontSize,
+          ),
+        );
+      case 1:
+        return PieChartSectionData(
+          color: colors?[1] ?? const Color(0xFFFF7C6D),
+          value: total,
+          radius: radius,
+          titleStyle: const TextStyle(
+            fontSize: fontSize,
+          ),
+        );
+      default:
+        throw Error();
+    }
+  });
 }
 
 class ClientPrimaryDetails extends StatelessWidget {
@@ -123,7 +204,7 @@ class ClientPrimaryDetails extends StatelessWidget {
       ),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(
-          SizeSystem.size12,
+          SizeSystem.size16,
         ),
         color: ColorSystem.culturedGrey,
       ),
@@ -164,30 +245,30 @@ class ClientPrimaryDetails extends StatelessWidget {
                   ],
                 ),
               ),
-              if(ltv != null)
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  SvgPicture.asset(
-                    IconSystem.badge,
-                    height: 15,
-                    width: 15,
-                    color: getCustomerLevelColor(getCustomerLevel(ltv!)),
-                  ),
-                  const SizedBox(
-                    width: SizeSystem.size4,
-                  ),
-                  Text(
-                    getCustomerLevel(ltv!),
-                    style: TextStyle(
-                      fontFamily: kRubik,
-                      fontWeight: FontWeight.w600,
+              if (ltv != null)
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    SvgPicture.asset(
+                      IconSystem.badge,
+                      height: 15,
+                      width: 15,
                       color: getCustomerLevelColor(getCustomerLevel(ltv!)),
-                      fontSize: SizeSystem.size12,
                     ),
-                  ),
-                ],
-              )
+                    const SizedBox(
+                      width: SizeSystem.size4,
+                    ),
+                    Text(
+                      getCustomerLevel(ltv!),
+                      style: TextStyle(
+                        fontFamily: kRubik,
+                        fontWeight: FontWeight.w600,
+                        color: getCustomerLevelColor(getCustomerLevel(ltv!)),
+                        fontSize: SizeSystem.size12,
+                      ),
+                    ),
+                  ],
+                )
             ],
           ),
           const SizedBox(
@@ -237,7 +318,7 @@ class ClientPrimaryDetails extends StatelessWidget {
                   ),
                   Text(
                     "Last purchase : ${lastVisitDate != null ? formatDate(lastVisitDate!) : '--'}",
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontFamily: kRubik,
                       color: ColorSystem.primary,
                       fontSize: SizeSystem.size12,
@@ -274,7 +355,9 @@ class ClientPrimaryDetails extends StatelessWidget {
                       ),
                       children: [
                         TextSpan(
-                          text: lastPurchaseValue != null ? '\$${formattedNumber(lastPurchaseValue!)}' : '--',
+                          text: lastPurchaseValue != null
+                              ? '\$${formattedNumber(lastPurchaseValue!)}'
+                              : '--',
                           style: const TextStyle(
                             color: ColorSystem.primary,
                             fontWeight: FontWeight.w700,
@@ -315,7 +398,8 @@ class ClientPrimaryDetails extends StatelessWidget {
                       ),
                       children: [
                         TextSpan(
-                          text: ltv != null ? '\$${formattedNumber(ltv!)}' : '--',
+                          text:
+                              ltv != null ? '\$${formattedNumber(ltv!)}' : '--',
                           style: const TextStyle(
                             color: ColorSystem.primary,
                             fontWeight: FontWeight.w700,
@@ -356,7 +440,8 @@ class ClientPrimaryDetails extends StatelessWidget {
                       ),
                       children: [
                         TextSpan(
-                          text: '\$${formattedNumber(aovCalculator(ltv, netTransactions))}',
+                          text:
+                              '\$${formattedNumber(aovCalculator(ltv, netTransactions))}',
                           style: const TextStyle(
                             color: ColorSystem.primary,
                             fontWeight: FontWeight.w700,

@@ -1,10 +1,9 @@
 abstract class Endpoints {
-  
-  static String kBaseURL = 'https://gcinc.my.salesforce.com';
+  static String kBaseURL = 'https://gcinc--tracuat.my.salesforce.com';
   static String kCustomerSearchByPhone =
-      '/services/data/v53.0/query/?q=SELECT id,name,firstname,lastname,accountEmail__c,accountPhone__c,Last_Transaction_Date__c,Lifetime_Net_Sales_Amount__c,Lifetime_Net_Sales_Transactions__c,Primary_Instrument_Category__c,Max_ltv_net_dlrs_Formula__c,Median_ltv_net_dlrs_Formula__c, Avg_ltv_net_dlrs_Formula__c from account where accountPhone__c=';
+      '/services/data/v53.0/query/?q=SELECT id,name,firstname,lastname,accountEmail__c,accountPhone__c,Last_Transaction_Date__c,Lifetime_Net_Sales_Amount__c,Lifetime_Net_Sales_Transactions__c,Primary_Instrument_Category__c,epsilon_customer_brand_key__c from account where accountPhone__c=';
   static String kCustomerSearchByEmail =
-      '/services/data/v53.0/query/?q=SELECT id,name,firstname,lastname,accountEmail__c,accountPhone__c,Last_Transaction_Date__c,Lifetime_Net_Sales_Amount__c,Lifetime_Net_Sales_Transactions__c,Primary_Instrument_Category__c from account where accountEmail__c=';
+      '/services/data/v53.0/query/?q=SELECT id,name,firstname,lastname,accountEmail__c,accountPhone__c,Last_Transaction_Date__c,Lifetime_Net_Sales_Amount__c,Lifetime_Net_Sales_Transactions__c,Primary_Instrument_Category__c,epsilon_customer_brand_key__c from account where accountEmail__c=';
   static String kCustomerSearchByName =
       '/services/data/v53.0/query/?q=SELECT id,name,firstname,lastname,accountEmail__c,accountPhone__c,Last_Transaction_Date__c,Lifetime_Net_Sales_Amount__c,Lifetime_Net_Sales_Transactions__c,Primary_Instrument_Category__c from account where name like ';
   static String kCustomerAllOrders =
@@ -19,14 +18,12 @@ abstract class Endpoints {
       '/services/data/v53.0/query/?q=SELECT email,Gross_Sales_MTD__c,Gross_Sales_Yesterday__c, CreatedDate, LastModifiedDate FROM User where email =';
   static String kAgentTodaysCommission =
       '/services/data/v53.0/query/?q=SELECT email,Comm_Amount_MTD__c,Comm_Amount_Yesterday__c, CreatedDate, LastModifiedDate FROM User where email =';
-  static String kClientCases =
-      '/services/data/v53.0/query/?q=SELECT CaseNumber,Case_Subtype__c,Case_Type__c,DAX_Order_Number__c,Id,Priority,Reason,Status,Account.Name,Owner.Name,CreatedDate,LastModifiedDate FROM Case where AccountId =';
   static String kClientPromos =
       '/services/data/v53.0/query/?q=SELECT CreatedBy.Name,CreatedDate,Subject FROM EmailMessage where RelatedToId = ';
   static String kClientNoteByID =
       '/services/data/v53.0/query/?q=SELECT Id,ContentDocumentId FROM ContentDocumentLink WHERE LinkedEntityId = ';
   static String kClientNotes =
-      '/services/data/v53.0/query/?q=SELECT Id, Title, FileType, TextPreview, Content FROM ContentNote WHERE Id IN ';
+      '/services/data/v53.0/query/?q=SELECT Id, Title, FileType, TextPreview, Content, LastModifiedBy.Name,CreatedDate,LastModifiedDate FROM ContentNote WHERE Id IN  ';
   static String kClientActivity =
       '/services/data/v53.0/query/?q=SELECT Id, ActivityDate, Priority, WhatId,What.Name,Owner.Name, Status, Subject, TaskSubtype, Type,CompletedDateTime FROM Task WHERE WhatId = ';
   static String kClientOpenOrders =
@@ -35,13 +32,22 @@ abstract class Endpoints {
       '/services/data/v53.0/query/?q=select Id,Name, CreatedDate,Total__c,Order_Number__c,Order_Status__c,(select Image_URL__c  from GC_Order_Line_Items__r) from GC_Order__c where Customer__c = ';
   static String kClientBasicDetails =
       '/services/data/v53.0/query/?q=SELECT id,name,firstname,lastname,accountEmail__c,Brand_Code__c,accountPhone__c,Last_Transaction_Date__c,Lifetime_Net_Sales_Amount__c,Lifetime_Net_Sales_Transactions__c,Primary_Instrument_Category__c, (select Total_Amount__c from GC_Orders__r  where Order_Status__c = \'Completed\' Order by lastmodifieddate desc limit 1)epsilon_customer_brand_key__c,Lessons_Customer__c,Open_Box_Purchaser__c,Loyalty_Customer__c,Used_Purchaser__c,Synchrony_Customer__c,Vintage_Purchaser__c  from account where Id=';
-  static String kClientByNow =
-      '/services/data/v53.0/query/?q=SELECT id,lastmodifieddate,Order_Status__c,Customer__c,(select id, GC_Order__r.Site_Id__c,GC_Order__r.Name, GC_Order__c, GC_Order__r.Customer__r.PersonEmail, Description__c, Item_Id_formula__c, PIM_Sku__c , Item_Id__c, Condtion__c, Image_URL__c, Item_Price__c, Quantity__c, Warranty_Id__c, Warranty_Name__c,Warranty_price__c, Item_SKU__c,Warranty_style__c, Warranty_Enterprise_SkuId__c from GC_Order_Line_Items__r where Status__c != \'Deleted\') FROM GC_Order__c where Customer__c = ';
-
+  static String kClientBuyAgain =
+      '/services/data/v53.0/query/?q=SELECT id,lastmodifieddate,Order_Status__c,Customer__c,(select id, GC_Order__r.Site_Id__c,GC_Order__r.Name, GC_Order__c, GC_Order__r.Customer__r.PersonEmail,Description__c, Item_Id_formula__c, PIM_Sku__c , Item_Id__c, Condtion__c, Image_URL__c, Item_Price__c, Quantity__c, Warranty_Id__c, Warranty_Name__c,Warranty_price__c, Item_SKU__c,Warranty_style__c, Warranty_Enterprise_SkuId__c from GC_Order_Line_Items__r where Status__c != \'Deleted\') FROM GC_Order__c where Customer__c = ';
   static String kClientCartByID =
       '/services/data/v53.0/query/?q=SELECT Id, Customer__c,Cart_Sku_1__c, Cart_Sku_2__c, Cart_Sku_3__c, Cart_Sku_4__c, Cart_Sku_5__c, Cart_Sku_6__c, Cart_Sku_7__c, Cart_Sku_8__c, Cart_Sku_9__c FROM Lead where epsilon_customer_brand_key__c = ';
   static String kClientCartProduct =
       '/services/data/v53.0/query/?q=SELECT id,Brand__c,Name,Vender_Name__c,Standard_Unit_Cost__c,ProductImage__c FROM Product2 WHERE Item_ID__c in ';
+  static String kClientPurchaseChannelAndCategory =
+      'https://guitarcenter-prod.apigee.net/cc/v1/customer/';
+  static String kClientBrowsingHistoryRecentlyViewedIds =
+      '/services/data/v53.0/query/?q=SELECT Id,Name,Type,LastReferencedDate,LastViewedDate FROM RecentlyViewed WHERE Type = \'Product2\'';
+  static String kClientBrowsingHistoryProducts =
+      '/services/data/v53.0/query/?q=select id,Brand__c,Name,Vender_Name__c,Standard_Unit_Cost__c,ProductImage__c FROM Product2 WHERE Id in ';
+  static String kClientOpenCases =
+      '/services/data/v53.0/query/?q=SELECT CaseNumber,Case_Subtype__c,Case_Type__c,DAX_Order_Number__c,Id,Priority,Reason,Subject,Status,Account.Name,Owner.Name,CreatedDate,LastModifiedDate FROM Case where AccountId = ';
+  static String kClientClosedCases =
+      '/services/data/v53.0/query/?q=SELECT CaseNumber,Case_Subtype__c,Case_Type__c,DAX_Order_Number__c,Id,Priority,Reason,Subject,Status,Account.Name,Owner.Name,CreatedDate,LastModifiedDate FROM Case where AccountId = ';
 
   static String getCustomerSearchByPhone(String phone) {
     return '$kBaseURL$kCustomerSearchByPhone\'$phone\'';
@@ -79,8 +85,8 @@ abstract class Endpoints {
     return '$kBaseURL$kAgentTodaysCommission${'\'$agentMail\''}';
   }
 
-  static String getClientCases(String accountId) {
-    return '$kBaseURL$kClientCases${'\'$accountId\''}';
+  static String getClientOpenCases(String accountId) {
+    return '$kBaseURL$kClientOpenCases\'$accountId\'  and status not in (\'Closed\',\'Auto-Closed\',\'Resolved\') limit 2 offset 0';
   }
 
   static String getClientPromos(String relatedToId) {
@@ -91,25 +97,23 @@ abstract class Endpoints {
     return '$kBaseURL$kClientNoteByID${'\'$linkedEntityId\''}';
   }
 
-  static String getClientNotes(String notesId) {
-    var listOfId = ['0696C000000qLknQAE', '0696C000000rxwUQAQ'];
+  static String getClientNotes(List<String> noteIds) {
+    var noteIdsString = '';
 
-    var notesId = "";
-
-    for (var id in listOfId) {
+    for (var id in noteIds) {
       var insertIds = '\'$id\'';
-      notesId = notesId + insertIds + ',';
+      noteIdsString = noteIdsString + insertIds + ',';
     }
 
-    if (notesId.isNotEmpty) {
-      notesId = notesId.substring(0, notesId.length - 1);
+    if (noteIdsString.isNotEmpty) {
+      noteIdsString = noteIdsString.substring(0, noteIdsString.length - 1);
     }
 
-    return '$kBaseURL$kClientNotes${'($notesId)'}';
+    return '$kBaseURL$kClientNotes${'($noteIdsString)'}';
   }
 
-  static String getClientByNow(String customerId) {
-    return '$kBaseURL$kClientByNow${'\'$customerId\' and Order_Status__c = \'Completed\' Order by lastmodifieddate desc limit 1'}';
+  static String getClientBuyAgain(String customerId) {
+    return '$kBaseURL$kClientBuyAgain\'$customerId\' and Order_Status__c = \'Completed\' Order by lastmodifieddate desc limit 1';
   }
 
   static String getClientCartById(String customerId) {
@@ -134,5 +138,36 @@ abstract class Endpoints {
 
   static String getClientBasicDetails(String clientId) {
     return '$kBaseURL$kClientBasicDetails${'\'$clientId\''}';
+  }
+
+  static String getClientPurchaseChannelAndCategory(String epsilonCustomerKey) {
+
+    var editedKey = epsilonCustomerKey.replaceAll('GC_', '');
+
+    return '$kClientPurchaseChannelAndCategory' '$epsilonCustomerKey/txn/hist';
+  }
+
+  static String getClientBrowsingHistoryProductIDs() {
+    return '$kBaseURL$kClientBrowsingHistoryRecentlyViewedIds';
+  }
+
+  static String getClientRecentlyViewedProducts(List<String> productIDs) {
+    var productIdsString = '';
+
+    for (var id in productIDs) {
+      var insertIds = '\'$id\'';
+      productIdsString = productIdsString + insertIds + ',';
+    }
+
+    if (productIdsString.isNotEmpty) {
+      productIdsString =
+          productIdsString.substring(0, productIdsString.length - 1);
+    }
+
+    return '$kBaseURL$kClientBrowsingHistoryProducts($productIdsString)';
+  }
+
+  static String getClientClosedCases(String accountId) {
+    return '$kBaseURL$kClientClosedCases\'$accountId\'  and status in (\'Closed\',\'Resolved\') and Case_Type__c!=null limit 20 offset 0';
   }
 }

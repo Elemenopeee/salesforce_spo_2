@@ -10,6 +10,7 @@ class Case {
   final String? id;
   final String? priority;
   final String? reason;
+  final String? subject;
   final String? status;
   final String? createdDate;
   final Account? account;
@@ -24,6 +25,7 @@ class Case {
     this.id,
     this.priority,
     this.reason,
+    this.subject,
     this.status,
     this.account,
     this.owner,
@@ -41,6 +43,7 @@ class Case {
       id: json['Id'],
       priority: json['Priority'],
       reason: json['Reason'],
+      subject: json['Subject'],
       status: json['Status'],
       account: Account.fromJson(json['Account']),
       owner: Account.fromJson(json['Owner']),

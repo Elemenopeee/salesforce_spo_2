@@ -7,10 +7,12 @@ import 'package:salesforce_spo/design_system/primitives/landing_images.dart';
 import '../../utils/constants.dart';
 
 class ClientLandingScreen extends StatefulWidget {
-
   final String customerID;
+  final String epsilonCustomerKey;
 
-  const ClientLandingScreen({required this.customerID, Key? key}) : super(key: key);
+  const ClientLandingScreen(
+      {required this.customerID, required this.epsilonCustomerKey, Key? key})
+      : super(key: key);
 
   @override
   _ClientLandingScreenState createState() => _ClientLandingScreenState();
@@ -29,12 +31,17 @@ class _ClientLandingScreenState extends State<ClientLandingScreen> {
               const SizedBox(
                 height: SizeSystem.size30,
               ),
-               ClientCarousel(customerId: widget.customerID,),
+              ClientCarousel(
+                customerId: widget.customerID,
+                epsilonCustomerKey: widget.epsilonCustomerKey,
+              ),
               // const GetCarouselBanner(),
               const SizedBox(
                 height: SizeSystem.size30,
               ),
-              ClientFeatureTabsList(customerId: widget.customerID,),
+              ClientFeatureTabsList(
+                customerId: widget.customerID,
+              ),
             ],
           ),
         ),
@@ -65,14 +72,15 @@ class _ClientLandingScreenState extends State<ClientLandingScreen> {
                 color: Color(0xFF222222),
                 fontFamily: kRubik),
           ),
-          const Text(
-            "LEAVE",
-            style: TextStyle(
-              fontSize: SizeSystem.size14,
-              fontWeight: FontWeight.w700,
-              color: Color(0xFF888888),
-              fontFamily: kRubik,
-            ),
+          InkWell(
+            onTap: (){
+              Navigator.of(context).pop();
+            },
+            splashColor: Colors.transparent,
+            focusColor: Colors.transparent,
+            hoverColor: Colors.transparent,
+            highlightColor: Colors.transparent,
+            child: SvgPicture.asset(IconSystem.leaveIcon),
           ),
         ],
       ),

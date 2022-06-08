@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:salesforce_spo/common_widgets/cart_product_widget.dart';
+import 'package:salesforce_spo/common_widgets/product_widget.dart';
+import 'package:salesforce_spo/design_system/primitives/color_system.dart';
 import 'package:salesforce_spo/models/cart_id_model.dart';
 import 'package:salesforce_spo/models/cart_model.dart';
 
@@ -62,7 +63,9 @@ class _CartListTabState extends State<CartListTab> {
           if (snapshot.connectionState == ConnectionState.waiting &&
               cartList.isEmpty) {
             return const Center(
-              child: Center(child: CircularProgressIndicator()),
+              child: Center(child: CircularProgressIndicator(
+                color: ColorSystem.primary,
+              )),
             );
           } else {
             return SizedBox(
@@ -79,7 +82,7 @@ class _CartListTabState extends State<CartListTab> {
                       const SizedBox(
                         width: SizeSystem.size18,
                       ),
-                      CartProductWidget(
+                      ProductWidget(
                         productName: item.productName ?? "",
                         productPrice: item.productPrice ?? 0,
                         productImage: item.productImage ?? "",
