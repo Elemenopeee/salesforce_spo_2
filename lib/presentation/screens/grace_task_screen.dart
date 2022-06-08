@@ -106,22 +106,6 @@ class _GraceTaskScreenState extends State<GraceTaskScreen> {
                               ],
                             ),
                           ),
-                          Container(
-                            margin:
-                                const EdgeInsets.only(top: SizeSystem.size20),
-                            width: 281,
-                            height: SizeSystem.size8,
-                            child: const ClipRRect(
-                              borderRadius: BorderRadius.all(
-                                  Radius.circular(SizeSystem.size10)),
-                              child: LinearProgressIndicator(
-                                value: 0.7,
-                                valueColor: AlwaysStoppedAnimation<Color>(
-                                    ColorSystem.lavender3),
-                                backgroundColor: ColorSystem.greyBg,
-                              ),
-                            ),
-                          ),
                         ],
                       ),
                       const Icon(
@@ -130,6 +114,21 @@ class _GraceTaskScreenState extends State<GraceTaskScreen> {
                         size: SizeSystem.size30,
                       ),
                     ],
+                  ),
+                  Container(
+                    margin: const EdgeInsets.only(top: SizeSystem.size20),
+                    width: 320,
+                    height: SizeSystem.size8,
+                    child: const ClipRRect(
+                      borderRadius:
+                          BorderRadius.all(Radius.circular(SizeSystem.size10)),
+                      child: LinearProgressIndicator(
+                        value: 0.7,
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                            ColorSystem.lavender3),
+                        backgroundColor: ColorSystem.greyBg,
+                      ),
+                    ),
                   ),
                   const SizedBox(
                     height: SizeSystem.size30,
