@@ -38,7 +38,6 @@ class _CasesProductListState extends State<CasesProductList> {
 
   @override
   void initState() {
-    getOpenCasesList();
     _futureOpenCases = getOpenCasesList();
     _futureClosedCases = getClosedCasesList();
     super.initState();
@@ -128,7 +127,7 @@ class _CasesProductListState extends State<CasesProductList> {
                     const Padding(
                       padding: EdgeInsets.all(16.0),
                       child: Text(
-                        'Open Orders',
+                        'Open Cases',
                         style: TextStyle(
                           color: ColorSystem.primary,
                           fontSize: SizeSystem.size16,
@@ -168,7 +167,7 @@ class _CasesProductListState extends State<CasesProductList> {
                     const Padding(
                       padding: EdgeInsets.all(SizeSystem.size16),
                       child: Text(
-                        'Order History',
+                        'Closed Cases',
                         style: TextStyle(
                           color: ColorSystem.primary,
                           fontSize: SizeSystem.size16,

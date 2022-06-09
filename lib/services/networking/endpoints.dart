@@ -5,7 +5,7 @@ abstract class Endpoints {
   static String kCustomerSearchByEmail =
       '/services/data/v53.0/query/?q=SELECT id,name,firstname,lastname,accountEmail__c,accountPhone__c,Last_Transaction_Date__c,Lifetime_Net_Sales_Amount__c,Lifetime_Net_Sales_Transactions__c,Primary_Instrument_Category__c,epsilon_customer_brand_key__c from account where accountEmail__c=';
   static String kCustomerSearchByName =
-      '/services/data/v53.0/query/?q=SELECT id,name,firstname,lastname,accountEmail__c,accountPhone__c,Last_Transaction_Date__c,Lifetime_Net_Sales_Amount__c,Lifetime_Net_Sales_Transactions__c,Primary_Instrument_Category__c from account where name like ';
+      '/services/data/v53.0/query/?q=SELECT id,name,firstname,lastname,accountEmail__c,accountPhone__c,Last_Transaction_Date__c,Lifetime_Net_Sales_Amount__c,Lifetime_Net_Sales_Transactions__c,Primary_Instrument_Category__c,epsilon_customer_brand_key__c from account where name like ';
   static String kCustomerAllOrders =
       '/services/data/v53.0/query/?q=SELECT Id,OwnerId,First_Name__c,Last_Name__c,Order_Number__c,Total_Amount__c,Commission_JSON__c, Rollup_Count_Order_Line_Items__c,Order_Status__c,CreatedDate,LastModifiedDate FROM GC_Order__c where OwnerId IN (SELECT Id FROM User WHERE Email = ';
   static String kCustomerOpenOrders =
@@ -31,7 +31,7 @@ abstract class Endpoints {
   static String kClientOrderHistory =
       '/services/data/v53.0/query/?q=select Id,Name, CreatedDate,Total__c,Order_Number__c,Order_Status__c,(select Image_URL__c  from GC_Order_Line_Items__r) from GC_Order__c where Customer__c = ';
   static String kClientBasicDetails =
-      '/services/data/v53.0/query/?q=SELECT id,name,firstname,lastname,accountEmail__c,Brand_Code__c,accountPhone__c,Last_Transaction_Date__c,Lifetime_Net_Sales_Amount__c,Lifetime_Net_Sales_Transactions__c,Primary_Instrument_Category__c, (select Total_Amount__c from GC_Orders__r  where Order_Status__c = \'Completed\' Order by lastmodifieddate desc limit 1)epsilon_customer_brand_key__c,Lessons_Customer__c,Open_Box_Purchaser__c,Loyalty_Customer__c,Used_Purchaser__c,Synchrony_Customer__c,Vintage_Purchaser__c  from account where Id=';
+      '/services/data/v53.0/query/?q=SELECT id,name,firstname,lastname,accountEmail__c,Brand_Code__c,accountPhone__c,Last_Transaction_Date__c,Lifetime_Net_Sales_Amount__c,Lifetime_Net_Sales_Transactions__c,Primary_Instrument_Category__c,Net_Sales_Amount_12MO__c, (select Total_Amount__c from GC_Orders__r  where Order_Status__c = \'Completed\' Order by lastmodifieddate desc limit 1)epsilon_customer_brand_key__c,Lessons_Customer__c,Open_Box_Purchaser__c,Loyalty_Customer__c,Used_Purchaser__c,Synchrony_Customer__c,Vintage_Purchaser__c  from account where Id=';
   static String kClientBuyAgain =
       '/services/data/v53.0/query/?q=SELECT id,lastmodifieddate,Order_Status__c,Customer__c,(select id, GC_Order__r.Site_Id__c,GC_Order__r.Name, GC_Order__c, GC_Order__r.Customer__r.PersonEmail,Description__c, Item_Id_formula__c, PIM_Sku__c , Item_Id__c, Condtion__c, Image_URL__c, Item_Price__c, Quantity__c, Warranty_Id__c, Warranty_Name__c,Warranty_price__c, Item_SKU__c,Warranty_style__c, Warranty_Enterprise_SkuId__c from GC_Order_Line_Items__r where Status__c != \'Deleted\') FROM GC_Order__c where Customer__c = ';
   static String kClientCartByID =
@@ -86,7 +86,7 @@ abstract class Endpoints {
   }
 
   static String getClientOpenCases(String accountId) {
-    return '$kBaseURL$kClientOpenCases\'$accountId\'  and status not in (\'Closed\',\'Auto-Closed\',\'Resolved\') limit 2 offset 0';
+    return '$kBaseURL$kClientOpenCases\'$accountId\'  and status not in (\'Closed\',\'Auto-Closed\',\'Resolved\') ORDER BY CreatedDate DESC limit 2 offset 0';
   }
 
   static String getClientPromos(String relatedToId) {
@@ -141,10 +141,8 @@ abstract class Endpoints {
   }
 
   static String getClientPurchaseChannelAndCategory(String epsilonCustomerKey) {
-
     var editedKey = epsilonCustomerKey.replaceAll('GC_', '');
-
-    return '$kClientPurchaseChannelAndCategory' '$epsilonCustomerKey/txn/hist';
+    return '$kClientPurchaseChannelAndCategory''$editedKey/txn/hist';
   }
 
   static String getClientBrowsingHistoryProductIDs() {
@@ -168,6 +166,6 @@ abstract class Endpoints {
   }
 
   static String getClientClosedCases(String accountId) {
-    return '$kBaseURL$kClientClosedCases\'$accountId\'  and status in (\'Closed\',\'Resolved\') and Case_Type__c!=null limit 20 offset 0';
+    return '$kBaseURL$kClientClosedCases\'$accountId\'  and status in (\'Closed\',\'Resolved\') and Case_Type__c!=null ORDER BY CreatedDate DESC limit 4 offset 0';
   }
 }

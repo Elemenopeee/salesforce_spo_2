@@ -4,6 +4,7 @@ import 'package:salesforce_spo/common_widgets/client_feature_tabs_list.dart';
 import 'package:salesforce_spo/common_widgets/client_carousel.dart';
 import 'package:salesforce_spo/design_system/design_system.dart';
 import 'package:salesforce_spo/design_system/primitives/landing_images.dart';
+import '../../common_widgets/notched_bottom_navigation_bar.dart';
 import '../../utils/constants.dart';
 
 class ClientLandingScreen extends StatefulWidget {
@@ -46,6 +47,66 @@ class _ClientLandingScreenState extends State<ClientLandingScreen> {
           ),
         ),
       ),
+        bottomNavigationBar: NotchedBottomNavigationBar(
+          actions: [
+            IconButton(
+              focusColor: Colors.transparent,
+              splashColor: Colors.transparent,
+              onPressed: null,
+              icon: SvgPicture.asset(
+                IconSystem.user,
+                width: 24,
+                height: 24,
+                color: ColorSystem.secondary,
+              ),
+            ),
+            IconButton(
+              focusColor: Colors.transparent,
+              splashColor: Colors.transparent,
+              onPressed: () {},
+              icon: SvgPicture.asset(
+                IconSystem.feed,
+                width: 24,
+                height: 24,
+                color: ColorSystem.primary,
+              ),
+            ),
+            IconButton(
+              focusColor: Colors.transparent,
+              splashColor: Colors.transparent,
+              onPressed: () {},
+              icon: SvgPicture.asset(
+                IconSystem.sparkle,
+                width: 24,
+                height: 24,
+                color: ColorSystem.primary,
+              ),
+            ),
+            IconButton(
+              focusColor: Colors.transparent,
+              splashColor: Colors.transparent,
+              onPressed: null,
+              icon: SvgPicture.asset(
+                IconSystem.more,
+                width: 24,
+                height: 24,
+                color: ColorSystem.primary,
+              ),
+            ),
+          ],
+          centerButton: FloatingActionButton(
+            backgroundColor: ColorSystem.primary,
+            onPressed: () async {
+
+            },
+            child: SvgPicture.asset(
+              IconSystem.plus,
+              width: 24,
+              height: 24,
+              color: ColorSystem.white,
+            ),
+          ),
+        )
     );
   }
 
