@@ -2,11 +2,16 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:salesforce_spo/design_system/design_system.dart';
+import 'package:salesforce_spo/utils/constant_functions.dart';
 
+import '../models/customer.dart';
 import '../utils/constants.dart';
 
 class ClientSales extends StatelessWidget {
-  const ClientSales({Key? key}) : super(key: key);
+
+  final Customer? customer;
+
+  const ClientSales({Key? key, this.customer}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -36,30 +41,29 @@ class ClientSales extends StatelessWidget {
               SizedBox(
                 height: 120,
                 width: 100,
-                child: Center(
+                child: customer == null ? Center(
                   child: SvgPicture.asset(
                     IconSystem.accessoriesNotFound,
                     height: 120,
                   ),
+                ) : PieChart(
+                  PieChartData(
+                    sections: showingSections(
+                      customer!.lifeTimeNetSalesAmount ?? 0,
+                      customer!.twelveMonthSales ?? 0,
+                    ),
+                    centerSpaceColor: const Color(0xFF8C80F8),
+                    centerSpaceRadius: 24,
+                  ),
                 ),
-                // child: PieChart(
-                //   PieChartData(
-                //     sections: showingSections(
-                //       800,
-                //       2000,
-                //     ),
-                //     centerSpaceColor: const Color(0xFF8C80F8),
-                //     centerSpaceRadius: 24,
-                //   ),
-                // ),
               )
             ],
           ),
           const SizedBox(
             width: SizeSystem.size12,
           ),
-          const Expanded(
-            child: Text(
+          Expanded(
+            child: customer == null ? const Text(
               'No data generated yet',
               style: TextStyle(
                 color: Colors.white,
@@ -68,94 +72,93 @@ class ClientSales extends StatelessWidget {
                 fontWeight: FontWeight.bold,
                 letterSpacing: 1.5,
               ),
+            ) : Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      formattedNumber(customer!.lifeTimeNetSalesAmount ?? 0),
+                      maxLines: 2,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: SizeSystem.size24,
+                        fontFamily: kRubik,
+                      ),
+                    ),
+                    Text(
+                      'LTV',
+                      maxLines: 2,
+                      style: TextStyle(
+                        color: Colors.white.withOpacity(0.7),
+                        fontSize: SizeSystem.size12,
+                        fontFamily: kRubik,
+                      ),
+                    ),
+                  ],
+                ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            formattedNumber(customer!.twelveMonthSales ?? 0),
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: SizeSystem.size14,
+                              fontFamily: kRubik,
+                            ),
+                          ),
+                          Text(
+                            '0-12 Months',
+                            maxLines: 2,
+                            style: TextStyle(
+                              color: Colors.white.withOpacity(0.7),
+                              fontSize: SizeSystem.size12,
+                              fontFamily: kRubik,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Expanded(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            '--',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: SizeSystem.size14,
+                              fontFamily: kRubik,
+                            ),
+                          ),
+                          Text(
+                            '12-24 Months',
+                            maxLines: 2,
+                            style: TextStyle(
+                              color: Colors.white.withOpacity(0.7),
+                              fontSize: SizeSystem.size12,
+                              fontFamily: kRubik,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                )
+              ],
             ),
-            // child: Column(
-            //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            //   crossAxisAlignment: CrossAxisAlignment.start,
-            //   children: [
-            //     Column(
-            //       mainAxisSize: MainAxisSize.min,
-            //       crossAxisAlignment: CrossAxisAlignment.start,
-            //       children: [
-            //         Text(
-            //           '18.8k',
-            //           maxLines: 2,
-            //           style: TextStyle(
-            //             color: Colors.white,
-            //             fontWeight: FontWeight.bold,
-            //             fontSize: SizeSystem.size24,
-            //             fontFamily: kRubik,
-            //           ),
-            //         ),
-            //         Text(
-            //           'LTV',
-            //           maxLines: 2,
-            //           style: TextStyle(
-            //             color: Colors.white.withOpacity(0.7),
-            //             fontSize: SizeSystem.size12,
-            //             fontFamily: kRubik,
-            //           ),
-            //         ),
-            //       ],
-            //     ),
-            //     Row(
-            //       children: [
-            //         Expanded(
-            //           child: Column(
-            //             mainAxisSize: MainAxisSize.min,
-            //             crossAxisAlignment: CrossAxisAlignment.start,
-            //             children: [
-            //               Text(
-            //                 '0.2k',
-            //                 style: TextStyle(
-            //                   color: Colors.white,
-            //                   fontWeight: FontWeight.bold,
-            //                   fontSize: SizeSystem.size14,
-            //                   fontFamily: kRubik,
-            //                 ),
-            //               ),
-            //               Text(
-            //                 '0-12 Months',
-            //                 maxLines: 2,
-            //                 style: TextStyle(
-            //                   color: Colors.white.withOpacity(0.7),
-            //                   fontSize: SizeSystem.size12,
-            //                   fontFamily: kRubik,
-            //                 ),
-            //               ),
-            //             ],
-            //           ),
-            //         ),
-            //         Expanded(
-            //           child: Column(
-            //             mainAxisSize: MainAxisSize.min,
-            //             crossAxisAlignment: CrossAxisAlignment.start,
-            //             children: [
-            //               Text(
-            //                 '2.22k',
-            //                 style: TextStyle(
-            //                   color: Colors.white,
-            //                   fontWeight: FontWeight.bold,
-            //                   fontSize: SizeSystem.size14,
-            //                   fontFamily: kRubik,
-            //                 ),
-            //               ),
-            //               Text(
-            //                 '12-24 Months',
-            //                 maxLines: 2,
-            //                 style: TextStyle(
-            //                   color: Colors.white.withOpacity(0.7),
-            //                   fontSize: SizeSystem.size12,
-            //                   fontFamily: kRubik,
-            //                 ),
-            //               ),
-            //             ],
-            //           ),
-            //         ),
-            //       ],
-            //     )
-            //   ],
-            // ),
           ),
         ],
       ),

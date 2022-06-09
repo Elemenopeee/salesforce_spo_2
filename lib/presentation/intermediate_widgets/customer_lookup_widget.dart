@@ -77,8 +77,6 @@ class _CustomerLookupWidgetState extends State<CustomerLookupWidget> {
         tokenRequired: true,
       );
 
-      print(Endpoints.getCustomerSearchByEmail(email));
-
       try {
         for (var record in data.data['records']) {
           customers.add(Customer.fromJson(json: record));

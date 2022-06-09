@@ -35,9 +35,10 @@ class ClientCarousel extends StatefulWidget {
 }
 
 class _ClientCarouselState extends State<ClientCarousel> {
-  late Future _futureClientDetails;
+  late Future<void> futureClientDetails;
+  late Future<void> futureClientChannelsAndAccessories;
 
-  Customer? customer;
+  Customer? customerWithBasicDetails;
 
   List<ClientMetric> purchaseCategories = [];
   List<ClientMetric> channels = [];
@@ -45,14 +46,15 @@ class _ClientCarouselState extends State<ClientCarousel> {
   Future<void> getClientBasicDetails() async {
     var response = await HttpService()
         .doGet(path: Endpoints.getClientBasicDetails(widget.customerId));
-
-    customer = Customer.fromJson(json: response.data['records'][0]);
+    customerWithBasicDetails =
+        Customer.fromJson(json: response.data['records'][0]);
     await getClientChannelAndCategoryDetails();
   }
 
   Future<void> getClientChannelAndCategoryDetails() async {
     var response = await HttpService().doGet(
-        path: Endpoints.getClientPurchaseChannelAndCategory('1000000000002'),
+        path: Endpoints.getClientPurchaseChannelAndCategory(
+            widget.epsilonCustomerKey),
         headers: kPurchaseChannelHeaders);
 
     if (response.data != null) {
@@ -73,20 +75,23 @@ class _ClientCarouselState extends State<ClientCarousel> {
       });
 
       purchaseCategories.sort((a, b) => b.value.compareTo(a.value));
-
     }
   }
 
   @override
   void initState() {
     super.initState();
-    _futureClientDetails = getClientBasicDetails();
+    futureClientDetails = getClientBasicDetails();
+    futureClientChannelsAndAccessories = getClientChannelAndCategoryDetails();
   }
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: _futureClientDetails,
+      future: Future.wait([
+        futureClientDetails,
+        futureClientChannelsAndAccessories,
+      ]),
       builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
         switch (snapshot.connectionState) {
           case ConnectionState.none:
@@ -101,12 +106,15 @@ class _ClientCarouselState extends State<ClientCarousel> {
             return CarouselSlider(
               items: [
                 ClientPrimaryDetails(
-                  clientName: customer?.name ?? '--',
-                  primaryInstrument: customer?.primaryInstrument,
-                  ltv: customer?.lifeTimeNetSalesAmount,
-                  netTransactions: customer?.lifetimeNetTransactions,
-                  lastVisitDate: customer?.lastTransactionDate,
-                  lastPurchaseValue: customer?.lastPurchaseValue,
+                  clientName: customerWithBasicDetails?.name ?? '--',
+                  primaryInstrument:
+                      customerWithBasicDetails?.primaryInstrument,
+                  ltv: customerWithBasicDetails?.lifeTimeNetSalesAmount,
+                  netTransactions:
+                      customerWithBasicDetails?.lifetimeNetTransactions,
+                  lastVisitDate: customerWithBasicDetails?.lastTransactionDate,
+                  lastPurchaseValue:
+                      customerWithBasicDetails?.lastPurchaseValue,
                 ),
                 Align(
                   alignment: Alignment.centerLeft,
@@ -122,7 +130,9 @@ class _ClientCarouselState extends State<ClientCarousel> {
                         details: channels,
                       ),
                     )),
-                ClientSales(),
+                ClientSales(
+                  customer: customerWithBasicDetails,
+                ),
               ],
               options: CarouselOptions(height: 168, viewportFraction: 0.7),
             );
@@ -278,9 +288,16 @@ class ClientPrimaryDetails extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              SvgPicture.asset(MusicInstrument.getInstrumentIcon(
-                  MusicInstrument.getMusicInstrumentFromString(
-                      primaryInstrument!))),
+              primaryInstrument != null
+                  ? SvgPicture.asset(MusicInstrument.getInstrumentIcon(
+                      MusicInstrument.getMusicInstrumentFromString(
+                          primaryInstrument!)))
+                  : const Text('--',
+                      style: TextStyle(
+                        fontSize: SizeSystem.size12,
+                        color: ColorSystem.primary,
+                        fontFamily: kRubik,
+                      )),
               const SizedBox(
                 width: SizeSystem.size10,
               ),

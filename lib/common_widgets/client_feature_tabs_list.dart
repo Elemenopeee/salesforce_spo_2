@@ -127,8 +127,8 @@ class _ClientFeatureTabsListState extends State<ClientFeatureTabsList>
               padding: const EdgeInsets.only(top: 4),
               child: DottedBorder(
                 borderType: BorderType.RRect,
-                dashPattern: [6, 3],
-                radius: Radius.circular(selectedIndex == index ? 12 : 6),
+                dashPattern: [6, 2],
+                radius: Radius.circular(selectedIndex == index ? 12 : 4),
                 child: ClipRRect(
                   borderRadius: BorderRadius.all(
                     Radius.circular(selectedIndex == index ? 12 : 4),
@@ -216,18 +216,20 @@ class _ClientFeatureTabsListState extends State<ClientFeatureTabsList>
             ),
             Positioned(
               left: 0,
+              //bottom: selectedIndex == index ? 20 : 0,
               child: Container(
-                width: 10,
-                height: 98,
+                width: 2,
+                height: 200,
                 color:
                     selectedIndex == index ? Colors.transparent : Colors.white,
               ),
             ),
             Positioned(
               right: 0,
+              //bottom: selectedIndex == index ? 20 : 0,
               child: Container(
-                width: 10,
-                height: 98,
+                width: 2,
+                height: 200,
                 color:
                     selectedIndex == index ? Colors.transparent : Colors.white,
               ),
@@ -235,7 +237,7 @@ class _ClientFeatureTabsListState extends State<ClientFeatureTabsList>
             Positioned(
               top: 0,
               child: Container(
-                width: 100,
+                width: 200,
                 height: 10,
                 color:
                     selectedIndex == index ? Colors.transparent : Colors.white,

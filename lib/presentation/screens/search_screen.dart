@@ -110,6 +110,8 @@ class _SearchScreenState extends State<SearchScreen> {
                 ),
                 Expanded(
                   child: TextFormField(
+                    autofocus: true,
+                    cursorColor: ColorSystem.primary,
                     onChanged: (name) {
                       offset = 0;
                       this.name = name;
