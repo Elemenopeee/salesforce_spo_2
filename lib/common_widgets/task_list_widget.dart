@@ -100,12 +100,13 @@ class TaskListWidget extends StatelessWidget {
             ],
           ),
         ),
-        SvgPicture.asset(
-          iconImage!,
-          height: iconHeight,
-          width: iconWidth,
-          color: iconColor,
-        ),
+        if (iconImage != null)
+          SvgPicture.asset(
+            iconImage!,
+            height: iconHeight,
+            width: iconWidth,
+            color: iconColor,
+          ),
       ],
     );
   }

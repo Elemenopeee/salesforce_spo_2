@@ -36,7 +36,8 @@ abstract class SocialIcon {
       case SocialIconEnum.chat:
         return SocialIconSystem.icChat;
       case SocialIconEnum.unknown:
-        return '--';
+        return SocialIconSystem.icPhone;
+
     }
   }
 }
