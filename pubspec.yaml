@@ -18,14 +18,13 @@ dependencies:
   http:
   shared_preferences:
   url_launcher: ^6.1.0
-  azure_ad_authentication: ^1.0.3
+  # azure_ad_authentication: ^1.0.3
   intl: ^0.17.0
   fl_chart: ^0.50.6
   expandable: ^5.0.1
   easy_debounce: ^2.0.2+1
   flutter_slidable:
   dotted_border: ^2.0.0+2
-  cached_network_image: ^3.2.1
 
 dev_dependencies:
   flutter_launcher_icons: ^0.9.2
@@ -42,6 +41,8 @@ flutter:
     - assets/icons/
     - assets/icons/music_icons/
     - assets/icons/landing_icons/
+    - assets/images/
+    
 
   fonts:
     - family: Rubik
