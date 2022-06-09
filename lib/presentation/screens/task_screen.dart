@@ -1,46 +1,54 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:salesforce_spo/common_widgets/linear_progress_indicator_widget.dart';
 import 'package:salesforce_spo/design_system/design_system.dart';
+import 'package:salesforce_spo/design_system/primitives/social_icon_system.dart';
 
-import '../../common_widgets/grace_task_list_widget.dart';
-import '../../models/grace_task_model.dart';
+import '../../common_widgets/task_list_widget.dart';
+import '../../models/task_model.dart';
 import '../../utils/constants.dart';
 
-class GraceTaskScreen extends StatefulWidget {
-  const GraceTaskScreen({Key? key}) : super(key: key);
+class TaskScreen extends StatefulWidget {
+  const TaskScreen({Key? key}) : super(key: key);
 
   @override
-  State<GraceTaskScreen> createState() => _GraceTaskScreenState();
+  State<TaskScreen> createState() => _TaskScreenState();
 }
 
-class _GraceTaskScreenState extends State<GraceTaskScreen> {
+class _TaskScreenState extends State<TaskScreen> {
   @override
   Widget build(BuildContext context) {
-    List<GraceTaskModel> graceListData = [
-      GraceTaskModel(
+    List<TaskModel> graceListData = [
+      TaskModel(
         userName: "Brian Adam for",
         taskName: "Warranty Purchase",
         title: "Call Alert",
         subTitle: "Warranty Purchase",
         timeStatus: "Overdue",
+        iconImage: SocialIconSystem.icPhone,
       ),
-      GraceTaskModel(
-          userName: "Ankit Kumar",
-          title: "Send Mail",
-          subTitle: "Ready For Pickup",
-          timeStatus: "Today"),
-      GraceTaskModel(
+      TaskModel(
+        userName: "Ankit Kumar",
+        title: "Send Mail",
+        subTitle: "Ready For Pickup",
+        timeStatus: "Today",
+        iconImage: SocialIconSystem.icMail,
+      ),
+      TaskModel(
         userName: "Kayla Harris",
         taskName: "Pickup Reminder",
         title: "Send SMS",
         subTitle: "12-Month Follow Up",
         timeStatus: "Tomorrow",
+        iconImage: SocialIconSystem.icMessage,
       ),
-      GraceTaskModel(
+      TaskModel(
         userName: "Vivek Harris",
         taskName: "Pickup Reminder",
         title: "Send SMS",
         subTitle: "12-Month Follow Up",
         timeStatus: "JUL 03, 2022",
+        iconImage: SocialIconSystem.icChat,
       ),
     ];
     return Scaffold(
@@ -53,7 +61,7 @@ class _GraceTaskScreenState extends State<GraceTaskScreen> {
               top: SizeSystem.size20),
           child: Container(
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(SizeSystem.size15),
+              borderRadius: BorderRadius.circular(SizeSystem.size16),
               color: ColorSystem.white,
             ),
             padding: const EdgeInsets.symmetric(
@@ -115,20 +123,16 @@ class _GraceTaskScreenState extends State<GraceTaskScreen> {
                       ),
                     ],
                   ),
-                  Container(
-                    margin: const EdgeInsets.only(top: SizeSystem.size20),
-                    width: 320,
-                    height: SizeSystem.size8,
-                    child: const ClipRRect(
-                      borderRadius:
-                          BorderRadius.all(Radius.circular(SizeSystem.size10)),
-                      child: LinearProgressIndicator(
-                        value: 0.7,
-                        valueColor: AlwaysStoppedAnimation<Color>(
-                            ColorSystem.lavender3),
-                        backgroundColor: ColorSystem.greyBg,
-                      ),
+                  const LinearProgressIndicatorWidget(
+                    containerWidth: SizeSystem.size320,
+                    containerHeight: SizeSystem.size8,
+                    containerMargin: EdgeInsets.only(top: SizeSystem.size20),
+                    containerRadius: BorderRadius.all(
+                      Radius.circular(SizeSystem.size20),
                     ),
+                    indicatorValue: 0.7,
+                    indicatorValueColor: ColorSystem.lavender3,
+                    indicatorBackgroundColor: ColorSystem.greyBg,
                   ),
                   const SizedBox(
                     height: SizeSystem.size30,
@@ -138,13 +142,13 @@ class _GraceTaskScreenState extends State<GraceTaskScreen> {
                     shrinkWrap: true,
                     itemBuilder: (context, index) {
                       var item = graceListData[index];
-                      return GraceTaskListWidget(
+                      return TaskListWidget(
                         userName: item.userName,
                         title: item.title,
                         taskName: item.taskName,
                         subTitle: item.subTitle,
                         timeStatus: item.timeStatus,
-                        iconImage: Icons.whatsapp,
+                        iconImage: item.iconImage,
                       );
                     },
                     separatorBuilder: (BuildContext context, int index) {

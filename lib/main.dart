@@ -8,7 +8,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:salesforce_spo/common_widgets/notched_bottom_navigation_bar.dart';
 import 'package:salesforce_spo/design_system/design_system.dart';
 import 'package:salesforce_spo/presentation/intermediate_widgets/customer_lookup_widget.dart';
-import 'package:salesforce_spo/presentation/screens/grace_task_screen.dart';
+import 'package:salesforce_spo/presentation/screens/task_screen.dart';
 import 'package:salesforce_spo/presentation/tabs/home_tab.dart';
 import 'package:salesforce_spo/utils/constants.dart';
 
@@ -77,7 +77,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       debugShowCheckedModeBanner: false,
-      home: const GraceTaskScreen(),
+      home: const TaskScreen(),
     );
   }
 }
@@ -99,7 +99,7 @@ class _HomeScreenState extends State<HomeScreen> {
         title: const Text(
           "HOME",
           style: TextStyle(
-            fontSize: 18,
+            fontSize: SizeSystem.size18,
             fontWeight: FontWeight.w500,
             color: Colors.black,
             fontFamily: kRubik,

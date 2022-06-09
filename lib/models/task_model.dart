@@ -1,14 +1,14 @@
 import 'package:flutter/cupertino.dart';
 
-class GraceTaskModel {
+class TaskModel {
   final String? title;
   final String? userName;
   final String? taskName;
   final String? timeStatus;
   final String? subTitle;
-  final IconData? iconImage;
+  final String? iconImage;
 
-  GraceTaskModel({
+  TaskModel({
     this.title,
     this.userName,
     this.taskName,
@@ -17,8 +17,8 @@ class GraceTaskModel {
     this.iconImage,
   });
 
-  factory GraceTaskModel.fromJson(Map<String, dynamic> json) {
-    return GraceTaskModel(
+  factory TaskModel.fromJson(Map<String, dynamic> json) {
+    return TaskModel(
       title: json['title'],
       userName: json['userName'],
       taskName: json['taskName'],

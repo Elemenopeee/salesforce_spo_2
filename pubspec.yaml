@@ -41,6 +41,7 @@ flutter:
     - assets/icons/
     - assets/icons/music_icons/
     - assets/icons/landing_icons/
+    - assets/icons/social_icons/
 
   fonts:
     - family: Rubik

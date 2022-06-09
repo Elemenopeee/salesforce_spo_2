@@ -1,20 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:salesforce_spo/utils/enums/social_icon_enum.dart';
 
 import '../design_system/primitives/color_system.dart';
 import '../design_system/primitives/size_system.dart';
 import '../utils/constants.dart';
 
-class GraceTaskListWidget extends StatelessWidget {
+class TaskListWidget extends StatelessWidget {
   final String? title;
   final String? userName;
   final String? taskName;
   final String? timeStatus;
   final String? subTitle;
-  final IconData? iconImage;
-  final double? iconSize;
+  final String? iconImage;
+  final String? iconValue;
+  final double? iconHeight;
+  final double? iconWidth;
   final Color? iconColor;
 
-  const GraceTaskListWidget({
+  const TaskListWidget({
     Key? key,
     this.title,
     this.userName,
@@ -22,8 +26,10 @@ class GraceTaskListWidget extends StatelessWidget {
     this.timeStatus,
     this.subTitle,
     this.iconImage,
-    this.iconSize,
     this.iconColor,
+    this.iconHeight,
+    this.iconWidth,
+    this.iconValue,
   }) : super(key: key);
 
   @override
@@ -42,7 +48,7 @@ class GraceTaskListWidget extends StatelessWidget {
                   ),
                   children: [
                     TextSpan(
-                      text: "$title ",
+                      text: '$title ',
                       style: const TextStyle(
                         fontSize: SizeSystem.size16,
                         color: ColorSystem.primary,
@@ -75,7 +81,7 @@ class GraceTaskListWidget extends StatelessWidget {
                   ),
                   children: [
                     TextSpan(
-                      text: "$subTitle : ",
+                      text: '$subTitle : ',
                       style: const TextStyle(
                         fontSize: SizeSystem.size14,
                         color: ColorSystem.secondary,
@@ -94,9 +100,10 @@ class GraceTaskListWidget extends StatelessWidget {
             ],
           ),
         ),
-        Icon(
-          iconImage,
-          size: iconSize,
+        SvgPicture.asset(
+          iconImage!,
+          height: iconHeight,
+          width: iconWidth,
           color: iconColor,
         ),
       ],
