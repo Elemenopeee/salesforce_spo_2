@@ -16,6 +16,7 @@ class LandingImages {
   static const guitarNew = "assets/icons/landing_icons/ic_guitar_new.svg";
   static const promos = "assets/icons/landing_icons/ic_promos.svg";
   static const promosDark = "assets/icons/landing_icons/ic_offers_dark.svg";
+  static const personSlider = "assets/images/img.svg";
   // static const badge =  "assets/icons/landing_icons/ic_badge.svg";
 
 }
