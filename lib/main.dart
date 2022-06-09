@@ -1,21 +1,22 @@
-import 'dart:developer';
+import 'dart:ui';
 
-import 'package:azure_ad_authentication/azure_ad_authentication.dart';
-import 'package:azure_ad_authentication/exeption.dart';
-import 'package:azure_ad_authentication/model/user_ad.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:salesforce_spo/common_widgets/notched_bottom_navigation_bar.dart';
 import 'package:salesforce_spo/design_system/design_system.dart';
 import 'package:salesforce_spo/presentation/intermediate_widgets/customer_lookup_widget.dart';
-import 'package:salesforce_spo/presentation/screens/client_landing_screen.dart';
+import 'package:salesforce_spo/presentation/screens/smart_trigger_screen.dart';
 import 'package:salesforce_spo/presentation/tabs/home_tab.dart';
 import 'package:salesforce_spo/services/storage/shared_preferences_service.dart';
 import 'package:salesforce_spo/utils/constants.dart';
 
+import 'presentation/screens/client_landing_screen.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await _acquireToken();
+  // await _acquireToken();
+  SharedPreferenceService()
+      .setKey(key: 'agent_email', value: 'ankit.kumar@guitarcenter.com');
   runApp(const MyApp());
 }
 
@@ -29,43 +30,42 @@ const List<String> kScopes = [
   "https://graph.microsoft.com/Calendars.ReadWrite",
 ];
 
-UserAdModel? userAdModel;
+// UserAdModel? userAdModel;
 
-Future<void> _acquireToken() async {
-  await getResult();
-}
+// Future<void> _acquireToken() async {
+//   await getResult();
+// }
 
-Future<String> getResult({bool isAcquireToken = true}) async {
-  AzureAdAuthentication pca = await intPca();
-  String? res;
-  try {
-    if (isAcquireToken) {
-      userAdModel = await pca.acquireToken(scopes: kScopes);
-      SharedPreferenceService()
-          .setKey(key: 'agent_email', value: '${userAdModel?.mail}');
+// Future<String> getResult({bool isAcquireToken = true}) async {
+//   AzureAdAuthentication pca = await intPca();
+//   String? res;
+//   try {
+//     if (isAcquireToken) {
+//       userAdModel = await pca.acquireToken(scopes: kScopes);
+//
+//
+//       // userAdModel.
+//     } else {
+//       userAdModel = await pca.acquireTokenSilent(scopes: kScopes);
+//     }
+//   } on MsalUserCancelledException {
+//     res = "User cancelled";
+//   } on MsalNoAccountException {
+//     res = "no account";
+//   } on MsalInvalidConfigurationException {
+//     res = "invalid config";
+//   } on MsalInvalidScopeException {
+//     res = "Invalid scope";
+//   } on MsalException {
+//     res = "Error getting token. Unspecified reason";
+//   }
+//   return (userAdModel?.toJson().toString() ?? res)!;
+// }
 
-      // userAdModel.
-    } else {
-      userAdModel = await pca.acquireTokenSilent(scopes: kScopes);
-    }
-  } on MsalUserCancelledException {
-    res = "User cancelled";
-  } on MsalNoAccountException {
-    res = "no account";
-  } on MsalInvalidConfigurationException {
-    res = "invalid config";
-  } on MsalInvalidScopeException {
-    res = "Invalid scope";
-  } on MsalException {
-    res = "Error getting token. Unspecified reason";
-  }
-  return (userAdModel?.toJson().toString() ?? res)!;
-}
-
-Future<AzureAdAuthentication> intPca() async {
-  return await AzureAdAuthentication.createPublicClientApplication(
-      clientId: _clientId, authority: _authority);
-}
+// Future<AzureAdAuthentication> intPca() async {
+//   return await AzureAdAuthentication.createPublicClientApplication(
+//       clientId: _clientId, authority: _authority);
+// }
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -77,7 +77,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const HomeScreen(),
+      home: const SmartTriggerScreen(),
     );
   }
 }
@@ -99,7 +99,7 @@ class _HomeScreenState extends State<HomeScreen> {
     title: const Text(
       "HOME",
       style: TextStyle(
-        fontSize: 18,
+        fontSize: SizeSystem.size18,
         fontWeight: FontWeight.w500,
         color: Colors.black,
         fontFamily: kRubik,
@@ -119,7 +119,8 @@ class _HomeScreenState extends State<HomeScreen> {
       extendBodyBehindAppBar: true,
       appBar: getAppBar,
       body: TabHome(
-        agentName: userAdModel?.givenName ?? 'there,',
+          agentName: 'there,'
+        // userAdModel?.givenName ?? 'there,',
       ),
       bottomNavigationBar: NotchedBottomNavigationBar(
         actions: [
@@ -128,9 +129,6 @@ class _HomeScreenState extends State<HomeScreen> {
             splashColor: Colors.transparent,
             onPressed: () {
               showModalBottomSheet(
-                constraints: BoxConstraints(
-                  maxHeight: MediaQuery.of(context).size.height * 0.9
-                ),
                   isScrollControlled: true,
                   context: context,
                   builder: (BuildContext context) {
@@ -181,9 +179,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
         centerButton: FloatingActionButton(
           backgroundColor: ColorSystem.primary,
-          onPressed: () async {
-
-          },
+          onPressed: () async {},
           child: SvgPicture.asset(
             IconSystem.plus,
             width: 24,
