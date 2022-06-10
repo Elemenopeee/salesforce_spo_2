@@ -14,7 +14,6 @@ import '../design_system/primitives/color_system.dart';
 import '../design_system/primitives/icon_system.dart';
 import '../design_system/primitives/padding_system.dart';
 import '../design_system/primitives/size_system.dart';
-import '../models/purchase_category.dart';
 import '../utils/constant_functions.dart';
 import '../utils/constants.dart';
 import '../utils/enums/music_instrument_enum.dart';
@@ -208,9 +207,9 @@ class ClientPrimaryDetails extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: MediaQuery.of(context).size.width * 0.8,
+      width: MediaQuery.of(context).size.width * 0.95,
       margin: const EdgeInsets.symmetric(
-        horizontal: PaddingSystem.padding16,
+        horizontal: PaddingSystem.padding8,
       ),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(
@@ -301,27 +300,43 @@ class ClientPrimaryDetails extends StatelessWidget {
               const SizedBox(
                 width: SizeSystem.size10,
               ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  RichText(
-                    textAlign: TextAlign.center,
-                    text: TextSpan(
-                      style: const TextStyle(
-                        fontFamily: kRubik,
-                      ),
-                      children: [
-                        TextSpan(
-                          text: '${primaryInstrument ?? '--'} |',
-                          style: const TextStyle(
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: const [
+                        Text(
+                          'Gutiarist |',
+                          style: TextStyle(
+                            overflow: TextOverflow.ellipsis,
                             fontSize: SizeSystem.size12,
                             color: ColorSystem.primary,
                             fontFamily: kRubik,
                           ),
                         ),
-                        const TextSpan(
-                          text: ' Buy Used',
+                        Text(
+                          ' Vintage |',
                           style: TextStyle(
+                            overflow: TextOverflow.ellipsis,
+                            fontSize: SizeSystem.size12,
+                            color: ColorSystem.primary,
+                            fontFamily: kRubik,
+                          ),
+                        ),
+                        Text(
+                          ' Open-box |',
+                          style: TextStyle(
+                            overflow: TextOverflow.ellipsis,
+                            fontSize: SizeSystem.size12,
+                            color: ColorSystem.primary,
+                            fontFamily: kRubik,
+                          ),
+                        ),
+                        Text(
+                          ' Used',
+                          style: TextStyle(
+                            overflow: TextOverflow.ellipsis,
                             fontSize: SizeSystem.size12,
                             color: ColorSystem.primary,
                             fontFamily: kRubik,
@@ -329,148 +344,187 @@ class ClientPrimaryDetails extends StatelessWidget {
                         ),
                       ],
                     ),
-                  ),
-                  const SizedBox(
-                    height: SizeSystem.size4,
-                  ),
-                  Text(
-                    "Last purchase : ${lastVisitDate != null ? formatDate(lastVisitDate!) : '--'}",
-                    style: const TextStyle(
-                      fontFamily: kRubik,
-                      color: ColorSystem.primary,
-                      fontSize: SizeSystem.size12,
+                    Row(
+                      children: const [
+                        Text(
+                          'Lessons |',
+                          style: TextStyle(
+                            overflow: TextOverflow.ellipsis,
+                            fontSize: SizeSystem.size12,
+                            color: ColorSystem.primary,
+                            fontFamily: kRubik,
+                          ),
+                        ),
+                        Text(
+                          ' Loyalty |',
+                          style: TextStyle(
+                            overflow: TextOverflow.ellipsis,
+                            fontSize: SizeSystem.size12,
+                            color: ColorSystem.primary,
+                            fontFamily: kRubik,
+                          ),
+                        ),
+                        Text(
+                          ' Synchrony',
+                          style: TextStyle(
+                            overflow: TextOverflow.ellipsis,
+                            fontSize: SizeSystem.size12,
+                            color: ColorSystem.primary,
+                            fontFamily: kRubik,
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ],
           ),
           const SizedBox(
-            height: SizeSystem.size10,
+            height: SizeSystem.size12,
           ),
-          Row(
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    "L. PURCHASE",
-                    style: TextStyle(
-                      fontFamily: kRubik,
-                      color: ColorSystem.secondary,
-                      fontWeight: FontWeight.w500,
-                      fontSize: SizeSystem.size10,
-                    ),
-                  ),
-                  const SizedBox(
-                    height: SizeSystem.size4,
-                  ),
-                  RichText(
-                    text: TextSpan(
-                      style: const TextStyle(
+          Expanded(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      "L. PURCHASE",
+                      style: TextStyle(
                         fontFamily: kRubik,
+                        color: ColorSystem.secondary,
+                        fontWeight: FontWeight.w500,
+                        fontSize: SizeSystem.size10,
                       ),
-                      children: [
-                        TextSpan(
-                          text: lastPurchaseValue != null
-                              ? '\$${formattedNumber(lastPurchaseValue!)}'
-                              : '--',
-                          style: const TextStyle(
-                            color: ColorSystem.primary,
-                            fontWeight: FontWeight.w700,
-                            fontSize: SizeSystem.size24,
-                          ),
-                        ),
-                      ],
                     ),
-                  ),
-                ],
-              ),
-              const SizedBox(
-                height: SizeSystem.size50,
-                child: VerticalDivider(
-                  color: Color.fromRGBO(0, 0, 0, 0.04),
-                  thickness: 1,
+                    const SizedBox(
+                      height: SizeSystem.size4,
+                    ),
+                    RichText(
+                      text: TextSpan(
+                        style: const TextStyle(
+                          fontFamily: kRubik,
+                        ),
+                        children: [
+                          TextSpan(
+                            text: lastPurchaseValue != null
+                                ? '\$${formattedNumber(lastPurchaseValue!)}'
+                                : '--',
+                            style: const TextStyle(
+                              color: ColorSystem.primary,
+                              fontWeight: FontWeight.w700,
+                              fontSize: SizeSystem.size24,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(
+                      height: SizeSystem.size4,
+                    ),
+                    const Text(
+                      "June, 03, 2022",
+                      style: TextStyle(
+                        fontFamily: kRubik,
+                        color: ColorSystem.primary,
+                        fontSize: SizeSystem.size10,
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    "LTV",
-                    style: TextStyle(
-                      fontFamily: kRubik,
-                      color: ColorSystem.secondary,
-                      fontWeight: FontWeight.w500,
-                      fontSize: SizeSystem.size10,
-                    ),
+                const SizedBox(
+                  height: SizeSystem.size64,
+                  child: VerticalDivider(
+                    color: Color.fromRGBO(0, 0, 0, 0.04),
+                    thickness: 1,
                   ),
-                  const SizedBox(
-                    height: SizeSystem.size4,
-                  ),
-                  RichText(
-                    text: TextSpan(
-                      style: const TextStyle(
-                        fontFamily: kRubik,
-                      ),
-                      children: [
-                        TextSpan(
-                          text:
-                              ltv != null ? '\$${formattedNumber(ltv!)}' : '--',
-                          style: const TextStyle(
-                            color: ColorSystem.primary,
-                            fontWeight: FontWeight.w700,
-                            fontSize: SizeSystem.size24,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(
-                height: SizeSystem.size50,
-                child: VerticalDivider(
-                  color: Color.fromRGBO(0, 0, 0, 0.04),
-                  thickness: 1,
                 ),
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    "AOV",
-                    style: TextStyle(
-                      fontFamily: kRubik,
-                      color: ColorSystem.secondary,
-                      fontWeight: FontWeight.w500,
-                      fontSize: SizeSystem.size10,
-                    ),
-                  ),
-                  const SizedBox(
-                    height: SizeSystem.size4,
-                  ),
-                  RichText(
-                    text: TextSpan(
-                      style: const TextStyle(
-                        fontFamily: kRubik,
-                      ),
-                      children: [
-                        TextSpan(
-                          text:
-                              '\$${formattedNumber(aovCalculator(ltv, netTransactions))}',
-                          style: const TextStyle(
-                            color: ColorSystem.primary,
-                            fontWeight: FontWeight.w700,
-                            fontSize: SizeSystem.size24,
-                          ),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        "LTV",
+                        style: TextStyle(
+                          fontFamily: kRubik,
+                          color: ColorSystem.secondary,
+                          fontWeight: FontWeight.w500,
+                          fontSize: SizeSystem.size10,
                         ),
-                      ],
-                    ),
+                      ),
+                      const SizedBox(
+                        height: SizeSystem.size4,
+                      ),
+                      RichText(
+                        text: TextSpan(
+                          style: const TextStyle(
+                            fontFamily: kRubik,
+                          ),
+                          children: [
+                            TextSpan(
+                              text: ltv != null
+                                  ? '\$${formattedNumber(ltv!)}'
+                                  : '--',
+                              style: const TextStyle(
+                                color: ColorSystem.primary,
+                                fontWeight: FontWeight.w700,
+                                fontSize: SizeSystem.size24,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
-            ],
+                ),
+                const SizedBox(
+                  height: SizeSystem.size64,
+                  child: VerticalDivider(
+                    color: Color.fromRGBO(0, 0, 0, 0.04),
+                    thickness: 1,
+                  ),
+                ),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        "AOV",
+                        style: TextStyle(
+                          fontFamily: kRubik,
+                          color: ColorSystem.secondary,
+                          fontWeight: FontWeight.w500,
+                          fontSize: SizeSystem.size10,
+                        ),
+                      ),
+                      const SizedBox(
+                        height: SizeSystem.size4,
+                      ),
+                      RichText(
+                        text: TextSpan(
+                          style: const TextStyle(
+                            fontFamily: kRubik,
+                          ),
+                          children: [
+                            TextSpan(
+                              text:
+                                  '\$${formattedNumber(aovCalculator(ltv, netTransactions))}',
+                              style: const TextStyle(
+                                color: ColorSystem.primary,
+                                fontWeight: FontWeight.w700,
+                                fontSize: SizeSystem.size24,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ],
       ),

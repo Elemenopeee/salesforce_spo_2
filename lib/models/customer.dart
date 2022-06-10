@@ -48,6 +48,7 @@ class Customer extends AppUser {
   });
 
   factory Customer.fromJson({required Map<String, dynamic> json}) {
+
     return Customer._(
       id: json['Id'],
       name: json['Name'],

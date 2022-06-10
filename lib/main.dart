@@ -8,9 +8,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:salesforce_spo/common_widgets/notched_bottom_navigation_bar.dart';
 import 'package:salesforce_spo/design_system/design_system.dart';
 import 'package:salesforce_spo/presentation/intermediate_widgets/customer_lookup_widget.dart';
-import 'package:salesforce_spo/presentation/screens/client_landing_screen.dart';
+import 'package:salesforce_spo/presentation/screens/recent_order_history_tab.dart';
 import 'package:salesforce_spo/presentation/tabs/home_tab.dart';
-import 'package:salesforce_spo/services/storage/shared_preferences_service.dart';
 import 'package:salesforce_spo/utils/constants.dart';
 
 void main() async {
@@ -41,8 +40,8 @@ Future<String> getResult({bool isAcquireToken = true}) async {
   try {
     if (isAcquireToken) {
       userAdModel = await pca.acquireToken(scopes: kScopes);
-      SharedPreferenceService()
-          .setKey(key: 'agent_email', value: '${userAdModel?.mail}');
+      print(userAdModel?.id);
+      log(userAdModel!.toJson().toString());
 
       // userAdModel.
     } else {
@@ -73,16 +72,15 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'GC Customer Connect Sandbox',
+      title: 'Salesforce SPO',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const HomeScreen(),
+      debugShowCheckedModeBanner: false,
+      home: const RecentOrderHistoryTab(),
     );
   }
 }
-
-// ClientLandingScreen(customerID: '0014M00001nv3BwQAI',),
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -101,7 +99,7 @@ class _HomeScreenState extends State<HomeScreen> {
     title: const Text(
       "HOME",
       style: TextStyle(
-        fontSize: 18,
+        fontSize: SizeSystem.size18,
         fontWeight: FontWeight.w500,
         color: Colors.black,
         fontFamily: kRubik,
@@ -120,8 +118,8 @@ class _HomeScreenState extends State<HomeScreen> {
       backgroundColor: Colors.white,
       extendBodyBehindAppBar: true,
       appBar: getAppBar,
-      body: TabHome(
-        agentName: userAdModel?.givenName ?? 'there,',
+      body: const TabHome(
+        agentName: 'John Doe',
       ),
       bottomNavigationBar: NotchedBottomNavigationBar(
         actions: [
@@ -130,9 +128,6 @@ class _HomeScreenState extends State<HomeScreen> {
             splashColor: Colors.transparent,
             onPressed: () {
               showModalBottomSheet(
-                constraints: BoxConstraints(
-                  maxHeight: MediaQuery.of(context).size.height * 0.9
-                ),
                   isScrollControlled: true,
                   context: context,
                   builder: (BuildContext context) {
@@ -144,7 +139,7 @@ class _HomeScreenState extends State<HomeScreen> {
               IconSystem.user,
               width: 24,
               height: 24,
-              color: ColorSystem.primary,
+              color: ColorSystem.white,
             ),
           ),
           IconButton(
@@ -155,7 +150,7 @@ class _HomeScreenState extends State<HomeScreen> {
               IconSystem.feed,
               width: 24,
               height: 24,
-              color: ColorSystem.primary,
+              color: ColorSystem.white,
             ),
           ),
           IconButton(
@@ -166,7 +161,7 @@ class _HomeScreenState extends State<HomeScreen> {
               IconSystem.sparkle,
               width: 24,
               height: 24,
-              color: ColorSystem.primary,
+              color: ColorSystem.white,
             ),
           ),
           IconButton(
@@ -177,17 +172,32 @@ class _HomeScreenState extends State<HomeScreen> {
               IconSystem.more,
               width: 24,
               height: 24,
-              color: ColorSystem.primary,
+              color: ColorSystem.white,
             ),
           ),
         ],
         centerButton: FloatingActionButton(
           backgroundColor: ColorSystem.primary,
           onPressed: () async {
-
+            showModalBottomSheet(
+                isScrollControlled: true,
+                context: context,
+                builder: (BuildContext context) {
+                  return DraggableScrollableSheet(
+                    snap: true,
+                    initialChildSize: 0.9,
+                    minChildSize: 0.9,
+                    maxChildSize: 1.0,
+                    builder: (BuildContext context,
+                        ScrollController scrollController) {
+                      return const CustomerLookupWidget();
+                    },
+                  );
+                },
+                backgroundColor: Colors.transparent);
           },
           child: SvgPicture.asset(
-            IconSystem.plus,
+            IconSystem.user,
             width: 24,
             height: 24,
             color: ColorSystem.white,
