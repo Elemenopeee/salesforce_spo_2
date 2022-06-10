@@ -312,7 +312,7 @@ class ClientPrimaryDetails extends StatelessWidget {
                       ),
                       children: [
                         TextSpan(
-                          text: '${primaryInstrument ?? '--'} |',
+                          text: '${primaryInstrument ?? '--'} ',
                           style: const TextStyle(
                             fontSize: SizeSystem.size12,
                             color: ColorSystem.primary,
@@ -320,7 +320,7 @@ class ClientPrimaryDetails extends StatelessWidget {
                           ),
                         ),
                         const TextSpan(
-                          text: ' Buy Used',
+                          text: ' ',
                           style: TextStyle(
                             fontSize: SizeSystem.size12,
                             color: ColorSystem.primary,

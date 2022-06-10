@@ -17,22 +17,17 @@ class ClientOrder {
     this.orderNumber,
   });
 
-  factory ClientOrder.fromJson(Map<String, dynamic> json){
-    
+  factory ClientOrder.fromJson(Map<String, dynamic> json) {
     List<OrderItem> items = [];
-
-    try{
-      if(json['GC_Order_Line_Items__r'] != null){
-        for (var record in json['GC_Order_Line_Items__r']['records']){
+    try {
+      if (json['GC_Order_Line_Items__r'] != null) {
+        for (var record in json['GC_Order_Line_Items__r']['records']) {
           items.add(OrderItem.fromJson(record));
         }
       }
-    }
-    catch (e){
+    } catch (e) {
       print('$e');
     }
-
-    print(items.length);
 
     return ClientOrder._(
       id: json['Id'],
@@ -45,18 +40,45 @@ class ClientOrder {
     );
   }
 
+  factory ClientOrder.fromOrderHistoryJson(Map<String, dynamic> json) {
+
+    List<OrderItem> items = [];
+
+    try {
+      if(json['LineItems'] != null){
+        for(var itemRecord in json['LineItems']){
+          items.add(OrderItem.fromOrderHistoryJson(itemRecord));
+        }
+      }
+    }
+    catch (e) {
+      print(e);
+    }
+
+    double totalPrice = 0;
+
+    for (var item in items){
+      totalPrice += double.parse(item.itemPrice ?? '0');
+    }
+
+    return ClientOrder._(
+      orderNumber: json['OrderNumber'],
+      createdDate: json['OrderDate'],
+      amount: totalPrice,
+    );
+  }
 }
 
 class OrderItem {
   final String? imageUrl;
+  final String? itemPrice;
 
-  OrderItem._({this.imageUrl});
+  OrderItem._({this.imageUrl, this.itemPrice});
 
-  factory OrderItem.fromJson(Map<String, dynamic> json){
-
+  factory OrderItem.fromJson(Map<String, dynamic> json) {
     var imageUrl = json['Image_URL__c'];
 
-    if(json['Image_URL__c'] == null){
+    if (json['Image_URL__c'] == null) {
       imageUrl = json['Image_URL1__c'];
     }
 
@@ -65,4 +87,9 @@ class OrderItem {
     );
   }
 
+  factory OrderItem.fromOrderHistoryJson(Map<String, dynamic> json) {
+    return OrderItem._(
+      itemPrice: json['PurchasedPrice'],
+    );
+  }
 }

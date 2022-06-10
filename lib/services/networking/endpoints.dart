@@ -29,7 +29,7 @@ abstract class Endpoints {
   static String kClientOpenOrders =
       '/services/data/v53.0/query/?q=select Id,Name, CreatedDate,Total__c,Order_Number__c,(select Image_URL1__c  from GC_Order_Line_Items__r) from GC_Order__c where Customer__c = ';
   static String kClientOrderHistory =
-      '/services/data/v53.0/query/?q=select Id,Name, CreatedDate,Total__c,Order_Number__c,Order_Status__c,(select Image_URL__c  from GC_Order_Line_Items__r) from GC_Order__c where Customer__c = ';
+      '/services/apexrest/GC_NewApp/';
   static String kClientBasicDetails =
       '/services/data/v53.0/query/?q=SELECT id,name,firstname,lastname,accountEmail__c,Brand_Code__c,accountPhone__c,Last_Transaction_Date__c,Lifetime_Net_Sales_Amount__c,Lifetime_Net_Sales_Transactions__c,Primary_Instrument_Category__c,Net_Sales_Amount_12MO__c, (select Total_Amount__c from GC_Orders__r  where Order_Status__c = \'Completed\' Order by lastmodifieddate desc limit 1)epsilon_customer_brand_key__c,Lessons_Customer__c,Open_Box_Purchaser__c,Loyalty_Customer__c,Used_Purchaser__c,Synchrony_Customer__c,Vintage_Purchaser__c  from account where Id=';
   static String kClientBuyAgain =
@@ -48,6 +48,8 @@ abstract class Endpoints {
       '/services/data/v53.0/query/?q=SELECT CaseNumber,Case_Subtype__c,Case_Type__c,DAX_Order_Number__c,Id,Priority,Reason,Subject,Status,Account.Name,Owner.Name,CreatedDate,LastModifiedDate FROM Case where AccountId = ';
   static String kClientClosedCases =
       '/services/data/v53.0/query/?q=SELECT CaseNumber,Case_Subtype__c,Case_Type__c,DAX_Order_Number__c,Id,Priority,Reason,Subject,Status,Account.Name,Owner.Name,CreatedDate,LastModifiedDate FROM Case where AccountId = ';
+  static String kCustomerMightAlsoLike =
+      '/services/apexrest/GC_NewApp/@accountId-CustomerMightAlsoLike';
 
   static String getCustomerSearchByPhone(String phone) {
     return '$kBaseURL$kCustomerSearchByPhone\'$phone\'';
@@ -133,7 +135,7 @@ abstract class Endpoints {
   }
 
   static String getClientOrderHistory(String clientId) {
-    return '$kBaseURL$kClientOrderHistory${'\'$clientId\' and Order_Status__c!= \'Draft\' ORDER BY createddate desc limit 2 OFFSET 0'}';
+    return '$kBaseURL$kClientOrderHistory$clientId-OrderHistory';
   }
 
   static String getClientBasicDetails(String clientId) {
@@ -142,7 +144,7 @@ abstract class Endpoints {
 
   static String getClientPurchaseChannelAndCategory(String epsilonCustomerKey) {
     var editedKey = epsilonCustomerKey.replaceAll('GC_', '');
-    return '$kClientPurchaseChannelAndCategory''$editedKey/txn/hist';
+    return '$kClientPurchaseChannelAndCategory' '$editedKey/txn/hist';
   }
 
   static String getClientBrowsingHistoryProductIDs() {
