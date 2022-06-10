@@ -16,6 +16,9 @@ abstract class ColorSystem {
   /// Additional blue color
   static const Color additionalBlue = Color(0xFF53A5FF);
 
+  /// Additional secondary blue color
+  static const Color secondaryBlue = Color(0xFF7FE3F0);
+
   /// Additional white color
   static const Color additionalWhite = Color(0xFFE4EDFF);
 
@@ -30,6 +33,9 @@ abstract class ColorSystem {
 
   // lavender 2
   static const Color lavender2 = Color(0xFF7265E3);
+
+  // lavender 3
+  static const Color lavender3 = Color(0xFF8C80F8);
 
   /// black color
   static const Color black = Color(0xFF000000);
@@ -60,6 +66,9 @@ abstract class ColorSystem {
   // Additional dark ochre
   static const Color darkOchre = Color(0xFFE57511);
 
+  /// Additional Grey Background color
+  static const Color greyBg = Color(0xFFF4F6FA);
+
   // Additional purple
   static const Color purpleDarker = Color(0xFF5C34DC);
 
@@ -70,5 +79,4 @@ abstract class ColorSystem {
   static const Color redLiteBg = Color.fromRGBO(232, 16, 27, 0.1);
   static const Color orangeLiteBg = Color.fromRGBO(229, 117, 17, 0.1);
   static const Color purpleLiteBg = Color.fromRGBO(92, 52, 220, 0.1);
-
 }

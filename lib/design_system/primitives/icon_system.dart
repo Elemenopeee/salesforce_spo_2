@@ -38,4 +38,7 @@ abstract class IconSystem {
   static const String activityCompleted = 'assets/icons/activity_completed.svg';
   static const String activityIncomplete = 'assets/icons/activity_incomplete.svg';
   static const String activityGeneral = 'assets/icons/activity_general.svg';
+  static const String taskNote = 'assets/icons/ic_task_note.svg';
+  static const String icEmojiHappy = 'assets/icons/ic_emoji_happy.svg';
+  static const String icSparkle = 'assets/icons/ic_sparkle.svg';
 }
