@@ -30,4 +30,9 @@ abstract class IconSystem {
   static const String noCommission = 'assets/icons/no_commission.svg';
   static const String inProgress = 'assets/icons/in_progress.svg';
   static const String userPlaceholder = 'assets/icons/user_placeholder.svg';
+  static const String chattingIllustration =
+      'assets/icons/chatting_illustration.svg';
+  static const String mail = 'assets/icons/mail.svg';
+  static const String message = 'assets/icons/message.svg';
+  static const String socialChatBubble = 'assets/icons/social_chat_bubble.svg';
 }

@@ -9,6 +9,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:salesforce_spo/common_widgets/notched_bottom_navigation_bar.dart';
 import 'package:salesforce_spo/design_system/design_system.dart';
 import 'package:salesforce_spo/presentation/intermediate_widgets/customer_lookup_widget.dart';
+import 'package:salesforce_spo/presentation/screens/smart_triggers_screen.dart';
 import 'package:salesforce_spo/presentation/tabs/home_tab.dart';
 import 'package:salesforce_spo/services/storage/shared_preferences_service.dart';
 import 'package:salesforce_spo/utils/constants.dart';
@@ -93,7 +94,7 @@ class _HomeScreenState extends State<HomeScreen> {
   get getAppBar => AppBar(
         toolbarHeight: 80,
         leadingWidth: double.infinity,
-        backgroundColor: Colors.white,
+        backgroundColor: ColorSystem.scaffoldBackgroundColor,
         elevation: 0,
         centerTitle: true,
         title: const Text(
@@ -115,11 +116,11 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: ColorSystem.scaffoldBackgroundColor,
       extendBodyBehindAppBar: true,
       appBar: getAppBar,
       body: TabHome(
-        agentName: userAdModel?.givenName ?? 'there,',
+        agentName: userAdModel?.givenName,
       ),
       bottomNavigationBar: NotchedBottomNavigationBar(
         actions: [
@@ -128,9 +129,8 @@ class _HomeScreenState extends State<HomeScreen> {
             splashColor: Colors.transparent,
             onPressed: () {
               showModalBottomSheet(
-                constraints: BoxConstraints(
-                  maxHeight: MediaQuery.of(context).size.height * 0.9
-                ),
+                  constraints: BoxConstraints(
+                      maxHeight: MediaQuery.of(context).size.height * 0.9),
                   isScrollControlled: true,
                   context: context,
                   builder: (BuildContext context) {
@@ -159,7 +159,16 @@ class _HomeScreenState extends State<HomeScreen> {
           IconButton(
             focusColor: Colors.transparent,
             splashColor: Colors.transparent,
-            onPressed: () {},
+            onPressed: () {
+              Navigator.of(context)
+                  .push(MaterialPageRoute(builder: (BuildContext context) {
+                return SmartTriggerScreen(
+                  agentName: userAdModel?.givenName != null
+                      ? '${userAdModel!.givenName}\'s'
+                      : 'Your',
+                );
+              }));
+            },
             icon: SvgPicture.asset(
               IconSystem.sparkle,
               width: 24,
@@ -181,9 +190,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
         centerButton: FloatingActionButton(
           backgroundColor: ColorSystem.primary,
-          onPressed: () async {
-
-          },
+          onPressed: () async {},
           child: SvgPicture.asset(
             IconSystem.plus,
             width: 24,

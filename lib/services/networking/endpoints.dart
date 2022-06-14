@@ -1,6 +1,5 @@
 abstract class Endpoints {
-
-  static String kBaseURL = 'https://gcinc.my.salesforce.com';
+  static String kBaseURL = 'https://gcinc--tracuat.my.salesforce.com';
   static String kCustomerSearchByPhone =
       '/services/data/v53.0/query/?q=SELECT id,name,firstname,lastname,accountEmail__c,accountPhone__c,Last_Transaction_Date__c,Lifetime_Net_Sales_Amount__c,Lifetime_Net_Sales_Transactions__c,Primary_Instrument_Category__c,Max_ltv_net_dlrs_Formula__c,Median_ltv_net_dlrs_Formula__c, Avg_ltv_net_dlrs_Formula__c from account where accountPhone__c=';
   static String kCustomerSearchByEmail =
@@ -19,6 +18,7 @@ abstract class Endpoints {
       '/services/data/v53.0/query/?q=SELECT email,Gross_Sales_MTD__c,Gross_Sales_Yesterday__c, CreatedDate, LastModifiedDate FROM User where email =';
   static String kAgentTodaysCommission =
       '/services/data/v53.0/query/?q=SELECT email,Comm_Amount_MTD__c,Comm_Amount_Yesterday__c, CreatedDate, LastModifiedDate FROM User where email =';
+  static String kSmartTriggers = '/services/apexrest/GC_SmartTriggerAPI';
 
   static String getCustomerSearchByPhone(String phone) {
     return '$kBaseURL$kCustomerSearchByPhone\'$phone\'';
@@ -54,5 +54,9 @@ abstract class Endpoints {
 
   static String getTodaysCommission(String agentMail) {
     return '$kBaseURL$kAgentTodaysCommission${'\'$agentMail\''}';
+  }
+
+  static String getSmartTriggers(){
+    return '$kBaseURL$kSmartTriggers';
   }
 }
