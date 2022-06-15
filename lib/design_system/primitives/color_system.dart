@@ -25,16 +25,31 @@ abstract class ColorSystem {
   /// white color
   static const Color white = Color(0xFFFFFFFF);
 
-  // lavender color
+  /// lavender 1
   static const Color lavender = Color(0xFF9DA0FF);
 
-  // lavender 2
+  /// lavender 2
   static const Color lavender2 = Color(0xFF7265E3);
 
-  // Additional dark ochre
+  /// lavender 3
+  static const Color lavender3 = Color(0xFF8C80F8);
+
+  /// Additional dark ochre
   static const Color darkOchre = Color(0xFFE57511);
 
-  // Additional purple
+  /// Additional purple
   static const Color purple = Color(0xFF5C34DC);
+
+  /// Additional grey
+  static const Color additionalGrey = Color(0xFFD6D9E0);
+
+  /// Scaffold background color
+  static const Color scaffoldBackgroundColor = Color(0xFFFFFFFF);
+
+  /// Additional blue 1
+  static const Color blue1 = Color(0xFF7088D2);
+
+  /// Sky blue
+  static const Color skyBlue = Color(0xFF7FE3F0);
 
 }

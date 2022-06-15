@@ -92,19 +92,30 @@ class HttpService {
       dynamic params,
       dynamic headers,
       bool tokenRequired = false}) async {
-    try {
-      // check if token is required then add bearer token in header
-      // if (tokenRequired) {
-      //   SharedPreferenceService sharedPreferences = SharedPreferenceService();
-      //   // GET TOKEN
-      //   String? token = await sharedPreferences.getUserToken(key: 'token');
-      //   headers.putIfAbsent('Authorization', () => 'Bearer $token');
-      // }
-      final response =
-          await http.post(Uri.parse(path), body: body, headers: headers);
 
-      print(response.statusCode);
-      print('Here ${response.body}');
+    String? accessToken =
+    await SharedPreferenceService().getUserToken(key: kAccessTokenKey);
+
+    if (accessToken == null) {
+      var tokenApi = await doPost(
+          path: '${Endpoints.kBaseURL}$authURL',
+          body: authJson,
+          headers: authHeaders);
+
+      String accessToken = tokenApi.data['access_token'];
+
+      SharedPreferenceService().setUserToken(authToken: accessToken);
+    }
+
+    try {
+      Map<String, String> temporaryHeaders = {};
+      if (tokenRequired) {
+        temporaryHeaders.putIfAbsent('Content-Type', () => 'application/json');
+        temporaryHeaders.putIfAbsent('Authorization', () => 'OAuth $accessToken');
+      }
+
+      final response =
+          await http.post(Uri.parse(path), body: body, headers: temporaryHeaders);
 
       dynamic data; // set decoded body response
       if (response.body.isNotEmpty) {
@@ -117,6 +128,23 @@ class HttpService {
           return HttpResponse(status: true, message: '', data: data);
         case 401: // token expired
         case 403:
+        var tokenApi = await doPost(
+            path: '${Endpoints.kBaseURL}$authURL',
+            body: authJson,
+            headers: authHeaders);
+
+        String accessToken = tokenApi.data['access_token'];
+        SharedPreferenceService().setUserToken(authToken: accessToken);
+
+        final response = await http.get(Uri.parse(path), headers: headers);
+        dynamic data; // set decoded body response
+        if (response.body.isNotEmpty) {
+          data = json.decode(response.body);
+        }
+
+        if (response.statusCode == 200) {
+          return HttpResponse(status: true, message: '', data: data);
+        }
           return HttpResponse(status: false, message: '');
         case 400:
           return HttpResponse(status: false, message: '');
