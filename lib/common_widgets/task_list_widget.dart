@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:salesforce_spo/design_system/design_system.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 import '../design_system/primitives/color_system.dart';
 import '../design_system/primitives/size_system.dart';
@@ -12,6 +14,8 @@ class TaskListWidget extends StatelessWidget {
   final String? taskType;
   final String? status;
   final String? activityDate;
+  final String? phone;
+  final String? email;
 
   const TaskListWidget({
     Key? key,
@@ -19,6 +23,8 @@ class TaskListWidget extends StatelessWidget {
     this.taskType,
     this.status,
     this.activityDate,
+    this.email,
+    this.phone,
   }) : super(key: key);
 
   String getSubtitleFromDate(String? activityDate) {
@@ -47,62 +53,73 @@ class TaskListWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                '$subject',
-                style: const TextStyle(
-                  fontSize: SizeSystem.size16,
-                  color: ColorSystem.primary,
-                  fontFamily: kRubik,
-                ),
-              ),
-              const SizedBox(
-                height: SizeSystem.size4,
-              ),
-              RichText(
-                text: TextSpan(
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: PaddingSystem.padding12),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '$subject',
                   style: const TextStyle(
+                    fontSize: SizeSystem.size16,
+                    color: ColorSystem.primary,
                     fontFamily: kRubik,
                   ),
-                  children: [
-                    TextSpan(
-                      text: '$taskType',
-                      style: const TextStyle(
-                        fontSize: SizeSystem.size14,
-                        color: ColorSystem.secondary,
-                      ),
-                    ),
-                    TextSpan(
-                      text: getSubtitleFromDate(activityDate),
-                      style: TextStyle(
-                        fontSize: SizeSystem.size14,
-                        color: getSubtitleFromDate(activityDate).contains('Overdue')
-                            ? ColorSystem.complimentary
-                            : ColorSystem.primary,
-                      ),
-                    ),
-                  ],
                 ),
-              ),
-            ],
+                const SizedBox(
+                  height: SizeSystem.size4,
+                ),
+                RichText(
+                  text: TextSpan(
+                    style: const TextStyle(
+                      fontFamily: kRubik,
+                    ),
+                    children: [
+                      TextSpan(
+                        text: '$taskType',
+                        style: const TextStyle(
+                          fontSize: SizeSystem.size14,
+                          color: ColorSystem.secondary,
+                        ),
+                      ),
+                      TextSpan(
+                        text: getSubtitleFromDate(activityDate),
+                        style: TextStyle(
+                          fontSize: SizeSystem.size14,
+                          color: getSubtitleFromDate(activityDate).contains('Overdue')
+                              ? ColorSystem.complimentary
+                              : ColorSystem.primary,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
-        ),
-        if (subject != null)
-          subject!.toLowerCase().contains('call')
-              ? SvgPicture.asset(
-                  IconSystem.phone,
-                  height: 24,
-                  width: 24,
-                  color: Colors.black,
-                )
-              : const SizedBox(),
-      ],
+          InkWell(
+            focusColor: Colors.transparent,
+            highlightColor: Colors.transparent,
+            splashColor: Colors.transparent,
+            hoverColor: Colors.transparent,
+            onTap: () async {
+              if(phone != null){
+                await launchUrl(Uri.parse('tel://$phone'));
+              }
+            },
+            child: SvgPicture.asset(
+              IconSystem.phone,
+              height: 24,
+              width: 24,
+              color: Colors.black,
+            ),
+          )
+        ],
+      ),
     );
   }
 }

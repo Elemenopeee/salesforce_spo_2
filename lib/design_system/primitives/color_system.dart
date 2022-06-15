@@ -49,4 +49,7 @@ abstract class ColorSystem {
   /// Additional blue 1
   static const Color blue1 = Color(0xFF7088D2);
 
+  /// Sky blue
+  static const Color skyBlue = Color(0xFF7FE3F0);
+
 }

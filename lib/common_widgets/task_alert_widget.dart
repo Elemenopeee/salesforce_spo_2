@@ -22,18 +22,17 @@ class TaskAlertWidget extends StatefulWidget {
 class _TaskAlertWidgetState extends State<TaskAlertWidget> {
   final controller = PageController(viewportFraction: 1.0, keepPage: true);
 
-  DateTime getDateTime(String date){
+  DateTime getDateTime(String date) {
     return DateTime.parse(date);
   }
 
-  String getMonth(DateTime dateTime){
+  String getMonth(DateTime dateTime) {
     return DateFormat('MMM').format(dateTime);
   }
 
-  String getDate(DateTime dateTime){
+  String getDate(DateTime dateTime) {
     return DateFormat('dd').format(dateTime);
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -62,45 +61,49 @@ class _TaskAlertWidgetState extends State<TaskAlertWidget> {
                         padding: EdgeInsets.symmetric(
                             horizontal: 12.0, vertical: 16.0),
                         child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Container(
-                                padding: EdgeInsets.symmetric(
-                                    vertical: 14, horizontal: 14),
-                                decoration: BoxDecoration(
-                                    color: Color(0xffFF9B90),
-                                    borderRadius: BorderRadius.circular(10.0)),
-                                child: Column(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        getMonth(getDateTime(DateTime.now().toString())),
-                                        style: const TextStyle(
-                                            fontSize: SizeSystem.size14,
-                                            fontFamily: kRubik,
-                                            color: Colors.white),
-                                      ),
-                                      Text(
-                                        getDate(getDateTime(DateTime.now().toString())),
-                                        style: const TextStyle(
-                                            fontSize: SizeSystem.size20,
-                                            fontFamily: kRubik,
-                                            color: Colors.white),
-                                      )
-                                    ]),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 12.0),
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 14, horizontal: 14),
+                              decoration: BoxDecoration(
+                                  color: Color(0xffFF9B90),
+                                  borderRadius: BorderRadius.circular(10.0)),
+                              child: Column(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      getMonth(getDateTime(
+                                          DateTime.now().toString())),
+                                      style: const TextStyle(
+                                          fontSize: SizeSystem.size14,
+                                          fontFamily: kRubik,
+                                          color: Colors.white),
+                                    ),
+                                    Text(
+                                      getDate(getDateTime(
+                                          DateTime.now().toString())),
+                                      style: const TextStyle(
+                                          fontSize: SizeSystem.size20,
+                                          fontFamily: kRubik,
+                                          color: Colors.white),
+                                    )
+                                  ]),
+                            ),
+                            Expanded(
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 12.0),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Text(
                                       widget.tasks[index].subject ?? '--',
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
                                       style: const TextStyle(
                                         color: Color(0xff2D3142),
                                         fontSize: SizeSystem.size14,
@@ -121,19 +124,24 @@ class _TaskAlertWidgetState extends State<TaskAlertWidget> {
                                     const SizedBox(
                                       height: SizeSystem.size6,
                                     ),
-                                    const Text('View Task',
-                                        style: TextStyle(
-                                            color: Color(
-                                              0xff8C80F8,
-                                            ),
-                                            fontSize: SizeSystem.size16,
-                                            height: 1.4,
-                                            fontFamily: kRubik,
-                                            fontWeight: FontWeight.bold)),
+                                    const Text(
+                                      'View Task',
+                                      style: TextStyle(
+                                          color: Color(0xff8C80F8),
+                                          fontSize: SizeSystem.size16,
+                                          height: 1.4,
+                                          fontFamily: kRubik,
+                                          fontWeight: FontWeight.bold),
+                                    ),
                                   ],
                                 ),
-                              )
-                            ]),
+                              ),
+                            ),
+                            SizedBox(
+                              width: 40,
+                            ),
+                          ],
+                        ),
                       )
                     ]),
                   ),
@@ -178,8 +186,8 @@ class _TaskAlertWidgetState extends State<TaskAlertWidget> {
                     bottom: 0,
                     child: Container(
                       //color: Colors.red.withOpacity(0.2),
-                      child: SvgPicture.asset(
-                        IconSystem.chattingIllustration,
+                      child: Image.asset(
+                        IconSystem.agentTaskAlertIllustration,
                       ),
                     ),
                   ),
@@ -188,18 +196,18 @@ class _TaskAlertWidgetState extends State<TaskAlertWidget> {
             },
           ),
         ),
-        if(widget.tasks.isNotEmpty)
-        SmoothPageIndicator(
-          controller: controller,
-          count: widget.tasks.length,
-          effect: const ExpandingDotsEffect(
-            activeDotColor: Color(0xFFB5AFF9),
-            dotColor: Color(0xFFD6D9E0),
-            dotHeight: 6,
-            dotWidth: 6,
-            // strokeWidth: 5,
+        if (widget.tasks.isNotEmpty)
+          SmoothPageIndicator(
+            controller: controller,
+            count: widget.tasks.length,
+            effect: const ExpandingDotsEffect(
+              activeDotColor: Color(0xFFB5AFF9),
+              dotColor: Color(0xFFD6D9E0),
+              dotHeight: 6,
+              dotWidth: 6,
+              // strokeWidth: 5,
+            ),
           ),
-        ),
       ],
     );
   }

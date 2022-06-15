@@ -91,7 +91,7 @@ class HttpService {
       dynamic body,
       dynamic params,
       dynamic headers,
-      bool tokenRequired = true}) async {
+      bool tokenRequired = false}) async {
 
     String? accessToken =
     await SharedPreferenceService().getUserToken(key: kAccessTokenKey);
@@ -100,7 +100,7 @@ class HttpService {
       var tokenApi = await doPost(
           path: '${Endpoints.kBaseURL}$authURL',
           body: authJson,
-          headers: {});
+          headers: authHeaders);
 
       String accessToken = tokenApi.data['access_token'];
 
@@ -128,6 +128,23 @@ class HttpService {
           return HttpResponse(status: true, message: '', data: data);
         case 401: // token expired
         case 403:
+        var tokenApi = await doPost(
+            path: '${Endpoints.kBaseURL}$authURL',
+            body: authJson,
+            headers: authHeaders);
+
+        String accessToken = tokenApi.data['access_token'];
+        SharedPreferenceService().setUserToken(authToken: accessToken);
+
+        final response = await http.get(Uri.parse(path), headers: headers);
+        dynamic data; // set decoded body response
+        if (response.body.isNotEmpty) {
+          data = json.decode(response.body);
+        }
+
+        if (response.statusCode == 200) {
+          return HttpResponse(status: true, message: '', data: data);
+        }
           return HttpResponse(status: false, message: '');
         case 400:
           return HttpResponse(status: false, message: '');

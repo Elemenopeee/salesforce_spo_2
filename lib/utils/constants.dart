@@ -1,11 +1,11 @@
 const Map<String, dynamic> authJson = {
   'grant_type': 'password',
   'client_id':
-      '3MVG9QBLg8QGkFeo1WCfSyKAD0j71Umehp1aMtq2VxvPYez7qeN_nFLzNbRXe1h8lgxVkmHEaeFauNWgETWPX',
+      '3MVG9KI2HHAq33RxCZsmOszHULYFbzfZ5N3n.ZbXHHObojG0a1tIEz7c5k749ZRW5n2xGcGxqy2OYw8zI0VGj',
   'client_secret':
-      '2159263A794A3F467C53D9CD88FBC62C94D8EA2FE1BE4580E2D34F6A4ADDB6F6',
-  'username': 'customerconnect@guitarcenter.com.tracuat',
-  'password': 'm0bileus3r2462YeTkhijiK2V4Tphw1B79mRo',
+      'E062FCA77D3FE219F8E4AE7A09B74ADEDC45032D2107FC1360DB24EFB693E502',
+  'username': 'customerconnect@guitarcenter.com',
+  'password': 'm0bileus3r321l0Y0AzxyZhEFg9u4AMpGXran',
 };
 
 Map<String, String> authHeaders = {
@@ -17,8 +17,3 @@ const String authURL = '/services/oauth2/token';
 const String kRubik = 'Rubik';
 
 const String kAccessTokenKey = 'access_token';
-
-
-// {"TabName":"MyNewTask","UserId":"0056C000003WsJVQA0"}
-// Salman Ahmad7:36 PM
-// {"TabName":"MyNewStore","UserId":"0056C000003WsJVQA0"}
