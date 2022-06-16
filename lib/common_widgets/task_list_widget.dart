@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:salesforce_spo/design_system/design_system.dart';
+import 'package:salesforce_spo/presentation/screens/task_details_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
@@ -53,72 +54,85 @@ class TaskListWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: PaddingSystem.padding12),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  '$subject',
-                  style: const TextStyle(
-                    fontSize: SizeSystem.size16,
-                    color: ColorSystem.primary,
-                    fontFamily: kRubik,
-                  ),
-                ),
-                const SizedBox(
-                  height: SizeSystem.size4,
-                ),
-                RichText(
-                  text: TextSpan(
+    return InkWell(
+      focusColor: Colors.transparent,
+      highlightColor: Colors.transparent,
+      splashColor: Colors.transparent,
+      hoverColor: Colors.transparent,
+      onTap: () async {
+        Navigator.of(context)
+            .push(MaterialPageRoute(builder: (BuildContext context) {
+              return const TaskDetailsScreen();
+        }));
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: PaddingSystem.padding12),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '$subject',
                     style: const TextStyle(
+                      fontSize: SizeSystem.size16,
+                      color: ColorSystem.primary,
                       fontFamily: kRubik,
                     ),
-                    children: [
-                      TextSpan(
-                        text: '$taskType',
-                        style: const TextStyle(
-                          fontSize: SizeSystem.size14,
-                          color: ColorSystem.secondary,
-                        ),
-                      ),
-                      TextSpan(
-                        text: getSubtitleFromDate(activityDate),
-                        style: TextStyle(
-                          fontSize: SizeSystem.size14,
-                          color: getSubtitleFromDate(activityDate).contains('Overdue')
-                              ? ColorSystem.complimentary
-                              : ColorSystem.primary,
-                        ),
-                      ),
-                    ],
                   ),
-                ),
-              ],
+                  const SizedBox(
+                    height: SizeSystem.size4,
+                  ),
+                  RichText(
+                    text: TextSpan(
+                      style: const TextStyle(
+                        fontFamily: kRubik,
+                      ),
+                      children: [
+                        TextSpan(
+                          text: '$taskType',
+                          style: const TextStyle(
+                            fontSize: SizeSystem.size14,
+                            color: ColorSystem.secondary,
+                          ),
+                        ),
+                        TextSpan(
+                          text: getSubtitleFromDate(activityDate),
+                          style: TextStyle(
+                            fontSize: SizeSystem.size14,
+                            color: getSubtitleFromDate(activityDate)
+                                    .contains('Overdue')
+                                ? ColorSystem.complimentary
+                                : ColorSystem.primary,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-          InkWell(
-            focusColor: Colors.transparent,
-            highlightColor: Colors.transparent,
-            splashColor: Colors.transparent,
-            hoverColor: Colors.transparent,
-            onTap: () async {
-              if(phone != null){
-                await launchUrl(Uri.parse('tel://$phone'));
-              }
-            },
-            child: SvgPicture.asset(
-              IconSystem.phone,
-              height: 24,
-              width: 24,
-              color: Colors.black,
-            ),
-          )
-        ],
+            InkWell(
+              focusColor: Colors.transparent,
+              highlightColor: Colors.transparent,
+              splashColor: Colors.transparent,
+              hoverColor: Colors.transparent,
+              onTap: () async {
+                if (phone != null) {
+                  await launchUrl(Uri.parse('tel://$phone'));
+                }
+              },
+              child: SvgPicture.asset(
+                IconSystem.phone,
+                height: 24,
+                width: 24,
+                color: Colors.black,
+              ),
+            )
+          ],
+        ),
       ),
     );
   }

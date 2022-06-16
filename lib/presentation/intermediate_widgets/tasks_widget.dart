@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -49,7 +48,17 @@ class _TasksWidgetState extends State<TasksWidget> {
   String storeTasks = 'MyNewStore';
   String id = '0056C000003WsJVQA0';
 
+  void clearLists(){
+    todaysTasks.clear();
+    pastOpenTasks.clear();
+    futureOpenTasks.clear();
+    completedTasks.clear();
+    unAssignedTasks.clear();
+    allTasks.clear();
+  }
+
   Future<void> getTasks(String tabName) async {
+    clearLists();
     var response = await HttpService().doPost(
         path: Endpoints.getSmartTriggers(),
         body: jsonEncode(RequestBody.getSmartTriggersBody(tabName, id)),
