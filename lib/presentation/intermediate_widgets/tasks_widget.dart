@@ -48,7 +48,7 @@ class _TasksWidgetState extends State<TasksWidget> {
   String storeTasks = 'MyNewStore';
   String id = '0056C000003WsJVQA0';
 
-  void clearLists(){
+  void clearLists() {
     todaysTasks.clear();
     pastOpenTasks.clear();
     futureOpenTasks.clear();
@@ -164,7 +164,7 @@ class _TasksWidgetState extends State<TasksWidget> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              '${widget.agentName.toUpperCase()} TASKS',
+                              '${showingAgentTasks ? widget.agentName.toUpperCase() : 'STORE'} TASKS',
                               style: const TextStyle(
                                 fontWeight: FontWeight.w500,
                                 fontSize: SizeSystem.size14,
@@ -539,7 +539,7 @@ class _TasksWidgetState extends State<TasksWidget> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                '${widget.agentName.toUpperCase()} TASKS',
+                                '${showingAgentTasks ? widget.agentName.toUpperCase() : 'STORE'} TASKS',
                                 style: const TextStyle(
                                   fontWeight: FontWeight.w500,
                                   fontSize: SizeSystem.size12,
@@ -733,6 +733,7 @@ class _TasksWidgetState extends State<TasksWidget> {
                         physics: const NeverScrollableScrollPhysics(),
                         itemBuilder: (context, index) {
                           return TaskListWidget(
+                            taskId: displayedList[index].id!,
                             status: displayedList[index].status,
                             subject: displayedList[index].subject,
                             taskType: displayedList[index].taskType,

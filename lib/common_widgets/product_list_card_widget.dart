@@ -1,118 +1,170 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:salesforce_spo/design_system/design_system.dart';
 import 'package:salesforce_spo/design_system/primitives/size_system.dart';
+import 'package:salesforce_spo/models/order_item.dart';
+import 'package:salesforce_spo/services/networking/endpoints.dart';
+import 'package:salesforce_spo/services/networking/networking_service.dart';
 import 'package:salesforce_spo/utils/constants.dart';
-//  ProductListCard(
-//           Id: 'GC19692557',
-//           Date: 'GC  |  Jun 01,2022',
-//           items:
-          var itemS = [
-            ItemModel(
-                product_price: "24,500",
-                product_qty: '02/300',
-                product_disc:
-                    "Gibson Les Paul Standard '60s Electric Guitar Iced Tea",
-                product_status: 'Ready for Pickup',
-                delivery_date: 'Jun 08,2022',
-                track_id: '1ZA3R3310397339934'
 
-                ),
-                ItemModel(
-                product_price: "24,500",
-                product_qty: '02/300',
-                product_disc:
-                    "Gibson Les Paul Standard '60s Electric Guitar Iced Tea",
-                product_status: 'Ready for Pickup',
-                delivery_date: 'Jun 08,2022',
-                track_id: '1ZA3R3310397339934'
+import '../models/order.dart';
 
-                ),
-          ];
-//         )
-
-class ProductListCard extends StatelessWidget {
+class ProductListCard extends StatefulWidget {
   const ProductListCard(
-      {Key? key, required this.items, required this.Id, required this.Date})
+      {Key? key, required this.order, required this.Id, required this.Date})
       : super(key: key);
-  final List<ItemModel> items;
+  final Order order;
   final String Id;
   final String Date;
+
+  @override
+  State<ProductListCard> createState() => _ProductListCardState();
+}
+
+class _ProductListCardState extends State<ProductListCard> {
+  late Future<void> futureOrder;
+
+  List<OrderItem> orderItems = [];
+
+  Future<void> getFutureOrder() async {
+    var response = await HttpService()
+        .doGet(path: Endpoints.getSmartTriggerOrder(widget.Id));
+
+    if (response.data != null) {
+      for (var order in response.data['OrderList']) {
+        for (var item in order['Items']) {
+          try {
+            orderItems.add(OrderItem.fromTaskJson(item));
+          } on Exception catch (e) {
+            print(e);
+          }
+        }
+      }
+    }
+  }
+
+  @override
+  initState() {
+    super.initState();
+    futureOrder = getFutureOrder();
+  }
+
+  String dateFormatter(String date){
+    var dateTime = DateTime.parse(date);
+    return DateFormat('MMM dd,yyyy').format(dateTime);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10.0),
+      padding: const EdgeInsets.symmetric(horizontal: SizeSystem.size10),
       child: Container(
-        padding: EdgeInsets.only(top: 14.0, bottom: 18.0),
+        padding: const EdgeInsets.only(
+            top: SizeSystem.size14, bottom: SizeSystem.size18),
         decoration: BoxDecoration(
-            color: Color(0xff8C80F8).withOpacity(0.08),
-            borderRadius: BorderRadius.circular(14.0)),
+            color: ColorSystem.lavender3.withOpacity(0.08),
+            borderRadius: BorderRadius.circular(SizeSystem.size14)),
         child: Column(children: [
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 6.0),
+            padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 6.0),
             child: Row(
               children: [
-                Text(Id,
-                    style: TextStyle(
-                        fontWeight: FontWeight.w500,
-                        fontSize: SizeSystem.size14,
-                        fontFamily: kRubik)),
-                Spacer(),
-                Text(Date,
-                    style: TextStyle(
-                        fontWeight: FontWeight.normal,
-                        fontSize: SizeSystem.size14,
-                        fontFamily: kRubik)),
+                Text(
+                  widget.Id,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: SizeSystem.size14,
+                    fontFamily: kRubik,
+                  ),
+                ),
+                const Spacer(),
+                Text(
+                  'GC | ${dateFormatter(widget.order.createdDate ?? '--')}',
+                  style: const TextStyle(
+                    fontWeight: FontWeight.normal,
+                    fontSize: SizeSystem.size14,
+                    fontFamily: kRubik,
+                  ),
+                ),
               ],
             ),
           ),
-          SizedBox(
-            height: 6.0,
+          const SizedBox(
+            height: SizeSystem.size6,
           ),
-          Divider(
+          const Divider(
             height: 1.0,
           ),
-          _ProductListWidget(
-            item_model: itemS,
-          )
+          FutureBuilder(
+            future: futureOrder,
+            builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+              switch(snapshot.connectionState){
+                case ConnectionState.none:
+                case ConnectionState.waiting:
+                case ConnectionState.active:
+                  return const Center(
+                    child: SizedBox(
+                      height: 100,
+                      child: Center(
+                        child: CircularProgressIndicator(
+                          color: ColorSystem.primary,
+                        ),
+                      ),
+                    ),
+                  );
+                case ConnectionState.done:
+                  return ListView.separated(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemBuilder: (BuildContext context, int index) {
+                      return TaskOrderWidget(item: orderItems[index]);
+                    },
+                    separatorBuilder: (BuildContext context, int index) {
+                      return const SizedBox();
+                    },
+                    itemCount: orderItems.length,
+                  );
+              }
+            },
+          ),
         ]),
       ),
     );
   }
 }
 
-class _ProductListWidget extends StatelessWidget {
-  const _ProductListWidget({Key? key, required this.item_model})
-      : super(key: key);
-  final List<ItemModel> item_model;
+class TaskOrderWidget extends StatelessWidget {
+  const TaskOrderWidget({Key? key, required this.item}) : super(key: key);
+  final OrderItem item;
+
   @override
   Widget build(BuildContext context) {
-    return ListView.separated(
-        itemCount: item_model.length,
-        shrinkWrap: true,
-        separatorBuilder: (contex, index) => Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8.0),
-          child: Divider(),
-        ),
-        itemBuilder: ((context, index) => Container(
-            child: ItemModel(
-                product_price: item_model[index].product_price,
-                product_qty: item_model[index].product_qty,
-                product_disc: item_model[index].product_disc,
-                product_status: item_model[index].product_status,
-                delivery_date: item_model[index].delivery_date,
-                track_id: item_model[index].track_id)
-                ._getItemWidget)));
+    return Padding(
+      padding: const EdgeInsets.all(20),
+      child: _OrderItem(
+        product_price: item.itemPrice.toString(),
+        product_qty: item.orderedQuantity.toString(),
+        product_disc: item.description ?? '--',
+        product_status: item.status ?? '--',
+        delivery_date: '--',
+        track_id: item.trackingNumber ?? '--',
+        item_image: item.imageUrl,
+      ),
+    );
   }
 }
+
 class _OrderItem extends StatelessWidget {
   const _OrderItem(
       {Key? key,
-        required this.product_price,
-        required this.product_qty,
-        required this.product_disc,
-        required this.product_status,
-        required this.delivery_date,
-        required this.track_id,
-        this.item_image})
+      required this.product_price,
+      required this.product_qty,
+      required this.product_disc,
+      required this.product_status,
+      required this.delivery_date,
+      required this.track_id,
+      this.item_image})
       : super(key: key);
 
   final String product_price;
@@ -141,6 +193,8 @@ class _OrderItem extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
+                    if(item_image != null)
+                    Expanded(child: CachedNetworkImage(imageUrl: item_image!)),
                     Container(
                       width: double.maxFinite,
                       padding: EdgeInsets.symmetric(vertical: 3),
@@ -188,12 +242,10 @@ class _OrderItem extends StatelessWidget {
           ),
         ),
         Container(
-          // color: Colors.amber,
-
           child: Flexible(
             child: Padding(
               padding:
-              const EdgeInsets.symmetric(horizontal: 8.0, vertical: 0.0),
+                  const EdgeInsets.symmetric(horizontal: 8.0, vertical: 0.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -232,17 +284,17 @@ class _OrderItem extends StatelessWidget {
                     text: TextSpan(
                       text: 'Deilvered on:',
                       style: TextStyle(
-                        fontSize: SizeSystem.size14,
+                        fontSize: SizeSystem.size12,
                         color: Color(0xff2D3142),
                         fontFamily: kRubik,
                       ),
-                      children:   <TextSpan>[
+                      children: <TextSpan>[
                         TextSpan(
                             text: ' ' + delivery_date,
                             style: TextStyle(
                                 fontWeight: FontWeight.w500,
                                 fontFamily: kRubik,
-                                fontSize: SizeSystem.size16)),
+                                fontSize: SizeSystem.size14)),
                       ],
                     ),
                   ),
@@ -254,17 +306,17 @@ class _OrderItem extends StatelessWidget {
                     text: TextSpan(
                       text: 'Tracking ID: ',
                       style: TextStyle(
-                        fontSize: SizeSystem.size14,
+                        fontSize: SizeSystem.size12,
                         color: Color(0xff2D3142),
                         fontFamily: kRubik,
                       ),
-                      children:   <TextSpan>[
+                      children: <TextSpan>[
                         TextSpan(
                             text: track_id,
                             style: TextStyle(
                                 fontWeight: FontWeight.w500,
                                 fontFamily: kRubik,
-                                fontSize: SizeSystem.size16)),
+                                fontSize: SizeSystem.size14)),
                       ],
                     ),
                   ),
@@ -276,33 +328,4 @@ class _OrderItem extends StatelessWidget {
       ],
     );
   }
-}
-
-class ItemModel {
-  final String product_price;
-  final String product_qty;
-  final String product_disc;
-  final String product_status;
-  final String delivery_date;
-  final String track_id;
-  final String? item_image;
-
-  ItemModel(
-      {required this.product_price,
-        required this.product_qty,
-        required this.product_disc,
-        required this.product_status,
-        required this.delivery_date,
-        required this.track_id,
-        this.item_image});
-
-  get _getItemWidget => _OrderItem(
-    product_price: this.product_price,
-    product_qty: this.product_qty,
-    product_disc: this.product_disc,
-    product_status: this.product_status,
-    delivery_date: this.delivery_date,
-    track_id: this.track_id,
-    item_image: this.item_image,
-  );
 }

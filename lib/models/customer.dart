@@ -58,4 +58,15 @@ class Customer extends AppUser {
       averageLTVNet: json['Avg_ltv_net_dlrs_Formula__c'],
     );
   }
+
+  factory Customer.fromUserInfoJson({required Map<String, dynamic> json}) {
+    return Customer._(
+      id: json['Id'],
+      firstName: json['FirstName'] ?? '--',
+      lastName: json['LastName'] ?? '--',
+      name: json['Name'],
+      phone: json['MobilePhone'],
+      email: json['Email'],
+    );
+  }
 }

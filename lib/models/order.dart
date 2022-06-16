@@ -21,7 +21,7 @@ class Order {
     this.items,
   });
 
-  factory Order.fromJson(Map<String, dynamic> json){
+  factory Order.fromJson(Map<String, dynamic> json) {
     return Order._(
       id: json['Id'],
       orderNumber: json['Order_Number__c'],
@@ -35,4 +35,12 @@ class Order {
     );
   }
 
+  factory Order.fromOrderInfoJson(Map<String, dynamic> json) {
+    return Order._(
+      id: json['Id'] ?? '--',
+      orderNumber: json['OrderNumber'],
+      orderAmount: double.tryParse(json['GrandTotal']) ?? 0.0,
+      createdDate: json['OrderDate'],
+    );
+  }
 }

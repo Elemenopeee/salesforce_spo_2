@@ -11,6 +11,7 @@ import '../design_system/primitives/size_system.dart';
 import '../utils/constants.dart';
 
 class TaskListWidget extends StatelessWidget {
+  final String taskId;
   final String? subject;
   final String? taskType;
   final String? status;
@@ -20,6 +21,7 @@ class TaskListWidget extends StatelessWidget {
 
   const TaskListWidget({
     Key? key,
+    required this.taskId,
     this.subject,
     this.taskType,
     this.status,
@@ -62,7 +64,10 @@ class TaskListWidget extends StatelessWidget {
       onTap: () async {
         Navigator.of(context)
             .push(MaterialPageRoute(builder: (BuildContext context) {
-              return const TaskDetailsScreen();
+          return TaskDetailsScreen(
+            taskId: taskId,
+            email: email,
+          );
         }));
       },
       child: Container(
