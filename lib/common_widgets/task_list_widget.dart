@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:salesforce_spo/design_system/design_system.dart';
+import 'package:salesforce_spo/models/task.dart';
 import 'package:salesforce_spo/presentation/screens/task_details_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
@@ -18,10 +19,12 @@ class TaskListWidget extends StatelessWidget {
   final String? activityDate;
   final String? phone;
   final String? email;
+  final TaskModel task;
 
   const TaskListWidget({
     Key? key,
     required this.taskId,
+    required this.task,
     this.subject,
     this.taskType,
     this.status,
@@ -67,6 +70,7 @@ class TaskListWidget extends StatelessWidget {
           return TaskDetailsScreen(
             taskId: taskId,
             email: email,
+            task: task,
           );
         }));
       },

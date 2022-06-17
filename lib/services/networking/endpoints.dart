@@ -20,9 +20,10 @@ abstract class Endpoints {
       '/services/data/v53.0/query/?q=SELECT email,Comm_Amount_MTD__c,Comm_Amount_Yesterday__c, CreatedDate, LastModifiedDate FROM User where email =';
   static String kSmartTriggers = '/services/apexrest/GC_SmartTriggerAPI';
   static String kUserInformation =
-      '/services/data/v53.0/query/?q=SELECT id,name,email,MobilePhone,SmallPhotoUrl,FullPhotoUrl from user where email=';
+      '/services/data/v53.0/query/?q=SELECT id,name,email,MobilePhone,SmallPhotoUrl,FullPhotoUrl,storeid__c from user where email=';
   static String kSmartTriggerOrder =
       '/services/apexrest/GC_SmartTriggerOrderAPI/';
+  static String kStoreAgents = '/services/apexrest/GC_SmartTriggerProfileAPI/';
 
   static String getCustomerSearchByPhone(String phone) {
     return '$kBaseURL$kCustomerSearchByPhone\'$phone\'';
@@ -72,7 +73,11 @@ abstract class Endpoints {
     return '$kBaseURL$kUserInformation\'$email\'';
   }
 
-  static String getSmartTriggerOrder(String orderNumber){
+  static String getSmartTriggerOrder(String orderNumber) {
     return '$kBaseURL$kSmartTriggerOrder$orderNumber';
+  }
+
+  static String getStoreAgents(String storeID) {
+    return '$kBaseURL$kStoreAgents$storeID';
   }
 }

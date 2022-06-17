@@ -6,6 +6,10 @@ class TaskModel {
   final String? taskDate;
   final String? phone;
   final String? email;
+  final String? lastModifiedDate;
+  final String? modifiedBy;
+  final String? assignedTo;
+  final String? description;
 
   const TaskModel({
     this.id,
@@ -15,6 +19,10 @@ class TaskModel {
     this.taskDate,
     this.phone,
     this.email,
+    this.lastModifiedDate,
+    this.modifiedBy,
+    this.assignedTo,
+    this.description,
   });
 
   factory TaskModel.fromJson(Map<String, dynamic> json) {
@@ -26,6 +34,10 @@ class TaskModel {
       taskType: json['Store_Task_Type__c'],
       phone: json['Phone__c'],
       email: json['Email__c'],
+      lastModifiedDate: json['LastModifiedDate'],
+      modifiedBy: json['LastModifiedBy']['Name'],
+      assignedTo: json['Owner']['Name'],
+      description: json['Description'],
     );
   }
 }

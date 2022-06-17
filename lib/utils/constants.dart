@@ -17,3 +17,5 @@ const String authURL = '/services/oauth2/token';
 const String kRubik = 'Rubik';
 
 const String kAccessTokenKey = 'access_token';
+
+const String agentEmail = 'agent_email';

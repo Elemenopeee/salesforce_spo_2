@@ -42,4 +42,9 @@ abstract class IconSystem {
   static const String placeHolderEmoji = 'assets/icons/placeholder_emoji.svg';
   static const String agentTaskAlertIllustration =
       'assets/icons/agent_task_illustration.png';
+  static const String calendar = 'assets/icons/calendar.svg';
+  static const String edit = 'assets/icons/edit.svg';
+  static const String locationPin = 'assets/icons/location_pin.svg';
+  static const String market = 'assets/icons/market.svg';
+  static const String storeType = 'assets/icons/store_type.svg';
 }

@@ -8,10 +8,12 @@ import 'package:salesforce_spo/common_widgets/custom_linear_progress_indicator.d
 import 'package:salesforce_spo/common_widgets/task_alert_widget.dart';
 import 'package:salesforce_spo/common_widgets/task_list_widget.dart';
 import 'package:salesforce_spo/design_system/design_system.dart';
+import 'package:salesforce_spo/models/agent.dart';
 import 'package:salesforce_spo/models/task.dart';
 import 'package:salesforce_spo/services/networking/endpoints.dart';
 import 'package:salesforce_spo/services/networking/networking_service.dart';
 import 'package:salesforce_spo/services/networking/request_body.dart';
+import 'package:salesforce_spo/services/storage/shared_preferences_service.dart';
 
 import '../../utils/constants.dart';
 
@@ -46,7 +48,31 @@ class _TasksWidgetState extends State<TasksWidget> {
 
   String agentTasks = 'MyNewTask';
   String storeTasks = 'MyNewStore';
-  String id = '0056C000003WsJVQA0';
+  String id = '';
+
+  Agent? agent;
+
+  Future<void> getUser() async {
+    var email = await SharedPreferenceService().getValue(agentEmail);
+
+    if(email != null){
+      var response = await HttpService().doGet(path: Endpoints.getUserInformation(email));
+
+      if(response.data != null){
+        print(response.data['records'][0]);
+        agent = Agent.fromJson(response.data['records'][0]);
+      }
+    }
+
+    if(agent != null){
+      if(agent!.id != null){
+        id = agent!.id!;
+      }
+      if(agent!.storeId != null){
+        SharedPreferenceService().setKey(key: 'store_id', value: agent!.storeId!);
+      }
+    }
+  }
 
   void clearLists() {
     todaysTasks.clear();
@@ -59,6 +85,9 @@ class _TasksWidgetState extends State<TasksWidget> {
 
   Future<void> getTasks(String tabName) async {
     clearLists();
+
+    await getUser();
+
     var response = await HttpService().doPost(
         path: Endpoints.getSmartTriggers(),
         body: jsonEncode(RequestBody.getSmartTriggersBody(tabName, id)),
@@ -733,6 +762,7 @@ class _TasksWidgetState extends State<TasksWidget> {
                         physics: const NeverScrollableScrollPhysics(),
                         itemBuilder: (context, index) {
                           return TaskListWidget(
+                            task: displayedList[index],
                             taskId: displayedList[index].id!,
                             status: displayedList[index].status,
                             subject: displayedList[index].subject,

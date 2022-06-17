@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
+import 'package:salesforce_spo/presentation/screens/task_details_screen.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 import '../design_system/design_system.dart';
@@ -94,8 +95,8 @@ class _TaskAlertWidgetState extends State<TaskAlertWidget> {
                             ),
                             Expanded(
                               child: Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 12.0),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 12.0),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   mainAxisAlignment: MainAxisAlignment.center,
@@ -124,14 +125,28 @@ class _TaskAlertWidgetState extends State<TaskAlertWidget> {
                                     const SizedBox(
                                       height: SizeSystem.size6,
                                     ),
-                                    const Text(
-                                      'View Task',
-                                      style: TextStyle(
-                                          color: Color(0xff8C80F8),
-                                          fontSize: SizeSystem.size16,
-                                          height: 1.4,
-                                          fontFamily: kRubik,
-                                          fontWeight: FontWeight.bold),
+                                    InkWell(
+                                      onTap: () {
+                                        Navigator.of(context).push(
+                                            MaterialPageRoute(builder:
+                                                (BuildContext context) {
+                                          return TaskDetailsScreen(
+                                              task: widget.tasks[index],
+                                              taskId:
+                                                  widget.tasks[index].id ?? '',
+                                            email: widget.tasks[index].email,
+                                          );
+                                        }));
+                                      },
+                                      child: const Text(
+                                        'View Task',
+                                        style: TextStyle(
+                                            color: Color(0xff8C80F8),
+                                            fontSize: SizeSystem.size16,
+                                            height: 1.4,
+                                            fontFamily: kRubik,
+                                            fontWeight: FontWeight.bold),
+                                      ),
                                     ),
                                   ],
                                 ),

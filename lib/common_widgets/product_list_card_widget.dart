@@ -1,5 +1,8 @@
+import 'dart:math';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:salesforce_spo/design_system/design_system.dart';
 import 'package:salesforce_spo/design_system/primitives/size_system.dart';
@@ -7,16 +10,22 @@ import 'package:salesforce_spo/models/order_item.dart';
 import 'package:salesforce_spo/services/networking/endpoints.dart';
 import 'package:salesforce_spo/services/networking/networking_service.dart';
 import 'package:salesforce_spo/utils/constants.dart';
+import 'package:salesforce_spo/utils/enums/order_status_enum.dart';
 
 import '../models/order.dart';
 
 class ProductListCard extends StatefulWidget {
-  const ProductListCard(
-      {Key? key, required this.order, required this.Id, required this.Date})
-      : super(key: key);
+  const ProductListCard({
+    Key? key,
+    required this.order,
+    required this.Id,
+    required this.Date,
+    this.taskType,
+  }) : super(key: key);
   final Order order;
   final String Id;
   final String Date;
+  final String? taskType;
 
   @override
   State<ProductListCard> createState() => _ProductListCardState();
@@ -27,12 +36,23 @@ class _ProductListCardState extends State<ProductListCard> {
 
   List<OrderItem> orderItems = [];
 
+  bool expansionTileExpanded = false;
+
+  String? storeName;
+  String? entryType;
+  String? storeDirection;
+  double? grandTotal;
+
   Future<void> getFutureOrder() async {
     var response = await HttpService()
         .doGet(path: Endpoints.getSmartTriggerOrder(widget.Id));
 
     if (response.data != null) {
       for (var order in response.data['OrderList']) {
+        storeName = order['StoreName'];
+        entryType = order['EntryType'];
+        storeDirection = order['StoreDirection'];
+        grandTotal = order['GrandTotal'];
         for (var item in order['Items']) {
           try {
             orderItems.add(OrderItem.fromTaskJson(item));
@@ -50,9 +70,9 @@ class _ProductListCardState extends State<ProductListCard> {
     futureOrder = getFutureOrder();
   }
 
-  String dateFormatter(String date){
+  String dateFormatter(String date) {
     var dateTime = DateTime.parse(date);
-    return DateFormat('MMM dd,yyyy').format(dateTime);
+    return DateFormat('MMM dd, yyyy').format(dateTime);
   }
 
   @override
@@ -61,13 +81,15 @@ class _ProductListCardState extends State<ProductListCard> {
       padding: const EdgeInsets.symmetric(horizontal: SizeSystem.size10),
       child: Container(
         padding: const EdgeInsets.only(
-            top: SizeSystem.size14, bottom: SizeSystem.size18),
+          top: SizeSystem.size14,
+        ),
         decoration: BoxDecoration(
             color: ColorSystem.lavender3.withOpacity(0.08),
             borderRadius: BorderRadius.circular(SizeSystem.size14)),
         child: Column(children: [
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 6.0),
+            padding:
+                const EdgeInsets.symmetric(horizontal: 20.0, vertical: 6.0),
             child: Row(
               children: [
                 Text(
@@ -99,7 +121,7 @@ class _ProductListCardState extends State<ProductListCard> {
           FutureBuilder(
             future: futureOrder,
             builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-              switch(snapshot.connectionState){
+              switch (snapshot.connectionState) {
                 case ConnectionState.none:
                 case ConnectionState.waiting:
                 case ConnectionState.active:
@@ -118,7 +140,10 @@ class _ProductListCardState extends State<ProductListCard> {
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
                     itemBuilder: (BuildContext context, int index) {
-                      return TaskOrderWidget(item: orderItems[index]);
+                      return TaskOrderWidget(
+                        item: orderItems[index],
+                        taskType: widget.taskType,
+                      );
                     },
                     separatorBuilder: (BuildContext context, int index) {
                       return const SizedBox();
@@ -128,6 +153,309 @@ class _ProductListCardState extends State<ProductListCard> {
               }
             },
           ),
+          RotatedBox(
+            quarterTurns: 2,
+            child: Theme(
+              data: ThemeData().copyWith(dividerColor: Colors.transparent),
+              child: ExpansionTile(
+                onExpansionChanged: (expanded) {
+                  setState(() {
+                    expansionTileExpanded = expanded;
+                  });
+                },
+                trailing: SizedBox(),
+                leading: SizedBox(),
+                title: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    RotatedBox(
+                      quarterTurns: 2,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            expansionTileExpanded
+                                ? 'Less Details'
+                                : 'More Details',
+                            style: TextStyle(
+                              color: ColorSystem.lavender2,
+                              fontSize: SizeSystem.size14,
+                              fontFamily: kRubik,
+                            ),
+                          ),
+                          Icon(
+                            expansionTileExpanded
+                                ? Icons.keyboard_arrow_up_rounded
+                                : Icons.keyboard_arrow_down_rounded,
+                            color: ColorSystem.lavender2,
+                          )
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                children: [
+                  RotatedBox(
+                    quarterTurns: 2,
+                    child: Container(
+                      color: Colors.white,
+                      margin: EdgeInsets.symmetric(horizontal: 2.0),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: SizeSystem.size20,
+                        vertical: SizeSystem.size16,
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              if (storeName != null)
+                                Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    SvgPicture.asset(
+                                      IconSystem.market,
+                                      width: 20,
+                                    ),
+                                    const SizedBox(
+                                      width: SizeSystem.size16,
+                                    ),
+                                    Text(
+                                      storeName!,
+                                      style: const TextStyle(
+                                        color: ColorSystem.primary,
+                                        fontSize: SizeSystem.size14,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              if (storeName != null)
+                                const SizedBox(
+                                  width: SizeSystem.size50,
+                                ),
+                              if (entryType != null)
+                                Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    SvgPicture.asset(
+                                      IconSystem.storeType,
+                                      width: 20,
+                                    ),
+                                    const SizedBox(
+                                      width: SizeSystem.size16,
+                                    ),
+                                    Text(
+                                      entryType!,
+                                      style: const TextStyle(
+                                        color: ColorSystem.primary,
+                                        fontSize: SizeSystem.size14,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                            ],
+                          ),
+                          if (storeName != null || entryType != null)
+                            const SizedBox(
+                              height: SizeSystem.size16,
+                            ),
+                          if (storeDirection != null)
+                            Row(
+                              children: [
+                                SvgPicture.asset(
+                                  IconSystem.locationPin,
+                                  width: 20,
+                                ),
+                                const SizedBox(
+                                  width: SizeSystem.size16,
+                                ),
+                                const Text(
+                                  'Some text',
+                                  style: TextStyle(
+                                    color: ColorSystem.primary,
+                                    fontSize: SizeSystem.size14,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          const SizedBox(
+                            height: SizeSystem.size16,
+                          ),
+                          const Text(
+                            'Total:',
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontFamily: kRubik,
+                              color: ColorSystem.primary,
+                            ),
+                          ),
+                          Text(
+                            '\$${grandTotal ?? 0.0}',
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: ColorSystem.primary,
+                              fontFamily: kRubik,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Container(
+                    width: double.maxFinite,
+                    height: 1,
+                    color: Colors.grey.withOpacity(0.2),
+                  ),
+                  RotatedBox(
+                    quarterTurns: 2,
+                    child: Container(
+                      color: Colors.white,
+                      margin: EdgeInsets.symmetric(horizontal: 2.0),
+                      height: 200,
+                      child: ListView(
+                        scrollDirection: Axis.horizontal,
+                        children: [
+                          const SizedBox(
+                            width: SizeSystem.size20,
+                          ),
+                          ListView.separated(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            scrollDirection: Axis.horizontal,
+                            itemBuilder: (BuildContext context, int index) {
+                              return Center(
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Stack(
+                                      children: [
+                                        SizedBox(
+                                          height: 124,
+                                          child: Align(
+                                            alignment: Alignment.bottomCenter,
+                                            child: Container(
+                                              height: 116,
+                                              width: 104,
+                                              decoration: BoxDecoration(
+                                                  color: Colors.white,
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          10.0)),
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.end,
+                                                children: [
+                                                  if (orderItems[index]
+                                                          .imageUrl !=
+                                                      null)
+                                                    Expanded(
+                                                        child: CachedNetworkImage(
+                                                            imageUrl: orderItems[
+                                                                    index]
+                                                                .imageUrl!)),
+                                                  Container(
+                                                    width: double.maxFinite,
+                                                    padding: const EdgeInsets
+                                                        .symmetric(vertical: 3),
+                                                    decoration: const BoxDecoration(
+                                                        borderRadius:
+                                                            BorderRadius.only(
+                                                                bottomLeft: Radius
+                                                                    .circular(
+                                                                        10.0),
+                                                                bottomRight: Radius
+                                                                    .circular(
+                                                                        10.0)),
+                                                        color:
+                                                            Color(0xff9C9EB9)),
+                                                    child: Center(
+                                                      child: Text(
+                                                        '\$ ${orderItems[index].itemPrice}',
+                                                        style: const TextStyle(
+                                                            color: Colors.white,
+                                                            fontSize: SizeSystem
+                                                                .size12,
+                                                            fontFamily: kRubik,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .w500),
+                                                      ),
+                                                    ),
+                                                  )
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        Positioned.fill(
+                                          child: Align(
+                                            alignment: Alignment.topCenter,
+                                            child: Container(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                horizontal:
+                                                    PaddingSystem.padding6,
+                                                vertical:
+                                                    PaddingSystem.padding2,
+                                              ),
+                                              decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          SizeSystem.size6),
+                                                  color: ColorSystem.lavender2
+                                                      .withOpacity(0.1)),
+                                              child: Text(
+                                                '${getOrderStatusToDisplay(getOrderStatus(orderItems[index].status))?.toUpperCase()}',
+                                                style: const TextStyle(
+                                                    fontFamily: kRubik,
+                                                    fontSize: SizeSystem.size8,
+                                                    color:
+                                                        ColorSystem.lavender2),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(
+                                      height: 20,
+                                    ),
+                                    SizedBox(
+                                      width: 100,
+                                      child: Text(
+                                        orderItems[index].description ?? '--',
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: TextStyle(
+                                          color: ColorSystem.primary,
+                                          fontSize: SizeSystem.size12,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                            separatorBuilder:
+                                (BuildContext context, int index) {
+                              return const SizedBox(
+                                width: 20,
+                              );
+                            },
+                            itemCount: orderItems.length,
+                          ),
+                          const SizedBox(
+                            width: SizeSystem.size20,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
         ]),
       ),
     );
@@ -135,8 +463,10 @@ class _ProductListCardState extends State<ProductListCard> {
 }
 
 class TaskOrderWidget extends StatelessWidget {
-  const TaskOrderWidget({Key? key, required this.item}) : super(key: key);
+  const TaskOrderWidget({Key? key, required this.item, this.taskType})
+      : super(key: key);
   final OrderItem item;
+  final String? taskType;
 
   @override
   Widget build(BuildContext context) {
@@ -146,7 +476,7 @@ class TaskOrderWidget extends StatelessWidget {
         product_price: item.itemPrice.toString(),
         product_qty: item.orderedQuantity.toString(),
         product_disc: item.description ?? '--',
-        product_status: item.status ?? '--',
+        product_status: taskType ?? '--',
         delivery_date: '--',
         track_id: item.trackingNumber ?? '--',
         item_image: item.imageUrl,
@@ -193,8 +523,9 @@ class _OrderItem extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    if(item_image != null)
-                    Expanded(child: CachedNetworkImage(imageUrl: item_image!)),
+                    if (item_image != null)
+                      Expanded(
+                          child: CachedNetworkImage(imageUrl: item_image!)),
                     Container(
                       width: double.maxFinite,
                       padding: EdgeInsets.symmetric(vertical: 3),

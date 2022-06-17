@@ -1,23 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import '../design_system/design_system.dart';
 import '../utils/constants.dart';
 
-class AddComment extends StatelessWidget {
-  const AddComment(
-      {Key? key,
-        required this.assigned_to_name,
-        required this.modified_by_name,
-        required this.due_by_date,
-        required this.modified_date,
-        this.commentList = const []})
-      : super(key: key);
+class AddComment extends StatefulWidget {
+  const AddComment({Key? key, this.previousComment}) : super(key: key);
 
-  final String assigned_to_name;
-  final String modified_by_name;
-  final String due_by_date;
-  final String modified_date;
-  final List<AddCommentModel> commentList;
+  final String? previousComment;
+
+  @override
+  State<AddComment> createState() => _AddCommentState();
+}
+
+class _AddCommentState extends State<AddComment> {
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -29,150 +25,76 @@ class AddComment extends StatelessWidget {
         decoration: BoxDecoration(
             color: const Color(0xff8C80F8).withOpacity(0.08),
             borderRadius: BorderRadius.circular(14.0)),
-        child: Column(children: [
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16.0),
-            child: Container(
-              width: double.maxFinite,
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(14.0),
-                  color: Colors.white),
-              padding: const EdgeInsets.only(
-                  top: 0.0, left: 14, right: 14, bottom: 18),
-              child: Column(
-                children: [
-                  // Row(
-                  //   children: [
-                  //     Icon(
-                  //       Icons.edit_note_rounded,
-                  //       color: Color(0xff9C9EB9),
-                  //       size: 26,
-                  //     ),
-                  //     SizedBox(
-                  //       width: 5.0,
-                  //     ),
-                  //     Text('Add Comment',
-                  //         style: TextStyle(
-                  //           color: Color(0xff9C9EB9),
-                  //           fontSize: SizeSystem.size12,
-                  //           fontFamily: kRubik,
-                  //           // fontWeight: FontWeight.w600
-                  //         )),
-                  //   ],
-                  // ),
-                  TextField(
-                    showCursor: false,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: Container(
+            width: double.maxFinite,
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(14.0), color: Colors.white),
+            padding: const EdgeInsets.only(
+                top: 0.0, left: 14, right: 14, bottom: 18),
+            child: Row(
+              children: [
+                Expanded(
+                  child: TextFormField(
+                    initialValue: widget.previousComment,
+                    showCursor: true,
+                    cursorColor: ColorSystem.primary,
                     decoration: InputDecoration(
                       border: InputBorder.none,
-                      label: Row(
-                        children: [
-                          Icon(
-                            Icons.edit_note_rounded,
-                            color: Color(0xff9C9EB9),
-                            size: 26,
-                          ),
-                          SizedBox(
-                            width: 5.0,
-                          ),
-                          Text('Add Comment',
-                              style: TextStyle(
-                                color: Color(0xff9C9EB9),
-                                fontSize: SizeSystem.size12,
-                                fontFamily: kRubik,
-                                // fontWeight: FontWeight.w600
-                              )),
-                        ],
-                      ),
+                      label: widget.previousComment == null
+                          ? Row(
+                              children: [
+                                SvgPicture.asset(IconSystem.edit),
+                                const SizedBox(
+                                  width: 6.0,
+                                ),
+                                const Text('Add Comment',
+                                    style: TextStyle(
+                                      color: Color(0xff9C9EB9),
+                                      fontSize: SizeSystem.size12,
+                                      fontFamily: kRubik,
+                                      // fontWeight: FontWeight.w600
+                                    )),
+                              ],
+                            )
+                          : null,
                     ),
                     keyboardType: TextInputType.multiline,
                     maxLines: null,
                     enabled: true,
                   ),
-                ],
-              ),
+                ),
+                const SizedBox(
+                  width: 16,
+                ),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        WidgetsBinding.instance.focusManager.primaryFocus
+                            ?.unfocus();
+                      },
+                      child: const Text(
+                        'Post',
+                        style: TextStyle(
+                          color: ColorSystem.lavender2,
+                          fontSize: SizeSystem.size14,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             ),
           ),
-          commentList.isEmpty
-              ? Container()
-              : ListView.separated(
-            itemCount: commentList.length,
-            shrinkWrap: true,
-            itemBuilder: (conext, index) =>
-                CommentCard(commentList: commentList, item_no: index),
-            separatorBuilder: (context, index) {
-              return Padding(
-                padding: const EdgeInsets.symmetric(vertical: 16.0),
-                child: const Divider(
-                  height: 1.0,
-                  color: Color(0xff9C9EB9),
-                ),
-              );
-            },
-          ),
-        ]),
+        ),
       ),
     );
   }
-
-
-}
-
-class CommentCard extends StatelessWidget {
-  const CommentCard(
-      {Key? key, required this.commentList, required this.item_no})
-      : super(key: key);
-  final int item_no;
-  final List<AddCommentModel>? commentList;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                commentList![item_no].name,
-                style: TextStyle(
-                    color: Color(0xff2D3142),
-                    fontSize: SizeSystem.size12,
-                    fontFamily: kRubik,
-                    fontWeight: FontWeight.w600),
-              ),
-              Text(
-                commentList![item_no].date,
-                style: TextStyle(
-                    color: Color(0xff9C9EB9),
-                    fontSize: SizeSystem.size12,
-                    fontFamily: kRubik,
-                    fontWeight: FontWeight.w500),
-              ),
-            ],
-          ),
-          SizedBox(
-            height: 8.0,
-          ),
-          Text(commentList![item_no].comment_disc,
-              style: TextStyle(
-                  color: Color(0xff2D3142),
-                  fontSize: SizeSystem.size14,
-                  fontFamily: kRubik,
-                  fontWeight: FontWeight.normal))
-        ],
-      ),
-    );
-  }
-}
-
-
-
-class AddCommentModel {
-  final String name;
-  final String date;
-  final String comment_disc;
-
-  AddCommentModel(
-      {required this.name, required this.date, required this.comment_disc});
 }
