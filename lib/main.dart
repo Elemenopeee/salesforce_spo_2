@@ -25,7 +25,7 @@ void main() async {
 
 const String _authority =
     "https://login.microsoftonline.com/organizations/oauth2/v2.0/authorize";
-const String _clientId = "dbb40d92-075a-40d0-ae48-9d3a8aa10aa9";
+const String _clientId = "88641257-66b0-4343-97c3-b78bf111e27a";
 
 String _output = 'NONE';
 const List<String> kScopes = [
