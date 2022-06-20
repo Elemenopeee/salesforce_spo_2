@@ -115,8 +115,9 @@ class _ProductListCardState extends State<ProductListCard> {
           const SizedBox(
             height: SizeSystem.size6,
           ),
-          const Divider(
+          Divider(
             height: 1.0,
+            color: ColorSystem.primary.withOpacity(0.2),
           ),
           FutureBuilder(
             future: futureOrder,
@@ -146,12 +147,19 @@ class _ProductListCardState extends State<ProductListCard> {
                       );
                     },
                     separatorBuilder: (BuildContext context, int index) {
-                      return const SizedBox();
+                      return Container(
+                        height: 1,
+                        color: ColorSystem.primary.withOpacity(0.1),
+                      );
                     },
                     itemCount: orderItems.length,
                   );
               }
             },
+          ),
+          Container(
+            height: 1,
+            color: ColorSystem.primary.withOpacity(0.1),
           ),
           RotatedBox(
             quarterTurns: 2,
@@ -177,7 +185,7 @@ class _ProductListCardState extends State<ProductListCard> {
                             expansionTileExpanded
                                 ? 'Less Details'
                                 : 'More Details',
-                            style: TextStyle(
+                            style: const TextStyle(
                               color: ColorSystem.lavender2,
                               fontSize: SizeSystem.size14,
                               fontFamily: kRubik,
@@ -199,8 +207,8 @@ class _ProductListCardState extends State<ProductListCard> {
                     quarterTurns: 2,
                     child: Container(
                       color: Colors.white,
-                      margin: EdgeInsets.symmetric(horizontal: 2.0),
-                      padding: EdgeInsets.symmetric(
+                      margin: const EdgeInsets.symmetric(horizontal: 2.0),
+                      padding: const EdgeInsets.symmetric(
                         horizontal: SizeSystem.size20,
                         vertical: SizeSystem.size16,
                       ),
@@ -528,8 +536,8 @@ class _OrderItem extends StatelessWidget {
                           child: CachedNetworkImage(imageUrl: item_image!)),
                     Container(
                       width: double.maxFinite,
-                      padding: EdgeInsets.symmetric(vertical: 3),
-                      decoration: BoxDecoration(
+                      padding: const EdgeInsets.symmetric(vertical: 3),
+                      decoration: const BoxDecoration(
                           borderRadius: BorderRadius.only(
                               bottomLeft: Radius.circular(10.0),
                               bottomRight: Radius.circular(10.0)),
@@ -537,7 +545,7 @@ class _OrderItem extends StatelessWidget {
                       child: Center(
                         child: Text(
                           '\$ ${product_price}',
-                          style: TextStyle(
+                          style: const TextStyle(
                               color: Colors.white,
                               fontSize: SizeSystem.size12,
                               fontFamily: kRubik,
@@ -584,37 +592,37 @@ class _OrderItem extends StatelessWidget {
                 children: [
                   Text(
                     product_disc,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: SizeSystem.size14,
                       fontWeight: FontWeight.w600,
                       color: Color(0xff2D3142),
                       fontFamily: kRubik,
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 8.0,
                   ),
                   Container(
-                    padding: EdgeInsets.symmetric(vertical: 5, horizontal: 8),
+                    padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 8),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10.0),
                       border: Border.all(color: Color(0xff9C9EB9)),
                     ),
                     child: Text(product_status,
-                        style: TextStyle(
+                        style: const TextStyle(
                             color: Color(0xff8C80F8),
                             fontWeight: FontWeight.w400,
                             fontSize: SizeSystem.size12,
                             fontFamily: kRubik),
                         textAlign: TextAlign.center),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 8.0,
                   ),
                   RichText(
                     text: TextSpan(
                       text: 'Deilvered on:',
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: SizeSystem.size12,
                         color: Color(0xff2D3142),
                         fontFamily: kRubik,
@@ -622,29 +630,30 @@ class _OrderItem extends StatelessWidget {
                       children: <TextSpan>[
                         TextSpan(
                             text: ' ' + delivery_date,
-                            style: TextStyle(
+                            style: const TextStyle(
                                 fontWeight: FontWeight.w500,
                                 fontFamily: kRubik,
                                 fontSize: SizeSystem.size14)),
                       ],
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 8.0,
                   ),
                   RichText(
-                    maxLines: 3,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                     text: TextSpan(
                       text: 'Tracking ID: ',
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: SizeSystem.size12,
                         color: Color(0xff2D3142),
                         fontFamily: kRubik,
                       ),
-                      children: <TextSpan>[
+                      children: [
                         TextSpan(
                             text: track_id,
-                            style: TextStyle(
+                            style: const TextStyle(
                                 fontWeight: FontWeight.w500,
                                 fontFamily: kRubik,
                                 fontSize: SizeSystem.size14)),

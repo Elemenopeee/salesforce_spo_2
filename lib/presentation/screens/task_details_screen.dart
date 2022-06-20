@@ -12,6 +12,9 @@ import 'package:salesforce_spo/models/task.dart';
 import 'package:salesforce_spo/services/networking/endpoints.dart';
 import 'package:salesforce_spo/services/networking/networking_service.dart';
 
+import '../../services/storage/shared_preferences_service.dart';
+import '../../utils/constants.dart';
+
 class TaskDetailsScreen extends StatefulWidget {
   final String taskId;
   final String? email;
@@ -30,29 +33,18 @@ class TaskDetailsScreen extends StatefulWidget {
 
 class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
   late Future<void> futureTaskDetails;
-  late Future<void> futureUserInformation;
 
   List<Order> orders = [];
 
-  Customer? customer;
-
-  Future<void> getUserInformation() async {
-    if (widget.email != null) {
-      var response = await HttpService().doGet(
-          path: Endpoints.getUserInformation('ankit.kumar@guitarcenter.com'));
-
-      if (response.data != null) {
-        if (response.data['records'] != null) {
-          customer =
-              Customer.fromUserInfoJson(json: response.data['records'][0]);
-        }
-      }
-    }
-  }
-
   Future<void> getTaskDetails() async {
+
+    print(widget.taskId);
+
     var response = await HttpService()
         .doGet(path: Endpoints.getTaskDetails(widget.taskId));
+
+    print(Endpoints.getTaskDetails(widget.taskId));
+
     try {
       if (response.data != null) {
         for (var order in response.data['Orders']) {
@@ -73,7 +65,6 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
   initState() {
     super.initState();
     futureTaskDetails = getTaskDetails();
-    futureUserInformation = getUserInformation();
   }
 
   @override
@@ -113,25 +104,13 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
             return ListView(
               padding: const EdgeInsets.all(10),
               children: [
-                if (widget.email != null)
-                  FutureBuilder(
-                    future: futureUserInformation,
-                    builder:
-                        (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-                      if (customer != null) {
-                        return ProfileWidget(
-                            name: customer?.name ?? '--',
-                            number: customer?.phone ?? '--',
-                            email: customer?.email ?? '--');
-                      } else {
-                        return const SizedBox.shrink();
-                      }
-                    },
-                  ),
-                if (widget.email != null)
-                  const SizedBox(
-                    height: SizeSystem.size20,
-                  ),
+                ProfileWidget(
+                    name: widget.task.contactName ?? '--',
+                    number: widget.task.phone ?? '--',
+                    email: widget.task.email ?? '--'),
+                const SizedBox(
+                  height: SizeSystem.size20,
+                ),
                 ListView.separated(
                   itemCount: orders.length,
                   shrinkWrap: true,

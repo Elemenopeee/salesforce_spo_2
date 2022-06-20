@@ -40,7 +40,7 @@ class Order {
   factory Order.fromOrderInfoJson(Map<String, dynamic> json) {
     return Order._(
       id: json['Id'] ?? '--',
-      orderNumber: json['OrderNumber'],
+      orderNumber: json['OrderNumber'] ?? json['OrderNo'],
       orderAmount: double.tryParse(json['GrandTotal']) ?? 0.0,
       createdDate: json['OrderDate'],
       taskType: json['TaskType'],

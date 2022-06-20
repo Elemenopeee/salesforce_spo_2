@@ -6,6 +6,7 @@ class TaskModel {
   final String? taskDate;
   final String? phone;
   final String? email;
+  final String? contactName;
   final String? lastModifiedDate;
   final String? modifiedBy;
   final String? assignedTo;
@@ -19,6 +20,7 @@ class TaskModel {
     this.taskDate,
     this.phone,
     this.email,
+    this.contactName,
     this.lastModifiedDate,
     this.modifiedBy,
     this.assignedTo,
@@ -34,6 +36,7 @@ class TaskModel {
       taskType: json['Store_Task_Type__c'],
       phone: json['Phone__c'],
       email: json['Email__c'],
+      contactName: json['Contact_Name__c'] ?? json['Who']['Name'],
       lastModifiedDate: json['LastModifiedDate'],
       modifiedBy: json['LastModifiedBy']['Name'],
       assignedTo: json['Owner']['Name'],
