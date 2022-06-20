@@ -77,7 +77,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'GC Customer Connect',
+      title: 'GC Customer Connect Sandbox',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
