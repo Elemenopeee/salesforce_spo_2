@@ -25,10 +25,10 @@ class HttpService {
     }
 
     try {
-      Map<String, String> headers = {};
+      Map<String, String> localHeaders = {};
       // check if token is required then add bearer token in header
       if (tokenRequired) {
-        headers.putIfAbsent('Authorization', () => 'OAuth $accessToken');
+        localHeaders.putIfAbsent('Authorization', () => 'OAuth $accessToken');
       }
       // var uri = Uri.https(kBaseURL, path, params);
       final response =

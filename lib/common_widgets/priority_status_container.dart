@@ -16,11 +16,11 @@ class PriorityStatusContainer extends StatelessWidget {
   Color priorityContainerColor(String status) {
     switch (status) {
       case "High":
-        return ColorSystem.redLiteBg;
+        return ColorSystem.primary;
       case "Medium":
-        return ColorSystem.orangeLiteBg;
+        return ColorSystem.darkOchre;
       case "Low":
-        return ColorSystem.purpleLiteBg;
+        return ColorSystem.purple;
     }
     return Colors.transparent;
   }
