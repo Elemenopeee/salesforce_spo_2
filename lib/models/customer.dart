@@ -67,4 +67,15 @@ class Customer extends AppUser {
       twelveMonthSales: json['Net_Sales_Amount_12MO__c'],
     );
   }
+
+  factory Customer.fromUserInfoJson({required Map<String, dynamic> json}) {
+    return Customer._(
+      id: json['Id'],
+      firstName: json['FirstName'] ?? '--',
+      lastName: json['LastName'] ?? '--',
+      name: json['Name'],
+      phone: json['MobilePhone'],
+      email: json['Email'],
+    );
+  }
 }

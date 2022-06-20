@@ -8,6 +8,7 @@ class Order {
   final double orderAmount;
   final String? orderStatus;
   final double? items;
+  final String? taskType;
 
   Order._({
     required this.id,
@@ -19,9 +20,10 @@ class Order {
     required this.orderAmount,
     this.orderStatus,
     this.items,
+    this.taskType,
   });
 
-  factory Order.fromJson(Map<String, dynamic> json){
+  factory Order.fromJson(Map<String, dynamic> json) {
     return Order._(
       id: json['Id'],
       orderNumber: json['Order_Number__c'],
@@ -35,4 +37,13 @@ class Order {
     );
   }
 
+  factory Order.fromOrderInfoJson(Map<String, dynamic> json) {
+    return Order._(
+      id: json['Id'] ?? '--',
+      orderNumber: json['OrderNumber'],
+      orderAmount: double.tryParse(json['GrandTotal']) ?? 0.0,
+      createdDate: json['OrderDate'],
+      taskType: json['TaskType'],
+    );
+  }
 }

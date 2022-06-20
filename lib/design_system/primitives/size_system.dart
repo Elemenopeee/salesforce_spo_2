@@ -29,4 +29,5 @@ abstract class SizeSystem {
   static const double size50 = 50.0;
   static const double size60 = 60.0;
   static const double size64 = 64.0;
+  static const double size100 = 100.0;
 }

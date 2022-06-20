@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:salesforce_spo/design_system/design_system.dart';
+import 'package:salesforce_spo/presentation/intermediate_widgets/tasks_widget.dart';
 import 'package:salesforce_spo/services/networking/endpoints.dart';
 import 'package:salesforce_spo/services/networking/networking_service.dart';
 import 'package:salesforce_spo/services/storage/shared_preferences_service.dart';
@@ -13,7 +14,7 @@ import 'custom_tab_bar.dart';
 import 'open_orders.dart';
 
 class TabHome extends StatefulWidget {
-  final String agentName;
+  final String? agentName;
 
   const TabHome({
     Key? key,
@@ -48,7 +49,7 @@ class _TabHomeState extends State<TabHome> with SingleTickerProviderStateMixin {
         child: Column(
           children: [
             ProfileContainer(
-              agentName: widget.agentName,
+              agentName: widget.agentName ?? 'there',
             ),
             const SizedBox(
               height: SizeSystem.size20,
@@ -57,26 +58,30 @@ class _TabHomeState extends State<TabHome> with SingleTickerProviderStateMixin {
             const SizedBox(
               height: SizeSystem.size36,
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: SizeSystem.size28,
-                vertical: SizeSystem.size14,
-              ),
-              child: SvgPicture.asset(IconSystem.inProgress),
+            // Padding(
+            //   padding: const EdgeInsets.symmetric(
+            //     horizontal: SizeSystem.size28,
+            //     vertical: SizeSystem.size14,
+            //   ),
+            //   child: SvgPicture.asset(IconSystem.inProgress),
+            // ),
+            // const SizedBox(
+            //   height: SizeSystem.size36,
+            // ),
+            TasksWidget(
+              agentName:
+                  widget.agentName != null ? '${widget.agentName}\'s' : 'My',
             ),
-            const SizedBox(
-              height: SizeSystem.size36,
-            ),
-            const Center(
-              child: Text(
-                'Work in progress',
-                style: TextStyle(
-                  color: ColorSystem.secondary,
-                  fontSize: SizeSystem.size12,
-                  fontFamily: kRubik,
-                ),
-              ),
-            ),
+            // const Center(
+            //   child: Text(
+            //     'Work in progress',
+            //     style: TextStyle(
+            //       color: ColorSystem.secondary,
+            //       fontSize: SizeSystem.size12,
+            //       fontFamily: kRubik,
+            //     ),
+            //   ),
+            // ),
             const SizedBox(
               height: SizeSystem.size36,
             ),
@@ -194,8 +199,7 @@ class _ProgressContainerState extends State<ProgressContainer> {
           await HttpService().doGet(path: Endpoints.getTotalSales(agentMail));
       try {
         totalSales = response.data['records'][0]['Sales'];
-      }
-      catch (e) {
+      } catch (e) {
         print(e);
       }
     }
@@ -206,10 +210,9 @@ class _ProgressContainerState extends State<ProgressContainer> {
     if (agentMail != null) {
       var response = await HttpService()
           .doGet(path: Endpoints.getTotalCommission(agentMail));
-      try{
+      try {
         totalCommission = response.data['records'][0]['commission'];
-      }
-      catch (e) {
+      } catch (e) {
         print(e);
       }
     }
@@ -222,12 +225,11 @@ class _ProgressContainerState extends State<ProgressContainer> {
           await HttpService().doGet(path: Endpoints.getTodaysSales(agentMail));
       List<dynamic> records = response.data['records'];
       if (records.isNotEmpty) {
-        try{
+        try {
           var saleData = records.firstWhere(
-                  (element) => element['Gross_Sales_Yesterday__c'] != null);
+              (element) => element['Gross_Sales_Yesterday__c'] != null);
           todaysSale = saleData['Gross_Sales_Yesterday__c'];
-        }
-        catch (e){
+        } catch (e) {
           print(e);
         }
       }
@@ -244,10 +246,9 @@ class _ProgressContainerState extends State<ProgressContainer> {
       if (records.isNotEmpty) {
         try {
           var commissionData = records.firstWhere(
-                  (element) => element['Comm_Amount_Yesterday__c'] != null);
+              (element) => element['Comm_Amount_Yesterday__c'] != null);
           todaysCommission = commissionData['Comm_Amount_Yesterday__c'];
-        }
-        catch (e){
+        } catch (e) {
           print(e);
         }
       }

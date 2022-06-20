@@ -2,6 +2,7 @@ import 'dart:math';
 import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:salesforce_spo/common_widgets/customer_details_card.dart';
@@ -69,7 +70,9 @@ class _CustomerLookupWidgetState extends State<CustomerLookupWidget> {
           showEmailField = false;
         }
       } catch (error) {
-        print(error);
+        if (kDebugMode) {
+          print(error);
+        }
       }
     } else {
       var data = await HttpService().doGet(
@@ -85,7 +88,9 @@ class _CustomerLookupWidgetState extends State<CustomerLookupWidget> {
           showPhoneField = false;
         }
       } catch (error) {
-        print(error);
+        if (kDebugMode) {
+          print(error);
+        }
       }
     }
 

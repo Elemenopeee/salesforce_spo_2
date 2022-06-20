@@ -3,10 +3,14 @@ import 'package:azure_ad_authentication/exeption.dart';
 import 'package:azure_ad_authentication/model/user_ad.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:salesforce_spo/common_widgets/tgc_app_bar.dart';
 import 'package:salesforce_spo/common_widgets/notched_bottom_navigation_bar.dart';
 import 'package:salesforce_spo/design_system/design_system.dart';
 import 'package:salesforce_spo/presentation/intermediate_widgets/customer_lookup_widget.dart';
+import 'package:salesforce_spo/presentation/screens/smart_triggers_screen.dart';
 import 'package:salesforce_spo/presentation/tabs/home_tab.dart';
+import 'package:salesforce_spo/services/networking/endpoints.dart';
+import 'package:salesforce_spo/services/networking/networking_service.dart';
 import 'package:salesforce_spo/services/storage/shared_preferences_service.dart';
 import 'package:salesforce_spo/utils/constants.dart';
 
@@ -79,8 +83,6 @@ class MyApp extends StatelessWidget {
   }
 }
 
-// ClientLandingScreen(customerID: '0014M00001nv3BwQAI',),
-
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
 
@@ -89,22 +91,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  get getAppBar => AppBar(
-    toolbarHeight: 80,
-    leadingWidth: double.infinity,
-    backgroundColor: Colors.white,
-    elevation: 0,
-    centerTitle: true,
-    title: const Text(
-      "HOME",
-      style: TextStyle(
-        fontSize: 18,
-        fontWeight: FontWeight.w500,
-        color: Colors.black,
-        fontFamily: kRubik,
-      ),
-    ),
-  );
 
   @override
   void initState() {
@@ -114,11 +100,13 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: ColorSystem.scaffoldBackgroundColor,
       extendBodyBehindAppBar: true,
-      appBar: getAppBar,
+      appBar: TGCAppBar(
+        label: 'HOME',
+      ),
       body: TabHome(
-        agentName: userAdModel?.givenName ?? 'there,',
+        agentName: userAdModel?.givenName,
       ),
       bottomNavigationBar: NotchedBottomNavigationBar(
         actions: [
@@ -127,9 +115,8 @@ class _HomeScreenState extends State<HomeScreen> {
             splashColor: Colors.transparent,
             onPressed: () {
               showModalBottomSheet(
-                constraints: BoxConstraints(
-                  maxHeight: MediaQuery.of(context).size.height * 0.9
-                ),
+                  constraints: BoxConstraints(
+                      maxHeight: MediaQuery.of(context).size.height * 0.9),
                   isScrollControlled: true,
                   context: context,
                   builder: (BuildContext context) {
@@ -158,7 +145,16 @@ class _HomeScreenState extends State<HomeScreen> {
           IconButton(
             focusColor: Colors.transparent,
             splashColor: Colors.transparent,
-            onPressed: () {},
+            onPressed: () {
+              Navigator.of(context)
+                  .push(MaterialPageRoute(builder: (BuildContext context) {
+                return SmartTriggerScreen(
+                  agentName: userAdModel?.givenName != null
+                      ? '${userAdModel!.givenName}\'s'
+                      : 'My',
+                );
+              }));
+            },
             icon: SvgPicture.asset(
               IconSystem.sparkle,
               width: 24,
@@ -180,9 +176,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
         centerButton: FloatingActionButton(
           backgroundColor: ColorSystem.primary,
-          onPressed: () async {
-
-          },
+          onPressed: () async {},
           child: SvgPicture.asset(
             IconSystem.plus,
             width: 24,

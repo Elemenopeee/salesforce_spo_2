@@ -50,6 +50,12 @@ abstract class Endpoints {
       '/services/data/v53.0/query/?q=SELECT CaseNumber,Case_Subtype__c,Case_Type__c,DAX_Order_Number__c,Id,Priority,Reason,Subject,Status,Account.Name,Owner.Name,CreatedDate,LastModifiedDate FROM Case where AccountId = ';
   static String kCustomerMightAlsoLike =
       '/services/apexrest/GC_NewApp/@accountId-CustomerMightAlsoLike';
+  static String kSmartTriggers = '/services/apexrest/GC_SmartTriggerAPI';
+  static String kUserInformation =
+      '/services/data/v53.0/query/?q=SELECT id,name,email,MobilePhone,SmallPhotoUrl,FullPhotoUrl,storeid__c from user where email=';
+  static String kSmartTriggerOrder =
+      '/services/apexrest/GC_SmartTriggerOrderAPI/';
+  static String kStoreAgents = '/services/apexrest/GC_SmartTriggerProfileAPI/';
 
   static String getCustomerSearchByPhone(String phone) {
     return '$kBaseURL$kCustomerSearchByPhone\'$phone\'';
@@ -169,5 +175,25 @@ abstract class Endpoints {
 
   static String getClientClosedCases(String accountId) {
     return '$kBaseURL$kClientClosedCases\'$accountId\'  and status in (\'Closed\',\'Resolved\') and Case_Type__c!=null ORDER BY CreatedDate DESC limit 4 offset 0';
+  }
+
+  static String getSmartTriggers() {
+    return '$kBaseURL$kSmartTriggers';
+  }
+
+  static String getTaskDetails(String taskId) {
+    return '$kBaseURL$kSmartTriggers/$taskId';
+  }
+
+  static String getUserInformation(String email) {
+    return '$kBaseURL$kUserInformation\'$email\'';
+  }
+
+  static String getSmartTriggerOrder(String orderNumber) {
+    return '$kBaseURL$kSmartTriggerOrder$orderNumber';
+  }
+
+  static String getStoreAgents(String storeID) {
+    return '$kBaseURL$kStoreAgents$storeID';
   }
 }

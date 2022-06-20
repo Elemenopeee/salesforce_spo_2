@@ -25,10 +25,10 @@ abstract class ColorSystem {
   /// white color
   static const Color white = Color(0xFFFFFFFF);
 
-  // lavender color
+  /// lavender 1
   static const Color lavender = Color(0xFF9DA0FF);
 
-  // lavender 2
+  /// lavender 2
   static const Color lavender2 = Color(0xFF7265E3);
 
   /// black color
@@ -43,6 +43,7 @@ abstract class ColorSystem {
   /// Additional Purple Background color
   static const Color purple = Color(0xFFAF8EFF);
 
+  /// Purple darker
   static const Color purpleSecondary = Color(0xFF5C34DC);
 
   /// Additional Text color
@@ -57,18 +58,25 @@ abstract class ColorSystem {
   /// note bg  light blue color
   static const Color noteBlueColor = Color(0xFFF2F8FF);
 
-  // Additional dark ochre
+  /// lavender 3
+  static const Color lavender3 = Color(0xFF8C80F8);
+
+  /// Additional dark ochre
   static const Color darkOchre = Color(0xFFE57511);
 
-  // Additional purple
-  static const Color purpleDarker = Color(0xFF5C34DC);
+  /// Additional purple
+  static const Color additionalPurple = Color(0xFF5C34DC);
 
-  /// more light for grey
-  static const Color secondaryGreyBg = Color(0xFFF6F6F6);
+  /// Additional grey
+  static const Color additionalGrey = Color(0xFFD6D9E0);
 
-  ///Priority container Background color
-  static const Color redLiteBg = Color.fromRGBO(232, 16, 27, 0.1);
-  static const Color orangeLiteBg = Color.fromRGBO(229, 117, 17, 0.1);
-  static const Color purpleLiteBg = Color.fromRGBO(92, 52, 220, 0.1);
+  /// Scaffold background color
+  static const Color scaffoldBackgroundColor = Color(0xFFFFFFFF);
+
+  /// Additional blue 1
+  static const Color blue1 = Color(0xFF7088D2);
+
+  /// Sky blue
+  static const Color skyBlue = Color(0xFF7FE3F0);
 
 }

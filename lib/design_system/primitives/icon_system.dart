@@ -43,4 +43,21 @@ abstract class IconSystem {
   static const String accessoriesNotFound = 'assets/icons/accessories_not_found.svg';
   static const String clientSalesNotFound = 'assets/icons/client_sales_not_found.svg';
   static const String leaveIcon = 'assets/icons/leave.svg';
+  static const String chattingIllustration =
+      'assets/icons/chatting_illustration.svg';
+  static const String mail = 'assets/icons/mail.svg';
+  static const String message = 'assets/icons/message.svg';
+  static const String socialChatBubble = 'assets/icons/social_chat_bubble.svg';
+  static const String storeTasks = 'assets/icons/store_tasks.svg';
+  static const String agentTasks = 'assets/icons/agent_tasks.svg';
+  static const String noTasks = 'assets/icons/no_tasks.svg';
+  static const String taskIcon = 'assets/icons/task_icon.svg';
+  static const String placeHolderEmoji = 'assets/icons/placeholder_emoji.svg';
+  static const String agentTaskAlertIllustration =
+      'assets/icons/agent_task_illustration.png';
+  static const String calendar = 'assets/icons/calendar.svg';
+  static const String edit = 'assets/icons/edit.svg';
+  static const String locationPin = 'assets/icons/location_pin.svg';
+  static const String market = 'assets/icons/market.svg';
+  static const String storeType = 'assets/icons/store_type.svg';
 }
