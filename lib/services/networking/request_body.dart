@@ -8,14 +8,14 @@ abstract class RequestBody {
   }
 
   static Map<String, dynamic> getUpdateTaskBody({
-    required String taskId,
+    required String recordId,
     String? status,
     String? comment,
     String? dueDate,
     String? assignee,
   }) {
     return {
-      'recordId': taskId,
+      'recordId': recordId,
       'status': status ?? '',
       'comment': comment ?? '',
       'assignee': assignee ?? '',

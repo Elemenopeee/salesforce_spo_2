@@ -35,22 +35,13 @@ class _AddCommentState extends State<AddComment> {
   }
 
   Future<void> updateTaskComment() async {
-
-    print(jsonEncode(
-      RequestBody.getUpdateTaskBody(
-          taskId: widget.taskId, comment: previousComment),
-    ));
-
     var response = await HttpService().doPost(
       path: Endpoints.postTaskDetails(widget.taskId),
       body: jsonEncode(
         RequestBody.getUpdateTaskBody(
-            taskId: widget.taskId, comment: previousComment),
+            recordId: widget.taskId, comment: previousComment),
       ),
     );
-
-    print(response.data);
-
   }
 
   @override

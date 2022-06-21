@@ -1,9 +1,6 @@
-import 'dart:ui';
-
 import 'package:azure_ad_authentication/azure_ad_authentication.dart';
 import 'package:azure_ad_authentication/exeption.dart';
 import 'package:azure_ad_authentication/model/user_ad.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:salesforce_spo/common_widgets/tgc_app_bar.dart';
@@ -36,9 +33,7 @@ const List<String> kScopes = [
 UserAdModel? userAdModel;
 
 Future<void> _acquireToken() async {
-  SharedPreferenceService()
-      .setKey(key: 'agent_email', value: 'ankit.kumar@guitarcenter.com');
-  // await getResult();
+  await getResult();
 }
 
 Future<String> getResult({bool isAcquireToken = true}) async {
@@ -47,7 +42,8 @@ Future<String> getResult({bool isAcquireToken = true}) async {
   try {
     if (isAcquireToken) {
       userAdModel = await pca.acquireToken(scopes: kScopes);
-
+      SharedPreferenceService()
+          .setKey(key: 'agent_email', value: '${userAdModel?.mail}');
 
       // userAdModel.
     } else {
