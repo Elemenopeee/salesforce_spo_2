@@ -20,6 +20,7 @@ class TaskListWidget extends StatelessWidget {
   final String? phone;
   final String? email;
   final TaskModel task;
+  final bool isOverdue;
 
   const TaskListWidget({
     Key? key,
@@ -31,28 +32,34 @@ class TaskListWidget extends StatelessWidget {
     this.activityDate,
     this.email,
     this.phone,
+    this.isOverdue = false,
   }) : super(key: key);
 
   String getSubtitleFromDate(String? activityDate) {
-    if (activityDate == null) {
-      return '';
+    if (status == 'Completed') {
+      return 'Completed';
     } else {
-      var dateTime = DateTime.parse(activityDate);
-      final now = DateTime.now();
-      final today = DateTime(now.year, now.month, now.day);
-      final yesterday = DateTime(now.year, now.month, now.day - 1);
-      final tomorrow = DateTime(now.year, now.month, now.day + 1);
-      final dateToCheck = DateTime(dateTime.year, dateTime.month, dateTime.day);
-      if (dateToCheck == today) {
-        return ' : Today';
-      } else if (dateToCheck == yesterday ||
-          dateToCheck.millisecondsSinceEpoch <
-              yesterday.millisecondsSinceEpoch) {
-        return ' : Overdue';
-      } else if (dateToCheck == tomorrow) {
-        return ' : Tomorrow';
+      if (activityDate == null) {
+        return '';
       } else {
-        return ' : ${DateFormat('MMM dd, yyyy').format(dateTime)}';
+        var dateTime = DateTime.parse(activityDate);
+        final now = DateTime.now();
+        final today = DateTime(now.year, now.month, now.day);
+        final yesterday = DateTime(now.year, now.month, now.day - 1);
+        final tomorrow = DateTime(now.year, now.month, now.day + 1);
+        final dateToCheck =
+            DateTime(dateTime.year, dateTime.month, dateTime.day);
+        if (dateToCheck == today) {
+          return 'Today';
+        } else if (dateToCheck == yesterday ||
+            dateToCheck.millisecondsSinceEpoch <
+                yesterday.millisecondsSinceEpoch) {
+          return DateFormat('MMM dd, yyyy').format(dateTime);
+        } else if (dateToCheck == tomorrow) {
+          return 'Tomorrow';
+        } else {
+          return DateFormat('MMM dd, yyyy').format(dateTime);
+        }
       }
     }
   }
@@ -101,20 +108,22 @@ class TaskListWidget extends StatelessWidget {
                       ),
                       children: [
                         TextSpan(
-                          text: '$taskType',
+                          text: '$taskType : ',
                           style: const TextStyle(
                             fontSize: SizeSystem.size14,
                             color: ColorSystem.secondary,
                           ),
                         ),
                         TextSpan(
-                          text: getSubtitleFromDate(activityDate),
+                          text: isOverdue ? 'Overdue' : getSubtitleFromDate(activityDate),
                           style: TextStyle(
                             fontSize: SizeSystem.size14,
-                            color: getSubtitleFromDate(activityDate)
-                                    .contains('Overdue')
+                            color: isOverdue
                                 ? ColorSystem.complimentary
-                                : ColorSystem.primary,
+                                : getSubtitleFromDate(activityDate)
+                                        .contains('Completed')
+                                    ? ColorSystem.additionalGreen
+                                    : ColorSystem.primary,
                           ),
                         ),
                       ],
@@ -139,7 +148,7 @@ class TaskListWidget extends StatelessWidget {
                 width: 24,
                 color: Colors.black,
               ),
-            )
+            ),
           ],
         ),
       ),

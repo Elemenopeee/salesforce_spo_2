@@ -80,4 +80,8 @@ abstract class Endpoints {
   static String getStoreAgents(String storeID) {
     return '$kBaseURL$kStoreAgents$storeID';
   }
+
+  static String postTaskDetails(String taskId){
+    return '$kBaseURL$kSmartTriggers/$taskId';
+  }
 }

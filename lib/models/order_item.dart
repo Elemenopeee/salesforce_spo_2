@@ -35,6 +35,16 @@ class OrderItem {
     );
   }
 
+  factory OrderItem.fromTaskOrderLineJson(Map<String, dynamic> json){
+    return OrderItem._(
+      itemPrice: double.tryParse(json['UnitPrice']),
+      orderedQuantity: int.tryParse(json['OrderedQty']),
+      description: json['ItemShortDesc'],
+      itemId: json['ItemID'],
+      imageUrl: json['ImageUrl'],
+    );
+  }
+
 }
 
 // "UnitPrice": "24.99",

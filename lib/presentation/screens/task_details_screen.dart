@@ -8,9 +8,11 @@ import 'package:salesforce_spo/common_widgets/tgc_app_bar.dart';
 import 'package:salesforce_spo/design_system/design_system.dart';
 import 'package:salesforce_spo/models/customer.dart';
 import 'package:salesforce_spo/models/order.dart';
+import 'package:salesforce_spo/models/order_item.dart';
 import 'package:salesforce_spo/models/task.dart';
 import 'package:salesforce_spo/services/networking/endpoints.dart';
 import 'package:salesforce_spo/services/networking/networking_service.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../services/storage/shared_preferences_service.dart';
 import '../../utils/constants.dart';
@@ -37,20 +39,28 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
   List<Order> orders = [];
 
   Future<void> getTaskDetails() async {
-
-    print(widget.taskId);
-
     var response = await HttpService()
         .doGet(path: Endpoints.getTaskDetails(widget.taskId));
 
-    print(Endpoints.getTaskDetails(widget.taskId));
-
     try {
       if (response.data != null) {
-        for (var order in response.data['Orders']) {
+        for (var orderJson in response.data['Orders']) {
+
+          var orderLines = <OrderItem>[];
+
           try {
-            print(order['TaskType']);
-            orders.add(Order.fromOrderInfoJson(order));
+            for (var orderLine in orderJson['OrderLines']) {
+              var orderLineItem = OrderItem.fromTaskOrderLineJson(orderLine);
+              orderLines.add(orderLineItem);
+            }
+          } on Exception catch (e) {
+            print(e);
+          }
+
+          try {
+            var order = Order.fromOrderInfoJson(orderJson);
+            order.orderLines = List.from(orderLines);
+            orders.add(order);
           } on Exception catch (e) {
             print(e);
           }
@@ -73,8 +83,31 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
       backgroundColor: ColorSystem.scaffoldBackgroundColor,
       appBar: TGCAppBar(
         label: 'CALL ALERT',
+        trailingActions: [
+          InkWell(
+            focusColor: Colors.transparent,
+            highlightColor: Colors.transparent,
+            splashColor: Colors.transparent,
+            hoverColor: Colors.transparent,
+            onTap: () async {
+              if (widget.task.phone != null) {
+                var phone = widget.task.phone;
+                await launchUrl(Uri.parse('tel://$phone'));
+              }
+            },
+            child: SvgPicture.asset(
+              IconSystem.phone,
+              height: 24,
+              width: 24,
+              color: Colors.black,
+            ),
+          ),
+          const SizedBox(
+            width: SizeSystem.size16,
+          ),
+        ],
         leadingWidget: InkWell(
-          onTap: (){
+          onTap: () {
             Navigator.of(context).pop();
           },
           child: Padding(
@@ -91,116 +124,119 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
       body: FutureBuilder(
         future: futureTaskDetails,
         builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-          switch(snapshot.connectionState){
+          switch (snapshot.connectionState) {
             case ConnectionState.none:
             case ConnectionState.waiting:
             case ConnectionState.active:
-            return const Center(
-              child: CircularProgressIndicator(
-                color: ColorSystem.primary,
-              ),
-            );
-            case ConnectionState.done:
-            return ListView(
-              padding: const EdgeInsets.all(10),
-              children: [
-                ProfileWidget(
-                    name: widget.task.contactName ?? '--',
-                    number: widget.task.phone ?? '--',
-                    email: widget.task.email ?? '--'),
-                const SizedBox(
-                  height: SizeSystem.size20,
+              return const Center(
+                child: CircularProgressIndicator(
+                  color: ColorSystem.primary,
                 ),
-                ListView.separated(
-                  itemCount: orders.length,
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemBuilder: (BuildContext context, int index) {
-                    return ProductListCard(
+              );
+            case ConnectionState.done:
+              return ListView(
+                padding: const EdgeInsets.all(10),
+                children: [
+                  ProfileWidget(
+                      name: widget.task.contactName ?? '--',
+                      number: widget.task.phone ?? '--',
+                      email: widget.task.email ?? '--'),
+                  const SizedBox(
+                    height: SizeSystem.size20,
+                  ),
+                  ListView.separated(
+                    itemCount: orders.length,
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemBuilder: (BuildContext context, int index) {
+                      return ProductListCard(
                         order: orders[index],
                         Id: orders[index].orderNumber ?? '--',
                         Date: orders[index].createdDate ?? '--',
-                      taskType: orders[index].taskType,
-                    );
-                  },
-                  separatorBuilder: (BuildContext context, int index) {
-                    return const SizedBox(
-                      height: 20,
-                    );
-                  },
-                ),
-                TaskDetailsDateWidget(
-                  assigned_to_name: widget.task.assignedTo ?? '--',
-                  modified_by_name: widget.task.modifiedBy ?? '--',
-                  due_by_date: widget.task.taskDate ?? '--',
-                  modified_date: widget.task.lastModifiedDate ?? '--',
-                ),
-                const SizedBox(
-                  height: 30,
-                ),
-                AddComment(
-                  previousComment: widget.task.description,
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                  child: Row(
-                    children: [
-                      ElevatedButton(
-                        style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all(ColorSystem.lavender3),
-                            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                                RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10.0),
-                                )
-                            )
-                        ),
-                        onPressed: () {},
-                        child: const Padding(
-                          padding: EdgeInsets.symmetric(vertical: 14),
-                          child: Text(
-                            '+',
-                            style: TextStyle(fontSize: 30),
-                          ),
-                        ),),
-                      SizedBox(
-                        width: 20,
-                      ),
-                      Expanded(
-                        child: ElevatedButton(
-                          style: ButtonStyle(
-                              backgroundColor: MaterialStateProperty.all(ColorSystem.primary),
-                              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                                  RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10.0),
-                                  )
-                              )
-                          ),
-                          onPressed: () {},
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            mainAxisSize: MainAxisSize.max,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.symmetric(vertical: 22),
-                                child: const Text(
-                                  'Mark as complete',
-                                  style: TextStyle(fontSize: 16),
-                                ),
-                              ),
-                            ],
-                          ),),
-                      ),
-                    ],
+                        taskType: orders[index].taskType,
+                      );
+                    },
+                    separatorBuilder: (BuildContext context, int index) {
+                      return const SizedBox(
+                        height: 20,
+                      );
+                    },
                   ),
-                ),
-                const SizedBox(
-                  height: 40,
-                ),
-              ],
-            );
+                  TaskDetailsDateWidget(
+                    assigned_to_name: widget.task.assignedTo ?? '--',
+                    modified_by_name: widget.task.modifiedBy ?? '--',
+                    due_by_date: widget.task.taskDate ?? '--',
+                    modified_date: widget.task.lastModifiedDate ?? '--',
+                  ),
+                  const SizedBox(
+                    height: 30,
+                  ),
+                  AddComment(
+                    taskId: widget.taskId,
+                    previousComment: widget.task.description,
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    child: Row(
+                      children: [
+                        ElevatedButton(
+                          style: ButtonStyle(
+                              backgroundColor: MaterialStateProperty.all(
+                                  ColorSystem.lavender3),
+                              shape: MaterialStateProperty.all<
+                                      RoundedRectangleBorder>(
+                                  RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10.0),
+                              ))),
+                          onPressed: () {},
+                          child: const Padding(
+                            padding: EdgeInsets.symmetric(vertical: 14),
+                            child: Text(
+                              '+',
+                              style: TextStyle(fontSize: 30),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 20,
+                        ),
+                        Expanded(
+                          child: ElevatedButton(
+                            style: ButtonStyle(
+                                backgroundColor: MaterialStateProperty.all(
+                                    ColorSystem.primary),
+                                shape: MaterialStateProperty.all<
+                                        RoundedRectangleBorder>(
+                                    RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                ))),
+                            onPressed: () {},
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              mainAxisSize: MainAxisSize.max,
+                              children: const [
+                                Padding(
+                                  padding: EdgeInsets.symmetric(vertical: 22),
+                                  child: Text(
+                                    'Mark as complete',
+                                    style: TextStyle(fontSize: 16, fontFamily: kRubik),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 40,
+                  ),
+                ],
+              );
           }
         },
       ),
