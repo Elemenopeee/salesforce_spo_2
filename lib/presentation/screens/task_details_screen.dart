@@ -264,6 +264,9 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                                   onPressed: () async {
                                     await markTaskAsCompleted();
                                     widget.task.status = 'Completed';
+                                    setState((){
+                                      taskStatus = 'Completed';
+                                    });
                                   },
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,

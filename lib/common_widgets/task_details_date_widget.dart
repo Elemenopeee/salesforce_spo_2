@@ -273,7 +273,7 @@ class _TaskDetailsDateWidgetState extends State<TaskDetailsDateWidget> {
                     children: [
                       Flexible(
                         child: InkWell(
-                          onTap: () async {
+                          onTap: widget.task.status != 'Completed' ? () async {
                             await showModalBottomSheet(
                               constraints: BoxConstraints(
                                 maxHeight:
@@ -436,7 +436,7 @@ class _TaskDetailsDateWidgetState extends State<TaskDetailsDateWidget> {
                             );
                             await updateTaskAssignee();
                             setState(() {});
-                          },
+                          } : null,
                           child: Text(
                             assigneeName,
                             style: const TextStyle(
