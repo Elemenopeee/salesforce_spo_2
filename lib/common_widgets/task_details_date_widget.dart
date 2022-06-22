@@ -75,265 +75,332 @@ class _TaskDetailsDateWidgetState extends State<TaskDetailsDateWidget> {
         decoration: BoxDecoration(
             color: const Color(0xff8C80F8).withOpacity(0.08),
             borderRadius: BorderRadius.circular(14.0)),
-        child: Column(children: [
-          Container(
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(14.0), color: Colors.white),
-            padding:
-                const EdgeInsets.symmetric(vertical: 16.0, horizontal: 14.0),
-            child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          "Due by:",
-                          style: TextStyle(
-                              color: Color(0xff2D3142),
-                              fontSize: SizeSystem.size14,
-                              fontFamily: kRubik,
-                              fontWeight: FontWeight.normal),
-                        ),
-                        const SizedBox(
-                          height: 4.0,
-                        ),
-                        Text(
-                          dueDate,
-                          style: const TextStyle(
-                              color: Color(0xff2D3142),
-                              fontSize: SizeSystem.size18,
-                              fontFamily: kRubik,
-                              fontWeight: FontWeight.w600),
-                        ),
-                      ]),
-                  InkWell(
-                    onTap: () async {
-                      await showCupertinoModalPopup(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return Container(
-                            color: Colors.white,
-                            height: MediaQuery.of(context).size.height / 2,
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                SizedBox(
-                                  height: 400,
-                                  child: CupertinoDatePicker(
-                                      mode: CupertinoDatePickerMode.date,
-                                      initialDateTime: DateTime.now(),
-                                      onDateTimeChanged: (val) {
-                                        setState(() {
-                                          dueDate = DateFormat('MMM dd, yyyy')
-                                              .format(val);
-                                        });
-                                      }),
-                                ),
-
-                                // Close the modal
-                                CupertinoButton(
-                                  child: const Text('OK'),
-                                  onPressed: () => Navigator.of(context).pop(),
-                                )
-                              ],
-                            ),
-                          );
-                        },
-                      );
-                    },
-                    child: SvgPicture.asset(
-                      IconSystem.calendar,
-                    ),
+        child: Column(
+          children: [
+            InkWell(
+              onTap: () async {
+                await showCupertinoModalPopup(
+                  filter: ImageFilter.blur(
+                    sigmaX: 4.0,
+                    sigmaY: 4.0,
                   ),
-                ]),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 18),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Row(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return Container(
+                      decoration: const BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(SizeSystem.size20),
+                          topRight: Radius.circular(SizeSystem.size20),
+                        ),
+                      ),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          SizedBox(
+                            height: 200,
+                            child: CupertinoDatePicker(
+                              mode: CupertinoDatePickerMode.date,
+                              initialDateTime: DateTime.now(),
+                              minimumDate: DateTime.parse(widget.due_by_date),
+                              onDateTimeChanged: (val) {
+                                setState(
+                                  () {
+                                    dueDate =
+                                        DateFormat('MMM dd, yyyy').format(val);
+                                  },
+                                );
+                              },
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: SizeSystem.size40,
+                              vertical: SizeSystem.size22,
+                            ),
+                            child: ElevatedButton(
+                              style: ButtonStyle(
+                                backgroundColor: MaterialStateProperty.all(
+                                  ColorSystem.primary,
+                                ),
+                                shape: MaterialStateProperty.all<
+                                    RoundedRectangleBorder>(
+                                  RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(14.0),
+                                  ),
+                                ),
+                              ),
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                mainAxisSize: MainAxisSize.max,
+                                children: const [
+                                  Padding(
+                                    padding: EdgeInsets.symmetric(
+                                      vertical: SizeSystem.size16,
+                                    ),
+                                    child: Text(
+                                      'Done',
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontFamily: kRubik,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                );
+              },
+              child: Container(
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(14.0),
+                    color: Colors.white),
+                padding: const EdgeInsets.symmetric(
+                    vertical: 16.0, horizontal: 14.0),
+                child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: const [
-                    Text(
-                      "Assigned to:",
-                      style: TextStyle(
-                          color: Color(0xff2D3142),
-                          fontSize: SizeSystem.size12,
-                          fontFamily: kRubik,
-                          fontWeight: FontWeight.w500),
-                    ),
-                    Text(
-                      "Modified by:",
-                      style: TextStyle(
-                          color: Color(0xff2D3142),
-                          fontSize: SizeSystem.size12,
-                          fontFamily: kRubik,
-                          fontWeight: FontWeight.w500),
+                  children: [
+                    Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            "Due by:",
+                            style: TextStyle(
+                                color: Color(0xff2D3142),
+                                fontSize: SizeSystem.size14,
+                                fontFamily: kRubik,
+                                fontWeight: FontWeight.normal),
+                          ),
+                          const SizedBox(
+                            height: 4.0,
+                          ),
+                          Text(
+                            dueDate,
+                            style: const TextStyle(
+                                color: Color(0xff2D3142),
+                                fontSize: SizeSystem.size18,
+                                fontFamily: kRubik,
+                                fontWeight: FontWeight.w600),
+                          ),
+                        ]),
+                    SvgPicture.asset(
+                      IconSystem.calendar,
                     ),
                   ],
                 ),
-                const SizedBox(
-                  height: 4.0,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Flexible(
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 18),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: const [
+                      Text(
+                        "Assigned to:",
+                        style: TextStyle(
+                            color: Color(0xff2D3142),
+                            fontSize: SizeSystem.size12,
+                            fontFamily: kRubik,
+                            fontWeight: FontWeight.w500),
+                      ),
+                      Text(
+                        "Modified by:",
+                        style: TextStyle(
+                            color: Color(0xff2D3142),
+                            fontSize: SizeSystem.size12,
+                            fontFamily: kRubik,
+                            fontWeight: FontWeight.w500),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 4.0,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Flexible(
                         child: InkWell(
-                      onTap: () async {
-                        await showModalBottomSheet(
-                          constraints: BoxConstraints(
-                            maxHeight: MediaQuery.of(context).size.height / 2,
-                          ),
-                          context: context,
-                          builder: (BuildContext context) {
-                            return BackdropFilter(
-                              filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                              child: Container(
-                                decoration: const BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.only(
-                                      topLeft: Radius.circular(20),
-                                      topRight: Radius.circular(20),
-                                    )),
-                                child: Column(
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.all(16.0),
-                                      child: TextFormField(
-                                        maxLines: 1,
-                                        onChanged: (name) {},
-                                        decoration: const InputDecoration(
-                                          hintText: 'Search by ID',
-                                          hintStyle: TextStyle(
-                                            color: ColorSystem.secondary,
-                                            fontSize: SizeSystem.size18,
-                                          ),
-                                          focusedBorder: UnderlineInputBorder(
-                                            borderSide: BorderSide(
-                                              color: ColorSystem.primary,
-                                              width: 1,
+                          onTap: () async {
+                            await showModalBottomSheet(
+                              constraints: BoxConstraints(
+                                maxHeight:
+                                    MediaQuery.of(context).size.height / 2,
+                              ),
+                              context: context,
+                              builder: (BuildContext context) {
+                                return BackdropFilter(
+                                  filter:
+                                      ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                                  child: Container(
+                                    decoration: const BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(20),
+                                          topRight: Radius.circular(20),
+                                        )),
+                                    child: Column(
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.all(16.0),
+                                          child: TextFormField(
+                                            maxLines: 1,
+                                            onChanged: (name) {},
+                                            decoration: const InputDecoration(
+                                              hintText: 'Search by ID',
+                                              hintStyle: TextStyle(
+                                                color: ColorSystem.secondary,
+                                                fontSize: SizeSystem.size18,
+                                              ),
+                                              focusedBorder:
+                                                  UnderlineInputBorder(
+                                                borderSide: BorderSide(
+                                                  color: ColorSystem.primary,
+                                                  width: 1,
+                                                ),
+                                              ),
                                             ),
                                           ),
                                         ),
-                                      ),
-                                    ),
-                                    Expanded(
-                                      child: FutureBuilder(
-                                        future: futureAgents,
-                                        builder: (BuildContext context,
-                                            AsyncSnapshot<dynamic> snapshot) {
-                                          switch (snapshot.connectionState) {
-                                            case ConnectionState.none:
-                                            case ConnectionState.waiting:
-                                            case ConnectionState.active:
-                                              return const Center(
-                                                child:
-                                                    CircularProgressIndicator(
-                                                  color: ColorSystem.primary,
-                                                ),
-                                              );
+                                        Expanded(
+                                          child: FutureBuilder(
+                                            future: futureAgents,
+                                            builder: (BuildContext context,
+                                                AsyncSnapshot<dynamic>
+                                                    snapshot) {
+                                              switch (
+                                                  snapshot.connectionState) {
+                                                case ConnectionState.none:
+                                                case ConnectionState.waiting:
+                                                case ConnectionState.active:
+                                                  return const Center(
+                                                    child:
+                                                        CircularProgressIndicator(
+                                                      color:
+                                                          ColorSystem.primary,
+                                                    ),
+                                                  );
 
-                                            case ConnectionState.done:
-                                              return ListView.separated(
-                                                itemCount: agents.length,
-                                                itemBuilder:
-                                                    (BuildContext context,
-                                                        int index) {
-                                                  return GestureDetector(
-                                                    onTap: () {
-                                                      assigneeName =
-                                                          agents[index].name ??
-                                                              '--';
-                                                    },
-                                                    child: Container(
-                                                      color: Colors.white,
-                                                      padding: const EdgeInsets
-                                                              .symmetric(
-                                                          horizontal: 26,
-                                                          vertical: 16),
-                                                      child: Row(
-                                                        children: [
-                                                          Text(
-                                                            agents[index]
-                                                                    .name ??
-                                                                '--',
-                                                            style:
-                                                                const TextStyle(
-                                                              color: ColorSystem
-                                                                  .primary,
-                                                              fontSize:
-                                                                  SizeSystem
-                                                                      .size18,
-                                                              fontFamily:
-                                                                  kRubik,
-                                                            ),
+                                                case ConnectionState.done:
+                                                  return ListView.separated(
+                                                    itemCount: agents.length,
+                                                    itemBuilder:
+                                                        (BuildContext context,
+                                                            int index) {
+                                                      return GestureDetector(
+                                                        onTap: () {
+                                                          assigneeName =
+                                                              agents[index]
+                                                                      .name ??
+                                                                  '--';
+                                                        },
+                                                        child: Container(
+                                                          color: Colors.white,
+                                                          padding:
+                                                              const EdgeInsets
+                                                                      .symmetric(
+                                                                  horizontal:
+                                                                      26,
+                                                                  vertical: 16),
+                                                          child: Row(
+                                                            children: [
+                                                              Text(
+                                                                agents[index]
+                                                                        .name ??
+                                                                    '--',
+                                                                style:
+                                                                    const TextStyle(
+                                                                  color: ColorSystem
+                                                                      .primary,
+                                                                  fontSize:
+                                                                      SizeSystem
+                                                                          .size18,
+                                                                  fontFamily:
+                                                                      kRubik,
+                                                                ),
+                                                              ),
+                                                            ],
                                                           ),
-                                                        ],
-                                                      ),
-                                                    ),
+                                                        ),
+                                                      );
+                                                    },
+                                                    separatorBuilder:
+                                                        (BuildContext context,
+                                                            int index) {
+                                                      return Container(
+                                                        width: double.maxFinite,
+                                                        margin: const EdgeInsets
+                                                            .symmetric(
+                                                          horizontal: 16,
+                                                        ),
+                                                        height: 2,
+                                                        color: Colors.grey
+                                                            .withOpacity(0.3),
+                                                      );
+                                                    },
                                                   );
-                                                },
-                                                separatorBuilder:
-                                                    (BuildContext context,
-                                                        int index) {
-                                                  return Container(
-                                                    width: double.maxFinite,
-                                                    margin: const EdgeInsets
-                                                        .symmetric(
-                                                      horizontal: 16,
-                                                    ),
-                                                    height: 2,
-                                                    color: Colors.grey
-                                                        .withOpacity(0.3),
-                                                  );
-                                                },
-                                              );
-                                          }
-                                        },
-                                      ),
+                                              }
+                                            },
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                  ],
-                                ),
-                              ),
+                                  ),
+                                );
+                              },
                             );
+                            setState(() {});
                           },
-                        );
-                        setState(() {});
-                      },
-                      child: Text(assigneeName,
+                          child: Text(
+                            assigneeName,
+                            style: const TextStyle(
+                              color: Color(0xff53A5FF),
+                              fontSize: SizeSystem.size12,
+                              fontFamily: kRubik,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ),
+                      Text.rich(
+                        TextSpan(
+                          text: widget.modified_by_name + " ",
                           style: const TextStyle(
                               color: Color(0xff53A5FF),
                               fontSize: SizeSystem.size12,
                               fontFamily: kRubik,
-                              fontWeight: FontWeight.w600)),
-                    )),
-                    Text.rich(TextSpan(
-                        text: widget.modified_by_name + " ",
-                        style: const TextStyle(
-                            color: Color(0xff53A5FF),
-                            fontSize: SizeSystem.size12,
-                            fontFamily: kRubik,
-                            fontWeight: FontWeight.w600),
-                        children: <InlineSpan>[
-                          TextSpan(
-                            text: "| " + lastModifiedDate,
-                            style: const TextStyle(
-                                color: Color(0xff2D3142),
-                                fontSize: SizeSystem.size12,
-                                fontFamily: kRubik,
-                                fontWeight: FontWeight.normal),
-                          )
-                        ])),
-                  ],
-                )
-              ],
+                              fontWeight: FontWeight.w600),
+                          children: <InlineSpan>[
+                            TextSpan(
+                              text: "| " + lastModifiedDate,
+                              style: const TextStyle(
+                                  color: Color(0xff2D3142),
+                                  fontSize: SizeSystem.size12,
+                                  fontFamily: kRubik,
+                                  fontWeight: FontWeight.normal),
+                            )
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
-          )
-        ]),
+          ],
+        ),
       ),
     );
   }

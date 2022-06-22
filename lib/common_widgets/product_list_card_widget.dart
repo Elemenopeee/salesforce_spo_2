@@ -857,7 +857,7 @@ class TaskOrderLineWidget extends StatelessWidget {
                 description ?? '--',
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
-                style: TextStyle(
+                style: const TextStyle(
                   color: ColorSystem.primary,
                   fontSize: SizeSystem.size12,
                 ),

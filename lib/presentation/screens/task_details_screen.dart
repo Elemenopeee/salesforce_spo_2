@@ -178,62 +178,68 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                   const SizedBox(
                     height: 20,
                   ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: Row(
-                      children: [
-                        ElevatedButton(
-                          style: ButtonStyle(
-                              backgroundColor: MaterialStateProperty.all(
-                                  ColorSystem.lavender3),
-                              shape: MaterialStateProperty.all<
-                                      RoundedRectangleBorder>(
-                                  RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10.0),
-                              ))),
-                          onPressed: () {},
-                          child: const Padding(
-                            padding: EdgeInsets.symmetric(vertical: 14),
-                            child: Text(
-                              '+',
-                              style: TextStyle(fontSize: 30),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(
-                          width: 20,
-                        ),
-                        Expanded(
-                          child: ElevatedButton(
-                            style: ButtonStyle(
-                                backgroundColor: MaterialStateProperty.all(
-                                    ColorSystem.primary),
-                                shape: MaterialStateProperty.all<
-                                        RoundedRectangleBorder>(
-                                    RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10.0),
-                                ))),
-                            onPressed: () {},
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              mainAxisSize: MainAxisSize.max,
-                              children: const [
-                                Padding(
-                                  padding: EdgeInsets.symmetric(vertical: 22),
-                                  child: Text(
-                                    'Mark as complete',
-                                    style: TextStyle(fontSize: 16, fontFamily: kRubik),
-                                  ),
+                  if(widget.task.status != 'Completed')
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        child: Row(
+                          children: [
+                            ElevatedButton(
+                              style: ButtonStyle(
+                                  backgroundColor: MaterialStateProperty.all(
+                                      ColorSystem.lavender3),
+                                  shape: MaterialStateProperty.all<
+                                          RoundedRectangleBorder>(
+                                      RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                  ))),
+                              onPressed: () {},
+                              child: const Padding(
+                                padding: EdgeInsets.symmetric(vertical: 14),
+                                child: Text(
+                                  '+',
+                                  style: TextStyle(fontSize: 30),
                                 ),
-                              ],
+                              ),
                             ),
-                          ),
+                            const SizedBox(
+                              width: 20,
+                            ),
+                            Expanded(
+                              child: ElevatedButton(
+                                style: ButtonStyle(
+                                    backgroundColor: MaterialStateProperty.all(
+                                        ColorSystem.primary),
+                                    shape: MaterialStateProperty.all<
+                                            RoundedRectangleBorder>(
+                                        RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10.0),
+                                    ))),
+                                onPressed: () {},
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  mainAxisSize: MainAxisSize.max,
+                                  children: const [
+                                    Padding(
+                                      padding: EdgeInsets.symmetric(vertical: 22),
+                                      child: Text(
+                                        'Mark as complete',
+                                        style: TextStyle(fontSize: 16, fontFamily: kRubik),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 40,
+                      ),
+                      const SizedBox(
+                        height: 40,
+                      ),
+                    ],
                   ),
                 ],
               );

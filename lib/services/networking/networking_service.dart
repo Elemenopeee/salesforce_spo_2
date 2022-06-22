@@ -102,7 +102,6 @@ class HttpService {
       try {
         response =
             await http.post(Uri.parse(path), body: body, headers: headers);
-        print(response.body);
       }
       catch(e){
         print(e);
