@@ -370,6 +370,9 @@ class _TaskDetailsDateWidgetState extends State<TaskDetailsDateWidget> {
                                                                       26,
                                                                   vertical: 16),
                                                           child: Row(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .spaceBetween,
                                                             children: [
                                                               Text(
                                                                 agents[index]
@@ -379,6 +382,21 @@ class _TaskDetailsDateWidgetState extends State<TaskDetailsDateWidget> {
                                                                     const TextStyle(
                                                                   color: ColorSystem
                                                                       .primary,
+                                                                  fontSize:
+                                                                      SizeSystem
+                                                                          .size18,
+                                                                  fontFamily:
+                                                                      kRubik,
+                                                                ),
+                                                              ),
+                                                              Text(
+                                                                agents[index]
+                                                                        .employeeId ??
+                                                                    '--',
+                                                                style:
+                                                                    const TextStyle(
+                                                                  color: ColorSystem
+                                                                      .secondary,
                                                                   fontSize:
                                                                       SizeSystem
                                                                           .size18,
