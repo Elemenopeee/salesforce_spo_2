@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:salesforce_spo/common_widgets/comment_widget.dart';
@@ -6,7 +8,6 @@ import 'package:salesforce_spo/common_widgets/task_client_profile_widget.dart';
 import 'package:salesforce_spo/common_widgets/task_details_date_widget.dart';
 import 'package:salesforce_spo/common_widgets/tgc_app_bar.dart';
 import 'package:salesforce_spo/design_system/design_system.dart';
-import 'package:salesforce_spo/models/customer.dart';
 import 'package:salesforce_spo/models/order.dart';
 import 'package:salesforce_spo/models/order_item.dart';
 import 'package:salesforce_spo/models/task.dart';
@@ -14,7 +15,7 @@ import 'package:salesforce_spo/services/networking/endpoints.dart';
 import 'package:salesforce_spo/services/networking/networking_service.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../services/storage/shared_preferences_service.dart';
+import '../../services/networking/request_body.dart';
 import '../../utils/constants.dart';
 
 class TaskDetailsScreen extends StatefulWidget {
@@ -36,6 +37,8 @@ class TaskDetailsScreen extends StatefulWidget {
 class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
   late Future<void> futureTaskDetails;
 
+  String taskStatus = 'Open';
+
   List<Order> orders = [];
 
   Future<void> getTaskDetails() async {
@@ -45,7 +48,6 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
     try {
       if (response.data != null) {
         for (var orderJson in response.data['Orders']) {
-
           var orderLines = <OrderItem>[];
 
           try {
@@ -71,9 +73,24 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
     }
   }
 
+  Future<void> markTaskAsCompleted() async {
+    var response = await HttpService().doPost(
+      path: Endpoints.postTaskDetails(widget.task.id!),
+      body: jsonEncode(
+        RequestBody.getUpdateTaskBody(
+          recordId: widget.task.id!,
+          status: 'Completed',
+        ),
+      ),
+    );
+
+    print(response.data);
+  }
+
   @override
   initState() {
     super.initState();
+    taskStatus = widget.task.status ?? 'Open';
     futureTaskDetails = getTaskDetails();
   }
 
@@ -84,6 +101,7 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
       appBar: TGCAppBar(
         label: 'CALL ALERT',
         trailingActions: [
+          if(taskStatus != 'Completed')
           InkWell(
             focusColor: Colors.transparent,
             highlightColor: Colors.transparent,
@@ -137,6 +155,30 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
               return ListView(
                 padding: const EdgeInsets.all(10),
                 children: [
+                  if (taskStatus == 'Completed')
+                    Center(
+                      child: Container(
+                        margin: const EdgeInsets.symmetric(
+                          vertical: SizeSystem.size4,
+                        ),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: SizeSystem.size8,
+                          vertical: SizeSystem.size4,
+                        ),
+                        decoration: BoxDecoration(
+                          color: ColorSystem.additionalGreen.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(SizeSystem.size4),
+                        ),
+                        child: Text(
+                          taskStatus,
+                          style: TextStyle(
+                            color: ColorSystem.additionalGreen,
+                            fontFamily: kRubik,
+                            fontSize: SizeSystem.size12,
+                          ),
+                        ),
+                      ),
+                    ),
                   ProfileWidget(
                       name: widget.task.contactName ?? '--',
                       number: widget.task.phone ?? '--',
@@ -163,79 +205,86 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                     },
                   ),
                   TaskDetailsDateWidget(
+                    task: widget.task,
                     assigned_to_name: widget.task.assignedTo ?? '--',
                     modified_by_name: widget.task.modifiedBy ?? '--',
                     due_by_date: widget.task.taskDate ?? '--',
                     modified_date: widget.task.lastModifiedDate ?? '--',
                   ),
                   const SizedBox(
-                    height: 30,
+                    height: 20,
                   ),
                   AddComment(
-                    taskId: widget.taskId,
-                    previousComment: widget.task.description,
+                    task: widget.task,
                   ),
                   const SizedBox(
                     height: 20,
                   ),
-                  if(widget.task.status != 'Completed')
                   Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 10),
-                        child: Row(
-                          children: [
-                            ElevatedButton(
-                              style: ButtonStyle(
-                                  backgroundColor: MaterialStateProperty.all(
-                                      ColorSystem.lavender3),
-                                  shape: MaterialStateProperty.all<
-                                          RoundedRectangleBorder>(
-                                      RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10.0),
-                                  ))),
-                              onPressed: () {},
-                              child: const Padding(
-                                padding: EdgeInsets.symmetric(vertical: 14),
-                                child: Text(
-                                  '+',
-                                  style: TextStyle(fontSize: 30),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(
-                              width: 20,
-                            ),
-                            Expanded(
-                              child: ElevatedButton(
+                      if (taskStatus != 'Completed')
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          child: Row(
+                            children: [
+                              ElevatedButton(
                                 style: ButtonStyle(
                                     backgroundColor: MaterialStateProperty.all(
-                                        ColorSystem.primary),
+                                        ColorSystem.lavender3),
                                     shape: MaterialStateProperty.all<
                                             RoundedRectangleBorder>(
                                         RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(10.0),
                                     ))),
                                 onPressed: () {},
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  mainAxisSize: MainAxisSize.max,
-                                  children: const [
-                                    Padding(
-                                      padding: EdgeInsets.symmetric(vertical: 22),
-                                      child: Text(
-                                        'Mark as complete',
-                                        style: TextStyle(fontSize: 16, fontFamily: kRubik),
-                                      ),
-                                    ),
-                                  ],
+                                child: const Padding(
+                                  padding: EdgeInsets.symmetric(vertical: 14),
+                                  child: Text(
+                                    '+',
+                                    style: TextStyle(fontSize: 30),
+                                  ),
                                 ),
                               ),
-                            ),
-                          ],
+                              const SizedBox(
+                                width: 20,
+                              ),
+                              Expanded(
+                                child: ElevatedButton(
+                                  style: ButtonStyle(
+                                      backgroundColor:
+                                          MaterialStateProperty.all(
+                                              ColorSystem.primary),
+                                      shape: MaterialStateProperty.all<
+                                              RoundedRectangleBorder>(
+                                          RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(10.0),
+                                      ))),
+                                  onPressed: () async {
+                                    await markTaskAsCompleted();
+                                    widget.task.status = 'Completed';
+                                  },
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    mainAxisSize: MainAxisSize.max,
+                                    children: const [
+                                      Padding(
+                                        padding:
+                                            EdgeInsets.symmetric(vertical: 22),
+                                        child: Text(
+                                          'Mark as complete',
+                                          style: TextStyle(
+                                              fontSize: 16, fontFamily: kRubik),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
                       const SizedBox(
                         height: 40,
                       ),

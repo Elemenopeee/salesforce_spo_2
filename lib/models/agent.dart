@@ -4,11 +4,13 @@ class Agent {
   final String? name;
   final String? id;
   final String? storeId;
+  final String? employeeId;
 
   Agent._({
     this.id,
     this.name,
     this.storeId,
+    this.employeeId,
   });
 
   factory Agent.fromJson(Map<String, dynamic> json){
@@ -16,6 +18,7 @@ class Agent {
       id: json['Id'],
       name: json['Name'],
       storeId: json['StoreId__c'],
+      employeeId: json['EmployeeNumber'],
     );
   }
 

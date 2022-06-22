@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
@@ -5,22 +6,26 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:salesforce_spo/models/agent.dart';
+import 'package:salesforce_spo/models/task.dart';
 import 'package:salesforce_spo/services/networking/endpoints.dart';
 import 'package:salesforce_spo/services/networking/networking_service.dart';
 
 import '../design_system/design_system.dart';
+import '../services/networking/request_body.dart';
 import '../services/storage/shared_preferences_service.dart';
 import '../utils/constants.dart';
 
 class TaskDetailsDateWidget extends StatefulWidget {
   const TaskDetailsDateWidget(
       {Key? key,
+      required this.task,
       required this.assigned_to_name,
       required this.modified_by_name,
       required this.due_by_date,
       required this.modified_date})
       : super(key: key);
 
+  final TaskModel task;
   final String assigned_to_name;
   final String modified_by_name;
   final String due_by_date;
@@ -34,6 +39,9 @@ class _TaskDetailsDateWidgetState extends State<TaskDetailsDateWidget> {
   String dueDate = '';
   String lastModifiedDate = '';
   String assigneeName = '';
+  String assigneeId = '';
+
+  late DateTime selectedDate;
 
   late Future<void> futureAgents;
 
@@ -53,6 +61,29 @@ class _TaskDetailsDateWidgetState extends State<TaskDetailsDateWidget> {
     }
   }
 
+  Future<void> updateTaskDate() async {
+    var response = await HttpService().doPost(
+        path: Endpoints.postTaskDetails(widget.task.id!),
+        body: jsonEncode(
+          RequestBody.getUpdateTaskBody(
+            recordId: widget.task.id!,
+            dueDate: DateFormat('yyyy-MM-dd').format(selectedDate),
+          ),
+        ));
+  }
+
+  Future<void> updateTaskAssignee() async {
+    var response = await HttpService().doPost(
+      path: Endpoints.postTaskDetails(widget.task.id!),
+      body: jsonEncode(
+        RequestBody.getUpdateTaskBody(
+          recordId: widget.task.id!,
+          assignee: assigneeId,
+        ),
+      ),
+    );
+  }
+
   @override
   initState() {
     super.initState();
@@ -64,6 +95,7 @@ class _TaskDetailsDateWidgetState extends State<TaskDetailsDateWidget> {
       lastModifiedDate = DateFormat('MMM dd, yyyy')
           .format(DateTime.parse(widget.modified_date.substring(0, 10)));
     }
+    selectedDate = DateTime.parse(widget.due_by_date);
   }
 
   @override
@@ -78,87 +110,95 @@ class _TaskDetailsDateWidgetState extends State<TaskDetailsDateWidget> {
         child: Column(
           children: [
             InkWell(
-              onTap: () async {
-                await showCupertinoModalPopup(
-                  filter: ImageFilter.blur(
-                    sigmaX: 4.0,
-                    sigmaY: 4.0,
-                  ),
-                  context: context,
-                  builder: (BuildContext context) {
-                    return Container(
-                      decoration: const BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(SizeSystem.size20),
-                          topRight: Radius.circular(SizeSystem.size20),
+              onTap: widget.task.status != 'Completed'
+                  ? () async {
+                      await showCupertinoModalPopup(
+                        filter: ImageFilter.blur(
+                          sigmaX: 4.0,
+                          sigmaY: 4.0,
                         ),
-                      ),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          SizedBox(
-                            height: 200,
-                            child: CupertinoDatePicker(
-                              mode: CupertinoDatePickerMode.date,
-                              initialDateTime: DateTime.now(),
-                              minimumDate: DateTime.parse(widget.due_by_date),
-                              onDateTimeChanged: (val) {
-                                setState(
-                                  () {
-                                    dueDate =
-                                        DateFormat('MMM dd, yyyy').format(val);
-                                  },
-                                );
-                              },
+                        context: context,
+                        builder: (BuildContext context) {
+                          return Container(
+                            decoration: const BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(SizeSystem.size20),
+                                topRight: Radius.circular(SizeSystem.size20),
+                              ),
                             ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: SizeSystem.size40,
-                              vertical: SizeSystem.size22,
-                            ),
-                            child: ElevatedButton(
-                              style: ButtonStyle(
-                                backgroundColor: MaterialStateProperty.all(
-                                  ColorSystem.primary,
-                                ),
-                                shape: MaterialStateProperty.all<
-                                    RoundedRectangleBorder>(
-                                  RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(14.0),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                SizedBox(
+                                  height: 200,
+                                  child: CupertinoDatePicker(
+                                    mode: CupertinoDatePickerMode.date,
+                                    initialDateTime: DateTime.now(),
+                                    minimumDate:
+                                        DateTime.parse(widget.due_by_date),
+                                    onDateTimeChanged: (val) {
+                                      setState(
+                                        () {
+                                          dueDate = DateFormat('MMM dd, yyyy')
+                                              .format(val);
+                                          selectedDate = val;
+                                        },
+                                      );
+                                    },
                                   ),
                                 ),
-                              ),
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                mainAxisSize: MainAxisSize.max,
-                                children: const [
-                                  Padding(
-                                    padding: EdgeInsets.symmetric(
-                                      vertical: SizeSystem.size16,
-                                    ),
-                                    child: Text(
-                                      'Done',
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        fontFamily: kRubik,
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: SizeSystem.size40,
+                                    vertical: SizeSystem.size22,
+                                  ),
+                                  child: ElevatedButton(
+                                    style: ButtonStyle(
+                                      backgroundColor:
+                                          MaterialStateProperty.all(
+                                        ColorSystem.primary,
+                                      ),
+                                      shape: MaterialStateProperty.all<
+                                          RoundedRectangleBorder>(
+                                        RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(14.0),
+                                        ),
                                       ),
                                     ),
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      mainAxisSize: MainAxisSize.max,
+                                      children: const [
+                                        Padding(
+                                          padding: EdgeInsets.symmetric(
+                                            vertical: SizeSystem.size16,
+                                          ),
+                                          child: Text(
+                                            'Done',
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                              fontFamily: kRubik,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
-                          ),
-                        ],
-                      ),
-                    );
-                  },
-                );
-              },
+                          );
+                        },
+                      );
+                      await updateTaskDate();
+                    }
+                  : () {},
               child: Container(
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(14.0),
@@ -300,11 +340,26 @@ class _TaskDetailsDateWidgetState extends State<TaskDetailsDateWidget> {
                                                         (BuildContext context,
                                                             int index) {
                                                       return GestureDetector(
-                                                        onTap: () {
+                                                        onTap: () async {
                                                           assigneeName =
                                                               agents[index]
                                                                       .name ??
                                                                   '--';
+                                                          if (agents[index]
+                                                                  .employeeId !=
+                                                              null) {
+                                                            assigneeId = agents[
+                                                                    index]
+                                                                .employeeId!;
+                                                          }
+
+                                                          if (assigneeId
+                                                              .isNotEmpty) {
+                                                            await updateTaskAssignee();
+                                                            Navigator.of(
+                                                                    context)
+                                                                .pop();
+                                                          }
                                                         },
                                                         child: Container(
                                                           color: Colors.white,
@@ -361,6 +416,7 @@ class _TaskDetailsDateWidgetState extends State<TaskDetailsDateWidget> {
                                 );
                               },
                             );
+                            await updateTaskAssignee();
                             setState(() {});
                           },
                           child: Text(

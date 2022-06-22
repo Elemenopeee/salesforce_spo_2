@@ -1,6 +1,6 @@
 class TaskModel {
   final String? id;
-  final String? status;
+  String? status;
   final String? subject;
   final String? taskType;
   final String? taskDate;
@@ -10,9 +10,9 @@ class TaskModel {
   final String? lastModifiedDate;
   final String? modifiedBy;
   final String? assignedTo;
-  final String? description;
+  String? description;
 
-  const TaskModel({
+  TaskModel({
     this.id,
     this.status,
     this.subject,

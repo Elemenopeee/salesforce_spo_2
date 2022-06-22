@@ -16,6 +16,7 @@ import 'package:salesforce_spo/services/networking/request_body.dart';
 import 'package:salesforce_spo/services/storage/shared_preferences_service.dart';
 
 import '../../utils/constants.dart';
+import '../screens/task_details_screen.dart';
 
 class TasksWidget extends StatefulWidget {
   final String agentName;
@@ -56,20 +57,22 @@ class _TasksWidgetState extends State<TasksWidget> {
   Future<void> getUser() async {
     var email = await SharedPreferenceService().getValue(agentEmail);
 
-    if(email != null){
-      var response = await HttpService().doGet(path: Endpoints.getUserInformation(email));
+    if (email != null) {
+      var response =
+          await HttpService().doGet(path: Endpoints.getUserInformation(email));
 
-      if(response.data != null){
+      if (response.data != null) {
         agent = Agent.fromJson(response.data['records'][0]);
       }
     }
 
-    if(agent != null){
-      if(agent!.id != null){
+    if (agent != null) {
+      if (agent!.id != null) {
         id = agent!.id!;
       }
-      if(agent!.storeId != null){
-        SharedPreferenceService().setKey(key: 'store_id', value: agent!.storeId!);
+      if (agent!.storeId != null) {
+        SharedPreferenceService()
+            .setKey(key: 'store_id', value: agent!.storeId!);
       }
     }
   }
@@ -329,24 +332,24 @@ class _TasksWidgetState extends State<TasksWidget> {
                                                 showingOverdue = false;
                                               },
                                             ),
-                                            if(!showingAgentTasks)
-                                            Container(
-                                              height: SizeSystem.size1,
-                                              color:
-                                              Colors.grey.withOpacity(0.2),
-                                            ),
-                                            if(!showingAgentTasks)
-                                            CustomDialogAction(
-                                              label:
-                                              'Unassigned (${unAssignedTasks.length})',
-                                              onTap: () {
-                                                displayedList.clear();
-                                                displayedList =
-                                                    List.from(unAssignedTasks);
-                                                Navigator.of(context).pop();
-                                                showingOverdue = false;
-                                              },
-                                            ),
+                                            if (!showingAgentTasks)
+                                              Container(
+                                                height: SizeSystem.size1,
+                                                color: Colors.grey
+                                                    .withOpacity(0.2),
+                                              ),
+                                            if (!showingAgentTasks)
+                                              CustomDialogAction(
+                                                label:
+                                                    'Unassigned (${unAssignedTasks.length})',
+                                                onTap: () {
+                                                  displayedList.clear();
+                                                  displayedList = List.from(
+                                                      unAssignedTasks);
+                                                  Navigator.of(context).pop();
+                                                  showingOverdue = false;
+                                                },
+                                              ),
                                           ],
                                         )
                                       ],
@@ -418,7 +421,8 @@ class _TasksWidgetState extends State<TasksWidget> {
                                     radius: 100 / 3,
                                     lineWidth: 9.0,
                                     percent: percentCalculator(
-                                        completedTasks.length, todaysTasks.length),
+                                        completedTasks.length,
+                                        todaysTasks.length),
                                     startAngle: 360,
                                     backgroundColor: Colors.transparent,
                                     linearGradient: const LinearGradient(
@@ -557,6 +561,9 @@ class _TasksWidgetState extends State<TasksWidget> {
                 if (todaysTasks.isNotEmpty)
                   TaskAlertWidget(
                     tasks: todaysTasks,
+                    onTap: (){
+                      futureTasks = getTasks(agentTasks);
+                    },
                   ),
                 if (todaysTasks.isNotEmpty)
                   const SizedBox(
@@ -751,24 +758,24 @@ class _TasksWidgetState extends State<TasksWidget> {
                                                   showingOverdue = false;
                                                 },
                                               ),
-                                              if(!showingAgentTasks)
-                                              Container(
-                                                height: SizeSystem.size1,
-                                                color:
-                                                Colors.grey.withOpacity(0.2),
-                                              ),
-                                              if(!showingAgentTasks)
-                                              CustomDialogAction(
-                                                label:
-                                                'Unassigned (${unAssignedTasks.length})',
-                                                onTap: () {
-                                                  displayedList.clear();
-                                                  displayedList =
-                                                      List.from(unAssignedTasks);
-                                                  Navigator.of(context).pop();
-                                                  showingOverdue = false;
-                                                },
-                                              ),
+                                              if (!showingAgentTasks)
+                                                Container(
+                                                  height: SizeSystem.size1,
+                                                  color: Colors.grey
+                                                      .withOpacity(0.2),
+                                                ),
+                                              if (!showingAgentTasks)
+                                                CustomDialogAction(
+                                                  label:
+                                                      'Unassigned (${unAssignedTasks.length})',
+                                                  onTap: () {
+                                                    displayedList.clear();
+                                                    displayedList = List.from(
+                                                        unAssignedTasks);
+                                                    Navigator.of(context).pop();
+                                                    showingOverdue = false;
+                                                  },
+                                                ),
                                             ],
                                           )
                                         ],
@@ -778,7 +785,7 @@ class _TasksWidgetState extends State<TasksWidget> {
                                   setState(() {});
                                 },
                                 child: SvgPicture.asset(
-                                  IconSystem.menu,
+                                  IconSystem.funnel,
                                   width: SizeSystem.size24,
                                   color: ColorSystem.additionalGrey,
                                 ),
@@ -809,6 +816,20 @@ class _TasksWidgetState extends State<TasksWidget> {
                         physics: const NeverScrollableScrollPhysics(),
                         itemBuilder: (context, index) {
                           return TaskListWidget(
+                            onTap: () async {
+                              await Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                      builder: (BuildContext context) {
+                                return TaskDetailsScreen(
+                                  taskId: displayedList[index].id!,
+                                  email: displayedList[index].email,
+                                  task: displayedList[index],
+                                );
+                              }));
+                              setState(() {
+                                futureTasks = getTasks(agentTasks);
+                              });
+                            },
                             task: displayedList[index],
                             taskId: displayedList[index].id!,
                             status: displayedList[index].status,
@@ -818,6 +839,7 @@ class _TasksWidgetState extends State<TasksWidget> {
                             phone: displayedList[index].phone,
                             email: displayedList[index].email,
                             isOverdue: showingOverdue,
+                            showingStoreTasks: !showingAgentTasks,
                           );
                         },
                         separatorBuilder: (BuildContext context, int index) {
