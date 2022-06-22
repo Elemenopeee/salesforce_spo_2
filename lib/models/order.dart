@@ -1,3 +1,5 @@
+import 'order_item.dart';
+
 class Order {
   final String id;
   final String? orderNumber;
@@ -9,6 +11,8 @@ class Order {
   final String? orderStatus;
   final double? items;
   final String? taskType;
+  final String? brand;
+  List<OrderItem>? orderLines;
 
   Order._({
     required this.id,
@@ -21,6 +25,8 @@ class Order {
     this.orderStatus,
     this.items,
     this.taskType,
+    this.brand,
+    this.orderLines,
   });
 
   factory Order.fromJson(Map<String, dynamic> json) {
@@ -40,10 +46,11 @@ class Order {
   factory Order.fromOrderInfoJson(Map<String, dynamic> json) {
     return Order._(
       id: json['Id'] ?? '--',
-      orderNumber: json['OrderNumber'],
+      orderNumber: json['OrderNumber'] ?? json['OrderNo'],
       orderAmount: double.tryParse(json['GrandTotal']) ?? 0.0,
       createdDate: json['OrderDate'],
       taskType: json['TaskType'],
+      brand: json['Brand'],
     );
   }
 }

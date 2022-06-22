@@ -60,4 +60,6 @@ abstract class IconSystem {
   static const String locationPin = 'assets/icons/location_pin.svg';
   static const String market = 'assets/icons/market.svg';
   static const String storeType = 'assets/icons/store_type.svg';
+  static const String assignTask = 'assets/icons/assign_task.svg';
+  static const String funnel = 'assets/icons/funnel.svg';
 }

@@ -16,6 +16,7 @@ import 'package:salesforce_spo/services/networking/request_body.dart';
 import 'package:salesforce_spo/services/storage/shared_preferences_service.dart';
 
 import '../../utils/constants.dart';
+import '../screens/task_details_screen.dart';
 
 class TasksWidget extends StatefulWidget {
   final String agentName;
@@ -45,6 +46,7 @@ class _TasksWidgetState extends State<TasksWidget> {
 
   bool isManager = false;
   bool showingAgentTasks = true;
+  bool showingOverdue = false;
 
   String agentTasks = 'MyNewTask';
   String storeTasks = 'MyNewStore';
@@ -55,21 +57,22 @@ class _TasksWidgetState extends State<TasksWidget> {
   Future<void> getUser() async {
     var email = await SharedPreferenceService().getValue(agentEmail);
 
-    if(email != null){
-      var response = await HttpService().doGet(path: Endpoints.getUserInformation(email));
+    if (email != null) {
+      var response =
+          await HttpService().doGet(path: Endpoints.getUserInformation(email));
 
-      if(response.data != null){
-        print(response.data['records'][0]);
+      if (response.data != null) {
         agent = Agent.fromJson(response.data['records'][0]);
       }
     }
 
-    if(agent != null){
-      if(agent!.id != null){
+    if (agent != null) {
+      if (agent!.id != null) {
         id = agent!.id!;
       }
-      if(agent!.storeId != null){
-        SharedPreferenceService().setKey(key: 'store_id', value: agent!.storeId!);
+      if (agent!.storeId != null) {
+        SharedPreferenceService()
+            .setKey(key: 'store_id', value: agent!.storeId!);
       }
     }
   }
@@ -263,6 +266,7 @@ class _TasksWidgetState extends State<TasksWidget> {
                                                 displayedList =
                                                     List.from(futureOpenTasks);
                                                 Navigator.of(context).pop();
+                                                showingOverdue = false;
                                               },
                                             ),
                                             Container(
@@ -278,6 +282,7 @@ class _TasksWidgetState extends State<TasksWidget> {
                                                 displayedList =
                                                     List.from(pastOpenTasks);
                                                 Navigator.of(context).pop();
+                                                showingOverdue = true;
                                               },
                                             ),
                                             Container(
@@ -292,6 +297,7 @@ class _TasksWidgetState extends State<TasksWidget> {
                                                 displayedList =
                                                     List.from(allTasks);
                                                 Navigator.of(context).pop();
+                                                showingOverdue = false;
                                               },
                                             ),
                                             Container(
@@ -307,6 +313,7 @@ class _TasksWidgetState extends State<TasksWidget> {
                                                 displayedList =
                                                     List.from(todaysTasks);
                                                 Navigator.of(context).pop();
+                                                showingOverdue = false;
                                               },
                                             ),
                                             Container(
@@ -322,8 +329,27 @@ class _TasksWidgetState extends State<TasksWidget> {
                                                 displayedList =
                                                     List.from(completedTasks);
                                                 Navigator.of(context).pop();
+                                                showingOverdue = false;
                                               },
                                             ),
+                                            if (!showingAgentTasks)
+                                              Container(
+                                                height: SizeSystem.size1,
+                                                color: Colors.grey
+                                                    .withOpacity(0.2),
+                                              ),
+                                            if (!showingAgentTasks)
+                                              CustomDialogAction(
+                                                label:
+                                                    'Unassigned (${unAssignedTasks.length})',
+                                                onTap: () {
+                                                  displayedList.clear();
+                                                  displayedList = List.from(
+                                                      unAssignedTasks);
+                                                  Navigator.of(context).pop();
+                                                  showingOverdue = false;
+                                                },
+                                              ),
                                           ],
                                         )
                                       ],
@@ -333,7 +359,7 @@ class _TasksWidgetState extends State<TasksWidget> {
                                 setState(() {});
                               },
                               child: SvgPicture.asset(
-                                IconSystem.more,
+                                IconSystem.menu,
                                 width: SizeSystem.size24,
                                 color: ColorSystem.additionalGrey,
                               ),
@@ -372,7 +398,7 @@ class _TasksWidgetState extends State<TasksWidget> {
                                   child: CircularPercentIndicator(
                                     radius: 100 / 3,
                                     lineWidth: 9.0,
-                                    percent: 0.98,
+                                    percent: 1,
                                     center: SvgPicture.asset(
                                       IconSystem.sparkle,
                                       color: ColorSystem.skyBlue,
@@ -394,7 +420,9 @@ class _TasksWidgetState extends State<TasksWidget> {
                                   child: CircularPercentIndicator(
                                     radius: 100 / 3,
                                     lineWidth: 9.0,
-                                    percent: 0.52,
+                                    percent: percentCalculator(
+                                        completedTasks.length,
+                                        todaysTasks.length),
                                     startAngle: 360,
                                     backgroundColor: Colors.transparent,
                                     linearGradient: const LinearGradient(
@@ -450,7 +478,7 @@ class _TasksWidgetState extends State<TasksWidget> {
                                       height: SizeSystem.size10,
                                     ),
                                     Text(
-                                      '${percentCalculator(completedTasks.length, allTasks.length).toInt() * 100}%',
+                                      '${(percentCalculator(completedTasks.length, allTasks.length) * 100).toInt()}%',
                                       style: const TextStyle(
                                         fontSize: SizeSystem.size24,
                                         fontFamily: kRubik,
@@ -533,6 +561,9 @@ class _TasksWidgetState extends State<TasksWidget> {
                 if (todaysTasks.isNotEmpty)
                   TaskAlertWidget(
                     tasks: todaysTasks,
+                    onTap: (){
+                      futureTasks = getTasks(agentTasks);
+                    },
                   ),
                 if (todaysTasks.isNotEmpty)
                   const SizedBox(
@@ -660,6 +691,7 @@ class _TasksWidgetState extends State<TasksWidget> {
                                                   displayedList = List.from(
                                                       futureOpenTasks);
                                                   Navigator.of(context).pop();
+                                                  showingOverdue = false;
                                                 },
                                               ),
                                               Container(
@@ -675,6 +707,7 @@ class _TasksWidgetState extends State<TasksWidget> {
                                                   displayedList =
                                                       List.from(pastOpenTasks);
                                                   Navigator.of(context).pop();
+                                                  showingOverdue = true;
                                                 },
                                               ),
                                               Container(
@@ -690,6 +723,7 @@ class _TasksWidgetState extends State<TasksWidget> {
                                                   displayedList =
                                                       List.from(allTasks);
                                                   Navigator.of(context).pop();
+                                                  showingOverdue = false;
                                                 },
                                               ),
                                               Container(
@@ -705,6 +739,7 @@ class _TasksWidgetState extends State<TasksWidget> {
                                                   displayedList =
                                                       List.from(todaysTasks);
                                                   Navigator.of(context).pop();
+                                                  showingOverdue = false;
                                                 },
                                               ),
                                               Container(
@@ -720,8 +755,27 @@ class _TasksWidgetState extends State<TasksWidget> {
                                                   displayedList =
                                                       List.from(completedTasks);
                                                   Navigator.of(context).pop();
+                                                  showingOverdue = false;
                                                 },
                                               ),
+                                              if (!showingAgentTasks)
+                                                Container(
+                                                  height: SizeSystem.size1,
+                                                  color: Colors.grey
+                                                      .withOpacity(0.2),
+                                                ),
+                                              if (!showingAgentTasks)
+                                                CustomDialogAction(
+                                                  label:
+                                                      'Unassigned (${unAssignedTasks.length})',
+                                                  onTap: () {
+                                                    displayedList.clear();
+                                                    displayedList = List.from(
+                                                        unAssignedTasks);
+                                                    Navigator.of(context).pop();
+                                                    showingOverdue = false;
+                                                  },
+                                                ),
                                             ],
                                           )
                                         ],
@@ -731,7 +785,7 @@ class _TasksWidgetState extends State<TasksWidget> {
                                   setState(() {});
                                 },
                                 child: SvgPicture.asset(
-                                  IconSystem.more,
+                                  IconSystem.funnel,
                                   width: SizeSystem.size24,
                                   color: ColorSystem.additionalGrey,
                                 ),
@@ -762,6 +816,20 @@ class _TasksWidgetState extends State<TasksWidget> {
                         physics: const NeverScrollableScrollPhysics(),
                         itemBuilder: (context, index) {
                           return TaskListWidget(
+                            onTap: () async {
+                              await Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                      builder: (BuildContext context) {
+                                return TaskDetailsScreen(
+                                  taskId: displayedList[index].id!,
+                                  email: displayedList[index].email,
+                                  task: displayedList[index],
+                                );
+                              }));
+                              setState(() {
+                                futureTasks = getTasks(agentTasks);
+                              });
+                            },
                             task: displayedList[index],
                             taskId: displayedList[index].id!,
                             status: displayedList[index].status,
@@ -770,6 +838,8 @@ class _TasksWidgetState extends State<TasksWidget> {
                             activityDate: displayedList[index].taskDate,
                             phone: displayedList[index].phone,
                             email: displayedList[index].email,
+                            isOverdue: showingOverdue,
+                            showingStoreTasks: !showingAgentTasks,
                           );
                         },
                         separatorBuilder: (BuildContext context, int index) {

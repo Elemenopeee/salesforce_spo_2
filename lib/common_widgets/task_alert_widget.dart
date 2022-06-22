@@ -10,10 +10,12 @@ import '../utils/constants.dart';
 
 class TaskAlertWidget extends StatefulWidget {
   final List<TaskModel> tasks;
+  final VoidCallback onTap;
 
   const TaskAlertWidget({
     Key? key,
     required this.tasks,
+    required this.onTap,
   }) : super(key: key);
 
   @override
@@ -126,17 +128,22 @@ class _TaskAlertWidgetState extends State<TaskAlertWidget> {
                                       height: SizeSystem.size6,
                                     ),
                                     InkWell(
-                                      onTap: () {
-                                        Navigator.of(context).push(
-                                            MaterialPageRoute(builder:
-                                                (BuildContext context) {
-                                          return TaskDetailsScreen(
-                                              task: widget.tasks[index],
-                                              taskId:
-                                                  widget.tasks[index].id ?? '',
-                                            email: widget.tasks[index].email,
-                                          );
-                                        }));
+                                      onTap: () async {
+                                        await Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                            builder: (BuildContext context) {
+                                              return TaskDetailsScreen(
+                                                task: widget.tasks[index],
+                                                taskId:
+                                                    widget.tasks[index].id ??
+                                                        '',
+                                                email:
+                                                    widget.tasks[index].email,
+                                              );
+                                            },
+                                          ),
+                                        );
+                                        widget.onTap();
                                       },
                                       child: const Text(
                                         'View Task',

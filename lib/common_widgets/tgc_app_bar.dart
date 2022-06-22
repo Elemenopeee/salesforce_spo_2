@@ -6,14 +6,14 @@ import '../utils/constants.dart';
 class TGCAppBar extends AppBar {
   final String label;
   final bool titleCentered;
-  final List<Widget>? leftDrawerActions;
+  final List<Widget>? trailingActions;
   final Widget? leadingWidget;
 
   TGCAppBar({
     Key? key,
     this.label = '',
     this.titleCentered = true,
-    this.leftDrawerActions = const [],
+    this.trailingActions = const [],
     this.leadingWidget,
   }) : super(
           key: key,
@@ -27,7 +27,7 @@ class TGCAppBar extends AppBar {
             ),
           ),
           centerTitle: titleCentered,
-          actions: leftDrawerActions,
+          actions: trailingActions,
           leading: leadingWidget,
           // leadingWidth: 24,
           elevation: 0,

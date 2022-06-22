@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'dart:ui';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -102,7 +103,7 @@ class _ProductListCardState extends State<ProductListCard> {
                 ),
                 const Spacer(),
                 Text(
-                  'GC | ${dateFormatter(widget.order.createdDate ?? '--')}',
+                  '${widget.order.brand ?? '--'} | ${dateFormatter(widget.order.createdDate ?? '--')}',
                   style: const TextStyle(
                     fontWeight: FontWeight.normal,
                     fontSize: SizeSystem.size14,
@@ -115,8 +116,9 @@ class _ProductListCardState extends State<ProductListCard> {
           const SizedBox(
             height: SizeSystem.size6,
           ),
-          const Divider(
+          Divider(
             height: 1.0,
+            color: ColorSystem.primary.withOpacity(0.2),
           ),
           FutureBuilder(
             future: futureOrder,
@@ -141,17 +143,24 @@ class _ProductListCardState extends State<ProductListCard> {
                     physics: const NeverScrollableScrollPhysics(),
                     itemBuilder: (BuildContext context, int index) {
                       return TaskOrderWidget(
-                        item: orderItems[index],
+                        item: widget.order.orderLines![index],
                         taskType: widget.taskType,
                       );
                     },
                     separatorBuilder: (BuildContext context, int index) {
-                      return const SizedBox();
+                      return Container(
+                        height: 1,
+                        color: ColorSystem.primary.withOpacity(0.1),
+                      );
                     },
-                    itemCount: orderItems.length,
+                    itemCount: widget.order.orderLines?.length ?? 0,
                   );
               }
             },
+          ),
+          Container(
+            height: 1,
+            color: ColorSystem.primary.withOpacity(0.1),
           ),
           RotatedBox(
             quarterTurns: 2,
@@ -177,7 +186,7 @@ class _ProductListCardState extends State<ProductListCard> {
                             expansionTileExpanded
                                 ? 'Less Details'
                                 : 'More Details',
-                            style: TextStyle(
+                            style: const TextStyle(
                               color: ColorSystem.lavender2,
                               fontSize: SizeSystem.size14,
                               fontFamily: kRubik,
@@ -199,8 +208,8 @@ class _ProductListCardState extends State<ProductListCard> {
                     quarterTurns: 2,
                     child: Container(
                       color: Colors.white,
-                      margin: EdgeInsets.symmetric(horizontal: 2.0),
-                      padding: EdgeInsets.symmetric(
+                      margin: const EdgeInsets.symmetric(horizontal: 2.0),
+                      padding: const EdgeInsets.symmetric(
                         horizontal: SizeSystem.size20,
                         vertical: SizeSystem.size16,
                       ),
@@ -269,9 +278,9 @@ class _ProductListCardState extends State<ProductListCard> {
                                 const SizedBox(
                                   width: SizeSystem.size16,
                                 ),
-                                const Text(
-                                  'Some text',
-                                  style: TextStyle(
+                                Text(
+                                  '$storeDirection',
+                                  style: const TextStyle(
                                     color: ColorSystem.primary,
                                     fontSize: SizeSystem.size14,
                                   ),
@@ -311,7 +320,7 @@ class _ProductListCardState extends State<ProductListCard> {
                     quarterTurns: 2,
                     child: Container(
                       color: Colors.white,
-                      margin: EdgeInsets.symmetric(horizontal: 2.0),
+                      margin: const EdgeInsets.symmetric(horizontal: 2.0),
                       height: 200,
                       child: ListView(
                         scrollDirection: Axis.horizontal,
@@ -324,117 +333,15 @@ class _ProductListCardState extends State<ProductListCard> {
                             physics: const NeverScrollableScrollPhysics(),
                             scrollDirection: Axis.horizontal,
                             itemBuilder: (BuildContext context, int index) {
-                              return Center(
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Stack(
-                                      children: [
-                                        SizedBox(
-                                          height: 124,
-                                          child: Align(
-                                            alignment: Alignment.bottomCenter,
-                                            child: Container(
-                                              height: 116,
-                                              width: 104,
-                                              decoration: BoxDecoration(
-                                                  color: Colors.white,
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          10.0)),
-                                              child: Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.end,
-                                                children: [
-                                                  if (orderItems[index]
-                                                          .imageUrl !=
-                                                      null)
-                                                    Expanded(
-                                                        child: CachedNetworkImage(
-                                                            imageUrl: orderItems[
-                                                                    index]
-                                                                .imageUrl!)),
-                                                  Container(
-                                                    width: double.maxFinite,
-                                                    padding: const EdgeInsets
-                                                        .symmetric(vertical: 3),
-                                                    decoration: const BoxDecoration(
-                                                        borderRadius:
-                                                            BorderRadius.only(
-                                                                bottomLeft: Radius
-                                                                    .circular(
-                                                                        10.0),
-                                                                bottomRight: Radius
-                                                                    .circular(
-                                                                        10.0)),
-                                                        color:
-                                                            Color(0xff9C9EB9)),
-                                                    child: Center(
-                                                      child: Text(
-                                                        '\$ ${orderItems[index].itemPrice}',
-                                                        style: const TextStyle(
-                                                            color: Colors.white,
-                                                            fontSize: SizeSystem
-                                                                .size12,
-                                                            fontFamily: kRubik,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .w500),
-                                                      ),
-                                                    ),
-                                                  )
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                        Positioned.fill(
-                                          child: Align(
-                                            alignment: Alignment.topCenter,
-                                            child: Container(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                horizontal:
-                                                    PaddingSystem.padding6,
-                                                vertical:
-                                                    PaddingSystem.padding2,
-                                              ),
-                                              decoration: BoxDecoration(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          SizeSystem.size6),
-                                                  color: ColorSystem.lavender2
-                                                      .withOpacity(0.1)),
-                                              child: Text(
-                                                '${getOrderStatusToDisplay(getOrderStatus(orderItems[index].status))?.toUpperCase()}',
-                                                style: const TextStyle(
-                                                    fontFamily: kRubik,
-                                                    fontSize: SizeSystem.size8,
-                                                    color:
-                                                        ColorSystem.lavender2),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    const SizedBox(
-                                      height: 20,
-                                    ),
-                                    SizedBox(
-                                      width: 100,
-                                      child: Text(
-                                        orderItems[index].description ?? '--',
-                                        maxLines: 2,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: TextStyle(
-                                          color: ColorSystem.primary,
-                                          fontSize: SizeSystem.size12,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                              return TaskOrderLineWidget(
+                                imageUrl: orderItems[index].imageUrl,
+                                itemPrice:
+                                    orderItems[index].itemPrice.toString(),
+                                status: orderItems[index].status,
+                                description: orderItems[index].description,
+                                quantity: '${orderItems[index].orderedQuantity}',
+                                trackingId: orderItems[index].trackingNumber,
+                                taskType: widget.taskType,
                               );
                             },
                             separatorBuilder:
@@ -528,8 +435,8 @@ class _OrderItem extends StatelessWidget {
                           child: CachedNetworkImage(imageUrl: item_image!)),
                     Container(
                       width: double.maxFinite,
-                      padding: EdgeInsets.symmetric(vertical: 3),
-                      decoration: BoxDecoration(
+                      padding: const EdgeInsets.symmetric(vertical: 3),
+                      decoration: const BoxDecoration(
                           borderRadius: BorderRadius.only(
                               bottomLeft: Radius.circular(10.0),
                               bottomRight: Radius.circular(10.0)),
@@ -537,7 +444,7 @@ class _OrderItem extends StatelessWidget {
                       child: Center(
                         child: Text(
                           '\$ ${product_price}',
-                          style: TextStyle(
+                          style: const TextStyle(
                               color: Colors.white,
                               fontSize: SizeSystem.size12,
                               fontFamily: kRubik,
@@ -584,37 +491,38 @@ class _OrderItem extends StatelessWidget {
                 children: [
                   Text(
                     product_disc,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: SizeSystem.size14,
                       fontWeight: FontWeight.w600,
                       color: Color(0xff2D3142),
                       fontFamily: kRubik,
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 8.0,
                   ),
                   Container(
-                    padding: EdgeInsets.symmetric(vertical: 5, horizontal: 8),
+                    padding:
+                        const EdgeInsets.symmetric(vertical: 5, horizontal: 8),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10.0),
                       border: Border.all(color: Color(0xff9C9EB9)),
                     ),
                     child: Text(product_status,
-                        style: TextStyle(
+                        style: const TextStyle(
                             color: Color(0xff8C80F8),
                             fontWeight: FontWeight.w400,
                             fontSize: SizeSystem.size12,
                             fontFamily: kRubik),
                         textAlign: TextAlign.center),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 8.0,
                   ),
                   RichText(
                     text: TextSpan(
                       text: 'Deilvered on:',
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: SizeSystem.size12,
                         color: Color(0xff2D3142),
                         fontFamily: kRubik,
@@ -622,29 +530,30 @@ class _OrderItem extends StatelessWidget {
                       children: <TextSpan>[
                         TextSpan(
                             text: ' ' + delivery_date,
-                            style: TextStyle(
+                            style: const TextStyle(
                                 fontWeight: FontWeight.w500,
                                 fontFamily: kRubik,
                                 fontSize: SizeSystem.size14)),
                       ],
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 8.0,
                   ),
                   RichText(
-                    maxLines: 3,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                     text: TextSpan(
                       text: 'Tracking ID: ',
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: SizeSystem.size12,
                         color: Color(0xff2D3142),
                         fontFamily: kRubik,
                       ),
-                      children: <TextSpan>[
+                      children: [
                         TextSpan(
                             text: track_id,
-                            style: TextStyle(
+                            style: const TextStyle(
                                 fontWeight: FontWeight.w500,
                                 fontFamily: kRubik,
                                 fontSize: SizeSystem.size14)),
@@ -657,6 +566,306 @@ class _OrderItem extends StatelessWidget {
           ),
         )
       ],
+    );
+  }
+}
+
+class TaskOrderLineWidget extends StatelessWidget {
+  final String? imageUrl;
+  final String? itemPrice;
+  final String? status;
+  final String? description;
+  final String? quantity;
+  final String? trackingId;
+  final String? deliveredOn;
+  final String? taskType;
+
+  const TaskOrderLineWidget({
+    Key? key,
+    this.imageUrl,
+    this.itemPrice,
+    this.status,
+    this.description,
+    this.quantity,
+    this.trackingId,
+    this.deliveredOn,
+    this.taskType
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      focusColor: Colors.transparent,
+      splashColor: Colors.transparent,
+      highlightColor: Colors.transparent,
+      hoverColor: Colors.transparent,
+      onTap: () {
+        showModalBottomSheet(
+          context: context,
+          builder: (BuildContext context) {
+            return BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+              child: Container(
+                padding: const EdgeInsets.all(SizeSystem.size32),
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(20),
+                    topRight: Radius.circular(20),
+                  ),
+                ),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Container(
+                          height: 116,
+                          width: 104,
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(10.0)),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              if (imageUrl != null)
+                                Expanded(
+                                    child: CachedNetworkImage(imageUrl: imageUrl!)),
+                              Container(
+                                width: double.maxFinite,
+                                padding: const EdgeInsets.symmetric(vertical: 3),
+                                decoration: const BoxDecoration(
+                                    borderRadius: BorderRadius.only(
+                                        bottomLeft: Radius.circular(10.0),
+                                        bottomRight: Radius.circular(10.0)),
+                                    color: Color(0xff9C9EB9)),
+                                child: Center(
+                                  child: Text(
+                                    '\$ $itemPrice',
+                                    style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: SizeSystem.size12,
+                                        fontFamily: kRubik,
+                                        fontWeight: FontWeight.w500),
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 14.0,
+                        ),
+                        RichText(
+                          text: TextSpan(
+                            text: 'Qty. ',
+                            style: const TextStyle(
+                              fontSize: SizeSystem.size14,
+                              color: Color(0xff2D3142),
+                              fontFamily: kRubik,
+                            ),
+                            children: <TextSpan>[
+                              TextSpan(
+                                  text: quantity,
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.w500,
+                                      fontFamily: kRubik,
+                                      fontSize: SizeSystem.size16)),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(
+                      width: SizeSystem.size16,
+                    ),
+                    Container(
+                      child: Flexible(
+                        child: Padding(
+                          padding:
+                          const EdgeInsets.symmetric(horizontal: 8.0, vertical: 0.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                description ?? '--',
+                                style: const TextStyle(
+                                  fontSize: SizeSystem.size14,
+                                  fontWeight: FontWeight.w600,
+                                  color: Color(0xff2D3142),
+                                  fontFamily: kRubik,
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 8.0,
+                              ),
+                              Container(
+                                padding:
+                                const EdgeInsets.symmetric(vertical: 5, horizontal: 8),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                  border: Border.all(color: Color(0xff9C9EB9)),
+                                ),
+                                child: Text(taskType ?? '--',
+                                    style: const TextStyle(
+                                        color: Color(0xff8C80F8),
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: SizeSystem.size12,
+                                        fontFamily: kRubik),
+                                    textAlign: TextAlign.center),
+                              ),
+                              const SizedBox(
+                                height: 8.0,
+                              ),
+                              RichText(
+                                text: TextSpan(
+                                  text: 'Deilvered on:',
+                                  style: const TextStyle(
+                                    fontSize: SizeSystem.size12,
+                                    color: Color(0xff2D3142),
+                                    fontFamily: kRubik,
+                                  ),
+                                  children: <TextSpan>[
+                                    TextSpan(
+                                        text: '  ${deliveredOn ?? '--'}',
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.w500,
+                                            fontFamily: kRubik,
+                                            fontSize: SizeSystem.size14)),
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 8.0,
+                              ),
+                              RichText(
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                text: TextSpan(
+                                  text: 'Tracking ID: ',
+                                  style: const TextStyle(
+                                    fontSize: SizeSystem.size12,
+                                    color: Color(0xff2D3142),
+                                    fontFamily: kRubik,
+                                  ),
+                                  children: [
+                                    TextSpan(
+                                        text: trackingId ?? '--',
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.w500,
+                                            fontFamily: kRubik,
+                                            fontSize: SizeSystem.size14)),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
+      child: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Stack(
+              children: [
+                SizedBox(
+                  height: 136,
+                  child: Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Container(
+                      height: 116,
+                      width: 104,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(
+                          10.0,
+                        ),
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          if (imageUrl != null)
+                            Expanded(
+                              child: CachedNetworkImage(
+                                imageUrl: imageUrl!,
+                              ),
+                            ),
+                          Container(
+                            width: double.maxFinite,
+                            padding: const EdgeInsets.symmetric(vertical: 3),
+                            decoration: const BoxDecoration(
+                                borderRadius: BorderRadius.only(
+                                    bottomLeft: Radius.circular(10.0),
+                                    bottomRight: Radius.circular(10.0)),
+                                color: Color(0xff9C9EB9)),
+                            child: Center(
+                              child: Text(
+                                '\$ $itemPrice',
+                                style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: SizeSystem.size12,
+                                    fontFamily: kRubik,
+                                    fontWeight: FontWeight.w500),
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                Positioned.fill(
+                  child: Align(
+                    alignment: Alignment.topCenter,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: PaddingSystem.padding6,
+                        vertical: PaddingSystem.padding2,
+                      ),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(SizeSystem.size6),
+                          color: ColorSystem.lavender2.withOpacity(0.1)),
+                      child: Text(
+                        '${getOrderStatusToDisplay(getOrderStatus(status))?.toUpperCase()}',
+                        style: const TextStyle(
+                            fontFamily: kRubik,
+                            fontSize: SizeSystem.size12,
+                            color: ColorSystem.lavender2),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            SizedBox(
+              width: 100,
+              child: Text(
+                description ?? '--',
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(
+                  color: ColorSystem.primary,
+                  fontSize: SizeSystem.size12,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
