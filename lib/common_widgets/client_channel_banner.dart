@@ -78,7 +78,7 @@ class ClientChannelBanner extends StatelessWidget {
                             height: 10,
                           ),
                           Text(
-                            formattedNumber(details[0].value),
+                            '\$${formattedNumber(details[0].value)}',
                             maxLines: 2,
                             style: const TextStyle(
                               color: Colors.white,
@@ -103,9 +103,9 @@ class ClientChannelBanner extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            formattedNumber(details[1].value),
+                            '\$${formattedNumber(details[1].value)}',
                             maxLines: 2,
-                            style: TextStyle(
+                            style: const TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
                               fontSize: SizeSystem.size14,

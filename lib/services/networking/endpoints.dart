@@ -59,7 +59,7 @@ abstract class Endpoints {
   static String kUpdateOrder = '/services/apexrest/GC_SmartTriggerOrderAPI/';
 
   static String getCustomerSearchByPhone(String phone) {
-    return '$kBaseURL$kCustomerSearchByPhone\'$phone\'';
+    return '$kBaseURL$kCustomerSearchByPhone\'$phone\' OR Phone__c = \'$phone\'';
   }
 
   static String getCustomerSearchByEmail(String email) {

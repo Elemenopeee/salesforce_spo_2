@@ -81,7 +81,7 @@ class ClientSales extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      formattedNumber(customer!.lifeTimeNetSalesAmount ?? 0),
+                      '\$${formattedNumber(customer!.lifeTimeNetSalesAmount ?? 0)}',
                       maxLines: 2,
                       style: const TextStyle(
                         color: Colors.white,
@@ -109,7 +109,7 @@ class ClientSales extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            formattedNumber(customer!.twelveMonthSales ?? 0),
+                            '\$${formattedNumber(customer!.twelveMonthSales ?? 0)}',
                             style: const TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,

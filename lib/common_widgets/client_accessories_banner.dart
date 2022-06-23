@@ -78,7 +78,7 @@ class ClientAccessoriesBanner extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  formattedNumber(accessories[0].value),
+                                  '\$${formattedNumber(accessories[0].value)}',
                                   maxLines: 1,
                                   style: const TextStyle(
                                     color: Colors.white,
@@ -110,7 +110,7 @@ class ClientAccessoriesBanner extends StatelessWidget {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    formattedNumber(accessories[1].value),
+                                    '\$${formattedNumber(accessories[1].value)}',
                                     maxLines: 1,
                                     style: const TextStyle(
                                       color: Colors.white,
@@ -143,7 +143,7 @@ class ClientAccessoriesBanner extends StatelessWidget {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    formattedNumber(accessories[2].value),
+                                    '\$${formattedNumber(accessories[2].value)}',
                                     style: const TextStyle(
                                       color: Colors.white,
                                       fontWeight: FontWeight.bold,
@@ -174,7 +174,7 @@ class ClientAccessoriesBanner extends StatelessWidget {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      formattedNumber(accessories[3].value),
+                                      '\$${formattedNumber(accessories[3].value)}',
                                       style: const TextStyle(
                                         color: Colors.white,
                                         fontWeight: FontWeight.bold,

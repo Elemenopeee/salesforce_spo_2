@@ -109,8 +109,12 @@ class _CustomerLookupWidgetState extends State<CustomerLookupWidget> {
     super.initState();
     phoneNumberController.addListener(() {
       phone = phoneNumberController.text;
+      phone = phone.replaceFirst('(', '');
+      phone = phone.replaceFirst(')', '');
+      phone = phone.replaceFirst(' ', '');
+      phone = phone.replaceFirst('-', '');
       searchingByPhoneNumber = true;
-      if (phone.length >= 14) {
+      if (phone.length >= 10) {
         setState(() {
           futureCustomers = getCustomer(searchingByPhoneNumber);
         });
