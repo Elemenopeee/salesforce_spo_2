@@ -145,8 +145,9 @@ class _AddCommentState extends State<AddComment> {
 
                                 if (textEditingController.text.isNotEmpty) {
                                   setState(() {
-                                    previousComment =
-                                        textEditingController.text;
+                                    var newComment =
+                                        '${previousComment ?? ''}\n${textEditingController.text}';
+                                    previousComment = newComment;
                                     textEditingController.clear();
                                   });
                                   await updateTaskComment();

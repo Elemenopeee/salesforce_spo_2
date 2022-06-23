@@ -171,7 +171,7 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                         ),
                         child: Text(
                           taskStatus,
-                          style: TextStyle(
+                          style: const TextStyle(
                             color: ColorSystem.additionalGreen,
                             fontFamily: kRubik,
                             fontSize: SizeSystem.size12,

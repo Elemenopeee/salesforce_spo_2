@@ -54,7 +54,7 @@ class Customer extends AppUser {
       firstName: json['FirstName'] ?? '--',
       lastName: json['LastName'] ?? '--',
       email: json['accountEmail__c'],
-      phone: json['accountPhone__c'],
+      phone: json['accountPhone__c'] ?? json['Phone__c'],
       lastTransactionDate: json['Last_Transaction_Date__c'],
       lifeTimeNetSalesAmount: json['Lifetime_Net_Sales_Amount__c'],
       primaryInstrument: json['Primary_Instrument_Category__c'],

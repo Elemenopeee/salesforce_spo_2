@@ -55,9 +55,9 @@ class _TabHomeState extends State<TabHome> with SingleTickerProviderStateMixin {
               height: SizeSystem.size20,
             ),
             const ProgressContainer(),
-            const SizedBox(
-              height: SizeSystem.size36,
-            ),
+            // const SizedBox(
+            //   height: SizeSystem.size36,
+            // ),
             // Padding(
             //   padding: const EdgeInsets.symmetric(
             //     horizontal: SizeSystem.size28,

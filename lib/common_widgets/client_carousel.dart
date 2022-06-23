@@ -374,7 +374,7 @@ class ClientPrimaryDetails extends StatelessWidget {
                         TextSpan(
                           text: lastPurchaseValue != null
                               ? '\$${formattedNumber(lastPurchaseValue!)}'
-                              : '--',
+                              : '0.0',
                           style: const TextStyle(
                             color: ColorSystem.primary,
                             fontWeight: FontWeight.w700,
