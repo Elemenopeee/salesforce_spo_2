@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:badges/badges.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -10,6 +11,7 @@ import 'package:salesforce_spo/common_widgets/task_list_widget.dart';
 import 'package:salesforce_spo/design_system/design_system.dart';
 import 'package:salesforce_spo/models/agent.dart';
 import 'package:salesforce_spo/models/task.dart';
+import 'package:salesforce_spo/presentation/tabs/custom_tab_bar.dart';
 import 'package:salesforce_spo/services/networking/endpoints.dart';
 import 'package:salesforce_spo/services/networking/networking_service.dart';
 import 'package:salesforce_spo/services/networking/request_body.dart';
@@ -32,8 +34,10 @@ class TasksWidget extends StatefulWidget {
   State<TasksWidget> createState() => _TasksWidgetState();
 }
 
-class _TasksWidgetState extends State<TasksWidget> {
+class _TasksWidgetState extends State<TasksWidget>
+    with SingleTickerProviderStateMixin {
   late Future<void> futureTasks;
+  late TabController teamsTabController;
 
   List<TaskModel> todaysTasks = [],
       pastOpenTasks = [],
@@ -145,7 +149,15 @@ class _TasksWidgetState extends State<TasksWidget> {
   @override
   initState() {
     super.initState();
+    teamsTabController = TabController(length: 2, vsync: this);
+    teamsTabController.addListener(_handleTabSelection);
     futureTasks = getTasks(agentTasks);
+  }
+
+  _handleTabSelection() {
+    if (teamsTabController.indexIsChanging) {
+      setState(() {});
+    }
   }
 
   @override
@@ -561,7 +573,7 @@ class _TasksWidgetState extends State<TasksWidget> {
                 if (todaysTasks.isNotEmpty)
                   TaskAlertWidget(
                     tasks: todaysTasks,
-                    onTap: (){
+                    onTap: () {
                       futureTasks = getTasks(agentTasks);
                     },
                   ),
@@ -569,291 +581,347 @@ class _TasksWidgetState extends State<TasksWidget> {
                   const SizedBox(
                     height: SizeSystem.size20,
                   ),
-                Container(
-                  margin:
-                      const EdgeInsets.symmetric(horizontal: SizeSystem.size24),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: SizeSystem.size24,
-                    vertical: SizeSystem.size30,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(SizeSystem.size20),
+                if (isManager)
+                  CustomTabBarExtended(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: SizeSystem.size16),
+                    height: 48,
+                    containerColor: Colors.grey.withOpacity(0.1),
+                    containerBorderRadius: 10.0,
+                    tabBorderRadius: 10.0,
+                    tabOneName: 'Team',
+                    tabTwoName: 'Task',
                     boxShadow: [
                       BoxShadow(
-                        color: ColorSystem.blue1.withOpacity(0.15),
-                        blurRadius: 12.0,
-                        spreadRadius: 1.0,
-                      ),
+                        color: Colors.grey.shade300,
+                        offset: const Offset(
+                          0.0,
+                          1.0,
+                        ),
+                        blurRadius: 2,
+                        spreadRadius: 2,
+                      )
                     ],
+                    tabController: teamsTabController,
+                    tabColor: Colors.white,
+                    labelColor: Colors.black,
+                    unSelectLabelColor: Colors.grey,
+                    labelTextStyle:
+                        const TextStyle(fontWeight: FontWeight.bold),
                   ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Column(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                '${showingAgentTasks ? widget.agentName.toUpperCase() : 'STORE'} TASKS',
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: SizeSystem.size12,
-                                  color: ColorSystem.lavender2,
-                                ),
-                              ),
-                              const SizedBox(
-                                height: SizeSystem.size10,
-                              ),
-                              RichText(
-                                text: TextSpan(
-                                  style: const TextStyle(
-                                    fontFamily: kRubik,
-                                  ),
-                                  children: [
-                                    TextSpan(
-                                      text:
-                                          '${allTasks.length - completedTasks.length}',
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: SizeSystem.size24,
-                                        color: ColorSystem.primary,
-                                      ),
-                                    ),
-                                    const WidgetSpan(
-                                      child: SizedBox(
-                                        width: SizeSystem.size5,
-                                      ),
-                                    ),
-                                    TextSpan(
-                                      text:
-                                          'Pending / ${allTasks.length} Tasks',
-                                      style: const TextStyle(
-                                        fontSize: SizeSystem.size12,
-                                        color: ColorSystem.primary,
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                          Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              if (isManager)
-                                InkWell(
-                                  focusColor: Colors.transparent,
-                                  highlightColor: Colors.transparent,
-                                  splashColor: Colors.transparent,
-                                  hoverColor: Colors.transparent,
-                                  onTap: () {
-                                    if (showingAgentTasks) {
-                                      futureTasks = getTasks(storeTasks);
-                                    } else {
-                                      futureTasks = getTasks(agentTasks);
-                                    }
-                                    showingAgentTasks = !showingAgentTasks;
-                                    setState(() {});
-                                  },
-                                  child: SvgPicture.asset(
-                                    showingAgentTasks
-                                        ? IconSystem.storeTasks
-                                        : IconSystem.agentTasks,
-                                    width: SizeSystem.size36,
-                                  ),
-                                ),
-                              const SizedBox(
-                                width: SizeSystem.size16,
-                              ),
-                              InkWell(
-                                focusColor: Colors.transparent,
-                                highlightColor: Colors.transparent,
-                                splashColor: Colors.transparent,
-                                hoverColor: Colors.transparent,
-                                onTap: () async {
-                                  await showDialog(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return CupertinoAlertDialog(
-                                        actions: [
-                                          Column(
-                                            children: [
-                                              CustomDialogAction(
-                                                label:
-                                                    'Upcoming (${futureOpenTasks.length})',
-                                                onTap: () {
-                                                  displayedList.clear();
-                                                  displayedList = List.from(
-                                                      futureOpenTasks);
-                                                  Navigator.of(context).pop();
-                                                  showingOverdue = false;
-                                                },
-                                              ),
-                                              Container(
-                                                height: SizeSystem.size1,
-                                                color: Colors.grey
-                                                    .withOpacity(0.2),
-                                              ),
-                                              CustomDialogAction(
-                                                label:
-                                                    'Overdue (${pastOpenTasks.length})',
-                                                onTap: () {
-                                                  displayedList.clear();
-                                                  displayedList =
-                                                      List.from(pastOpenTasks);
-                                                  Navigator.of(context).pop();
-                                                  showingOverdue = true;
-                                                },
-                                              ),
-                                              Container(
-                                                height: SizeSystem.size1,
-                                                color: Colors.grey
-                                                    .withOpacity(0.2),
-                                              ),
-                                              CustomDialogAction(
-                                                label:
-                                                    'All (${allTasks.length})',
-                                                onTap: () {
-                                                  displayedList.clear();
-                                                  displayedList =
-                                                      List.from(allTasks);
-                                                  Navigator.of(context).pop();
-                                                  showingOverdue = false;
-                                                },
-                                              ),
-                                              Container(
-                                                height: SizeSystem.size1,
-                                                color: Colors.grey
-                                                    .withOpacity(0.2),
-                                              ),
-                                              CustomDialogAction(
-                                                label:
-                                                    'Today (${todaysTasks.length})',
-                                                onTap: () {
-                                                  displayedList.clear();
-                                                  displayedList =
-                                                      List.from(todaysTasks);
-                                                  Navigator.of(context).pop();
-                                                  showingOverdue = false;
-                                                },
-                                              ),
-                                              Container(
-                                                height: SizeSystem.size1,
-                                                color: Colors.grey
-                                                    .withOpacity(0.2),
-                                              ),
-                                              CustomDialogAction(
-                                                label:
-                                                    'Completed (${completedTasks.length})',
-                                                onTap: () {
-                                                  displayedList.clear();
-                                                  displayedList =
-                                                      List.from(completedTasks);
-                                                  Navigator.of(context).pop();
-                                                  showingOverdue = false;
-                                                },
-                                              ),
-                                              if (!showingAgentTasks)
-                                                Container(
-                                                  height: SizeSystem.size1,
-                                                  color: Colors.grey
-                                                      .withOpacity(0.2),
-                                                ),
-                                              if (!showingAgentTasks)
-                                                CustomDialogAction(
-                                                  label:
-                                                      'Unassigned (${unAssignedTasks.length})',
-                                                  onTap: () {
-                                                    displayedList.clear();
-                                                    displayedList = List.from(
-                                                        unAssignedTasks);
-                                                    Navigator.of(context).pop();
-                                                    showingOverdue = false;
-                                                  },
-                                                ),
-                                            ],
-                                          )
-                                        ],
-                                      );
-                                    },
-                                  );
-                                  setState(() {});
-                                },
-                                child: SvgPicture.asset(
-                                  IconSystem.funnel,
-                                  width: SizeSystem.size24,
-                                  color: ColorSystem.additionalGrey,
-                                ),
-                              ),
-                            ],
+                const SizedBox(
+                  height: 20,
+                ),
+                Center(
+                  child: [
+                    Container(
+                      margin: const EdgeInsets.symmetric(
+                          horizontal: SizeSystem.size24),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: SizeSystem.size24,
+                        vertical: SizeSystem.size30,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(SizeSystem.size20),
+                        boxShadow: [
+                          BoxShadow(
+                            color: ColorSystem.blue1.withOpacity(0.15),
+                            blurRadius: 12.0,
+                            spreadRadius: 1.0,
                           ),
                         ],
                       ),
-                      CustomLinearProgressIndicator(
-                        containerHeight: SizeSystem.size8,
-                        containerMargin:
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Column(
+                                mainAxisSize: MainAxisSize.min,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    '${showingAgentTasks ? widget.agentName.toUpperCase() : 'STORE'} TASKS',
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: SizeSystem.size12,
+                                      color: ColorSystem.lavender2,
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    height: SizeSystem.size10,
+                                  ),
+                                  RichText(
+                                    text: TextSpan(
+                                      style: const TextStyle(
+                                        fontFamily: kRubik,
+                                      ),
+                                      children: [
+                                        TextSpan(
+                                          text:
+                                          '${allTasks.length - completedTasks.length}',
+                                          style: const TextStyle(
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: SizeSystem.size24,
+                                            color: ColorSystem.primary,
+                                          ),
+                                        ),
+                                        const WidgetSpan(
+                                          child: SizedBox(
+                                            width: SizeSystem.size5,
+                                          ),
+                                        ),
+                                        TextSpan(
+                                          text:
+                                          'Pending / ${allTasks.length} Tasks',
+                                          style: const TextStyle(
+                                            fontSize: SizeSystem.size12,
+                                            color: ColorSystem.primary,
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  if (isManager)
+                                    Badge(
+                                      elevation: 6,
+                                      badgeContent: Text(
+                                        unAssignedTasks.length.toString(),
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                      child: InkWell(
+                                        focusColor: Colors.transparent,
+                                        highlightColor: Colors.transparent,
+                                        splashColor: Colors.transparent,
+                                        hoverColor: Colors.transparent,
+                                        onTap: () {
+                                          if (showingAgentTasks) {
+                                            futureTasks = getTasks(storeTasks);
+                                          } else {
+                                            futureTasks = getTasks(agentTasks);
+                                          }
+                                          showingAgentTasks = !showingAgentTasks;
+                                          setState(() {});
+                                        },
+                                        child: SvgPicture.asset(
+                                          showingAgentTasks
+                                              ? IconSystem.storeTasks
+                                              : IconSystem.agentTasks,
+                                          width: SizeSystem.size36,
+                                        ),
+                                      ),
+                                    ),
+                                  const SizedBox(
+                                    width: SizeSystem.size20,
+                                  ),
+                                  InkWell(
+                                    focusColor: Colors.transparent,
+                                    highlightColor: Colors.transparent,
+                                    splashColor: Colors.transparent,
+                                    hoverColor: Colors.transparent,
+                                    onTap: () async {
+                                      await showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return CupertinoAlertDialog(
+                                            actions: [
+                                              Column(
+                                                children: [
+                                                  CustomDialogAction(
+                                                    label:
+                                                    'Upcoming (${futureOpenTasks.length})',
+                                                    onTap: () {
+                                                      displayedList.clear();
+                                                      displayedList = List.from(
+                                                          futureOpenTasks);
+                                                      Navigator.of(context)
+                                                          .pop();
+                                                      showingOverdue = false;
+                                                    },
+                                                  ),
+                                                  Container(
+                                                    height: SizeSystem.size1,
+                                                    color: Colors.grey
+                                                        .withOpacity(0.2),
+                                                  ),
+                                                  CustomDialogAction(
+                                                    label:
+                                                    'Overdue (${pastOpenTasks.length})',
+                                                    onTap: () {
+                                                      displayedList.clear();
+                                                      displayedList = List.from(
+                                                          pastOpenTasks);
+                                                      Navigator.of(context)
+                                                          .pop();
+                                                      showingOverdue = true;
+                                                    },
+                                                  ),
+                                                  Container(
+                                                    height: SizeSystem.size1,
+                                                    color: Colors.grey
+                                                        .withOpacity(0.2),
+                                                  ),
+                                                  CustomDialogAction(
+                                                    label:
+                                                    'All (${allTasks.length})',
+                                                    onTap: () {
+                                                      displayedList.clear();
+                                                      displayedList =
+                                                          List.from(allTasks);
+                                                      Navigator.of(context)
+                                                          .pop();
+                                                      showingOverdue = false;
+                                                    },
+                                                  ),
+                                                  Container(
+                                                    height: SizeSystem.size1,
+                                                    color: Colors.grey
+                                                        .withOpacity(0.2),
+                                                  ),
+                                                  CustomDialogAction(
+                                                    label:
+                                                    'Today (${todaysTasks.length})',
+                                                    onTap: () {
+                                                      displayedList.clear();
+                                                      displayedList = List.from(
+                                                          todaysTasks);
+                                                      Navigator.of(context)
+                                                          .pop();
+                                                      showingOverdue = false;
+                                                    },
+                                                  ),
+                                                  Container(
+                                                    height: SizeSystem.size1,
+                                                    color: Colors.grey
+                                                        .withOpacity(0.2),
+                                                  ),
+                                                  CustomDialogAction(
+                                                    label:
+                                                    'Completed (${completedTasks.length})',
+                                                    onTap: () {
+                                                      displayedList.clear();
+                                                      displayedList = List.from(
+                                                          completedTasks);
+                                                      Navigator.of(context)
+                                                          .pop();
+                                                      showingOverdue = false;
+                                                    },
+                                                  ),
+                                                  if (!showingAgentTasks)
+                                                    Container(
+                                                      height: SizeSystem.size1,
+                                                      color: Colors.grey
+                                                          .withOpacity(0.2),
+                                                    ),
+                                                  if (!showingAgentTasks)
+                                                    CustomDialogAction(
+                                                      label:
+                                                      'Unassigned (${unAssignedTasks.length})',
+                                                      onTap: () {
+                                                        displayedList.clear();
+                                                        displayedList =
+                                                            List.from(
+                                                                unAssignedTasks);
+                                                        Navigator.of(context)
+                                                            .pop();
+                                                        showingOverdue = false;
+                                                      },
+                                                    ),
+                                                ],
+                                              )
+                                            ],
+                                          );
+                                        },
+                                      );
+                                      setState(() {});
+                                    },
+                                    child: SvgPicture.asset(
+                                      IconSystem.funnel,
+                                      width: SizeSystem.size24,
+                                      color: ColorSystem.additionalGrey,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                          CustomLinearProgressIndicator(
+                            containerHeight: SizeSystem.size8,
+                            containerMargin:
                             const EdgeInsets.only(top: SizeSystem.size20),
-                        containerRadius: const BorderRadius.all(
-                          Radius.circular(SizeSystem.size20),
-                        ),
-                        indicatorValue: allTasks.isNotEmpty
-                            ? completedTasks.length / allTasks.length
-                            : 0,
-                        indicatorValueColor: ColorSystem.lavender3,
-                        indicatorBackgroundColor: ColorSystem.additionalGrey,
-                      ),
-                      const SizedBox(
-                        height: SizeSystem.size30,
-                      ),
-                      ListView.separated(
-                        itemCount: displayedList.length,
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemBuilder: (context, index) {
-                          return TaskListWidget(
-                            onTap: () async {
-                              await Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                      builder: (BuildContext context) {
-                                return TaskDetailsScreen(
-                                  taskId: displayedList[index].id!,
-                                  email: displayedList[index].email,
-                                  task: displayedList[index],
-                                );
-                              }));
-                              setState(() {
-                                futureTasks = getTasks(agentTasks);
-                              });
-                            },
-                            task: displayedList[index],
-                            taskId: displayedList[index].id!,
-                            status: displayedList[index].status,
-                            subject: displayedList[index].subject,
-                            taskType: displayedList[index].taskType,
-                            activityDate: displayedList[index].taskDate,
-                            phone: displayedList[index].phone,
-                            email: displayedList[index].email,
-                            isOverdue: showingOverdue,
-                            showingStoreTasks: !showingAgentTasks,
-                          );
-                        },
-                        separatorBuilder: (BuildContext context, int index) {
-                          return Container(
-                            color: Colors.white,
-                            child: Divider(
-                              color: Colors.grey.withOpacity(0.2),
-                              thickness: 1,
+                            containerRadius: const BorderRadius.all(
+                              Radius.circular(SizeSystem.size20),
                             ),
-                          );
-                        },
+                            indicatorValue: allTasks.isNotEmpty
+                                ? completedTasks.length / allTasks.length
+                                : 0,
+                            indicatorValueColor: ColorSystem.lavender3,
+                            indicatorBackgroundColor:
+                            ColorSystem.additionalGrey,
+                          ),
+                          const SizedBox(
+                            height: SizeSystem.size30,
+                          ),
+                          ListView.separated(
+                            itemCount: displayedList.length,
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemBuilder: (context, index) {
+                              return TaskListWidget(
+                                onTap: () async {
+                                  await Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                          builder: (BuildContext context) {
+                                            return TaskDetailsScreen(
+                                              taskId: displayedList[index].id!,
+                                              email: displayedList[index].email,
+                                              task: displayedList[index],
+                                            );
+                                          }));
+                                  setState(() {
+                                    futureTasks = getTasks(agentTasks);
+                                  });
+                                },
+                                task: displayedList[index],
+                                taskId: displayedList[index].id!,
+                                status: displayedList[index].status,
+                                subject: displayedList[index].subject,
+                                taskType: displayedList[index].taskType,
+                                activityDate: displayedList[index].taskDate,
+                                phone: displayedList[index].phone,
+                                email: displayedList[index].email,
+                                isOverdue: showingOverdue,
+                                showingStoreTasks: !showingAgentTasks,
+                              );
+                            },
+                            separatorBuilder:
+                                (BuildContext context, int index) {
+                              return Container(
+                                color: Colors.white,
+                                child: Divider(
+                                  color: Colors.grey.withOpacity(0.2),
+                                  thickness: 1,
+                                ),
+                              );
+                            },
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
+                    ),
+                    Center(
+                      child: Text('Task tab'),
+                    ),
+                  ][teamsTabController.index],
                 ),
               ],
             );

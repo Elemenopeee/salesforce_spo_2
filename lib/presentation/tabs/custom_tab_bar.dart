@@ -76,6 +76,7 @@ class _CustomTabBarExtendedState extends State<CustomTabBarExtended>
             Tab(
               text: widget.tabTwoName,
             ),
+            if(widget.tabThreeName != null)
             Tab(
               text: widget.tabThreeName,
             ),

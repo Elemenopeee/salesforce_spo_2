@@ -2,6 +2,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
+import 'package:salesforce_spo/common_widgets/my_sales_widget.dart';
 import 'package:salesforce_spo/design_system/design_system.dart';
 import 'package:salesforce_spo/presentation/intermediate_widgets/tasks_widget.dart';
 import 'package:salesforce_spo/services/networking/endpoints.dart';
@@ -9,6 +10,7 @@ import 'package:salesforce_spo/services/networking/networking_service.dart';
 import 'package:salesforce_spo/services/storage/shared_preferences_service.dart';
 import 'package:salesforce_spo/utils/constants.dart';
 
+import '../../common_widgets/profile_container.dart';
 import 'all_orders.dart';
 import 'custom_tab_bar.dart';
 import 'open_orders.dart';
@@ -92,88 +94,6 @@ class _TabHomeState extends State<TabHome> with SingleTickerProviderStateMixin {
   }
 }
 
-class ProfileContainer extends StatefulWidget {
-  final String agentName;
-
-  const ProfileContainer({
-    Key? key,
-    required this.agentName,
-  }) : super(key: key);
-
-  @override
-  State<ProfileContainer> createState() => _ProfileContainerState();
-}
-
-class _ProfileContainerState extends State<ProfileContainer> {
-  @override
-  Widget build(BuildContext context) {
-    var dateNow = DateTime.now();
-    var date = DateTime(dateNow.year, dateNow.month, dateNow.day);
-    var formattedDate =
-        DateFormat(DateFormat.ABBR_MONTH_WEEKDAY_DAY).format(date);
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: Row(
-        children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  SvgPicture.asset(
-                    IconSystem.sun,
-                    width: SizeSystem.size16,
-                    height: SizeSystem.size16,
-                  ),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  Text(
-                    formattedDate.toUpperCase(),
-                    style: const TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w500,
-                      color: ColorSystem.lavender2,
-                      fontFamily: kRubik,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 05),
-                child: Text(
-                  "Hi ${widget.agentName}",
-                  style: const TextStyle(
-                    fontSize: 32,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: kRubik,
-                    color: ColorSystem.primary,
-                  ),
-                ),
-              ),
-            ],
-          ),
-          const Spacer(),
-          Container(
-            height: SizeSystem.size60,
-            width: SizeSystem.size60,
-            child: SvgPicture.asset(
-              IconSystem.userPlaceholder,
-            ),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(SizeSystem.size24),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
 class ProgressContainer extends StatefulWidget {
   const ProgressContainer({Key? key}) : super(key: key);
 
@@ -187,81 +107,83 @@ class _ProgressContainerState extends State<ProgressContainer> {
   double todaysSale = 0;
   double todaysCommission = 0;
 
-  late Future<void> _futureSales;
-  late Future<void> _futureCommission;
-  late Future<void> _futureTodaysSale;
-  late Future<void> _futureTodaysCommission;
-
-  Future<void> _getTotalSales() async {
-    var agentMail = await SharedPreferenceService().getValue('agent_email');
-    if (agentMail != null) {
-      var response =
-          await HttpService().doGet(path: Endpoints.getTotalSales(agentMail));
-      try {
-        totalSales = response.data['records'][0]['Sales'];
-      } catch (e) {
-        print(e);
-      }
-    }
-  }
-
-  Future<void> _getTotalCommission() async {
-    var agentMail = await SharedPreferenceService().getValue('agent_email');
-    if (agentMail != null) {
-      var response = await HttpService()
-          .doGet(path: Endpoints.getTotalCommission(agentMail));
-      try {
-        totalCommission = response.data['records'][0]['commission'];
-      } catch (e) {
-        print(e);
-      }
-    }
-  }
-
-  Future<void> _getTodaysSale() async {
-    var agentMail = await SharedPreferenceService().getValue('agent_email');
-    if (agentMail != null) {
-      var response =
-          await HttpService().doGet(path: Endpoints.getTodaysSales(agentMail));
-      List<dynamic> records = response.data['records'];
-      if (records.isNotEmpty) {
-        try {
-          var saleData = records.firstWhere(
-              (element) => element['Gross_Sales_Yesterday__c'] != null);
-          todaysSale = saleData['Gross_Sales_Yesterday__c'];
-        } catch (e) {
-          print(e);
-        }
-      }
-    }
-  }
-
-  Future<void> _getTodaysCommission() async {
-    var agentMail = await SharedPreferenceService().getValue('agent_email');
-    if (agentMail != null) {
-      var response = await HttpService()
-          .doGet(path: Endpoints.getTodaysCommission(agentMail));
-      List<dynamic> records = response.data['records'];
-
-      if (records.isNotEmpty) {
-        try {
-          var commissionData = records.firstWhere(
-              (element) => element['Comm_Amount_Yesterday__c'] != null);
-          todaysCommission = commissionData['Comm_Amount_Yesterday__c'];
-        } catch (e) {
-          print(e);
-        }
-      }
-    }
-  }
+  // late Future<void> _futureSales;
+  // late Future<void> _futureCommission;
+  // late Future<void> _futureTodaysSale;
+  // late Future<void> _futureTodaysCommission;
+  //
+  // Future<void> _getTotalSales() async {
+  //   var agentMail = await SharedPreferenceService().getValue('agent_email');
+  //   if (agentMail != null) {
+  //     var response =
+  //         await HttpService().doGet(path: Endpoints.getTotalSales(agentMail));
+  //     try {
+  //       totalSales = response.data['records'][0]['Sales'];
+  //     } catch (e) {
+  //       print(e);
+  //     }
+  //   }
+  // }
+  //
+  // Future<void> _getTotalCommission() async {
+  //   var agentMail = await SharedPreferenceService().getValue('agent_email');
+  //   if (agentMail != null) {
+  //     var response = await HttpService()
+  //         .doGet(path: Endpoints.getTotalCommission(agentMail));
+  //     try {
+  //       totalCommission = response.data['records'][0]['commission'];
+  //     } catch (e) {
+  //       print(e);
+  //     }
+  //   }
+  // }
+  //
+  // Future<void> _getTodaysSale() async {
+  //   var agentMail = await SharedPreferenceService().getValue('agent_email');
+  //   if (agentMail != null) {
+  //     var response =
+  //         await HttpService().doGet(path: Endpoints.getTodaysSales(agentMail));
+  //     List<dynamic> records = response.data['records'];
+  //     if (records.isNotEmpty) {
+  //       try {
+  //         var saleData = records.firstWhere(
+  //             (element) => element['Gross_Sales_Yesterday__c'] != null);
+  //         todaysSale = saleData['Gross_Sales_Yesterday__c'];
+  //       } catch (e) {
+  //         print(e);
+  //       }
+  //     }
+  //   }
+  // }
+  //
+  // Future<void> _getTodaysCommission() async {
+  //   var agentMail = await SharedPreferenceService().getValue('agent_email');
+  //   if (agentMail != null) {
+  //     var response = await HttpService()
+  //         .doGet(path: Endpoints.getTodaysCommission(agentMail));
+  //     List<dynamic> records = response.data['records'];
+  //
+  //     if (records.isNotEmpty) {
+  //       try {
+  //         var commissionData = records.firstWhere(
+  //             (element) => element['Comm_Amount_Yesterday__c'] != null);
+  //         todaysCommission = commissionData['Comm_Amount_Yesterday__c'];
+  //       } catch (e) {
+  //         print(e);
+  //       }
+  //     }
+  //   }
+  // }
+  //
+  // Future<void>
 
   @override
   void initState() {
     super.initState();
-    _futureSales = _getTotalSales();
-    _futureCommission = _getTotalCommission();
-    _futureTodaysSale = _getTodaysSale();
-    _futureTodaysCommission = _getTodaysCommission();
+    // _futureSales = _getTotalSales();
+    // _futureCommission = _getTotalCommission();
+    // _futureTodaysSale = _getTodaysSale();
+    // _futureTodaysCommission = _getTodaysCommission();
   }
 
   String formattedNumber(double value) {
@@ -304,238 +226,13 @@ class _ProgressContainerState extends State<ProgressContainer> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               Expanded(
-                child: Container(
-                  // height: 250,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
-                    color: const Color(0xFF8C80F8),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 20, vertical: 20),
-                    child: FutureBuilder(
-                      future: Future.wait([
-                        _futureSales,
-                        _futureTodaysSale,
-                      ]),
-                      builder: (BuildContext context,
-                          AsyncSnapshot<dynamic> snapshot) {
-                        return Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text(
-                              "MY SALES",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w300,
-                                fontSize: 14,
-                                fontFamily: kRubik,
-                              ),
-                            ),
-                            const SizedBox(
-                              height: 24,
-                            ),
-                            Center(
-                              child: SizedBox(
-                                height: 80,
-                                width: 100,
-                                child: totalSales == 0 && totalCommission == 0
-                                    ? SvgPicture.asset(IconSystem.noSales)
-                                    : PieChart(
-                                        PieChartData(
-                                          sections: showingSections(
-                                              todaysSale, totalSales),
-                                          centerSpaceColor:
-                                              const Color(0xFF8C80F8),
-                                          centerSpaceRadius: 24,
-                                        ),
-                                      ),
-                              ),
-                            ),
-                            const SizedBox(
-                              height: 30,
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
-                                Text(
-                                  totalSales == 0
-                                      ? '--'
-                                      : formattedNumber(totalSales)
-                                          .toLowerCase(),
-                                  style: const TextStyle(
-                                    fontSize: SizeSystem.size24,
-                                    color: ColorSystem.white,
-                                    fontFamily: kRubik,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                Text(
-                                  todaysSale == 0
-                                      ? '--'
-                                      : formattedNumber(todaysSale),
-                                  style: const TextStyle(
-                                    fontSize: SizeSystem.size14,
-                                    color: ColorSystem.white,
-                                    fontFamily: kRubik,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(
-                              height: SizeSystem.size4,
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  month,
-                                  style: TextStyle(
-                                    fontSize: SizeSystem.size12,
-                                    color: ColorSystem.white.withOpacity(0.5),
-                                    fontFamily: kRubik,
-                                    fontWeight: FontWeight.w400,
-                                  ),
-                                ),
-                                Text(
-                                  'Today',
-                                  style: TextStyle(
-                                    fontSize: SizeSystem.size12,
-                                    color: ColorSystem.white.withOpacity(0.5),
-                                    fontFamily: kRubik,
-                                    fontWeight: FontWeight.w400,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        );
-                      },
-                    ),
-                  ),
-                ),
+                child: MySalesWidget(totalSales: 100, totalCommission: 100),
               ),
               const SizedBox(
                 width: 20,
               ),
               Expanded(
-                child: Container(
-                  // height: 250,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
-                    color: const Color(0xFFAF8EFF),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 20,
-                      vertical: 20,
-                    ),
-                    child: FutureBuilder(
-                      future: Future.wait([
-                        _futureCommission,
-                        _futureTodaysCommission,
-                      ]),
-                      builder: (BuildContext context,
-                          AsyncSnapshot<dynamic> snapshot) {
-                        return Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text(
-                              "MY COMMISSION",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w300,
-                                fontSize: 14,
-                                fontFamily: kRubik,
-                              ),
-                            ),
-                            const SizedBox(
-                              height: 24,
-                            ),
-                            Center(
-                              child: SizedBox(
-                                height: 80,
-                                width: 100,
-                                child: totalSales == 0 && totalCommission == 0
-                                    ? SvgPicture.asset(IconSystem.noCommission)
-                                    : PieChart(
-                                        PieChartData(
-                                          sections: showingSections(
-                                              todaysCommission,
-                                              totalCommission),
-                                          centerSpaceColor:
-                                              const Color(0xFFAF8EFF),
-                                          centerSpaceRadius: 24,
-                                        ),
-                                      ),
-                              ),
-                            ),
-                            const SizedBox(
-                              height: 30,
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
-                                Text(
-                                  totalCommission == 0
-                                      ? '--'
-                                      : formattedNumber(totalCommission)
-                                          .toLowerCase(),
-                                  style: const TextStyle(
-                                    fontSize: SizeSystem.size24,
-                                    color: ColorSystem.white,
-                                    fontFamily: kRubik,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                Text(
-                                  todaysCommission == 0
-                                      ? '--'
-                                      : formattedNumber(todaysCommission),
-                                  style: const TextStyle(
-                                    fontSize: SizeSystem.size14,
-                                    color: ColorSystem.white,
-                                    fontFamily: kRubik,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(
-                              height: SizeSystem.size4,
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  month,
-                                  style: TextStyle(
-                                    fontSize: SizeSystem.size12,
-                                    color: ColorSystem.white.withOpacity(0.5),
-                                    fontFamily: kRubik,
-                                    fontWeight: FontWeight.w400,
-                                  ),
-                                ),
-                                Text(
-                                  'Today',
-                                  style: TextStyle(
-                                    fontSize: SizeSystem.size12,
-                                    color: ColorSystem.white.withOpacity(0.5),
-                                    fontFamily: kRubik,
-                                    fontWeight: FontWeight.w400,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        );
-                      },
-                    ),
-                  ),
-                ),
+                child:TaskMetricsWidget(),
               ),
             ],
           ),
@@ -545,10 +242,134 @@ class _ProgressContainerState extends State<ProgressContainer> {
   }
 }
 
+class TaskMetricsWidget extends StatelessWidget {
+  const TaskMetricsWidget({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.symmetric(
+        horizontal: SizeSystem.size16,
+        vertical: SizeSystem.size10,
+      ),
+      decoration: BoxDecoration(
+        color: Color(0xFFAF8EFF).withOpacity(0.1),
+        borderRadius: BorderRadius.circular(SizeSystem.size16),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'MY TASK',
+                style: TextStyle(
+                  letterSpacing: 1.5,
+                  color: ColorSystem.primary,
+                  fontSize: SizeSystem.size12,
+                  fontFamily: kRubik,
+                ),
+              ),
+              Text(
+                '40',
+                style: TextStyle(
+                  color: ColorSystem.primary,
+                  fontSize: SizeSystem.size24,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: kRubik,
+                ),
+              )
+            ],
+          ),
+          const SizedBox(
+            height: SizeSystem.size12,
+          ),
+          SizedBox(
+            width: 100,
+            height: 100,
+            child: PieChart(
+              PieChartData(
+                sections: showingSections(
+                    100,
+                    1000),
+                centerSpaceColor:
+                const Color(0xFFAF8EFF).withOpacity(0.1),
+                centerSpaceRadius: 24,
+              ),
+            ),
+          ),
+          const SizedBox(
+            height: SizeSystem.size20,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '27',
+                    style: TextStyle(
+                      color: ColorSystem.purple,
+                      fontSize: SizeSystem.size24,
+                      fontFamily: kRubik,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(
+                    height: SizeSystem.size4,
+                  ),
+                  Text(
+                    'MY TASK',
+                    style: TextStyle(
+                      color: ColorSystem.primary,
+                      fontSize: SizeSystem.size12,
+                      fontFamily: kRubik,
+                    ),
+                  ),
+                ],
+              ),
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '27',
+                    style: TextStyle(
+                      color: ColorSystem.peach,
+                      fontSize: SizeSystem.size24,
+                      fontFamily: kRubik,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(
+                    height: SizeSystem.size4,
+                  ),
+                  Text(
+                    'MY TASK',
+                    style: TextStyle(
+                      color: ColorSystem.primary,
+                      fontSize: SizeSystem.size12,
+                      fontFamily: kRubik,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+
 List<PieChartSectionData> showingSections(double today, double total) {
-  return List.generate(2, (i) {
+  return List.generate(3, (i) {
     const fontSize = 0.0;
-    const radius = 10.0;
+    const radius = 26.0;
     switch (i) {
       case 0:
         return PieChartSectionData(
@@ -561,8 +382,17 @@ List<PieChartSectionData> showingSections(double today, double total) {
         );
       case 1:
         return PieChartSectionData(
-          color: const Color(0xFF5763A9),
+          color: const Color(0xFF6B5FD2),
           value: total,
+          radius: radius,
+          titleStyle: const TextStyle(
+            fontSize: fontSize,
+          ),
+        );
+      case 2:
+        return PieChartSectionData(
+          color: ColorSystem.peach,
+          value: today,
           radius: radius,
           titleStyle: const TextStyle(
             fontSize: fontSize,

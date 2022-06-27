@@ -38,7 +38,7 @@ abstract class ColorSystem {
   static const Color culturedGrey = Color(0xFFF4F6FA);
 
   /// Additional Pink Background color
-  static const Color pink = Color(0xFFFF9B90);
+  static const Color peach = Color(0xFFFF9B90);
 
   /// Additional Purple Background color
   static const Color purple = Color(0xFFAF8EFF);

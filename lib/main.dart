@@ -2,17 +2,18 @@ import 'package:azure_ad_authentication/azure_ad_authentication.dart';
 import 'package:azure_ad_authentication/exeption.dart';
 import 'package:azure_ad_authentication/model/user_ad.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:salesforce_spo/common_widgets/tgc_app_bar.dart';
-import 'package:salesforce_spo/common_widgets/notched_bottom_navigation_bar.dart';
-import 'package:salesforce_spo/design_system/design_system.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:get/get.dart';
 import 'package:salesforce_spo/presentation/intermediate_widgets/customer_lookup_widget.dart';
 import 'package:salesforce_spo/presentation/screens/smart_triggers_screen.dart';
 import 'package:salesforce_spo/presentation/tabs/home_tab.dart';
 import 'package:salesforce_spo/services/networking/endpoints.dart';
 import 'package:salesforce_spo/services/networking/networking_service.dart';
 import 'package:salesforce_spo/services/storage/shared_preferences_service.dart';
-import 'package:salesforce_spo/utils/constants.dart';
+
+import 'common_widgets/notched_bottom_navigation_bar.dart';
+import 'common_widgets/tgc_app_bar.dart';
+import 'design_system/design_system.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -33,7 +34,11 @@ const List<String> kScopes = [
 UserAdModel? userAdModel;
 
 Future<void> _acquireToken() async {
-  await getResult();
+
+  SharedPreferenceService()
+      .setKey(key: 'agent_email', value: 'ankit.kumar@guitarcenter.com');
+
+  // await getResult();
 }
 
 Future<String> getResult({bool isAcquireToken = true}) async {
@@ -73,7 +78,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       title: 'GC Customer Connect Sandbox',
       theme: ThemeData(
         primarySwatch: Colors.blue,
