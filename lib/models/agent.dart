@@ -6,6 +6,10 @@ class Agent {
   final String? id;
   final String? storeId;
   final String? employeeId;
+  final String? profileName;
+  final String? storeName;
+  final String? email;
+  final String? phone;
   final List<TaskModel> todayTasks;
   final List<TaskModel> pastOpenTasks;
   final List<TaskModel> futureTasks;
@@ -18,6 +22,10 @@ class Agent {
     this.name,
     this.storeId,
     this.employeeId,
+    this.profileName,
+    this.storeName,
+    this.email,
+    this.phone,
     this.todayTasks = const [],
     this.pastOpenTasks = const [],
     this.futureTasks = const [],
@@ -32,6 +40,10 @@ class Agent {
       name: json['Name'],
       storeId: json['StoreId__c'],
       employeeId: json['EmployeeNumber'],
+      profileName: json['Profile']?['Name'],
+      storeName: json['Store_Name__c'],
+      email: json['Email'],
+      phone: json['MobilePhone'],
     );
   }
 

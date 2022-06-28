@@ -68,9 +68,13 @@ class _TasksWidgetState extends State<TasksWidget>
     if (email != null) {
       var response =
           await HttpService().doGet(path: Endpoints.getUserInformation(email));
-
+      
       if (response.data != null) {
-        agent = Agent.fromJson(response.data['records'][0]);
+        try {
+          agent = Agent.fromJson(response.data['records'][0]);
+        } on Exception catch (e) {
+          print(e);
+        }
       }
     }
 
@@ -132,6 +136,10 @@ class _TasksWidgetState extends State<TasksWidget>
 
     displayedList.clear();
     displayedList = List.from(allTasks);
+
+    teamsTabController = TabController(length: isManager ? 2 : 1, vsync: this);
+    teamsTabController.addListener(_handleTabSelection);
+
   }
 
   Future<void> getTeamTasks() async {
@@ -140,10 +148,11 @@ class _TasksWidgetState extends State<TasksWidget>
     var response = await HttpService().doPost(
         path: Endpoints.getTeamTaskList(),
         body: jsonEncode(
-            RequestBody.getMetricsAndSmartTriggersBody('MyNewTeam', id)), tokenRequired: true);
+            RequestBody.getMetricsAndSmartTriggersBody('MyNewTeam', id)),
+        tokenRequired: true);
 
     try {
-      for(var agentTaskJson in response.data['AggregatedTaskList']){
+      for (var agentTaskJson in response.data['AggregatedTaskList']) {
         teamTaskList.add(Agent.fromTeamTaskListJson(agentTaskJson));
       }
     } on Exception catch (e) {
@@ -167,8 +176,6 @@ class _TasksWidgetState extends State<TasksWidget>
   @override
   initState() {
     super.initState();
-    teamsTabController = TabController(length: 2, vsync: this);
-    teamsTabController.addListener(_handleTabSelection);
     futureTasks = getTasks(agentTasks);
     futureTeamTasks = getTeamTasks();
   }
@@ -604,36 +611,346 @@ class _TasksWidgetState extends State<TasksWidget>
                     height: SizeSystem.size20,
                   ),
                 if (isManager)
-                  CustomTabBarExtended(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: SizeSystem.size16),
-                    height: 48,
-                    containerColor: Colors.grey.withOpacity(0.1),
-                    containerBorderRadius: 10.0,
-                    tabBorderRadius: 10.0,
-                    tabOneName: 'Team',
-                    tabTwoName: 'Task',
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.shade300,
-                        offset: const Offset(
-                          0.0,
-                          1.0,
-                        ),
-                        blurRadius: 2,
-                        spreadRadius: 2,
-                      )
-                    ],
-                    tabController: teamsTabController,
-                    tabColor: Colors.white,
-                    labelColor: Colors.black,
-                    unSelectLabelColor: Colors.grey,
-                    labelTextStyle:
-                        const TextStyle(fontWeight: FontWeight.bold),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: SizeSystem.size14),
+                    child: CustomTabBarExtended(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: SizeSystem.size16),
+                      height: 48,
+                      containerColor: Colors.grey.withOpacity(0.1),
+                      containerBorderRadius: 10.0,
+                      tabBorderRadius: 10.0,
+                      tabOneName: 'Team',
+                      tabTwoName: 'Task',
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.shade300,
+                          offset: const Offset(
+                            0.0,
+                            1.0,
+                          ),
+                          blurRadius: 2,
+                          spreadRadius: 2,
+                        )
+                      ],
+                      tabController: teamsTabController,
+                      tabColor: Colors.white,
+                      labelColor: Colors.black,
+                      unSelectLabelColor: Colors.grey,
+                      labelTextStyle:
+                          const TextStyle(fontWeight: FontWeight.bold),
+                    ),
                   ),
                 const SizedBox(
                   height: 20,
                 ),
+                if(!isManager)
+                  Container(
+                    margin: const EdgeInsets.symmetric(
+                        horizontal: SizeSystem.size24),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: SizeSystem.size24,
+                      vertical: SizeSystem.size30,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(SizeSystem.size20),
+                      boxShadow: [
+                        BoxShadow(
+                          color: ColorSystem.blue1.withOpacity(0.15),
+                          blurRadius: 12.0,
+                          spreadRadius: 1.0,
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  '${showingAgentTasks ? widget.agentName.toUpperCase() : 'STORE'} TASKS',
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: SizeSystem.size12,
+                                    color: ColorSystem.lavender2,
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: SizeSystem.size10,
+                                ),
+                                RichText(
+                                  text: TextSpan(
+                                    style: const TextStyle(
+                                      fontFamily: kRubik,
+                                    ),
+                                    children: [
+                                      TextSpan(
+                                        text:
+                                        '${allTasks.length - completedTasks.length}',
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: SizeSystem.size24,
+                                          color: ColorSystem.primary,
+                                        ),
+                                      ),
+                                      const WidgetSpan(
+                                        child: SizedBox(
+                                          width: SizeSystem.size5,
+                                        ),
+                                      ),
+                                      TextSpan(
+                                        text:
+                                        'Pending / ${allTasks.length} Tasks',
+                                        style: const TextStyle(
+                                          fontSize: SizeSystem.size12,
+                                          color: ColorSystem.primary,
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                if (isManager)
+                                  Badge(
+                                    showBadge: showingAgentTasks,
+                                    elevation: 6,
+                                    badgeContent: Text(
+                                      unAssignedTasks.length.toString(),
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                    child: InkWell(
+                                      focusColor: Colors.transparent,
+                                      highlightColor: Colors.transparent,
+                                      splashColor: Colors.transparent,
+                                      hoverColor: Colors.transparent,
+                                      onTap: () {
+                                        if (showingAgentTasks) {
+                                          futureTasks = getTasks(storeTasks);
+                                        } else {
+                                          futureTasks = getTasks(agentTasks);
+                                        }
+                                        showingAgentTasks =
+                                        !showingAgentTasks;
+                                        setState(() {});
+                                      },
+                                      child: SvgPicture.asset(
+                                        showingAgentTasks
+                                            ? IconSystem.storeTasks
+                                            : IconSystem.agentTasks,
+                                        width: SizeSystem.size36,
+                                      ),
+                                    ),
+                                  ),
+                                const SizedBox(
+                                  width: SizeSystem.size20,
+                                ),
+                                InkWell(
+                                  focusColor: Colors.transparent,
+                                  highlightColor: Colors.transparent,
+                                  splashColor: Colors.transparent,
+                                  hoverColor: Colors.transparent,
+                                  onTap: () async {
+                                    await showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return CupertinoAlertDialog(
+                                          actions: [
+                                            Column(
+                                              children: [
+                                                CustomDialogAction(
+                                                  label:
+                                                  'Upcoming (${futureOpenTasks.length})',
+                                                  onTap: () {
+                                                    displayedList.clear();
+                                                    displayedList = List.from(
+                                                        futureOpenTasks);
+                                                    Navigator.of(context)
+                                                        .pop();
+                                                    showingOverdue = false;
+                                                  },
+                                                ),
+                                                Container(
+                                                  height: SizeSystem.size1,
+                                                  color: Colors.grey
+                                                      .withOpacity(0.2),
+                                                ),
+                                                CustomDialogAction(
+                                                  label:
+                                                  'Overdue (${pastOpenTasks.length})',
+                                                  onTap: () {
+                                                    displayedList.clear();
+                                                    displayedList = List.from(
+                                                        pastOpenTasks);
+                                                    Navigator.of(context)
+                                                        .pop();
+                                                    showingOverdue = true;
+                                                  },
+                                                ),
+                                                Container(
+                                                  height: SizeSystem.size1,
+                                                  color: Colors.grey
+                                                      .withOpacity(0.2),
+                                                ),
+                                                CustomDialogAction(
+                                                  label:
+                                                  'All (${allTasks.length})',
+                                                  onTap: () {
+                                                    displayedList.clear();
+                                                    displayedList =
+                                                        List.from(allTasks);
+                                                    Navigator.of(context)
+                                                        .pop();
+                                                    showingOverdue = false;
+                                                  },
+                                                ),
+                                                Container(
+                                                  height: SizeSystem.size1,
+                                                  color: Colors.grey
+                                                      .withOpacity(0.2),
+                                                ),
+                                                CustomDialogAction(
+                                                  label:
+                                                  'Today (${todaysTasks.length})',
+                                                  onTap: () {
+                                                    displayedList.clear();
+                                                    displayedList = List.from(
+                                                        todaysTasks);
+                                                    Navigator.of(context)
+                                                        .pop();
+                                                    showingOverdue = false;
+                                                  },
+                                                ),
+                                                Container(
+                                                  height: SizeSystem.size1,
+                                                  color: Colors.grey
+                                                      .withOpacity(0.2),
+                                                ),
+                                                CustomDialogAction(
+                                                  label:
+                                                  'Completed (${completedTasks.length})',
+                                                  onTap: () {
+                                                    displayedList.clear();
+                                                    displayedList = List.from(
+                                                        completedTasks);
+                                                    Navigator.of(context)
+                                                        .pop();
+                                                    showingOverdue = false;
+                                                  },
+                                                ),
+                                                if (!showingAgentTasks)
+                                                  Container(
+                                                    height: SizeSystem.size1,
+                                                    color: Colors.grey
+                                                        .withOpacity(0.2),
+                                                  ),
+                                                if (!showingAgentTasks)
+                                                  CustomDialogAction(
+                                                    label:
+                                                    'Unassigned (${unAssignedTasks.length})',
+                                                    onTap: () {
+                                                      displayedList.clear();
+                                                      displayedList =
+                                                          List.from(
+                                                              unAssignedTasks);
+                                                      Navigator.of(context)
+                                                          .pop();
+                                                      showingOverdue = false;
+                                                    },
+                                                  ),
+                                              ],
+                                            )
+                                          ],
+                                        );
+                                      },
+                                    );
+                                    setState(() {});
+                                  },
+                                  child: SvgPicture.asset(
+                                    IconSystem.funnel,
+                                    width: SizeSystem.size24,
+                                    color: ColorSystem.additionalGrey,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                        CustomLinearProgressIndicator(
+                          containerHeight: SizeSystem.size8,
+                          containerMargin:
+                          const EdgeInsets.only(top: SizeSystem.size20),
+                          containerRadius: const BorderRadius.all(
+                            Radius.circular(SizeSystem.size20),
+                          ),
+                          indicatorValue: allTasks.isNotEmpty
+                              ? completedTasks.length / allTasks.length
+                              : 0,
+                          indicatorValueColor: ColorSystem.skyBlue,
+                          indicatorBackgroundColor: ColorSystem.lavender3,
+                        ),
+                        const SizedBox(
+                          height: SizeSystem.size30,
+                        ),
+                        ListView.separated(
+                          itemCount: displayedList.length,
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemBuilder: (context, index) {
+                            return TaskListWidget(
+                              onTap: () async {
+                                await Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                        builder: (BuildContext context) {
+                                          return TaskDetailsScreen(
+                                            taskId: displayedList[index].id!,
+                                            email: displayedList[index].email,
+                                            task: displayedList[index],
+                                          );
+                                        }));
+                                setState(() {
+                                  futureTasks = getTasks(agentTasks);
+                                });
+                              },
+                              task: displayedList[index],
+                              taskId: displayedList[index].id!,
+                              status: displayedList[index].status,
+                              subject: displayedList[index].subject,
+                              taskType: displayedList[index].taskType,
+                              activityDate: displayedList[index].taskDate,
+                              phone: displayedList[index].phone,
+                              email: displayedList[index].email,
+                              isOverdue: showingOverdue,
+                              showingStoreTasks: !showingAgentTasks,
+                            );
+                          },
+                          separatorBuilder:
+                              (BuildContext context, int index) {
+                            return Container(
+                              color: Colors.white,
+                              child: Divider(
+                                color: Colors.grey.withOpacity(0.2),
+                                thickness: 1,
+                              ),
+                            );
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                if(isManager)
                 Center(
                   child: [
                     AgentTaskList(agentTaskList: teamTaskList),
@@ -715,6 +1032,7 @@ class _TasksWidgetState extends State<TasksWidget>
                                 children: [
                                   if (isManager)
                                     Badge(
+                                      showBadge: showingAgentTasks,
                                       elevation: 6,
                                       badgeContent: Text(
                                         unAssignedTasks.length.toString(),
@@ -889,9 +1207,8 @@ class _TasksWidgetState extends State<TasksWidget>
                             indicatorValue: allTasks.isNotEmpty
                                 ? completedTasks.length / allTasks.length
                                 : 0,
-                            indicatorValueColor: ColorSystem.lavender3,
-                            indicatorBackgroundColor:
-                                ColorSystem.additionalGrey,
+                            indicatorValueColor: ColorSystem.skyBlue,
+                            indicatorBackgroundColor: ColorSystem.lavender3,
                           ),
                           const SizedBox(
                             height: SizeSystem.size30,

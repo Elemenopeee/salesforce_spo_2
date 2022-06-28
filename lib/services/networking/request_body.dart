@@ -22,4 +22,12 @@ abstract class RequestBody {
       'dueDate': dueDate ?? '',
     };
   }
+
+  static Map<String, dynamic> getAgentProfileBody({
+    required String id,
+  }) {
+    return {
+      'userId': id,
+    };
+  }
 }

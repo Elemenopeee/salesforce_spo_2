@@ -8,6 +8,8 @@ class AgentMetrics {
   final int completedTasks;
   final int allUnassignedTasks;
   final int allTasks;
+  final double yesterdaySale;
+  final double yesterdayCommission;
 
   AgentMetrics._({
     this.todayTasks = 0,
@@ -19,6 +21,8 @@ class AgentMetrics {
     this.completedTasks = 0,
     this.allUnassignedTasks = 0,
     this.allTasks = 0,
+    this.yesterdaySale = 0,
+    this.yesterdayCommission = 0,
   });
 
   factory AgentMetrics.fromJson(Map<String, dynamic> json) {
@@ -103,6 +107,8 @@ class AgentMetrics {
       completedTasks: json['CompletedTasks'] ?? 0,
       allUnassignedTasks: json['AllUnassignedTasks'] ?? 0,
       allTasks: json['AllTasks'] ?? 0,
+      yesterdaySale: json['YesterdaySale'],
+      yesterdayCommission: json['YesterdayCommission'],
     );
   }
 }

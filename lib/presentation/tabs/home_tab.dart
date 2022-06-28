@@ -61,33 +61,13 @@ class _TabHomeState extends State<TabHome> with SingleTickerProviderStateMixin {
               height: SizeSystem.size20,
             ),
             const ProgressContainer(),
-            // const SizedBox(
-            //   height: SizeSystem.size36,
-            // ),
-            // Padding(
-            //   padding: const EdgeInsets.symmetric(
-            //     horizontal: SizeSystem.size28,
-            //     vertical: SizeSystem.size14,
-            //   ),
-            //   child: SvgPicture.asset(IconSystem.inProgress),
-            // ),
-            // const SizedBox(
-            //   height: SizeSystem.size36,
-            // ),
+            const SizedBox(
+              height: SizeSystem.size20,
+            ),
             TasksWidget(
               agentName:
                   widget.agentName != null ? '${widget.agentName}\'s' : 'My',
             ),
-            // const Center(
-            //   child: Text(
-            //     'Work in progress',
-            //     style: TextStyle(
-            //       color: ColorSystem.secondary,
-            //       fontSize: SizeSystem.size12,
-            //       fontFamily: kRubik,
-            //     ),
-            //   ),
-            // ),
             const SizedBox(
               height: SizeSystem.size36,
             ),
@@ -224,8 +204,8 @@ class _ProgressContainerState extends State<ProgressContainer> {
                     children: [
                       Expanded(
                         child: MySalesWidget(
-                          todaySale: 10000,
-                          todayCommission: 100000,
+                          todaySale: agentMetrics?.yesterdaySale ?? 0,
+                          todayCommission: agentMetrics?.yesterdayCommission ?? 0,
                           perDayCommissions:
                               agentMetrics?.perDayCommission ?? [],
                           perDaySales: agentMetrics?.perDaySale ?? [],
