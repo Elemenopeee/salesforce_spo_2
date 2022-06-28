@@ -1,5 +1,5 @@
 abstract class RequestBody {
-  static Map<String, dynamic> getSmartTriggersBody(
+  static Map<String, dynamic> getMetricsAndSmartTriggersBody(
       String tabName, String userId) {
     return {
       'TabName': tabName,

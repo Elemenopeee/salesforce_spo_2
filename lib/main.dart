@@ -4,12 +4,14 @@ import 'package:azure_ad_authentication/model/user_ad.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:salesforce_spo/models/agent.dart';
 import 'package:salesforce_spo/presentation/intermediate_widgets/customer_lookup_widget.dart';
 import 'package:salesforce_spo/presentation/screens/smart_triggers_screen.dart';
 import 'package:salesforce_spo/presentation/tabs/home_tab.dart';
 import 'package:salesforce_spo/services/networking/endpoints.dart';
 import 'package:salesforce_spo/services/networking/networking_service.dart';
 import 'package:salesforce_spo/services/storage/shared_preferences_service.dart';
+import 'package:salesforce_spo/utils/constants.dart';
 
 import 'common_widgets/notched_bottom_navigation_bar.dart';
 import 'common_widgets/tgc_app_bar.dart';
@@ -34,7 +36,6 @@ const List<String> kScopes = [
 UserAdModel? userAdModel;
 
 Future<void> _acquireToken() async {
-
   SharedPreferenceService()
       .setKey(key: 'agent_email', value: 'ankit.kumar@guitarcenter.com');
 
@@ -97,9 +98,32 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
 
+  late Future<void> futureUser;
+
+  Future<void> getUser() async {
+    var email = await SharedPreferenceService().getValue(agentEmail);
+
+    if (email != null) {
+      var response =
+          await HttpService().doGet(path: Endpoints.getUserInformation(email));
+
+      if (response.data != null) {
+        var agent = Agent.fromJson(response.data['records'][0]);
+
+        if (agent.id != null) {
+          SharedPreferenceService().setKey(key: agentId, value: agent.id!);
+        }
+        if (agent.storeId != null) {
+          SharedPreferenceService().setKey(key: storeId, value: agent.storeId!);
+        }
+      }
+    }
+  }
+
   @override
   void initState() {
     super.initState();
+    futureUser = getUser();
   }
 
   @override
@@ -110,8 +134,24 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: TGCAppBar(
         label: 'HOME',
       ),
-      body: TabHome(
-        agentName: userAdModel?.givenName,
+      body: FutureBuilder(
+        future: futureUser,
+        builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+          switch(snapshot.connectionState){
+            case ConnectionState.none:
+            case ConnectionState.waiting:
+            case ConnectionState.active:
+              return const Center(
+                child: CircularProgressIndicator(
+                  color: ColorSystem.primary,
+                ),
+              );
+            case ConnectionState.done:
+              return TabHome(
+                agentName: userAdModel?.givenName,
+              );
+          }
+        },
       ),
       bottomNavigationBar: NotchedBottomNavigationBar(
         actions: [

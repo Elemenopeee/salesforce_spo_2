@@ -6,12 +6,10 @@ class BarChartWidget extends StatelessWidget {
   const BarChartWidget({
     Key? key,
     this.barColor,
+    required this.values,
   }) : super(key: key);
   final Color? barColor;
-
-  // final List<Sector> sectors;
-  //
-  // BarChartWidget(this.sectors);
+  final List<double> values;
 
   @override
   Widget build(BuildContext context) {
@@ -39,176 +37,14 @@ class BarChartWidget extends StatelessWidget {
           barGroups: [
             BarChartGroupData(
               x: 0,
-              barRods: [
-                BarChartRodData(
-                  fromY: 0,
-                  width: 3,
-                  color: barColor,
-                  toY: 30,
-                ),
-                BarChartRodData(
-                  fromY: 0,
-                  width: 3,
-                  color: barColor,
-                  toY: 17,
-                ),
-                BarChartRodData(
-                  fromY: 0,
-                  width: 3,
-                  color: barColor,
-                  toY: 12,
-                ),
-                BarChartRodData(
-                  fromY: 0,
-                  width: 3,
-                  color: barColor,
-                  toY: 19,
-                ),
-                BarChartRodData(
-                  fromY: 0,
-                  width: 3,
-                  color: barColor,
-                  toY: 7,
-                ),
-                BarChartRodData(
-                  fromY: 0,
-                  width: 3,
-                  color: barColor,
-                  toY: 30,
-                ),
-                BarChartRodData(
-                  fromY: 0,
-                  width: 3,
-                  color: barColor,
-                  toY: 17,
-                ),
-                BarChartRodData(
-                  fromY: 0,
-                  width: 3,
-                  color: barColor,
-                  toY: 12,
-                ),
-                BarChartRodData(
-                  fromY: 0,
-                  width: 3,
-                  color: barColor,
-                  toY: 19,
-                ),
-                BarChartRodData(
-                  fromY: 0,
-                  width: 3,
-                  color: barColor,
-                  toY: 7,
-                ),
-                BarChartRodData(
-                  fromY: 0,
-                  width: 3,
-                  color: barColor,
-                  toY: 30,
-                ),
-                BarChartRodData(
-                  fromY: 0,
-                  width: 3,
-                  color: barColor,
-                  toY: 17,
-                ),
-                BarChartRodData(
-                  fromY: 0,
-                  width: 3,
-                  color: barColor,
-                  toY: 12,
-                ),
-                BarChartRodData(
-                  fromY: 0,
-                  width: 3,
-                  color: barColor,
-                  toY: 19,
-                ),
-                BarChartRodData(
-                  fromY: 0,
-                  width: 3,
-                  color: barColor,
-                  toY: 7,
-                ),
-                BarChartRodData(
-                  fromY: 0,
-                  width: 3,
-                  color: barColor,
-                  toY: 30,
-                ),
-                BarChartRodData(
-                  fromY: 0,
-                  width: 3,
-                  color: barColor,
-                  toY: 17,
-                ),
-                BarChartRodData(
-                  fromY: 0,
-                  width: 3,
-                  color: barColor,
-                  toY: 12,
-                ),
-                BarChartRodData(
-                  fromY: 0,
-                  width: 3,
-                  color: barColor,
-                  toY: 19,
-                ),
-                BarChartRodData(
-                  fromY: 0,
-                  width: 3,
-                  color: barColor,
-                  toY: 7,
-                ),
-                BarChartRodData(
-                  fromY: 0,
-                  width: 3,
-                  color: barColor,
-                  toY: 17,
-                ),
-                BarChartRodData(
-                  fromY: 0,
-                  width: 3,
-                  color: barColor,
-                  toY: 12,
-                ),
-                BarChartRodData(
-                  fromY: 0,
-                  width: 3,
-                  color: barColor,
-                  toY: 19,
-                ),
-                BarChartRodData(
-                  fromY: 0,
-                  width: 3,
-                  color: barColor,
-                  toY: 7,
-                ),
-                BarChartRodData(
-                  fromY: 0,
-                  width: 3,
-                  color: barColor,
-                  toY: 17,
-                ),
-                BarChartRodData(
-                  fromY: 0,
-                  width: 3,
-                  color: barColor,
-                  toY: 12,
-                ),
-                BarChartRodData(
-                  fromY: 0,
-                  width: 3,
-                  color: barColor,
-                  toY: 19,
-                ),
-                BarChartRodData(
-                  fromY: 0,
-                  width: 3,
-                  color: barColor,
-                  toY: 7,
-                ),
-              ],
+              barRods: List.generate(
+                  values.length,
+                  (index) => BarChartRodData(
+                        fromY: 0,
+                        width: 3,
+                        color: barColor,
+                        toY: values[index] == 0 ? 1 : values[index],
+                      )).toList(),
             ),
           ],
         ),

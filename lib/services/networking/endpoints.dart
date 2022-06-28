@@ -50,6 +50,7 @@ abstract class Endpoints {
   static String kStoreAgents = '/services/apexrest/GC_SmartTriggerProfileAPI/';
   static String kUpdateOrder = '/services/apexrest/GC_SmartTriggerOrderAPI/';
   static String kAgentMetrics = '/services/apexrest/GC_SmartTriggerAccountAPI/';
+  static String kAgentTeamTaskList = '/services/apexrest/GC_SmartTriggerTeamAPI/';
 
   static String getCustomerSearchByPhone(String phone) {
     return '$kBaseURL$kCustomerSearchByPhone\'$phone\' OR Phone__c = \'$phone\'';
@@ -181,6 +182,10 @@ abstract class Endpoints {
 
   static String getAgentMetrics(){
     return '$kBaseURL$kAgentMetrics';
+  }
+
+  static String getTeamTaskList(){
+    return '$kBaseURL$kAgentTeamTaskList';
   }
 
 }

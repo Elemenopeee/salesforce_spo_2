@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:salesforce_spo/common_widgets/custom_linear_progress_indicator.dart';
+import 'package:salesforce_spo/common_widgets/agent_tasks_list_widget.dart';
 import 'package:salesforce_spo/common_widgets/task_alert_widget.dart';
 import 'package:salesforce_spo/common_widgets/task_list_widget.dart';
 import 'package:salesforce_spo/design_system/design_system.dart';
@@ -37,6 +38,7 @@ class TasksWidget extends StatefulWidget {
 class _TasksWidgetState extends State<TasksWidget>
     with SingleTickerProviderStateMixin {
   late Future<void> futureTasks;
+  late Future<void> futureTeamTasks;
   late TabController teamsTabController;
 
   List<TaskModel> todaysTasks = [],
@@ -47,6 +49,8 @@ class _TasksWidgetState extends State<TasksWidget>
       allTasks = [];
 
   List<TaskModel> displayedList = [];
+
+  List<Agent> teamTaskList = [];
 
   bool isManager = false;
   bool showingAgentTasks = true;
@@ -74,10 +78,6 @@ class _TasksWidgetState extends State<TasksWidget>
       if (agent!.id != null) {
         id = agent!.id!;
       }
-      if (agent!.storeId != null) {
-        SharedPreferenceService()
-            .setKey(key: 'store_id', value: agent!.storeId!);
-      }
     }
   }
 
@@ -97,7 +97,8 @@ class _TasksWidgetState extends State<TasksWidget>
 
     var response = await HttpService().doPost(
         path: Endpoints.getSmartTriggers(),
-        body: jsonEncode(RequestBody.getSmartTriggersBody(tabName, id)),
+        body:
+            jsonEncode(RequestBody.getMetricsAndSmartTriggersBody(tabName, id)),
         tokenRequired: true);
 
     if (response.data != null) {
@@ -133,6 +134,23 @@ class _TasksWidgetState extends State<TasksWidget>
     displayedList = List.from(allTasks);
   }
 
+  Future<void> getTeamTasks() async {
+    teamTaskList.clear();
+
+    var response = await HttpService().doPost(
+        path: Endpoints.getTeamTaskList(),
+        body: jsonEncode(
+            RequestBody.getMetricsAndSmartTriggersBody('MyNewTeam', id)), tokenRequired: true);
+
+    try {
+      for(var agentTaskJson in response.data['AggregatedTaskList']){
+        teamTaskList.add(Agent.fromTeamTaskListJson(agentTaskJson));
+      }
+    } on Exception catch (e) {
+      print(e);
+    }
+  }
+
   double percentCalculator(int completedTasks, int allTasks) {
     if (completedTasks == allTasks) {
       return 0.7;
@@ -152,6 +170,7 @@ class _TasksWidgetState extends State<TasksWidget>
     teamsTabController = TabController(length: 2, vsync: this);
     teamsTabController.addListener(_handleTabSelection);
     futureTasks = getTasks(agentTasks);
+    futureTeamTasks = getTeamTasks();
   }
 
   _handleTabSelection() {
@@ -163,7 +182,10 @@ class _TasksWidgetState extends State<TasksWidget>
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: futureTasks,
+      future: Future.wait([
+        futureTasks,
+        futureTeamTasks,
+      ]),
       builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
         switch (snapshot.connectionState) {
           case ConnectionState.none:
@@ -614,6 +636,7 @@ class _TasksWidgetState extends State<TasksWidget>
                 ),
                 Center(
                   child: [
+                    AgentTaskList(agentTaskList: teamTaskList),
                     Container(
                       margin: const EdgeInsets.symmetric(
                           horizontal: SizeSystem.size24),
@@ -662,7 +685,7 @@ class _TasksWidgetState extends State<TasksWidget>
                                       children: [
                                         TextSpan(
                                           text:
-                                          '${allTasks.length - completedTasks.length}',
+                                              '${allTasks.length - completedTasks.length}',
                                           style: const TextStyle(
                                             fontWeight: FontWeight.w600,
                                             fontSize: SizeSystem.size24,
@@ -676,7 +699,7 @@ class _TasksWidgetState extends State<TasksWidget>
                                         ),
                                         TextSpan(
                                           text:
-                                          'Pending / ${allTasks.length} Tasks',
+                                              'Pending / ${allTasks.length} Tasks',
                                           style: const TextStyle(
                                             fontSize: SizeSystem.size12,
                                             color: ColorSystem.primary,
@@ -710,7 +733,8 @@ class _TasksWidgetState extends State<TasksWidget>
                                           } else {
                                             futureTasks = getTasks(agentTasks);
                                           }
-                                          showingAgentTasks = !showingAgentTasks;
+                                          showingAgentTasks =
+                                              !showingAgentTasks;
                                           setState(() {});
                                         },
                                         child: SvgPicture.asset(
@@ -739,7 +763,7 @@ class _TasksWidgetState extends State<TasksWidget>
                                                 children: [
                                                   CustomDialogAction(
                                                     label:
-                                                    'Upcoming (${futureOpenTasks.length})',
+                                                        'Upcoming (${futureOpenTasks.length})',
                                                     onTap: () {
                                                       displayedList.clear();
                                                       displayedList = List.from(
@@ -756,7 +780,7 @@ class _TasksWidgetState extends State<TasksWidget>
                                                   ),
                                                   CustomDialogAction(
                                                     label:
-                                                    'Overdue (${pastOpenTasks.length})',
+                                                        'Overdue (${pastOpenTasks.length})',
                                                     onTap: () {
                                                       displayedList.clear();
                                                       displayedList = List.from(
@@ -773,7 +797,7 @@ class _TasksWidgetState extends State<TasksWidget>
                                                   ),
                                                   CustomDialogAction(
                                                     label:
-                                                    'All (${allTasks.length})',
+                                                        'All (${allTasks.length})',
                                                     onTap: () {
                                                       displayedList.clear();
                                                       displayedList =
@@ -790,7 +814,7 @@ class _TasksWidgetState extends State<TasksWidget>
                                                   ),
                                                   CustomDialogAction(
                                                     label:
-                                                    'Today (${todaysTasks.length})',
+                                                        'Today (${todaysTasks.length})',
                                                     onTap: () {
                                                       displayedList.clear();
                                                       displayedList = List.from(
@@ -807,7 +831,7 @@ class _TasksWidgetState extends State<TasksWidget>
                                                   ),
                                                   CustomDialogAction(
                                                     label:
-                                                    'Completed (${completedTasks.length})',
+                                                        'Completed (${completedTasks.length})',
                                                     onTap: () {
                                                       displayedList.clear();
                                                       displayedList = List.from(
@@ -826,7 +850,7 @@ class _TasksWidgetState extends State<TasksWidget>
                                                   if (!showingAgentTasks)
                                                     CustomDialogAction(
                                                       label:
-                                                      'Unassigned (${unAssignedTasks.length})',
+                                                          'Unassigned (${unAssignedTasks.length})',
                                                       onTap: () {
                                                         displayedList.clear();
                                                         displayedList =
@@ -858,7 +882,7 @@ class _TasksWidgetState extends State<TasksWidget>
                           CustomLinearProgressIndicator(
                             containerHeight: SizeSystem.size8,
                             containerMargin:
-                            const EdgeInsets.only(top: SizeSystem.size20),
+                                const EdgeInsets.only(top: SizeSystem.size20),
                             containerRadius: const BorderRadius.all(
                               Radius.circular(SizeSystem.size20),
                             ),
@@ -867,7 +891,7 @@ class _TasksWidgetState extends State<TasksWidget>
                                 : 0,
                             indicatorValueColor: ColorSystem.lavender3,
                             indicatorBackgroundColor:
-                            ColorSystem.additionalGrey,
+                                ColorSystem.additionalGrey,
                           ),
                           const SizedBox(
                             height: SizeSystem.size30,
@@ -882,12 +906,12 @@ class _TasksWidgetState extends State<TasksWidget>
                                   await Navigator.of(context).push(
                                       MaterialPageRoute(
                                           builder: (BuildContext context) {
-                                            return TaskDetailsScreen(
-                                              taskId: displayedList[index].id!,
-                                              email: displayedList[index].email,
-                                              task: displayedList[index],
-                                            );
-                                          }));
+                                    return TaskDetailsScreen(
+                                      taskId: displayedList[index].id!,
+                                      email: displayedList[index].email,
+                                      task: displayedList[index],
+                                    );
+                                  }));
                                   setState(() {
                                     futureTasks = getTasks(agentTasks);
                                   });
@@ -917,9 +941,6 @@ class _TasksWidgetState extends State<TasksWidget>
                           ),
                         ],
                       ),
-                    ),
-                    Center(
-                      child: Text('Task tab'),
                     ),
                   ][teamsTabController.index],
                 ),

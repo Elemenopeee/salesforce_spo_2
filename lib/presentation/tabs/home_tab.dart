@@ -1,12 +1,16 @@
+import 'dart:convert';
+
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:salesforce_spo/common_widgets/my_sales_widget.dart';
 import 'package:salesforce_spo/design_system/design_system.dart';
+import 'package:salesforce_spo/models/agent_metrics.dart';
 import 'package:salesforce_spo/presentation/intermediate_widgets/tasks_widget.dart';
 import 'package:salesforce_spo/services/networking/endpoints.dart';
 import 'package:salesforce_spo/services/networking/networking_service.dart';
+import 'package:salesforce_spo/services/networking/request_body.dart';
 import 'package:salesforce_spo/services/storage/shared_preferences_service.dart';
 import 'package:salesforce_spo/utils/constants.dart';
 
@@ -107,83 +111,63 @@ class _ProgressContainerState extends State<ProgressContainer> {
   double todaysSale = 0;
   double todaysCommission = 0;
 
-  // late Future<void> _futureSales;
-  // late Future<void> _futureCommission;
-  // late Future<void> _futureTodaysSale;
-  // late Future<void> _futureTodaysCommission;
-  //
-  // Future<void> _getTotalSales() async {
-  //   var agentMail = await SharedPreferenceService().getValue('agent_email');
-  //   if (agentMail != null) {
-  //     var response =
-  //         await HttpService().doGet(path: Endpoints.getTotalSales(agentMail));
-  //     try {
-  //       totalSales = response.data['records'][0]['Sales'];
-  //     } catch (e) {
-  //       print(e);
-  //     }
-  //   }
-  // }
-  //
-  // Future<void> _getTotalCommission() async {
-  //   var agentMail = await SharedPreferenceService().getValue('agent_email');
-  //   if (agentMail != null) {
-  //     var response = await HttpService()
-  //         .doGet(path: Endpoints.getTotalCommission(agentMail));
-  //     try {
-  //       totalCommission = response.data['records'][0]['commission'];
-  //     } catch (e) {
-  //       print(e);
-  //     }
-  //   }
-  // }
-  //
-  // Future<void> _getTodaysSale() async {
-  //   var agentMail = await SharedPreferenceService().getValue('agent_email');
-  //   if (agentMail != null) {
-  //     var response =
-  //         await HttpService().doGet(path: Endpoints.getTodaysSales(agentMail));
-  //     List<dynamic> records = response.data['records'];
-  //     if (records.isNotEmpty) {
-  //       try {
-  //         var saleData = records.firstWhere(
-  //             (element) => element['Gross_Sales_Yesterday__c'] != null);
-  //         todaysSale = saleData['Gross_Sales_Yesterday__c'];
-  //       } catch (e) {
-  //         print(e);
-  //       }
-  //     }
-  //   }
-  // }
-  //
-  // Future<void> _getTodaysCommission() async {
-  //   var agentMail = await SharedPreferenceService().getValue('agent_email');
-  //   if (agentMail != null) {
-  //     var response = await HttpService()
-  //         .doGet(path: Endpoints.getTodaysCommission(agentMail));
-  //     List<dynamic> records = response.data['records'];
-  //
-  //     if (records.isNotEmpty) {
-  //       try {
-  //         var commissionData = records.firstWhere(
-  //             (element) => element['Comm_Amount_Yesterday__c'] != null);
-  //         todaysCommission = commissionData['Comm_Amount_Yesterday__c'];
-  //       } catch (e) {
-  //         print(e);
-  //       }
-  //     }
-  //   }
-  // }
-  //
-  // Future<void>
+  int monthNumber = 1;
+
+  late Future<void> futureAgentMetrics;
+
+  AgentMetrics? agentMetrics;
+
+  Future<void> getAgentMetrics() async {
+    var id = await SharedPreferenceService().getValue(agentId);
+
+    if (id != null) {
+      var response = await HttpService().doPost(
+          path: Endpoints.getAgentMetrics(),
+          body: jsonEncode(
+              RequestBody.getMetricsAndSmartTriggersBody('MyNewStore', id)));
+
+      if (response.data != null) {
+        agentMetrics = AgentMetrics.fromJson(response.data);
+        monthNumber = response.data['PerDaySale']['Month__c'];
+      }
+    }
+  }
+
+  String getMonthName(int month) {
+    switch (month) {
+      case 1:
+        return 'January';
+      case 2:
+        return 'February';
+      case 3:
+        return 'March';
+      case 4:
+        return 'April';
+      case 5:
+        return 'May';
+      case 6:
+        return 'June';
+      case 7:
+        return 'July';
+      case 8:
+        return 'August';
+      case 9:
+        return 'September';
+      case 10:
+        return 'October';
+      case 11:
+        return 'November';
+      case 12:
+        return 'December';
+      default:
+        return 'Month';
+    }
+  }
 
   @override
   void initState() {
     super.initState();
-    // _futureSales = _getTotalSales();
-    // _futureCommission = _getTotalCommission();
-    // _futureTodaysSale = _getTodaysSale();
-    // _futureTodaysCommission = _getTodaysCommission();
+    futureAgentMetrics = getAgentMetrics();
   }
 
   String formattedNumber(double value) {
@@ -196,64 +180,107 @@ class _ProgressContainerState extends State<ProgressContainer> {
     var dateTime = DateTime.now();
     var month = DateFormat(DateFormat.MONTH).format(dateTime);
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: const [
-              Text(
-                "Metrics of Month",
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  fontFamily: kRubik,
-                  color: ColorSystem.primary,
-                ),
+    return FutureBuilder(
+      future: futureAgentMetrics,
+      builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+        switch (snapshot.connectionState) {
+          case ConnectionState.none:
+          case ConnectionState.waiting:
+          case ConnectionState.active:
+            return const Center(
+              child: CircularProgressIndicator(
+                color: ColorSystem.primary,
               ),
-              Icon(
-                Icons.more_horiz_outlined,
-                color: Colors.white,
-                size: 40,
+            );
+          case ConnectionState.done:
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "Metrics of ${getMonthName(monthNumber)}",
+                        style: const TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: kRubik,
+                          color: ColorSystem.primary,
+                        ),
+                      ),
+                      const Icon(
+                        Icons.more_horiz_outlined,
+                        color: Colors.white,
+                        size: 40,
+                      ),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Expanded(
+                        child: MySalesWidget(
+                          todaySale: 10000,
+                          todayCommission: 100000,
+                          perDayCommissions:
+                              agentMetrics?.perDayCommission ?? [],
+                          perDaySales: agentMetrics?.perDaySale ?? [],
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 20,
+                      ),
+                      Expanded(
+                        child: TaskMetricsWidget(
+                          allTasks: agentMetrics?.allTasks ?? 0,
+                          pastOpenTasks: agentMetrics?.pastOpenTasks ?? 0,
+                          pendingTasks: ((agentMetrics?.todayTasks ?? 0) +
+                              (agentMetrics?.pastOpenTasks ?? 0)),
+                          unAssignedTasks:
+                              agentMetrics?.allUnassignedTasks ?? 0,
+                          completedTasks: agentMetrics?.completedTasks ?? 0,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
-            ],
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Expanded(
-                child: MySalesWidget(totalSales: 100, totalCommission: 100),
-              ),
-              const SizedBox(
-                width: 20,
-              ),
-              Expanded(
-                child:TaskMetricsWidget(),
-              ),
-            ],
-          ),
-        ],
-      ),
+            );
+        }
+      },
     );
   }
 }
 
 class TaskMetricsWidget extends StatelessWidget {
-  const TaskMetricsWidget({Key? key}) : super(key: key);
+  final int allTasks;
+  final int unAssignedTasks;
+  final int pastOpenTasks;
+  final int pendingTasks;
+  final int completedTasks;
+
+  const TaskMetricsWidget({
+    Key? key,
+    required this.pastOpenTasks,
+    required this.unAssignedTasks,
+    required this.allTasks,
+    required this.pendingTasks,
+    required this.completedTasks,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(
+      padding: const EdgeInsets.symmetric(
         horizontal: SizeSystem.size16,
         vertical: SizeSystem.size10,
       ),
       decoration: BoxDecoration(
-        color: Color(0xFFAF8EFF).withOpacity(0.1),
+        color: ColorSystem.purple.withOpacity(0.1),
         borderRadius: BorderRadius.circular(SizeSystem.size16),
       ),
       child: Column(
@@ -262,7 +289,7 @@ class TaskMetricsWidget extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
+              const Text(
                 'MY TASK',
                 style: TextStyle(
                   letterSpacing: 1.5,
@@ -272,8 +299,8 @@ class TaskMetricsWidget extends StatelessWidget {
                 ),
               ),
               Text(
-                '40',
-                style: TextStyle(
+                allTasks.toString(),
+                style: const TextStyle(
                   color: ColorSystem.primary,
                   fontSize: SizeSystem.size24,
                   fontWeight: FontWeight.bold,
@@ -291,10 +318,12 @@ class TaskMetricsWidget extends StatelessWidget {
             child: PieChart(
               PieChartData(
                 sections: showingSections(
-                    100,
-                    1000),
-                centerSpaceColor:
-                const Color(0xFFAF8EFF).withOpacity(0.1),
+                  allTasks.toDouble(),
+                  pendingTasks.toDouble(),
+                  completedTasks.toDouble(),
+                  unAssignedTasks.toDouble(),
+                ),
+                centerSpaceColor: ColorSystem.purple.withOpacity(0.1),
                 centerSpaceRadius: 24,
               ),
             ),
@@ -310,7 +339,7 @@ class TaskMetricsWidget extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    '27',
+                    pendingTasks.toString(),
                     style: TextStyle(
                       color: ColorSystem.purple,
                       fontSize: SizeSystem.size24,
@@ -322,7 +351,7 @@ class TaskMetricsWidget extends StatelessWidget {
                     height: SizeSystem.size4,
                   ),
                   Text(
-                    'MY TASK',
+                    'PENDING',
                     style: TextStyle(
                       color: ColorSystem.primary,
                       fontSize: SizeSystem.size12,
@@ -336,7 +365,7 @@ class TaskMetricsWidget extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    '27',
+                    pastOpenTasks.toString(),
                     style: TextStyle(
                       color: ColorSystem.peach,
                       fontSize: SizeSystem.size24,
@@ -348,7 +377,7 @@ class TaskMetricsWidget extends StatelessWidget {
                     height: SizeSystem.size4,
                   ),
                   Text(
-                    'MY TASK',
+                    'OVERDUE',
                     style: TextStyle(
                       color: ColorSystem.primary,
                       fontSize: SizeSystem.size12,
@@ -365,16 +394,20 @@ class TaskMetricsWidget extends StatelessWidget {
   }
 }
 
-
-List<PieChartSectionData> showingSections(double today, double total) {
-  return List.generate(3, (i) {
+List<PieChartSectionData> showingSections(
+  double allTasks,
+  double pendingTasks,
+  double completedTasks,
+  double unAssignedTasks,
+) {
+  return List.generate(4, (i) {
     const fontSize = 0.0;
     const radius = 26.0;
     switch (i) {
       case 0:
         return PieChartSectionData(
           color: const Color(0xFF7FE3F0),
-          value: today,
+          value: completedTasks,
           radius: radius,
           titleStyle: const TextStyle(
             fontSize: fontSize,
@@ -383,7 +416,7 @@ List<PieChartSectionData> showingSections(double today, double total) {
       case 1:
         return PieChartSectionData(
           color: const Color(0xFF6B5FD2),
-          value: total,
+          value: allTasks,
           radius: radius,
           titleStyle: const TextStyle(
             fontSize: fontSize,
@@ -392,7 +425,16 @@ List<PieChartSectionData> showingSections(double today, double total) {
       case 2:
         return PieChartSectionData(
           color: ColorSystem.peach,
-          value: today,
+          value: pendingTasks,
+          radius: radius,
+          titleStyle: const TextStyle(
+            fontSize: fontSize,
+          ),
+        );
+      case 3:
+        return PieChartSectionData(
+          color: ColorSystem.complimentary,
+          value: unAssignedTasks,
           radius: radius,
           titleStyle: const TextStyle(
             fontSize: fontSize,
@@ -403,43 +445,3 @@ List<PieChartSectionData> showingSections(double today, double total) {
     }
   });
 }
-
-// CustomTabBarExtended(
-// padding: const EdgeInsets.symmetric(horizontal: 30),
-// height: 40,
-// containerColor: Colors.grey.withOpacity(0.1),
-// containerBorderRadius: 10.0,
-// tabBorderRadius: 10.0,
-// tabOneName: "Open Orders",
-// tabTwoName: "All Orders",
-// boxShadow: [
-// BoxShadow(
-// color: Colors.grey.shade300,
-// offset: const Offset(
-// 0.0,
-// 1.0,
-// ),
-// blurRadius: 2,
-// spreadRadius: 2,
-// )
-// ],
-// tabController: _tabController,
-// tabColor: Colors.white,
-// labelColor: Colors.black,
-// unSelectLabelColor: Colors.grey,
-// labelTextStyle: const TextStyle(
-// fontWeight: FontWeight.bold,
-// fontFamily: kRubik,
-// ),
-// ),
-
-// SizedBox(
-// height: 360,
-// child: TabBarView(
-// controller: _tabController,
-// children: const [
-// OpenOrderTab(),
-// AllOrderTab(),
-// ],
-// ),
-// )

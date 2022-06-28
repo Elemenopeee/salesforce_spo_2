@@ -23,3 +23,5 @@ const Map<String, String> kPurchaseChannelHeaders = {
 };
 
 const String agentEmail = 'agent_email';
+const String agentId = 'agent_id';
+const String storeId = 'store_id';

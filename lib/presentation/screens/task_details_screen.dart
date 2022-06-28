@@ -83,8 +83,6 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
         ),
       ),
     );
-
-    print(response.data);
   }
 
   @override
