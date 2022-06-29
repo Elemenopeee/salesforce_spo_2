@@ -216,7 +216,7 @@ class _TaskListWidgetState extends State<TaskListWidget> {
                       ),
                       children: [
                         TextSpan(
-                          text: '${widget.taskType} : ',
+                          text: widget.taskType != null ? '${widget.taskType} : ' : '',
                           style: const TextStyle(
                             fontSize: SizeSystem.size14,
                             color: ColorSystem.secondary,

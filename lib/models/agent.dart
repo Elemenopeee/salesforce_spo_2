@@ -1,4 +1,3 @@
-import 'package:salesforce_spo/models/app_user.dart';
 import 'package:salesforce_spo/models/task.dart';
 
 class Agent {
@@ -77,7 +76,8 @@ class Agent {
 
 
     return Agent._(
-      name: json['Name'],
+      id: json['OwnerId'],
+      name: json['OwnerName'],
       todayTasks: todayTasks,
       pastOpenTasks: pastOpenTasks,
       futureTasks: futureTasks,

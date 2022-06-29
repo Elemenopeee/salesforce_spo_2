@@ -44,9 +44,10 @@ class _MySalesState extends State<MySalesWidget> {
           const Text(
             'MY SALES',
             style: TextStyle(
+              letterSpacing: 1.5,
               color: ColorSystem.black,
               fontWeight: FontWeight.w500,
-              fontSize: 14,
+              fontSize: SizeSystem.size14,
               fontFamily: kRubik,
             ),
           ),
@@ -115,9 +116,10 @@ class _MySalesState extends State<MySalesWidget> {
           const Text(
             'MY COMMISSION',
             style: TextStyle(
+              letterSpacing: 1.5,
               color: ColorSystem.black,
               fontWeight: FontWeight.w500,
-              fontSize: 14,
+              fontSize: SizeSystem.size14,
               fontFamily: kRubik,
             ),
           ),

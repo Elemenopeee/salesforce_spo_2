@@ -3,9 +3,10 @@ import 'package:salesforce_spo/design_system/primitives/color_system.dart';
 import 'package:salesforce_spo/design_system/primitives/size_system.dart';
 import 'package:salesforce_spo/utils/constants.dart';
 
-class EmployeesTaskWidget extends StatefulWidget {
-  const EmployeesTaskWidget(
+class AgentTaskCountTile extends StatefulWidget {
+  const AgentTaskCountTile(
       {Key? key,
+        required this.onTap,
       required this.employeeName,
       required this.overdueTaskCount,
       required this.pendingTaskCount})
@@ -13,14 +14,20 @@ class EmployeesTaskWidget extends StatefulWidget {
   final String? employeeName;
   final int overdueTaskCount;
   final int pendingTaskCount;
+  final VoidCallback onTap;
   @override
-  State<EmployeesTaskWidget> createState() => _EmployeesTaskWidgetState();
+  State<AgentTaskCountTile> createState() => _AgentTaskCountTileState();
 }
 
-class _EmployeesTaskWidgetState extends State<EmployeesTaskWidget> {
+class _AgentTaskCountTileState extends State<AgentTaskCountTile> {
   @override
   Widget build(BuildContext context) {
     return InkWell(
+      focusColor: Colors.transparent,
+      splashColor: Colors.transparent,
+      highlightColor: Colors.transparent,
+      hoverColor: Colors.transparent,
+      onTap: widget.onTap,
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Row(

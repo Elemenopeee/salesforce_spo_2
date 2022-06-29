@@ -95,32 +95,9 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
 
-  late Future<void> futureUser;
-
-  Future<void> getUser() async {
-    var email = await SharedPreferenceService().getValue(agentEmail);
-
-    if (email != null) {
-      var response =
-          await HttpService().doGet(path: Endpoints.getUserInformation(email));
-
-      if (response.data != null) {
-        var agent = Agent.fromJson(response.data['records'][0]);
-
-        if (agent.id != null) {
-          SharedPreferenceService().setKey(key: agentId, value: agent.id!);
-        }
-        if (agent.storeId != null) {
-          SharedPreferenceService().setKey(key: storeId, value: agent.storeId!);
-        }
-      }
-    }
-  }
-
   @override
   void initState() {
     super.initState();
-    futureUser = getUser();
   }
 
   @override
@@ -131,25 +108,7 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: TGCAppBar(
         label: 'HOME',
       ),
-      body: FutureBuilder(
-        future: futureUser,
-        builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-          switch(snapshot.connectionState){
-            case ConnectionState.none:
-            case ConnectionState.waiting:
-            case ConnectionState.active:
-              return const Center(
-                child: CircularProgressIndicator(
-                  color: ColorSystem.primary,
-                ),
-              );
-            case ConnectionState.done:
-              return TabHome(
-                agentName: userAdModel?.givenName,
-              );
-          }
-        },
-      ),
+      body: const TabHome(),
       bottomNavigationBar: NotchedBottomNavigationBar(
         actions: [
           IconButton(
