@@ -1,5 +1,5 @@
 abstract class RequestBody {
-  static Map<String, dynamic> getSmartTriggersBody(
+  static Map<String, dynamic> getMetricsAndSmartTriggersBody(
       String tabName, String userId) {
     return {
       'TabName': tabName,
@@ -20,6 +20,14 @@ abstract class RequestBody {
       'comment': comment ?? '',
       'assignee': assignee ?? '',
       'dueDate': dueDate ?? '',
+    };
+  }
+
+  static Map<String, dynamic> getAgentProfileBody({
+    required String id,
+  }) {
+    return {
+      'userId': id,
     };
   }
 }

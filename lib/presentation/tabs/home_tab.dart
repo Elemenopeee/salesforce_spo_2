@@ -1,24 +1,25 @@
-import 'package:fl_chart/fl_chart.dart';
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
+import 'package:salesforce_spo/common_widgets/my_sales_widget.dart';
 import 'package:salesforce_spo/design_system/design_system.dart';
+import 'package:salesforce_spo/models/agent_metrics.dart';
 import 'package:salesforce_spo/presentation/intermediate_widgets/tasks_widget.dart';
 import 'package:salesforce_spo/services/networking/endpoints.dart';
 import 'package:salesforce_spo/services/networking/networking_service.dart';
+import 'package:salesforce_spo/services/networking/request_body.dart';
 import 'package:salesforce_spo/services/storage/shared_preferences_service.dart';
 import 'package:salesforce_spo/utils/constants.dart';
 
-import 'all_orders.dart';
-import 'custom_tab_bar.dart';
-import 'open_orders.dart';
+import '../../common_widgets/profile_container.dart';
+import '../../common_widgets/task_metrics_widget.dart';
+import '../../models/agent.dart';
+
 
 class TabHome extends StatefulWidget {
-  final String? agentName;
-
   const TabHome({
     Key? key,
-    required this.agentName,
   }) : super(key: key);
 
   @override
@@ -29,10 +30,16 @@ class _TabHomeState extends State<TabHome> with SingleTickerProviderStateMixin {
   TabController? _tabController;
   int currentIndex = 0;
   int currentIndexForInnerTab = 0;
+  late Future<void> futureUser;
+
+  Agent? agent;
+
+  String agentName = '';
 
   @override
   void initState() {
     super.initState();
+    futureUser = getUser();
     _tabController = TabController(length: 2, vsync: this);
   }
 
@@ -42,134 +49,81 @@ class _TabHomeState extends State<TabHome> with SingleTickerProviderStateMixin {
     _tabController?.dispose();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return SafeArea(
-      child: SingleChildScrollView(
-        child: Column(
-          children: [
-            ProfileContainer(
-              agentName: widget.agentName ?? 'there',
-            ),
-            const SizedBox(
-              height: SizeSystem.size20,
-            ),
-            const ProgressContainer(),
-            // const SizedBox(
-            //   height: SizeSystem.size36,
-            // ),
-            // Padding(
-            //   padding: const EdgeInsets.symmetric(
-            //     horizontal: SizeSystem.size28,
-            //     vertical: SizeSystem.size14,
-            //   ),
-            //   child: SvgPicture.asset(IconSystem.inProgress),
-            // ),
-            // const SizedBox(
-            //   height: SizeSystem.size36,
-            // ),
-            TasksWidget(
-              agentName:
-                  widget.agentName != null ? '${widget.agentName}\'s' : 'My',
-            ),
-            // const Center(
-            //   child: Text(
-            //     'Work in progress',
-            //     style: TextStyle(
-            //       color: ColorSystem.secondary,
-            //       fontSize: SizeSystem.size12,
-            //       fontFamily: kRubik,
-            //     ),
-            //   ),
-            // ),
-            const SizedBox(
-              height: SizeSystem.size36,
-            ),
-          ],
-        ),
-      ),
-    );
+  Future<void> getUser() async {
+    var email = await SharedPreferenceService().getValue(agentEmail);
+
+    if (email != null) {
+      var response =
+      await HttpService().doGet(path: Endpoints.getUserInformation(email));
+
+      if (response.data != null) {
+        agent = Agent.fromJson(response.data['records'][0]);
+        if(agent != null){
+          if(agent!.name != null){
+            agentName = agent!.name!.split(' ').first;
+          }
+        }
+
+        if (agent?.id != null) {
+          SharedPreferenceService().setKey(key: agentId, value: agent!.id!);
+        }
+        if (agent?.storeId != null) {
+          SharedPreferenceService().setKey(key: storeId, value: agent!.storeId!);
+        }
+      }
+    }
   }
-}
 
-class ProfileContainer extends StatefulWidget {
-  final String agentName;
-
-  const ProfileContainer({
-    Key? key,
-    required this.agentName,
-  }) : super(key: key);
-
-  @override
-  State<ProfileContainer> createState() => _ProfileContainerState();
-}
-
-class _ProfileContainerState extends State<ProfileContainer> {
   @override
   Widget build(BuildContext context) {
-    var dateNow = DateTime.now();
-    var date = DateTime(dateNow.year, dateNow.month, dateNow.day);
-    var formattedDate =
-        DateFormat(DateFormat.ABBR_MONTH_WEEKDAY_DAY).format(date);
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: Row(
-        children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  SvgPicture.asset(
-                    IconSystem.sun,
-                    width: SizeSystem.size16,
-                    height: SizeSystem.size16,
-                  ),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  Text(
-                    formattedDate.toUpperCase(),
-                    style: const TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w500,
-                      color: ColorSystem.lavender2,
-                      fontFamily: kRubik,
-                    ),
-                  ),
-                ],
+    return FutureBuilder(
+      future: futureUser,
+      builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+        switch(snapshot.connectionState){
+          case ConnectionState.none:
+          case ConnectionState.waiting:
+          case ConnectionState.active:
+            return const Center(
+              child: CircularProgressIndicator(
+                color: ColorSystem.primary,
               ),
-              const SizedBox(
-                height: 10,
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 05),
-                child: Text(
-                  "Hi ${widget.agentName}",
-                  style: const TextStyle(
-                    fontSize: 32,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: kRubik,
-                    color: ColorSystem.primary,
+            );
+          case ConnectionState.done:
+            return SafeArea(
+              child: RefreshIndicator(
+                color: ColorSystem.primary,
+                onRefresh: () async {
+                  setState((){
+                    futureUser = getUser();
+                  });
+                },
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      ProfileContainer(
+                        agentName: agentName.isNotEmpty ? agentName : 'there',
+                      ),
+                      const SizedBox(
+                        height: SizeSystem.size20,
+                      ),
+                      const ProgressContainer(),
+                      const SizedBox(
+                        height: SizeSystem.size20,
+                      ),
+                      TasksWidget(
+                        agentName:
+                        agentName.isNotEmpty ? '$agentName\'s' : 'My',
+                      ),
+                      const SizedBox(
+                        height: SizeSystem.size36,
+                      ),
+                    ],
                   ),
                 ),
               ),
-            ],
-          ),
-          const Spacer(),
-          Container(
-            height: SizeSystem.size60,
-            width: SizeSystem.size60,
-            child: SvgPicture.asset(
-              IconSystem.userPlaceholder,
-            ),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(SizeSystem.size24),
-            ),
-          ),
-        ],
-      ),
+            );
+        }
+      },
     );
   }
 }
@@ -187,81 +141,63 @@ class _ProgressContainerState extends State<ProgressContainer> {
   double todaysSale = 0;
   double todaysCommission = 0;
 
-  late Future<void> _futureSales;
-  late Future<void> _futureCommission;
-  late Future<void> _futureTodaysSale;
-  late Future<void> _futureTodaysCommission;
+  int monthNumber = 1;
 
-  Future<void> _getTotalSales() async {
-    var agentMail = await SharedPreferenceService().getValue('agent_email');
-    if (agentMail != null) {
-      var response =
-          await HttpService().doGet(path: Endpoints.getTotalSales(agentMail));
-      try {
-        totalSales = response.data['records'][0]['Sales'];
-      } catch (e) {
-        print(e);
+  late Future<void> futureAgentMetrics;
+
+  AgentMetrics? agentMetrics;
+
+  Future<void> getAgentMetrics() async {
+    var id = await SharedPreferenceService().getValue(agentId);
+
+    if (id != null) {
+      var response = await HttpService().doPost(
+          path: Endpoints.getAgentMetrics(),
+          body: jsonEncode(
+              RequestBody.getMetricsAndSmartTriggersBody('MyNewStore', id)));
+
+      if (response.data != null) {
+        agentMetrics = AgentMetrics.fromJson(response.data);
+        monthNumber = response.data['PerDaySale']['Month__c'];
       }
     }
   }
 
-  Future<void> _getTotalCommission() async {
-    var agentMail = await SharedPreferenceService().getValue('agent_email');
-    if (agentMail != null) {
-      var response = await HttpService()
-          .doGet(path: Endpoints.getTotalCommission(agentMail));
-      try {
-        totalCommission = response.data['records'][0]['commission'];
-      } catch (e) {
-        print(e);
-      }
-    }
-  }
-
-  Future<void> _getTodaysSale() async {
-    var agentMail = await SharedPreferenceService().getValue('agent_email');
-    if (agentMail != null) {
-      var response =
-          await HttpService().doGet(path: Endpoints.getTodaysSales(agentMail));
-      List<dynamic> records = response.data['records'];
-      if (records.isNotEmpty) {
-        try {
-          var saleData = records.firstWhere(
-              (element) => element['Gross_Sales_Yesterday__c'] != null);
-          todaysSale = saleData['Gross_Sales_Yesterday__c'];
-        } catch (e) {
-          print(e);
-        }
-      }
-    }
-  }
-
-  Future<void> _getTodaysCommission() async {
-    var agentMail = await SharedPreferenceService().getValue('agent_email');
-    if (agentMail != null) {
-      var response = await HttpService()
-          .doGet(path: Endpoints.getTodaysCommission(agentMail));
-      List<dynamic> records = response.data['records'];
-
-      if (records.isNotEmpty) {
-        try {
-          var commissionData = records.firstWhere(
-              (element) => element['Comm_Amount_Yesterday__c'] != null);
-          todaysCommission = commissionData['Comm_Amount_Yesterday__c'];
-        } catch (e) {
-          print(e);
-        }
-      }
+  String getMonthName(int month) {
+    switch (month) {
+      case 1:
+        return 'January';
+      case 2:
+        return 'February';
+      case 3:
+        return 'March';
+      case 4:
+        return 'April';
+      case 5:
+        return 'May';
+      case 6:
+        return 'June';
+      case 7:
+        return 'July';
+      case 8:
+        return 'August';
+      case 9:
+        return 'September';
+      case 10:
+        return 'October';
+      case 11:
+        return 'November';
+      case 12:
+        return 'December';
+      default:
+        return 'Month';
     }
   }
 
   @override
   void initState() {
     super.initState();
-    _futureSales = _getTotalSales();
-    _futureCommission = _getTotalCommission();
-    _futureTodaysSale = _getTodaysSale();
-    _futureTodaysCommission = _getTodaysCommission();
+    futureAgentMetrics = getAgentMetrics();
   }
 
   String formattedNumber(double value) {
@@ -274,342 +210,78 @@ class _ProgressContainerState extends State<ProgressContainer> {
     var dateTime = DateTime.now();
     var month = DateFormat(DateFormat.MONTH).format(dateTime);
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: const [
-              Text(
-                "Metrics of Month",
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  fontFamily: kRubik,
-                  color: ColorSystem.primary,
-                ),
+    return FutureBuilder(
+      future: futureAgentMetrics,
+      builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+        switch (snapshot.connectionState) {
+          case ConnectionState.none:
+          case ConnectionState.waiting:
+          case ConnectionState.active:
+            return const Center(
+              child: CircularProgressIndicator(
+                color: ColorSystem.primary,
               ),
-              Icon(
-                Icons.more_horiz_outlined,
-                color: Colors.white,
-                size: 40,
-              ),
-            ],
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Expanded(
-                child: Container(
-                  // height: 250,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
-                    color: const Color(0xFF8C80F8),
+            );
+          case ConnectionState.done:
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "Metrics of ${getMonthName(monthNumber)}",
+                        style: const TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: kRubik,
+                          color: ColorSystem.primary,
+                        ),
+                      ),
+                      const Icon(
+                        Icons.more_horiz_outlined,
+                        color: Colors.white,
+                        size: 40,
+                      ),
+                    ],
                   ),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 20, vertical: 20),
-                    child: FutureBuilder(
-                      future: Future.wait([
-                        _futureSales,
-                        _futureTodaysSale,
-                      ]),
-                      builder: (BuildContext context,
-                          AsyncSnapshot<dynamic> snapshot) {
-                        return Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text(
-                              "MY SALES",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w300,
-                                fontSize: 14,
-                                fontFamily: kRubik,
-                              ),
-                            ),
-                            const SizedBox(
-                              height: 24,
-                            ),
-                            Center(
-                              child: SizedBox(
-                                height: 80,
-                                width: 100,
-                                child: totalSales == 0 && totalCommission == 0
-                                    ? SvgPicture.asset(IconSystem.noSales)
-                                    : PieChart(
-                                        PieChartData(
-                                          sections: showingSections(
-                                              todaysSale, totalSales),
-                                          centerSpaceColor:
-                                              const Color(0xFF8C80F8),
-                                          centerSpaceRadius: 24,
-                                        ),
-                                      ),
-                              ),
-                            ),
-                            const SizedBox(
-                              height: 30,
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
-                                Text(
-                                  totalSales == 0
-                                      ? '--'
-                                      : formattedNumber(totalSales)
-                                          .toLowerCase(),
-                                  style: const TextStyle(
-                                    fontSize: SizeSystem.size24,
-                                    color: ColorSystem.white,
-                                    fontFamily: kRubik,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                Text(
-                                  todaysSale == 0
-                                      ? '--'
-                                      : formattedNumber(todaysSale),
-                                  style: const TextStyle(
-                                    fontSize: SizeSystem.size14,
-                                    color: ColorSystem.white,
-                                    fontFamily: kRubik,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(
-                              height: SizeSystem.size4,
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  month,
-                                  style: TextStyle(
-                                    fontSize: SizeSystem.size12,
-                                    color: ColorSystem.white.withOpacity(0.5),
-                                    fontFamily: kRubik,
-                                    fontWeight: FontWeight.w400,
-                                  ),
-                                ),
-                                Text(
-                                  'Today',
-                                  style: TextStyle(
-                                    fontSize: SizeSystem.size12,
-                                    color: ColorSystem.white.withOpacity(0.5),
-                                    fontFamily: kRubik,
-                                    fontWeight: FontWeight.w400,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        );
-                      },
-                    ),
+                  const SizedBox(
+                    height: 10,
                   ),
-                ),
-              ),
-              const SizedBox(
-                width: 20,
-              ),
-              Expanded(
-                child: Container(
-                  // height: 250,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
-                    color: const Color(0xFFAF8EFF),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Expanded(
+                        child: MySalesWidget(
+                          todaySale: agentMetrics?.yesterdaySale ?? 0,
+                          todayCommission: agentMetrics?.yesterdayCommission ?? 0,
+                          perDayCommissions:
+                              agentMetrics?.perDayCommission ?? [],
+                          perDaySales: agentMetrics?.perDaySale ?? [],
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 20,
+                      ),
+                      Expanded(
+                        child: TaskMetricsWidget(
+                          allTasks: agentMetrics?.allTasks ?? 0,
+                          pastOpenTasks: agentMetrics?.pastOpenTasks ?? 0,
+                          pendingTasks: agentMetrics?.todayTasks ?? 0,
+                          unAssignedTasks:
+                              agentMetrics?.allUnassignedTasks ?? 0,
+                          completedTasks: agentMetrics?.completedTasks ?? 0,
+                        ),
+                      ),
+                    ],
                   ),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 20,
-                      vertical: 20,
-                    ),
-                    child: FutureBuilder(
-                      future: Future.wait([
-                        _futureCommission,
-                        _futureTodaysCommission,
-                      ]),
-                      builder: (BuildContext context,
-                          AsyncSnapshot<dynamic> snapshot) {
-                        return Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text(
-                              "MY COMMISSION",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w300,
-                                fontSize: 14,
-                                fontFamily: kRubik,
-                              ),
-                            ),
-                            const SizedBox(
-                              height: 24,
-                            ),
-                            Center(
-                              child: SizedBox(
-                                height: 80,
-                                width: 100,
-                                child: totalSales == 0 && totalCommission == 0
-                                    ? SvgPicture.asset(IconSystem.noCommission)
-                                    : PieChart(
-                                        PieChartData(
-                                          sections: showingSections(
-                                              todaysCommission,
-                                              totalCommission),
-                                          centerSpaceColor:
-                                              const Color(0xFFAF8EFF),
-                                          centerSpaceRadius: 24,
-                                        ),
-                                      ),
-                              ),
-                            ),
-                            const SizedBox(
-                              height: 30,
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
-                                Text(
-                                  totalCommission == 0
-                                      ? '--'
-                                      : formattedNumber(totalCommission)
-                                          .toLowerCase(),
-                                  style: const TextStyle(
-                                    fontSize: SizeSystem.size24,
-                                    color: ColorSystem.white,
-                                    fontFamily: kRubik,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                Text(
-                                  todaysCommission == 0
-                                      ? '--'
-                                      : formattedNumber(todaysCommission),
-                                  style: const TextStyle(
-                                    fontSize: SizeSystem.size14,
-                                    color: ColorSystem.white,
-                                    fontFamily: kRubik,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(
-                              height: SizeSystem.size4,
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  month,
-                                  style: TextStyle(
-                                    fontSize: SizeSystem.size12,
-                                    color: ColorSystem.white.withOpacity(0.5),
-                                    fontFamily: kRubik,
-                                    fontWeight: FontWeight.w400,
-                                  ),
-                                ),
-                                Text(
-                                  'Today',
-                                  style: TextStyle(
-                                    fontSize: SizeSystem.size12,
-                                    color: ColorSystem.white.withOpacity(0.5),
-                                    fontFamily: kRubik,
-                                    fontWeight: FontWeight.w400,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        );
-                      },
-                    ),
-                  ),
-                ),
+                ],
               ),
-            ],
-          ),
-        ],
-      ),
+            );
+        }
+      },
     );
   }
 }
 
-List<PieChartSectionData> showingSections(double today, double total) {
-  return List.generate(2, (i) {
-    const fontSize = 0.0;
-    const radius = 10.0;
-    switch (i) {
-      case 0:
-        return PieChartSectionData(
-          color: const Color(0xFF7FE3F0),
-          value: today,
-          radius: radius,
-          titleStyle: const TextStyle(
-            fontSize: fontSize,
-          ),
-        );
-      case 1:
-        return PieChartSectionData(
-          color: const Color(0xFF5763A9),
-          value: total,
-          radius: radius,
-          titleStyle: const TextStyle(
-            fontSize: fontSize,
-          ),
-        );
-      default:
-        throw Error();
-    }
-  });
-}
-
-// CustomTabBarExtended(
-// padding: const EdgeInsets.symmetric(horizontal: 30),
-// height: 40,
-// containerColor: Colors.grey.withOpacity(0.1),
-// containerBorderRadius: 10.0,
-// tabBorderRadius: 10.0,
-// tabOneName: "Open Orders",
-// tabTwoName: "All Orders",
-// boxShadow: [
-// BoxShadow(
-// color: Colors.grey.shade300,
-// offset: const Offset(
-// 0.0,
-// 1.0,
-// ),
-// blurRadius: 2,
-// spreadRadius: 2,
-// )
-// ],
-// tabController: _tabController,
-// tabColor: Colors.white,
-// labelColor: Colors.black,
-// unSelectLabelColor: Colors.grey,
-// labelTextStyle: const TextStyle(
-// fontWeight: FontWeight.bold,
-// fontFamily: kRubik,
-// ),
-// ),
-
-// SizedBox(
-// height: 360,
-// child: TabBarView(
-// controller: _tabController,
-// children: const [
-// OpenOrderTab(),
-// AllOrderTab(),
-// ],
-// ),
-// )
