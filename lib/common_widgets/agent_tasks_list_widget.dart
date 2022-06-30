@@ -100,7 +100,8 @@ class _AgentTaskListState extends State<AgentTaskList> {
                       managerViewIndex = index;
                       managerViewingTeamTasks = false;
                       displayedList.clear();
-                      displayedList = List.from(widget.agentTaskList[index].allTasks);
+                      displayedList =
+                          List.from(widget.agentTaskList[index].allTasks);
                     });
                   },
                   employeeName: widget.agentTaskList[index].name,
@@ -197,8 +198,7 @@ class _AgentTaskListState extends State<AgentTaskList> {
                         ),
                         children: [
                           TextSpan(
-                            text:
-                                '${tempAgent.todayTasks.length}',
+                            text: '${tempAgent.todayTasks.length}',
                             style: const TextStyle(
                               fontWeight: FontWeight.w600,
                               fontSize: SizeSystem.size24,
@@ -238,90 +238,71 @@ class _AgentTaskListState extends State<AgentTaskList> {
                               children: [
                                 CustomDialogAction(
                                   label:
-                                  'Upcoming (${tempAgent.futureTasks
-                                      .length})',
+                                      'Upcoming (${tempAgent.futureTasks.length})',
                                   onTap: () {
                                     displayedList.clear();
                                     displayedList =
-                                        List.from(
-                                            tempAgent.futureTasks);
-                                    Navigator.of(context)
-                                        .pop();
+                                        List.from(tempAgent.futureTasks);
+                                    Navigator.of(context).pop();
                                     showingOverdue = false;
                                   },
                                 ),
                                 Container(
                                   height: SizeSystem.size1,
-                                  color: Colors.grey
-                                      .withOpacity(0.2),
+                                  color: Colors.grey.withOpacity(0.2),
                                 ),
                                 CustomDialogAction(
                                   label:
-                                  'Overdue (${tempAgent.pastOpenTasks
-                                      .length})',
+                                      'Overdue (${tempAgent.pastOpenTasks.length})',
                                   onTap: () {
                                     displayedList.clear();
                                     displayedList =
-                                        List.from(
-                                            tempAgent.pastOpenTasks);
-                                    Navigator.of(context)
-                                        .pop();
+                                        List.from(tempAgent.pastOpenTasks);
+                                    Navigator.of(context).pop();
                                     showingOverdue = true;
                                   },
                                 ),
                                 Container(
                                   height: SizeSystem.size1,
-                                  color: Colors.grey
-                                      .withOpacity(0.2),
+                                  color: Colors.grey.withOpacity(0.2),
                                 ),
                                 CustomDialogAction(
-                                  label:
-                                  'All (${tempAgent.allTasks
-                                      .length})',
+                                  label: 'All (${tempAgent.allTasks.length})',
                                   onTap: () {
                                     displayedList.clear();
                                     displayedList =
                                         List.from(tempAgent.allTasks);
-                                    Navigator.of(context)
-                                        .pop();
+                                    Navigator.of(context).pop();
                                     showingOverdue = false;
                                   },
                                 ),
                                 Container(
                                   height: SizeSystem.size1,
-                                  color: Colors.grey
-                                      .withOpacity(0.2),
+                                  color: Colors.grey.withOpacity(0.2),
                                 ),
                                 CustomDialogAction(
                                   label:
-                                  'Today (${tempAgent.todayTasks
-                                      .length})',
+                                      'Today (${tempAgent.todayTasks.length})',
                                   onTap: () {
                                     displayedList.clear();
                                     displayedList =
-                                        List.from(
-                                            tempAgent.todayTasks);
-                                    Navigator.of(context)
-                                        .pop();
+                                        List.from(tempAgent.todayTasks);
+                                    Navigator.of(context).pop();
                                     showingOverdue = false;
                                   },
                                 ),
                                 Container(
                                   height: SizeSystem.size1,
-                                  color: Colors.grey
-                                      .withOpacity(0.2),
+                                  color: Colors.grey.withOpacity(0.2),
                                 ),
                                 CustomDialogAction(
                                   label:
-                                  'Completed (${tempAgent.completedTasks
-                                      .length})',
+                                      'Completed (${tempAgent.completedTasks.length})',
                                   onTap: () {
                                     displayedList.clear();
                                     displayedList =
-                                        List.from(
-                                            tempAgent.completedTasks);
-                                    Navigator.of(context)
-                                        .pop();
+                                        List.from(tempAgent.completedTasks);
+                                    Navigator.of(context).pop();
                                     showingOverdue = false;
                                   },
                                 ),
@@ -348,7 +329,8 @@ class _AgentTaskListState extends State<AgentTaskList> {
                 Radius.circular(SizeSystem.size20),
               ),
               indicatorValue: tempAgent.allTasks.isNotEmpty
-                  ? tempAgent.completedTasks.length / tempAgent.allTasks.length
+                  ? (tempAgent.allTasks.length - tempAgent.todayTasks.length) /
+                      tempAgent.allTasks.length
                   : 0,
               indicatorValueColor: ColorSystem.skyBlue,
               indicatorBackgroundColor: ColorSystem.lavender3,
@@ -364,16 +346,13 @@ class _AgentTaskListState extends State<AgentTaskList> {
                 return TaskListWidget(
                   onTap: () async {
                     await Navigator.of(context).push(
-                        MaterialPageRoute(
-                            builder: (BuildContext context) {
-                              return TaskDetailsScreen(
-                                taskId: displayedList[index]
-                                    .id!,
-                                email: displayedList[index]
-                                    .email,
-                                task: displayedList[index],
-                              );
-                            }));
+                        MaterialPageRoute(builder: (BuildContext context) {
+                      return TaskDetailsScreen(
+                        taskId: displayedList[index].id!,
+                        email: displayedList[index].email,
+                        task: displayedList[index],
+                      );
+                    }));
                   },
                   task: displayedList[index],
                   taskId: displayedList[index].id!,

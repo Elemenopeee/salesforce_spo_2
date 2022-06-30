@@ -162,7 +162,7 @@ class _TasksWidgetState extends State<TasksWidget>
     }
   }
 
-  double percentCalculator(int todaysTasks , int allTasks) {
+  double percentCalculator(int todaysTasks, int allTasks) {
     if (todaysTasks == 0) {
       return 0;
     } else {
@@ -467,8 +467,7 @@ class _TasksWidgetState extends State<TasksWidget>
                                     radius: 100 / 3,
                                     lineWidth: 9.0,
                                     percent: percentCalculator(
-                                        todaysTasks.length,
-                                        allTasks.length),
+                                        todaysTasks.length, allTasks.length),
                                     startAngle: 360,
                                     backgroundColor: Colors.transparent,
                                     linearGradient: const LinearGradient(
@@ -698,8 +697,7 @@ class _TasksWidgetState extends State<TasksWidget>
                                     ),
                                     children: [
                                       TextSpan(
-                                        text:
-                                            '${todaysTasks.length}',
+                                        text: '${todaysTasks.length}',
                                         style: const TextStyle(
                                           fontWeight: FontWeight.w600,
                                           fontSize: SizeSystem.size24,
@@ -895,7 +893,8 @@ class _TasksWidgetState extends State<TasksWidget>
                             Radius.circular(SizeSystem.size20),
                           ),
                           indicatorValue: allTasks.isNotEmpty
-                              ? completedTasks.length / allTasks.length
+                              ? (allTasks.length - todaysTasks.length) /
+                                  allTasks.length
                               : 0,
                           indicatorValueColor: ColorSystem.skyBlue,
                           indicatorBackgroundColor: ColorSystem.lavender3,
@@ -1000,8 +999,7 @@ class _TasksWidgetState extends State<TasksWidget>
                                         ),
                                         children: [
                                           TextSpan(
-                                            text:
-                                                '${todaysTasks.length}',
+                                            text: '${todaysTasks.length}',
                                             style: const TextStyle(
                                               fontWeight: FontWeight.w600,
                                               fontSize: SizeSystem.size24,
@@ -1211,7 +1209,8 @@ class _TasksWidgetState extends State<TasksWidget>
                                 Radius.circular(SizeSystem.size20),
                               ),
                               indicatorValue: allTasks.isNotEmpty
-                                  ? completedTasks.length / allTasks.length
+                                  ? (allTasks.length - todaysTasks.length) /
+                                      allTasks.length
                                   : 0,
                               indicatorValueColor: ColorSystem.skyBlue,
                               indicatorBackgroundColor: ColorSystem.lavender3,
