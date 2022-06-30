@@ -208,6 +208,7 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                     modified_by_name: widget.task.modifiedBy ?? '--',
                     due_by_date: widget.task.taskDate ?? '--',
                     modified_date: widget.task.lastModifiedDate ?? '--',
+                    lastModifiedById: widget.task.modifiedById ?? '--',
                   ),
                   const SizedBox(
                     height: 20,

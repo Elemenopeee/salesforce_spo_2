@@ -242,176 +242,167 @@ class _TaskListWidgetState extends State<TaskListWidget> {
                 ],
               ),
             ),
+            widget.showingStoreTasks ?
             InkWell(
               focusColor: Colors.transparent,
               highlightColor: Colors.transparent,
               splashColor: Colors.transparent,
               hoverColor: Colors.transparent,
-              onTap: widget.showingStoreTasks
-                  ? () async {
-                      await showModalBottomSheet(
-                        constraints: BoxConstraints(
-                          maxHeight: MediaQuery.of(context).size.height / 2,
+              onTap: () async {
+                await showModalBottomSheet(
+                  constraints: BoxConstraints(
+                    maxHeight: MediaQuery.of(context).size.height / 2,
+                  ),
+                  context: context,
+                  builder: (BuildContext context) {
+                    return BackdropFilter(
+                      filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                      child: Container(
+                        decoration: const BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(20),
+                            topRight: Radius.circular(20),
+                          ),
                         ),
-                        context: context,
-                        builder: (BuildContext context) {
-                          return BackdropFilter(
-                            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                            child: Container(
-                              decoration: const BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(20),
-                                  topRight: Radius.circular(20),
-                                ),
-                              ),
-                              child: StatefulBuilder(
-                                builder: (BuildContext statefulBuilderContext,
-                                    void Function(void Function())
-                                        statefulBuilderSetState) {
-                                  return Column(
+                        child: StatefulBuilder(
+                          builder: (BuildContext statefulBuilderContext,
+                              void Function(void Function())
+                              statefulBuilderSetState) {
+                            return Column(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.all(16.0),
+                                  child: Row(
                                     children: [
-                                      Padding(
-                                        padding: const EdgeInsets.all(16.0),
-                                        child: Row(
-                                          children: [
-                                            Expanded(
-                                              child: TextFormField(
-                                                maxLines: 1,
-                                                cursorColor:
-                                                    ColorSystem.primary,
-                                                onChanged: (value) {
-                                                  if (value.isNotEmpty) {
-                                                    if (showingStores) {
-                                                      onStoreSearch(value);
-                                                    } else {
-                                                      onAgentSearch(value);
-                                                    }
-                                                    statefulBuilderSetState(
-                                                        () {});
-                                                  }
-                                                  if (value.isEmpty) {
-                                                    searchedList.clear();
-                                                    searchedStoreList.clear();
-                                                    statefulBuilderSetState(
-                                                        () {});
-                                                  }
-                                                },
-                                                decoration:
-                                                    const InputDecoration(
-                                                  hintText: 'Search by ID',
-                                                  hintStyle: TextStyle(
-                                                    color:
-                                                        ColorSystem.secondary,
-                                                    fontSize: SizeSystem.size18,
-                                                  ),
-                                                  focusedBorder:
-                                                      UnderlineInputBorder(
-                                                    borderSide: BorderSide(
-                                                      color:
-                                                          ColorSystem.primary,
-                                                      width: 1,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                            const SizedBox(
-                                              width: SizeSystem.size20,
-                                            ),
-                                            AnimatedToggleSwitch<bool>.dual(
-                                              current: showingStores,
-                                              first: false,
-                                              second: true,
-                                              dif: 1.0,
-                                              borderColor: Colors.transparent,
-                                              borderWidth: 3.0,
-                                              height: 30,
-                                              indicatorSize: const Size(
-                                                  28, double.infinity),
-                                              indicatorColor: ColorSystem.white,
-                                              innerColor: ColorSystem.primary,
-                                              onChanged: (b) {
-                                                showingStores = b;
-                                                statefulBuilderSetState(() {});
-                                              },
-                                              textBuilder: (value) => value
-                                                  ? const Icon(
-                                                      Icons.storefront_outlined,
-                                                      color: Colors.white,
-                                                      size: 18,
-                                                    )
-                                                  : const Icon(
-                                                      Icons.person_outline,
-                                                      color: Colors.white,
-                                                      size: 18,
-                                                    ),
-                                            )
-                                          ],
-                                        ),
-                                      ),
                                       Expanded(
-                                        child: FutureBuilder(
-                                          future: Future.wait([
-                                            futureAgents,
-                                            futureStores,
-                                          ]),
-                                          builder: (BuildContext context,
-                                              AsyncSnapshot<dynamic> snapshot) {
-                                            switch (snapshot.connectionState) {
-                                              case ConnectionState.none:
-                                              case ConnectionState.waiting:
-                                              case ConnectionState.active:
-                                                return const Center(
-                                                  child:
-                                                      CircularProgressIndicator(
-                                                    color: ColorSystem.primary,
-                                                  ),
-                                                );
-
-                                              case ConnectionState.done:
-                                                if (showingStores) {
-                                                  return searchedStoreList
-                                                          .isNotEmpty
-                                                      ? showStoresList(
-                                                          searchedStoreList)
-                                                      : showStoresList(stores);
-                                                } else {
-                                                  return searchedList.isNotEmpty
-                                                      ? showAgentList(
-                                                          searchedList)
-                                                      : showAgentList(agents);
-                                                }
+                                        child: TextFormField(
+                                          maxLines: 1,
+                                          cursorColor:
+                                          ColorSystem.primary,
+                                          onChanged: (value) {
+                                            if (value.isNotEmpty) {
+                                              if (showingStores) {
+                                                onStoreSearch(value);
+                                              } else {
+                                                onAgentSearch(value);
+                                              }
+                                              statefulBuilderSetState(
+                                                      () {});
+                                            }
+                                            if (value.isEmpty) {
+                                              searchedList.clear();
+                                              searchedStoreList.clear();
+                                              statefulBuilderSetState(
+                                                      () {});
                                             }
                                           },
+                                          decoration:
+                                          const InputDecoration(
+                                            hintText: 'Search by ID',
+                                            hintStyle: TextStyle(
+                                              color:
+                                              ColorSystem.secondary,
+                                              fontSize: SizeSystem.size18,
+                                            ),
+                                            focusedBorder:
+                                            UnderlineInputBorder(
+                                              borderSide: BorderSide(
+                                                color:
+                                                ColorSystem.primary,
+                                                width: 1,
+                                              ),
+                                            ),
+                                          ),
                                         ),
                                       ),
+                                      const SizedBox(
+                                        width: SizeSystem.size20,
+                                      ),
+                                      AnimatedToggleSwitch<bool>.dual(
+                                        current: showingStores,
+                                        first: false,
+                                        second: true,
+                                        dif: 1.0,
+                                        borderColor: Colors.transparent,
+                                        borderWidth: 3.0,
+                                        height: 30,
+                                        indicatorSize: const Size(
+                                            28, double.infinity),
+                                        indicatorColor: ColorSystem.white,
+                                        innerColor: ColorSystem.primary,
+                                        onChanged: (b) {
+                                          showingStores = b;
+                                          statefulBuilderSetState(() {});
+                                        },
+                                        textBuilder: (value) => value
+                                            ? const Icon(
+                                          Icons.storefront_outlined,
+                                          color: Colors.white,
+                                          size: 18,
+                                        )
+                                            : const Icon(
+                                          Icons.person_outline,
+                                          color: Colors.white,
+                                          size: 18,
+                                        ),
+                                      )
                                     ],
-                                  );
-                                },
-                              ),
-                            ),
-                          );
-                        },
-                      );
-                      await updateTaskAssignee();
-                    }
-                  : () async {
-                      if (widget.phone != null) {
-                        await launchUrl(Uri.parse('tel://${widget.phone}'));
-                      }
-                    },
+                                  ),
+                                ),
+                                Expanded(
+                                  child: FutureBuilder(
+                                    future: Future.wait([
+                                      futureAgents,
+                                      futureStores,
+                                    ]),
+                                    builder: (BuildContext context,
+                                        AsyncSnapshot<dynamic> snapshot) {
+                                      switch (snapshot.connectionState) {
+                                        case ConnectionState.none:
+                                        case ConnectionState.waiting:
+                                        case ConnectionState.active:
+                                          return const Center(
+                                            child:
+                                            CircularProgressIndicator(
+                                              color: ColorSystem.primary,
+                                            ),
+                                          );
+
+                                        case ConnectionState.done:
+                                          if (showingStores) {
+                                            return searchedStoreList
+                                                .isNotEmpty
+                                                ? showStoresList(
+                                                searchedStoreList)
+                                                : showStoresList(stores);
+                                          } else {
+                                            return searchedList.isNotEmpty
+                                                ? showAgentList(
+                                                searchedList)
+                                                : showAgentList(agents);
+                                          }
+                                      }
+                                    },
+                                  ),
+                                ),
+                              ],
+                            );
+                          },
+                        ),
+                      ),
+                    );
+                  },
+                );
+                await updateTaskAssignee();
+              },
               child: SvgPicture.asset(
-                widget.showingStoreTasks
-                    ? IconSystem.assignTask
-                    : IconSystem.phone,
+                IconSystem.assignTask,
                 height: 24,
                 width: 24,
-                color: widget.showingStoreTasks
-                    ? ColorSystem.lavender
-                    : Colors.black,
+                color: ColorSystem.lavender,
               ),
-            ),
+            ) : const SizedBox(),
           ],
         ),
       ),

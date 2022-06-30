@@ -107,7 +107,7 @@ class _MySalesState extends State<MySalesWidget> {
                     ? SvgPicture.asset(IconSystem.noSales)
                     : BarChartWidget(
                         values: widget.perDaySales,
-                        barColor: Color(0xFF8C80F8),
+                        barColor: ColorSystem.lavender3,
                       )),
           ),
           const SizedBox(

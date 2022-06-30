@@ -25,7 +25,9 @@ class TaskDetailsDateWidget extends StatefulWidget {
       required this.assigned_to_name,
       required this.modified_by_name,
       required this.due_by_date,
-      required this.modified_date})
+      required this.modified_date,
+      required this.lastModifiedById,
+      })
       : super(key: key);
 
   final TaskModel task;
@@ -33,6 +35,7 @@ class TaskDetailsDateWidget extends StatefulWidget {
   final String modified_by_name;
   final String due_by_date;
   final String modified_date;
+  final String lastModifiedById;
 
   @override
   State<TaskDetailsDateWidget> createState() => _TaskDetailsDateWidgetState();
@@ -80,14 +83,11 @@ class _TaskDetailsDateWidgetState extends State<TaskDetailsDateWidget> {
   }
 
   Future<void> getAgentProfile() async {
-    var id = await SharedPreferenceService().getValue(agentId);
-    if (id != null) {
-      var response = await HttpService().doPost(
-          path: Endpoints.getAgentProfile(),
-          body: jsonEncode(RequestBody.getAgentProfileBody(id: id)));
-      if (response.data != null) {
-        agent = Agent.fromJson(response.data['UserList'][0]);
-      }
+    var response = await HttpService().doPost(
+        path: Endpoints.getAgentProfile(),
+        body: jsonEncode(RequestBody.getAgentProfileBody(id: widget.lastModifiedById)));
+    if (response.data != null) {
+      agent = Agent.fromJson(response.data['UserList'][0]['User']);
     }
   }
 

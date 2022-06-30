@@ -81,7 +81,7 @@ class AgentPopup extends StatelessWidget {
                       height: SizeSystem.size10,
                     ),
                     Text(
-                      agent.storeName ?? '--',
+                      agent.profileName ?? '--',
                       style: const TextStyle(
                         fontFamily: kRubik,
                         fontWeight: FontWeight.normal,

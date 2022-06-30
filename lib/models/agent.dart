@@ -9,6 +9,7 @@ class Agent {
   final String? storeName;
   final String? email;
   final String? phone;
+  final bool isManager;
   final List<TaskModel> todayTasks;
   final List<TaskModel> pastOpenTasks;
   final List<TaskModel> futureTasks;
@@ -31,9 +32,11 @@ class Agent {
     this.completedTasks = const [],
     this.unAssignedTasks = const [],
     this.allTasks = const [],
+    this.isManager = false,
   });
 
-  factory Agent.fromJson(Map<String, dynamic> json){
+  factory Agent.fromJson(Map<String, dynamic> json, {bool? isManager}){
+
     return Agent._(
       id: json['Id'],
       name: json['Name'],
@@ -43,6 +46,7 @@ class Agent {
       storeName: json['Store_Name__c'],
       email: json['Email'],
       phone: json['MobilePhone'],
+      isManager: isManager ?? false,
     );
   }
 

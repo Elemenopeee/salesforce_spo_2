@@ -10,6 +10,7 @@ class TaskMetricsWidget extends StatelessWidget {
   final int pastOpenTasks;
   final int pendingTasks;
   final int completedTasks;
+  final bool isManager;
 
   const TaskMetricsWidget({
     Key? key,
@@ -18,6 +19,7 @@ class TaskMetricsWidget extends StatelessWidget {
     required this.allTasks,
     required this.pendingTasks,
     required this.completedTasks,
+    required this.isManager,
   }) : super(key: key);
 
   @override
@@ -37,9 +39,9 @@ class TaskMetricsWidget extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text(
-                'MY TASK',
-                style: TextStyle(
+              Text(
+                '${isManager ? 'STORE' : 'MY'} TASKS',
+                style: const TextStyle(
                   letterSpacing: 1.5,
                   color: ColorSystem.primary,
                   fontSize: SizeSystem.size14,
@@ -113,9 +115,13 @@ class TaskMetricsWidget extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    pastOpenTasks.toString(),
-                    style: const TextStyle(
-                      color: ColorSystem.peach,
+                    isManager
+                        ? unAssignedTasks.toString()
+                        : pastOpenTasks.toString(),
+                    style: TextStyle(
+                      color: isManager
+                          ? ColorSystem.complimentary
+                          : ColorSystem.peach,
                       fontSize: SizeSystem.size24,
                       fontFamily: kRubik,
                       fontWeight: FontWeight.bold,
@@ -124,9 +130,9 @@ class TaskMetricsWidget extends StatelessWidget {
                   const SizedBox(
                     height: SizeSystem.size4,
                   ),
-                  const Text(
-                    'OVERDUE',
-                    style: TextStyle(
+                  Text(
+                    isManager ? 'UNASSIGNED' : 'OVERDUE',
+                    style: const TextStyle(
                       color: ColorSystem.primary,
                       fontSize: SizeSystem.size12,
                       fontFamily: kRubik,

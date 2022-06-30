@@ -1,12 +1,18 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:salesforce_spo/presentation/intermediate_widgets/tasks_widget.dart';
 
 import '../../common_widgets/notched_bottom_navigation_bar.dart';
 import '../../design_system/design_system.dart';
 import '../../design_system/primitives/color_system.dart';
 import '../../design_system/primitives/icon_system.dart';
+import '../../models/agent.dart';
+import '../../services/networking/endpoints.dart';
+import '../../services/networking/networking_service.dart';
+import '../../services/networking/request_body.dart';
+import '../../services/storage/shared_preferences_service.dart';
 import '../../utils/constants.dart';
 import '../intermediate_widgets/customer_lookup_widget.dart';
 
@@ -21,6 +27,12 @@ class SmartTriggerScreen extends StatefulWidget {
 }
 
 class _SmartTriggerScreenState extends State<SmartTriggerScreen> {
+  late Future<void> futureUser;
+
+  Agent? agent;
+
+  String agentName = '';
+
   get getAppBar => AppBar(
         toolbarHeight: kToolbarHeight,
         leadingWidth: double.infinity,
@@ -38,14 +50,54 @@ class _SmartTriggerScreenState extends State<SmartTriggerScreen> {
         ),
       );
 
+  Future<void> getAgentProfile() async {
+    var email = await SharedPreferenceService().getValue(agentEmail);
+    if (email != null) {
+      var response = await HttpService().doPost(
+          path: Endpoints.getAgentProfile(),
+          body: jsonEncode(RequestBody.getAgentProfileBody(email: email)));
+
+      if (response.data != null) {
+        agent = Agent.fromJson(response.data['UserList'][0]['User'],
+            isManager: response.data['UserList'][0]['IsManager']);
+      }
+    }
+  }
+
+  @override
+  initState() {
+    super.initState();
+    futureUser = getAgentProfile();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: getAppBar,
-      body: ListView(
-        children: [
-          TasksWidget(agentName: widget.agentName, showGraphs: true,)
-        ],
+      body: FutureBuilder(
+        future: futureUser,
+        builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+          switch (snapshot.connectionState) {
+            case ConnectionState.none:
+            case ConnectionState.waiting:
+            case ConnectionState.active:
+              return const Center(
+                child: CircularProgressIndicator(
+                  color: ColorSystem.primary,
+                ),
+              );
+            case ConnectionState.done:
+              return ListView(
+                children: [
+                  TasksWidget(
+                    agent: agent,
+                    agentName: widget.agentName,
+                    showGraphs: true,
+                  )
+                ],
+              );
+          }
+        },
       ),
       bottomNavigationBar: NotchedBottomNavigationBar(
         actions: [
