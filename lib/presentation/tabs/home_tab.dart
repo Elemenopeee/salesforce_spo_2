@@ -16,7 +16,6 @@ import '../../common_widgets/profile_container.dart';
 import '../../common_widgets/task_metrics_widget.dart';
 import '../../models/agent.dart';
 
-
 class TabHome extends StatefulWidget {
   const TabHome({
     Key? key,
@@ -39,7 +38,7 @@ class _TabHomeState extends State<TabHome> with SingleTickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    futureUser = getUser();
+    futureUser = getAgentProfile();
     _tabController = TabController(length: 2, vsync: this);
   }
 
@@ -49,17 +48,18 @@ class _TabHomeState extends State<TabHome> with SingleTickerProviderStateMixin {
     _tabController?.dispose();
   }
 
-  Future<void> getUser() async {
+  Future<void> getAgentProfile() async {
     var email = await SharedPreferenceService().getValue(agentEmail);
-
     if (email != null) {
-      var response =
-      await HttpService().doGet(path: Endpoints.getUserInformation(email));
-
+      var response = await HttpService().doPost(
+          path: Endpoints.getAgentProfile(),
+          body: jsonEncode(RequestBody.getAgentProfileBody(email: email)));
       if (response.data != null) {
-        agent = Agent.fromJson(response.data['records'][0]);
-        if(agent != null){
-          if(agent!.name != null){
+        agent = Agent.fromJson(response.data['UserList'][0]['User'],
+            isManager: response.data['UserList'][0]['IsManager']);
+
+        if (agent != null) {
+          if (agent!.name != null) {
             agentName = agent!.name!.split(' ').first;
           }
         }
@@ -68,7 +68,8 @@ class _TabHomeState extends State<TabHome> with SingleTickerProviderStateMixin {
           SharedPreferenceService().setKey(key: agentId, value: agent!.id!);
         }
         if (agent?.storeId != null) {
-          SharedPreferenceService().setKey(key: storeId, value: agent!.storeId!);
+          SharedPreferenceService()
+              .setKey(key: storeId, value: agent!.storeId!);
         }
       }
     }
@@ -79,7 +80,7 @@ class _TabHomeState extends State<TabHome> with SingleTickerProviderStateMixin {
     return FutureBuilder(
       future: futureUser,
       builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-        switch(snapshot.connectionState){
+        switch (snapshot.connectionState) {
           case ConnectionState.none:
           case ConnectionState.waiting:
           case ConnectionState.active:
@@ -93,8 +94,8 @@ class _TabHomeState extends State<TabHome> with SingleTickerProviderStateMixin {
               child: RefreshIndicator(
                 color: ColorSystem.primary,
                 onRefresh: () async {
-                  setState((){
-                    futureUser = getUser();
+                  setState(() {
+                    futureUser = getAgentProfile();
                   });
                 },
                 child: SingleChildScrollView(
@@ -106,13 +107,16 @@ class _TabHomeState extends State<TabHome> with SingleTickerProviderStateMixin {
                       const SizedBox(
                         height: SizeSystem.size20,
                       ),
-                      const ProgressContainer(),
+                      ProgressContainer(
+                        isManager: agent?.isManager ?? false,
+                      ),
                       const SizedBox(
                         height: SizeSystem.size20,
                       ),
                       TasksWidget(
+                        agent: agent,
                         agentName:
-                        agentName.isNotEmpty ? '$agentName\'s' : 'My',
+                            agentName.isNotEmpty ? '$agentName\'s' : 'My',
                       ),
                       const SizedBox(
                         height: SizeSystem.size36,
@@ -129,7 +133,12 @@ class _TabHomeState extends State<TabHome> with SingleTickerProviderStateMixin {
 }
 
 class ProgressContainer extends StatefulWidget {
-  const ProgressContainer({Key? key}) : super(key: key);
+  final bool isManager;
+
+  const ProgressContainer({
+    Key? key,
+    required this.isManager,
+  }) : super(key: key);
 
   @override
   State<ProgressContainer> createState() => _ProgressContainerState();
@@ -153,8 +162,8 @@ class _ProgressContainerState extends State<ProgressContainer> {
     if (id != null) {
       var response = await HttpService().doPost(
           path: Endpoints.getAgentMetrics(),
-          body: jsonEncode(
-              RequestBody.getMetricsAndSmartTriggersBody('MyNewStore', id)));
+          body: jsonEncode(RequestBody.getMetricsAndSmartTriggersBody(
+              widget.isManager ? myNewStore : myNewTask, id)));
 
       if (response.data != null) {
         agentMetrics = AgentMetrics.fromJson(response.data);
@@ -255,7 +264,8 @@ class _ProgressContainerState extends State<ProgressContainer> {
                       Expanded(
                         child: MySalesWidget(
                           todaySale: agentMetrics?.yesterdaySale ?? 0,
-                          todayCommission: agentMetrics?.yesterdayCommission ?? 0,
+                          todayCommission:
+                              agentMetrics?.yesterdayCommission ?? 0,
                           perDayCommissions:
                               agentMetrics?.perDayCommission ?? [],
                           perDaySales: agentMetrics?.perDaySale ?? [],
@@ -266,6 +276,7 @@ class _ProgressContainerState extends State<ProgressContainer> {
                       ),
                       Expanded(
                         child: TaskMetricsWidget(
+                          isManager: agentMetrics?.isManager ?? false,
                           allTasks: agentMetrics?.allTasks ?? 0,
                           pastOpenTasks: agentMetrics?.pastOpenTasks ?? 0,
                           pendingTasks: agentMetrics?.todayTasks ?? 0,
@@ -284,4 +295,3 @@ class _ProgressContainerState extends State<ProgressContainer> {
     );
   }
 }
-

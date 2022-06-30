@@ -198,7 +198,7 @@ class _AgentTaskListState extends State<AgentTaskList> {
                         children: [
                           TextSpan(
                             text:
-                                '${tempAgent.allTasks.length - tempAgent.completedTasks.length}',
+                                '${tempAgent.todayTasks.length}',
                             style: const TextStyle(
                               fontWeight: FontWeight.w600,
                               fontSize: SizeSystem.size24,

@@ -24,10 +24,13 @@ abstract class RequestBody {
   }
 
   static Map<String, dynamic> getAgentProfileBody({
-    required String id,
+    String? id,
+    String? email,
+
   }) {
     return {
-      'userId': id,
+      'userId': id ?? '',
+      'email': email ?? ''
     };
   }
 }

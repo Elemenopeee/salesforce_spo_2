@@ -26,11 +26,13 @@ import '../screens/task_details_screen.dart';
 class TasksWidget extends StatefulWidget {
   final String agentName;
   final bool showGraphs;
+  final Agent? agent;
 
   const TasksWidget({
     Key? key,
     required this.agentName,
     this.showGraphs = false,
+    this.agent,
   }) : super(key: key);
 
   @override
@@ -62,36 +64,9 @@ class _TasksWidgetState extends State<TasksWidget>
 
   int managerViewIndex = 0;
 
-  String agentTasks = 'MyNewTask';
-  String storeTasks = 'MyNewStore';
   String id = '';
 
   int unAssignedTasksCount = 0;
-
-  Agent? agent;
-
-  Future<void> getUser() async {
-    var email = await SharedPreferenceService().getValue(agentEmail);
-
-    if (email != null) {
-      var response =
-      await HttpService().doGet(path: Endpoints.getUserInformation(email));
-
-      if (response.data != null) {
-        try {
-          agent = Agent.fromJson(response.data['records'][0]);
-        } on Exception catch (e) {
-          print(e);
-        }
-      }
-    }
-
-    if (agent != null) {
-      if (agent!.id != null) {
-        id = agent!.id!;
-      }
-    }
-  }
 
   void clearLists() {
     todaysTasks.clear();
@@ -105,19 +80,15 @@ class _TasksWidgetState extends State<TasksWidget>
   Future<void> getTasks(String tabName) async {
     clearLists();
 
-    await getUser();
+    id = await SharedPreferenceService().getValue(agentId) ?? '';
 
     var response = await HttpService().doPost(
         path: Endpoints.getSmartTriggers(),
         body:
-        jsonEncode(RequestBody.getMetricsAndSmartTriggersBody(tabName, id)),
+            jsonEncode(RequestBody.getMetricsAndSmartTriggersBody(tabName, id)),
         tokenRequired: true);
 
     if (response.data != null) {
-      if (response.data['IsManager'] != null) {
-        isManager = response.data['IsManager'];
-      }
-
       try {
         for (var task in response.data['TodayTasks']) {
           todaysTasks.add(TaskModel.fromJson(task));
@@ -142,15 +113,14 @@ class _TasksWidgetState extends State<TasksWidget>
       }
     }
 
-    if(isManager && showingAgentTasks){
+    if (isManager && showingAgentTasks) {
       await getAgentMetrics();
     }
 
     displayedList.clear();
-    if(!showingAgentTasks){
+    if (!showingAgentTasks) {
       displayedList = List.from(unAssignedTasks);
-    }
-    else {
+    } else {
       displayedList = List.from(allTasks);
     }
 
@@ -165,11 +135,10 @@ class _TasksWidgetState extends State<TasksWidget>
       var response = await HttpService().doPost(
           path: Endpoints.getAgentMetrics(),
           body: jsonEncode(
-              RequestBody.getMetricsAndSmartTriggersBody('MyNewStore', id)));
+              RequestBody.getMetricsAndSmartTriggersBody(myNewStore, id)));
 
       if (response.data != null) {
         var agentMetrics = AgentMetrics.fromJson(response.data);
-        print(agentMetrics.allUnassignedTasks);
         unAssignedTasksCount = agentMetrics.allUnassignedTasks;
       }
     }
@@ -193,27 +162,30 @@ class _TasksWidgetState extends State<TasksWidget>
     }
   }
 
-  double percentCalculator(int completedTasks, int allTasks) {
-    if (completedTasks == allTasks) {
-      return 0.7;
-    } else if (completedTasks == 0) {
+  double percentCalculator(int todaysTasks , int allTasks) {
+    if (todaysTasks == 0) {
       return 0;
     } else {
       if (allTasks == 0) {
-        return 0;
+        return 0.7;
       }
-      return 0.7 * completedTasks / allTasks;
+      return 0.7 * (allTasks - todaysTasks) / allTasks;
     }
   }
 
   @override
   initState() {
     super.initState();
-    futureTasks = getTasks(agentTasks);
+
+    if (widget.agent != null) {
+      isManager = widget.agent!.isManager;
+    }
+
+    futureTasks = getTasks(myNewTask);
     futureTeamTasks = getTeamTasks();
   }
 
-  _handleTabSelection() {
+  void _handleTabSelection() {
     if (teamsTabController.indexIsChanging) {
       setState(() {});
     }
@@ -243,7 +215,7 @@ class _TasksWidgetState extends State<TasksWidget>
             if (allTasks.isEmpty) {
               return Container(
                 margin:
-                const EdgeInsets.symmetric(horizontal: SizeSystem.size24),
+                    const EdgeInsets.symmetric(horizontal: SizeSystem.size24),
                 padding: const EdgeInsets.symmetric(
                   horizontal: SizeSystem.size24,
                   vertical: SizeSystem.size30,
@@ -270,8 +242,7 @@ class _TasksWidgetState extends State<TasksWidget>
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              '${showingAgentTasks ? widget.agentName
-                                  .toUpperCase() : 'STORE'} TASKS',
+                              '${showingAgentTasks ? widget.agentName.toUpperCase() : 'STORE'} TASKS',
                               style: const TextStyle(
                                 fontWeight: FontWeight.w500,
                                 fontSize: SizeSystem.size14,
@@ -303,9 +274,9 @@ class _TasksWidgetState extends State<TasksWidget>
                                 hoverColor: Colors.transparent,
                                 onTap: () {
                                   if (showingAgentTasks) {
-                                    futureTasks = getTasks(storeTasks);
+                                    futureTasks = getTasks(myNewStore);
                                   } else {
-                                    futureTasks = getTasks(agentTasks);
+                                    futureTasks = getTasks(myNewTask);
                                   }
                                   showingAgentTasks = !showingAgentTasks;
                                   setState(() {});
@@ -335,8 +306,7 @@ class _TasksWidgetState extends State<TasksWidget>
                                           children: [
                                             CustomDialogAction(
                                               label:
-                                              'Upcoming (${futureOpenTasks
-                                                  .length})',
+                                                  'Upcoming (${futureOpenTasks.length})',
                                               onTap: () {
                                                 displayedList.clear();
                                                 displayedList =
@@ -348,12 +318,11 @@ class _TasksWidgetState extends State<TasksWidget>
                                             Container(
                                               height: SizeSystem.size1,
                                               color:
-                                              Colors.grey.withOpacity(0.2),
+                                                  Colors.grey.withOpacity(0.2),
                                             ),
                                             CustomDialogAction(
                                               label:
-                                              'Overdue (${pastOpenTasks
-                                                  .length})',
+                                                  'Overdue (${pastOpenTasks.length})',
                                               onTap: () {
                                                 displayedList.clear();
                                                 displayedList =
@@ -365,7 +334,7 @@ class _TasksWidgetState extends State<TasksWidget>
                                             Container(
                                               height: SizeSystem.size1,
                                               color:
-                                              Colors.grey.withOpacity(0.2),
+                                                  Colors.grey.withOpacity(0.2),
                                             ),
                                             CustomDialogAction(
                                               label: 'All (${allTasks.length})',
@@ -380,11 +349,11 @@ class _TasksWidgetState extends State<TasksWidget>
                                             Container(
                                               height: SizeSystem.size1,
                                               color:
-                                              Colors.grey.withOpacity(0.2),
+                                                  Colors.grey.withOpacity(0.2),
                                             ),
                                             CustomDialogAction(
                                               label:
-                                              'Today (${todaysTasks.length})',
+                                                  'Today (${todaysTasks.length})',
                                               onTap: () {
                                                 displayedList.clear();
                                                 displayedList =
@@ -396,12 +365,11 @@ class _TasksWidgetState extends State<TasksWidget>
                                             Container(
                                               height: SizeSystem.size1,
                                               color:
-                                              Colors.grey.withOpacity(0.2),
+                                                  Colors.grey.withOpacity(0.2),
                                             ),
                                             CustomDialogAction(
                                               label:
-                                              'Completed (${completedTasks
-                                                  .length})',
+                                                  'Completed (${completedTasks.length})',
                                               onTap: () {
                                                 displayedList.clear();
                                                 displayedList =
@@ -419,8 +387,7 @@ class _TasksWidgetState extends State<TasksWidget>
                                             if (!showingAgentTasks)
                                               CustomDialogAction(
                                                 label:
-                                                'Unassigned (${unAssignedTasks
-                                                    .length})',
+                                                    'Unassigned (${unAssignedTasks.length})',
                                                 onTap: () {
                                                   displayedList.clear();
                                                   displayedList = List.from(
@@ -500,8 +467,8 @@ class _TasksWidgetState extends State<TasksWidget>
                                     radius: 100 / 3,
                                     lineWidth: 9.0,
                                     percent: percentCalculator(
-                                        completedTasks.length,
-                                        todaysTasks.length),
+                                        todaysTasks.length,
+                                        allTasks.length),
                                     startAngle: 360,
                                     backgroundColor: Colors.transparent,
                                     linearGradient: const LinearGradient(
@@ -540,10 +507,10 @@ class _TasksWidgetState extends State<TasksWidget>
                               backgroundColor: Colors.transparent,
                               center: Padding(
                                 padding:
-                                const EdgeInsets.symmetric(vertical: 10),
+                                    const EdgeInsets.symmetric(vertical: 10),
                                 child: Column(
                                   mainAxisAlignment:
-                                  MainAxisAlignment.spaceBetween,
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
                                     const SizedBox(
                                       height: 30,
@@ -557,9 +524,7 @@ class _TasksWidgetState extends State<TasksWidget>
                                       height: SizeSystem.size10,
                                     ),
                                     Text(
-                                      '${(percentCalculator(
-                                          completedTasks.length,
-                                          allTasks.length) * 100).toInt()}%',
+                                      '${(percentCalculator(todaysTasks.length, allTasks.length) * 100).toInt()}%',
                                       style: const TextStyle(
                                         fontSize: SizeSystem.size24,
                                         fontFamily: kRubik,
@@ -567,8 +532,7 @@ class _TasksWidgetState extends State<TasksWidget>
                                       ),
                                     ),
                                     Text(
-                                      '${completedTasks.length} / ${allTasks
-                                          .length}',
+                                      '${completedTasks.length} / ${allTasks.length}',
                                       style: const TextStyle(
                                         fontSize: SizeSystem.size14,
                                         fontFamily: kRubik,
@@ -598,7 +562,7 @@ class _TasksWidgetState extends State<TasksWidget>
                               radius: 250 / 3,
                               lineWidth: 15.0,
                               percent: percentCalculator(
-                                  completedTasks.length, allTasks.length),
+                                  todaysTasks.length, allTasks.length),
                               startAngle: 235,
                               backgroundColor: Colors.transparent,
                               linearGradient: const LinearGradient(
@@ -644,7 +608,7 @@ class _TasksWidgetState extends State<TasksWidget>
                   TaskAlertWidget(
                     tasks: todaysTasks,
                     onTap: () {
-                      futureTasks = getTasks(agentTasks);
+                      futureTasks = getTasks(myNewTask);
                     },
                   ),
                 if (todaysTasks.isNotEmpty)
@@ -680,7 +644,7 @@ class _TasksWidgetState extends State<TasksWidget>
                       labelColor: Colors.black,
                       unSelectLabelColor: Colors.grey,
                       labelTextStyle:
-                      const TextStyle(fontWeight: FontWeight.bold),
+                          const TextStyle(fontWeight: FontWeight.bold),
                     ),
                   ),
                 const SizedBox(
@@ -717,8 +681,7 @@ class _TasksWidgetState extends State<TasksWidget>
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  '${showingAgentTasks ? widget.agentName
-                                      .toUpperCase() : 'STORE'} TASKS',
+                                  '${showingAgentTasks ? widget.agentName.toUpperCase() : 'STORE'} TASKS',
                                   style: const TextStyle(
                                     fontWeight: FontWeight.w500,
                                     fontSize: SizeSystem.size12,
@@ -736,8 +699,7 @@ class _TasksWidgetState extends State<TasksWidget>
                                     children: [
                                       TextSpan(
                                         text:
-                                        '${allTasks.length -
-                                            completedTasks.length}',
+                                            '${todaysTasks.length}',
                                         style: const TextStyle(
                                           fontWeight: FontWeight.w600,
                                           fontSize: SizeSystem.size24,
@@ -751,7 +713,7 @@ class _TasksWidgetState extends State<TasksWidget>
                                       ),
                                       TextSpan(
                                         text:
-                                        'Pending / ${allTasks.length} Tasks',
+                                            'Pending / ${allTasks.length} Tasks',
                                         style: const TextStyle(
                                           fontSize: SizeSystem.size12,
                                           color: ColorSystem.primary,
@@ -782,9 +744,9 @@ class _TasksWidgetState extends State<TasksWidget>
                                       hoverColor: Colors.transparent,
                                       onTap: () {
                                         if (showingAgentTasks) {
-                                          futureTasks = getTasks(storeTasks);
+                                          futureTasks = getTasks(myNewTask);
                                         } else {
-                                          futureTasks = getTasks(agentTasks);
+                                          futureTasks = getTasks(myNewStore);
                                         }
                                         showingAgentTasks = !showingAgentTasks;
                                         setState(() {});
@@ -815,8 +777,7 @@ class _TasksWidgetState extends State<TasksWidget>
                                               children: [
                                                 CustomDialogAction(
                                                   label:
-                                                  'Upcoming (${futureOpenTasks
-                                                      .length})',
+                                                      'Upcoming (${futureOpenTasks.length})',
                                                   onTap: () {
                                                     displayedList.clear();
                                                     displayedList = List.from(
@@ -832,8 +793,7 @@ class _TasksWidgetState extends State<TasksWidget>
                                                 ),
                                                 CustomDialogAction(
                                                   label:
-                                                  'Overdue (${pastOpenTasks
-                                                      .length})',
+                                                      'Overdue (${pastOpenTasks.length})',
                                                   onTap: () {
                                                     displayedList.clear();
                                                     displayedList = List.from(
@@ -849,7 +809,7 @@ class _TasksWidgetState extends State<TasksWidget>
                                                 ),
                                                 CustomDialogAction(
                                                   label:
-                                                  'All (${allTasks.length})',
+                                                      'All (${allTasks.length})',
                                                   onTap: () {
                                                     displayedList.clear();
                                                     displayedList =
@@ -865,8 +825,7 @@ class _TasksWidgetState extends State<TasksWidget>
                                                 ),
                                                 CustomDialogAction(
                                                   label:
-                                                  'Today (${todaysTasks
-                                                      .length})',
+                                                      'Today (${todaysTasks.length})',
                                                   onTap: () {
                                                     displayedList.clear();
                                                     displayedList =
@@ -882,8 +841,7 @@ class _TasksWidgetState extends State<TasksWidget>
                                                 ),
                                                 CustomDialogAction(
                                                   label:
-                                                  'Completed (${completedTasks
-                                                      .length})',
+                                                      'Completed (${completedTasks.length})',
                                                   onTap: () {
                                                     displayedList.clear();
                                                     displayedList = List.from(
@@ -901,8 +859,7 @@ class _TasksWidgetState extends State<TasksWidget>
                                                 if (!showingAgentTasks)
                                                   CustomDialogAction(
                                                     label:
-                                                    'Unassigned (${unAssignedTasks
-                                                        .length})',
+                                                        'Unassigned (${unAssignedTasks.length})',
                                                     onTap: () {
                                                       displayedList.clear();
                                                       displayedList = List.from(
@@ -933,7 +890,7 @@ class _TasksWidgetState extends State<TasksWidget>
                         CustomLinearProgressIndicator(
                           containerHeight: SizeSystem.size8,
                           containerMargin:
-                          const EdgeInsets.only(top: SizeSystem.size20),
+                              const EdgeInsets.only(top: SizeSystem.size20),
                           containerRadius: const BorderRadius.all(
                             Radius.circular(SizeSystem.size20),
                           ),
@@ -956,14 +913,14 @@ class _TasksWidgetState extends State<TasksWidget>
                                 await Navigator.of(context).push(
                                     MaterialPageRoute(
                                         builder: (BuildContext context) {
-                                          return TaskDetailsScreen(
-                                            taskId: displayedList[index].id!,
-                                            email: displayedList[index].email,
-                                            task: displayedList[index],
-                                          );
-                                        }));
+                                  return TaskDetailsScreen(
+                                    taskId: displayedList[index].id!,
+                                    email: displayedList[index].email,
+                                    task: displayedList[index],
+                                  );
+                                }));
                                 setState(() {
-                                  futureTasks = getTasks(agentTasks);
+                                  futureTasks = getTasks(myNewTask);
                                 });
                               },
                               task: displayedList[index],
@@ -994,7 +951,7 @@ class _TasksWidgetState extends State<TasksWidget>
                 if (isManager)
                   Center(
                     child: [
-                      AgentTaskList(onTap: (){}, agentTaskList: teamTaskList),
+                      AgentTaskList(onTap: () {}, agentTaskList: teamTaskList),
                       Container(
                         margin: const EdgeInsets.symmetric(
                             horizontal: SizeSystem.size24),
@@ -1005,7 +962,7 @@ class _TasksWidgetState extends State<TasksWidget>
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius:
-                          BorderRadius.circular(SizeSystem.size20),
+                              BorderRadius.circular(SizeSystem.size20),
                           boxShadow: [
                             BoxShadow(
                               color: ColorSystem.blue1.withOpacity(0.15),
@@ -1026,10 +983,7 @@ class _TasksWidgetState extends State<TasksWidget>
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      '${showingAgentTasks
-                                          ? widget.agentName.toUpperCase() +
-                                          '\'s'
-                                          : 'STORE'} TASKS',
+                                      '${showingAgentTasks ? widget.agentName.toUpperCase() : 'STORE'} TASKS',
                                       style: const TextStyle(
                                         fontWeight: FontWeight.w500,
                                         fontSize: SizeSystem.size12,
@@ -1047,8 +1001,7 @@ class _TasksWidgetState extends State<TasksWidget>
                                         children: [
                                           TextSpan(
                                             text:
-                                            '${allTasks.length -
-                                                completedTasks.length}',
+                                                '${todaysTasks.length}',
                                             style: const TextStyle(
                                               fontWeight: FontWeight.w600,
                                               fontSize: SizeSystem.size24,
@@ -1062,8 +1015,7 @@ class _TasksWidgetState extends State<TasksWidget>
                                           ),
                                           TextSpan(
                                             text:
-                                            'Pending / ${allTasks
-                                                .length} Tasks',
+                                                'Pending / ${allTasks.length} Tasks',
                                             style: const TextStyle(
                                               fontSize: SizeSystem.size12,
                                               color: ColorSystem.primary,
@@ -1095,13 +1047,12 @@ class _TasksWidgetState extends State<TasksWidget>
                                           onTap: () {
                                             if (showingAgentTasks) {
                                               futureTasks =
-                                                  getTasks(storeTasks);
+                                                  getTasks(myNewStore);
                                             } else {
-                                              futureTasks =
-                                                  getTasks(agentTasks);
+                                              futureTasks = getTasks(myNewTask);
                                             }
                                             showingAgentTasks =
-                                            !showingAgentTasks;
+                                                !showingAgentTasks;
                                             setState(() {});
                                           },
                                           child: SvgPicture.asset(
@@ -1130,8 +1081,7 @@ class _TasksWidgetState extends State<TasksWidget>
                                                   children: [
                                                     CustomDialogAction(
                                                       label:
-                                                      'Upcoming (${futureOpenTasks
-                                                          .length})',
+                                                          'Upcoming (${futureOpenTasks.length})',
                                                       onTap: () {
                                                         displayedList.clear();
                                                         displayedList =
@@ -1149,8 +1099,7 @@ class _TasksWidgetState extends State<TasksWidget>
                                                     ),
                                                     CustomDialogAction(
                                                       label:
-                                                      'Overdue (${pastOpenTasks
-                                                          .length})',
+                                                          'Overdue (${pastOpenTasks.length})',
                                                       onTap: () {
                                                         displayedList.clear();
                                                         displayedList =
@@ -1168,8 +1117,7 @@ class _TasksWidgetState extends State<TasksWidget>
                                                     ),
                                                     CustomDialogAction(
                                                       label:
-                                                      'All (${allTasks
-                                                          .length})',
+                                                          'All (${allTasks.length})',
                                                       onTap: () {
                                                         displayedList.clear();
                                                         displayedList =
@@ -1186,8 +1134,7 @@ class _TasksWidgetState extends State<TasksWidget>
                                                     ),
                                                     CustomDialogAction(
                                                       label:
-                                                      'Today (${todaysTasks
-                                                          .length})',
+                                                          'Today (${todaysTasks.length})',
                                                       onTap: () {
                                                         displayedList.clear();
                                                         displayedList =
@@ -1205,8 +1152,7 @@ class _TasksWidgetState extends State<TasksWidget>
                                                     ),
                                                     CustomDialogAction(
                                                       label:
-                                                      'Completed (${completedTasks
-                                                          .length})',
+                                                          'Completed (${completedTasks.length})',
                                                       onTap: () {
                                                         displayedList.clear();
                                                         displayedList =
@@ -1220,15 +1166,14 @@ class _TasksWidgetState extends State<TasksWidget>
                                                     if (!showingAgentTasks)
                                                       Container(
                                                         height:
-                                                        SizeSystem.size1,
+                                                            SizeSystem.size1,
                                                         color: Colors.grey
                                                             .withOpacity(0.2),
                                                       ),
                                                     if (!showingAgentTasks)
                                                       CustomDialogAction(
                                                         label:
-                                                        'Unassigned (${unAssignedTasks
-                                                            .length})',
+                                                            'Unassigned (${unAssignedTasks.length})',
                                                         onTap: () {
                                                           displayedList.clear();
                                                           displayedList =
@@ -1237,7 +1182,7 @@ class _TasksWidgetState extends State<TasksWidget>
                                                           Navigator.of(context)
                                                               .pop();
                                                           showingOverdue =
-                                                          false;
+                                                              false;
                                                         },
                                                       ),
                                                   ],
@@ -1261,7 +1206,7 @@ class _TasksWidgetState extends State<TasksWidget>
                             CustomLinearProgressIndicator(
                               containerHeight: SizeSystem.size8,
                               containerMargin:
-                              const EdgeInsets.only(top: SizeSystem.size20),
+                                  const EdgeInsets.only(top: SizeSystem.size20),
                               containerRadius: const BorderRadius.all(
                                 Radius.circular(SizeSystem.size20),
                               ),
@@ -1284,16 +1229,14 @@ class _TasksWidgetState extends State<TasksWidget>
                                     await Navigator.of(context).push(
                                         MaterialPageRoute(
                                             builder: (BuildContext context) {
-                                              return TaskDetailsScreen(
-                                                taskId: displayedList[index]
-                                                    .id!,
-                                                email: displayedList[index]
-                                                    .email,
-                                                task: displayedList[index],
-                                              );
-                                            }));
+                                      return TaskDetailsScreen(
+                                        taskId: displayedList[index].id!,
+                                        email: displayedList[index].email,
+                                        task: displayedList[index],
+                                      );
+                                    }));
                                     setState(() {
-                                      futureTasks = getTasks(agentTasks);
+                                      futureTasks = getTasks(myNewTask);
                                     });
                                   },
                                   task: displayedList[index],
