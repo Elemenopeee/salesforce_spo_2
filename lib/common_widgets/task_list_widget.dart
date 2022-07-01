@@ -175,7 +175,7 @@ class _TaskListWidgetState extends State<TaskListWidget> {
         } else if (dateToCheck == tomorrow) {
           return 'Tomorrow';
         } else {
-          return DateFormat('MMM dd, yyyy').format(dateTime);
+          return 'Future';
         }
       }
     }
@@ -242,13 +242,12 @@ class _TaskListWidgetState extends State<TaskListWidget> {
                 ],
               ),
             ),
-            widget.showingStoreTasks ?
             InkWell(
               focusColor: Colors.transparent,
               highlightColor: Colors.transparent,
               splashColor: Colors.transparent,
               hoverColor: Colors.transparent,
-              onTap: () async {
+              onTap: widget.showingStoreTasks ? () async {
                 await showModalBottomSheet(
                   constraints: BoxConstraints(
                     maxHeight: MediaQuery.of(context).size.height / 2,
@@ -395,14 +394,19 @@ class _TaskListWidgetState extends State<TaskListWidget> {
                   },
                 );
                 await updateTaskAssignee();
+              } : () async {
+                if (widget.phone != null) {
+                  await launchUrl(Uri.parse('tel://${widget.phone}'));
+                }
               },
               child: SvgPicture.asset(
-                IconSystem.assignTask,
+                widget.showingStoreTasks ?
+                IconSystem.assignTask : IconSystem.phone,
                 height: 24,
                 width: 24,
-                color: ColorSystem.lavender,
+                color: widget.showingStoreTasks ? ColorSystem.lavender : ColorSystem.primary,
               ),
-            ) : const SizedBox(),
+            ) ,
           ],
         ),
       ),
