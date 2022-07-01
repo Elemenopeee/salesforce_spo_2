@@ -108,8 +108,7 @@ class _AgentTaskListState extends State<AgentTaskList> {
                   overdueTaskCount:
                       widget.agentTaskList[index].pastOpenTasks.length,
                   pendingTaskCount:
-                      (widget.agentTaskList[index].todayTasks.length +
-                          widget.agentTaskList[index].pastOpenTasks.length),
+                      (widget.agentTaskList[index].todayTasks.length),
                 );
               },
               separatorBuilder: (BuildContext context, int index) {

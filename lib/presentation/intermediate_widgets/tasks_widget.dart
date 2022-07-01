@@ -90,22 +90,22 @@ class _TasksWidgetState extends State<TasksWidget>
 
     if (response.data != null) {
       try {
-        for (var task in response.data['TodayTasks']) {
+        for (var task in response.data['TodayOpenTasks']) {
           todaysTasks.add(TaskModel.fromJson(task));
         }
         for (var task in response.data['PastOpenTasks']) {
           pastOpenTasks.add(TaskModel.fromJson(task));
         }
-        for (var task in response.data['FutureTasks']) {
+        for (var task in response.data['FutureOpenTasks']) {
           futureOpenTasks.add(TaskModel.fromJson(task));
         }
         for (var task in response.data['CompletedTasks']) {
           completedTasks.add(TaskModel.fromJson(task));
         }
-        for (var task in response.data['AllUnassignedTasks']) {
+        for (var task in response.data['UnassignedOpenTasks']) {
           unAssignedTasks.add(TaskModel.fromJson(task));
         }
-        for (var task in response.data['AllTasks']) {
+        for (var task in response.data['AllOpenTasks']) {
           allTasks.add(TaskModel.fromJson(task));
         }
       } catch (e) {

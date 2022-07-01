@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 class AgentMetrics {
   final int todayTasks;
   final List<double> perDaySale;
@@ -26,6 +28,9 @@ class AgentMetrics {
   });
 
   factory AgentMetrics.fromJson(Map<String, dynamic> json) {
+
+    log(json.toString());
+
     var perDaySales = <double>[];
     var perDayCommissions = <double>[];
 
@@ -98,15 +103,15 @@ class AgentMetrics {
     }
 
     return AgentMetrics._(
-      todayTasks: json['TodayTasks'] ?? 0,
+      todayTasks: json['TodayOpenTasks'] ?? 0,
       perDaySale: perDaySales,
       perDayCommission: perDayCommissions,
       pastOpenTasks: json['PastOpenTasks'] ?? 0,
       isManager: json['IsManager'] ?? false,
-      futureTasks: json['FutureTasks'] ?? 0,
+      futureTasks: json['FutureOpenTasks'] ?? 0,
       completedTasks: json['CompletedTasks'] ?? 0,
-      allUnassignedTasks: json['AllUnassignedTasks'] ?? 0,
-      allTasks: json['AllTasks'] ?? 0,
+      allUnassignedTasks: json['UnassignedOpenTasks'] ?? 0,
+      allTasks: json['AllOpenTasks'] ?? 0,
       yesterdaySale: json['YesterdaySale'],
       yesterdayCommission: json['YesterdayCommission'],
     );

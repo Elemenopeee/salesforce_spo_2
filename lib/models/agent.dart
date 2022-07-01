@@ -59,22 +59,22 @@ class Agent {
     var unAssignedTasks = <TaskModel>[];
     var allTasks = <TaskModel>[];
 
-    for (var taskJson in json['TodayTasks']){
+    for (var taskJson in json['TodayOpenTasks']){
       todayTasks.add(TaskModel.fromJson(taskJson));
     }
     for (var taskJson in json['PastOpenTasks']){
       pastOpenTasks.add(TaskModel.fromJson(taskJson));
     }
-    for (var taskJson in json['FutureTasks']){
+    for (var taskJson in json['FutureOpenTasks']){
       futureTasks.add(TaskModel.fromJson(taskJson));
     }
     for (var taskJson in json['CompletedTasks']){
       completedTasks.add(TaskModel.fromJson(taskJson));
     }
-    for (var taskJson in json['AllUnassignedTasks']){
+    for (var taskJson in json['UnassignedOpenTasks']){
       unAssignedTasks.add(TaskModel.fromJson(taskJson));
     }
-    for (var taskJson in json['AllTasks']){
+    for (var taskJson in json['AllOpenTasks']){
       allTasks.add(TaskModel.fromJson(taskJson));
     }
 
