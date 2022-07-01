@@ -28,9 +28,6 @@ class AgentMetrics {
   });
 
   factory AgentMetrics.fromJson(Map<String, dynamic> json) {
-
-    log(json.toString());
-
     var perDaySales = <double>[];
     var perDayCommissions = <double>[];
 
