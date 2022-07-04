@@ -216,8 +216,6 @@ class _ProgressContainerState extends State<ProgressContainer> {
 
   @override
   Widget build(BuildContext context) {
-    var dateTime = DateTime.now();
-    var month = DateFormat(DateFormat.MONTH).format(dateTime);
 
     return FutureBuilder(
       future: futureAgentMetrics,
@@ -283,6 +281,7 @@ class _ProgressContainerState extends State<ProgressContainer> {
                           unAssignedTasks:
                               agentMetrics?.allUnassignedTasks ?? 0,
                           completedTasks: agentMetrics?.completedTasks ?? 0,
+                          futureTasks: agentMetrics?.futureTasks ?? 0,
                         ),
                       ),
                     ],

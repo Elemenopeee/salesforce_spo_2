@@ -24,7 +24,7 @@ class OrderItem {
   factory OrderItem.fromTaskJson(Map<String, dynamic> json){
     return OrderItem._(
       itemPrice: double.tryParse(json['UnitPrice']),
-      trackingNumber: json['TrackingNo'] ?? '--',
+      trackingNumber: json['TrackingNo'],
       orderLineKey: json['OrderLineKey'],
       orderedQuantity: json['OrderedQuantity'],
       lineItem: json['LineItem'],

@@ -53,6 +53,7 @@ abstract class Endpoints {
   static String kAgentTeamTaskList = '/services/apexrest/GC_SmartTriggerTeamAPI/';
   static String kStoreList = '/services/apexrest/GC_SmartTriggerTaskAPI/';
   static String kAgentProfile = '/services/apexrest/GC_SmartTriggerProfileAPI/';
+  // static String kCreateTask
 
   static String getCustomerSearchByPhone(String phone) {
     return '$kBaseURL$kCustomerSearchByPhone\'$phone\' OR Phone__c = \'$phone\'';

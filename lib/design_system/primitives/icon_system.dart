@@ -62,4 +62,5 @@ abstract class IconSystem {
   static const String storeType = 'assets/icons/store_type.svg';
   static const String assignTask = 'assets/icons/assign_task.svg';
   static const String funnel = 'assets/icons/funnel.svg';
+  static const String followUpTaskIcon = 'assets/icons/follow_up_task_icon.svg';
 }

@@ -105,6 +105,7 @@ class _ProductListCardState extends State<ProductListCard> {
                 Text(
                   '${widget.order.brand ?? '--'} | ${dateFormatter(widget.order.createdDate ?? '--')}',
                   style: const TextStyle(
+                    color: ColorSystem.primary,
                     fontWeight: FontWeight.normal,
                     fontSize: SizeSystem.size14,
                     fontFamily: kRubik,
@@ -340,8 +341,8 @@ class _ProductListCardState extends State<ProductListCard> {
                                 status: orderItems[index].status,
                                 description: orderItems[index].description,
                                 quantity: '${orderItems[index].orderedQuantity}',
-                                trackingId: orderItems[index].trackingNumber,
-                                taskType: widget.taskType,
+                                trackingId: orderItems[index].trackingNumber ?? '--',
+                                taskType: widget.taskType ?? '--',
                               );
                             },
                             separatorBuilder:
@@ -519,6 +520,7 @@ class _OrderItem extends StatelessWidget {
                   const SizedBox(
                     height: 8.0,
                   ),
+                  if(product_status == 'SPO Delivery')
                   RichText(
                     text: TextSpan(
                       text: 'Deilvered on:',
@@ -530,29 +532,6 @@ class _OrderItem extends StatelessWidget {
                       children: <TextSpan>[
                         TextSpan(
                             text: ' ' + delivery_date,
-                            style: const TextStyle(
-                                fontWeight: FontWeight.w500,
-                                fontFamily: kRubik,
-                                fontSize: SizeSystem.size14)),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 8.0,
-                  ),
-                  RichText(
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    text: TextSpan(
-                      text: 'Tracking ID: ',
-                      style: const TextStyle(
-                        fontSize: SizeSystem.size12,
-                        color: Color(0xff2D3142),
-                        fontFamily: kRubik,
-                      ),
-                      children: [
-                        TextSpan(
-                            text: track_id,
                             style: const TextStyle(
                                 fontWeight: FontWeight.w500,
                                 fontFamily: kRubik,
@@ -720,6 +699,7 @@ class TaskOrderLineWidget extends StatelessWidget {
                               const SizedBox(
                                 height: 8.0,
                               ),
+                              if(taskType == 'SPO Delivery')
                               RichText(
                                 text: TextSpan(
                                   text: 'Deilvered on:',
@@ -738,9 +718,11 @@ class TaskOrderLineWidget extends StatelessWidget {
                                   ],
                                 ),
                               ),
+                              if(taskType == 'SPO Delivery')
                               const SizedBox(
                                 height: 8.0,
                               ),
+                              if(taskType == 'SPO Delivery')
                               RichText(
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
