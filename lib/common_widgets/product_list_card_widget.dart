@@ -681,6 +681,7 @@ class TaskOrderLineWidget extends StatelessWidget {
                               const SizedBox(
                                 height: 8.0,
                               ),
+                              if(taskType == 'SPO Delivery')
                               Container(
                                 padding:
                                 const EdgeInsets.symmetric(vertical: 5, horizontal: 8),
