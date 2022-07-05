@@ -4,7 +4,10 @@ import '../design_system/design_system.dart';
 import '../utils/constants.dart';
 
 class SubjectWidget extends StatefulWidget {
-  const SubjectWidget({Key? key}) : super(key: key);
+
+  final Map<String, dynamic> subjectBody;
+
+  const SubjectWidget({Key? key, required this.subjectBody}) : super(key: key);
 
   @override
   State<SubjectWidget> createState() => _SubjectWidgetState();
@@ -54,6 +57,11 @@ class _SubjectWidgetState extends State<SubjectWidget> {
                         ),
                       ),
                     ),
+                    onChanged: (subject){
+                      if(subject.isNotEmpty){
+                        widget.subjectBody['subject'] = subject;
+                      }
+                    },
                     keyboardType: TextInputType.multiline,
                     maxLines: null,
                     enabled: true,

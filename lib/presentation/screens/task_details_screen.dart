@@ -42,6 +42,8 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
 
   List<Order> orders = [];
 
+  final ScrollController scrollController = ScrollController();
+
   Future<void> getTaskDetails() async {
     var response = await HttpService()
         .doGet(path: Endpoints.getTaskDetails(widget.taskId));
@@ -153,6 +155,7 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
               );
             case ConnectionState.done:
               return ListView(
+                controller: scrollController,
                 padding: const EdgeInsets.all(10),
                 children: [
                   if (taskStatus == 'Completed')
@@ -242,15 +245,23 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                                       borderRadius: BorderRadius.circular(10.0),
                                     ))),
                                 onPressed: () async {
+                                  scrollController.animateTo(
+                                      scrollController.position.minScrollExtent,
+                                      duration: const Duration(seconds: 1),
+                                      curve: Curves.fastOutSlowIn);
+
                                   await showModalBottomSheet(
-                                    elevation: 20,
+                                    isScrollControlled: true,
+                                    elevation: 10,
                                     barrierColor: Colors.transparent,
                                     context: context,
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(32),
                                     ),
                                     constraints: BoxConstraints(
-                                      maxHeight: MediaQuery.of(context).size.height * 0.9,
+                                      maxHeight:
+                                          MediaQuery.of(context).size.height *
+                                              0.75,
                                     ),
                                     builder: (BuildContext context) {
                                       return CreateFollowUpTaskWidget(

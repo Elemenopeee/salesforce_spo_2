@@ -37,6 +37,8 @@ class _AgentTaskListState extends State<AgentTaskList> {
 
   bool showingOverdue = false;
 
+  bool isUnAssigned = false;
+
   @override
   Widget build(BuildContext context) {
     if (managerViewingTeamTasks) {
@@ -102,13 +104,15 @@ class _AgentTaskListState extends State<AgentTaskList> {
                       displayedList.clear();
                       displayedList =
                           List.from(widget.agentTaskList[index].allTasks);
+                      isUnAssigned = widget.agentTaskList[index].name == 'Unassigned';
                     });
                   },
                   employeeName: widget.agentTaskList[index].name,
                   overdueTaskCount:
                       widget.agentTaskList[index].pastOpenTasks.length,
                   pendingTaskCount:
-                      (widget.agentTaskList[index].todayTasks.length),
+                      (widget.agentTaskList[index].todayTasks.length +
+                          widget.agentTaskList[index].futureTasks.length),
                 );
               },
               separatorBuilder: (BuildContext context, int index) {
@@ -362,6 +366,8 @@ class _AgentTaskListState extends State<AgentTaskList> {
                   phone: displayedList[index].phone,
                   email: displayedList[index].email,
                   isOverdue: showingOverdue,
+                  showingStoreTasks: isUnAssigned,
+                  showingUnassignedTask: isUnAssigned,
                 );
               },
               separatorBuilder: (BuildContext context, int index) {

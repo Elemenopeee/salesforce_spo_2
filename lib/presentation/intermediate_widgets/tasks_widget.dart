@@ -60,6 +60,7 @@ class _TasksWidgetState extends State<TasksWidget>
   bool isManager = false;
   bool showingAgentTasks = true;
   bool showingOverdue = false;
+  bool showingUnAssignedTasks = true;
   bool managerViewingTeamTasks = true;
 
   int managerViewIndex = 0;
@@ -313,6 +314,7 @@ class _TasksWidgetState extends State<TasksWidget>
                                                     List.from(futureOpenTasks);
                                                 Navigator.of(context).pop();
                                                 showingOverdue = false;
+                                                showingUnAssignedTasks = false;
                                               },
                                             ),
                                             Container(
@@ -329,6 +331,7 @@ class _TasksWidgetState extends State<TasksWidget>
                                                     List.from(pastOpenTasks);
                                                 Navigator.of(context).pop();
                                                 showingOverdue = true;
+                                                showingUnAssignedTasks = false;
                                               },
                                             ),
                                             Container(
@@ -344,6 +347,7 @@ class _TasksWidgetState extends State<TasksWidget>
                                                     List.from(allTasks);
                                                 Navigator.of(context).pop();
                                                 showingOverdue = false;
+                                                showingUnAssignedTasks = false;
                                               },
                                             ),
                                             Container(
@@ -360,6 +364,7 @@ class _TasksWidgetState extends State<TasksWidget>
                                                     List.from(todaysTasks);
                                                 Navigator.of(context).pop();
                                                 showingOverdue = false;
+                                                showingUnAssignedTasks = false;
                                               },
                                             ),
                                             Container(
@@ -376,6 +381,7 @@ class _TasksWidgetState extends State<TasksWidget>
                                                     List.from(completedTasks);
                                                 Navigator.of(context).pop();
                                                 showingOverdue = false;
+                                                showingUnAssignedTasks = false;
                                               },
                                             ),
                                             if (!showingAgentTasks)
@@ -394,6 +400,7 @@ class _TasksWidgetState extends State<TasksWidget>
                                                       unAssignedTasks);
                                                   Navigator.of(context).pop();
                                                   showingOverdue = false;
+                                                  showingUnAssignedTasks = true;
                                                 },
                                               ),
                                           ],
@@ -642,8 +649,11 @@ class _TasksWidgetState extends State<TasksWidget>
                       tabColor: Colors.white,
                       labelColor: Colors.black,
                       unSelectLabelColor: Colors.grey,
-                      labelTextStyle:
-                          const TextStyle(fontWeight: FontWeight.bold),
+                      labelTextStyle: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontFamily: kRubik,
+                        fontSize: 16,
+                      ),
                     ),
                   ),
                 const SizedBox(
@@ -782,6 +792,7 @@ class _TasksWidgetState extends State<TasksWidget>
                                                         futureOpenTasks);
                                                     Navigator.of(context).pop();
                                                     showingOverdue = false;
+                                                    showingUnAssignedTasks = false;
                                                   },
                                                 ),
                                                 Container(
@@ -798,6 +809,7 @@ class _TasksWidgetState extends State<TasksWidget>
                                                         pastOpenTasks);
                                                     Navigator.of(context).pop();
                                                     showingOverdue = true;
+                                                    showingUnAssignedTasks = false;
                                                   },
                                                 ),
                                                 Container(
@@ -814,6 +826,7 @@ class _TasksWidgetState extends State<TasksWidget>
                                                         List.from(allTasks);
                                                     Navigator.of(context).pop();
                                                     showingOverdue = false;
+                                                    showingUnAssignedTasks = false;
                                                   },
                                                 ),
                                                 Container(
@@ -830,6 +843,7 @@ class _TasksWidgetState extends State<TasksWidget>
                                                         List.from(todaysTasks);
                                                     Navigator.of(context).pop();
                                                     showingOverdue = false;
+                                                    showingUnAssignedTasks = false;
                                                   },
                                                 ),
                                                 Container(
@@ -846,6 +860,7 @@ class _TasksWidgetState extends State<TasksWidget>
                                                         completedTasks);
                                                     Navigator.of(context).pop();
                                                     showingOverdue = false;
+                                                    showingUnAssignedTasks = false;
                                                   },
                                                 ),
                                                 if (!showingAgentTasks)
@@ -865,6 +880,7 @@ class _TasksWidgetState extends State<TasksWidget>
                                                       Navigator.of(context)
                                                           .pop();
                                                       showingOverdue = false;
+                                                      showingUnAssignedTasks = true;
                                                     },
                                                   ),
                                               ],
@@ -932,6 +948,7 @@ class _TasksWidgetState extends State<TasksWidget>
                               email: displayedList[index].email,
                               isOverdue: showingOverdue,
                               showingStoreTasks: !showingAgentTasks,
+                              showingUnassignedTask: showingUnAssignedTasks,
                             );
                           },
                           separatorBuilder: (BuildContext context, int index) {
@@ -1088,6 +1105,7 @@ class _TasksWidgetState extends State<TasksWidget>
                                                         Navigator.of(context)
                                                             .pop();
                                                         showingOverdue = false;
+                                                        showingUnAssignedTasks = false;
                                                       },
                                                     ),
                                                     Container(
@@ -1106,6 +1124,7 @@ class _TasksWidgetState extends State<TasksWidget>
                                                         Navigator.of(context)
                                                             .pop();
                                                         showingOverdue = true;
+                                                        showingUnAssignedTasks = false;
                                                       },
                                                     ),
                                                     Container(
@@ -1123,6 +1142,7 @@ class _TasksWidgetState extends State<TasksWidget>
                                                         Navigator.of(context)
                                                             .pop();
                                                         showingOverdue = false;
+                                                        showingUnAssignedTasks = false;
                                                       },
                                                     ),
                                                     Container(
@@ -1141,6 +1161,7 @@ class _TasksWidgetState extends State<TasksWidget>
                                                         Navigator.of(context)
                                                             .pop();
                                                         showingOverdue = false;
+                                                        showingUnAssignedTasks = false;
                                                       },
                                                     ),
                                                     Container(
@@ -1159,6 +1180,7 @@ class _TasksWidgetState extends State<TasksWidget>
                                                         Navigator.of(context)
                                                             .pop();
                                                         showingOverdue = false;
+                                                        showingUnAssignedTasks = false;
                                                       },
                                                     ),
                                                     if (!showingAgentTasks)
@@ -1181,6 +1203,7 @@ class _TasksWidgetState extends State<TasksWidget>
                                                               .pop();
                                                           showingOverdue =
                                                               false;
+                                                          showingUnAssignedTasks = true;
                                                         },
                                                       ),
                                                   ],
@@ -1248,6 +1271,7 @@ class _TasksWidgetState extends State<TasksWidget>
                                   email: displayedList[index].email,
                                   isOverdue: showingOverdue,
                                   showingStoreTasks: !showingAgentTasks,
+                                  showingUnassignedTask: showingUnAssignedTasks,
                                 );
                               },
                               separatorBuilder:

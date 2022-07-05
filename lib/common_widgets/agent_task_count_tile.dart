@@ -31,12 +31,11 @@ class _AgentTaskCountTileState extends State<AgentTaskCountTile> {
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(widget.employeeName!,
                 style: const TextStyle(
-                  fontSize: SizeSystem.size14,
+                  fontSize: SizeSystem.size16,
                   fontFamily: kRubik,
                   fontWeight: FontWeight.w500,
                 )),
@@ -55,14 +54,14 @@ class _AgentTaskCountTileState extends State<AgentTaskCountTile> {
                               text: widget.pendingTaskCount.toString(),
                               style: const TextStyle(
                                   fontFamily: kRubik,
-                                  fontSize: SizeSystem.size18,
+                                  fontSize: SizeSystem.size14,
                                   color: Colors.black),
                             ),
                             const TextSpan(
                               text: ' Pending',
                               style: TextStyle(
                                   fontFamily: kRubik,
-                                  fontSize: SizeSystem.size16,
+                                  fontSize: SizeSystem.size12,
                                   color: Colors.black),
                             ),
                           ],
@@ -76,7 +75,7 @@ class _AgentTaskCountTileState extends State<AgentTaskCountTile> {
                               text: 'No Pending',
                               style: TextStyle(
                                   fontFamily: kRubik,
-                                  fontSize: SizeSystem.size16,
+                                  fontSize: SizeSystem.size12,
                                   color: Colors.black),
                             ),
                           ],
@@ -94,14 +93,14 @@ class _AgentTaskCountTileState extends State<AgentTaskCountTile> {
                           text: widget.overdueTaskCount.toString(),
                           style: const TextStyle(
                               fontFamily: kRubik,
-                              fontSize: SizeSystem.size14,
+                              fontSize: SizeSystem.size12,
                               color: Colors.red),
                         ),
                         const TextSpan(
                           text: ' Overdue',
                           style: TextStyle(
                               fontFamily: kRubik,
-                              fontSize: SizeSystem.size14,
+                              fontSize: SizeSystem.size12,
                               color: Colors.red),
                         ),
                       ],

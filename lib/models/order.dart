@@ -13,6 +13,7 @@ class Order {
   final String? taskType;
   final String? brand;
   List<OrderItem>? orderLines;
+  List<OrderItem> selectedOrderLines;
 
   Order._({
     required this.id,
@@ -27,6 +28,7 @@ class Order {
     this.taskType,
     this.brand,
     this.orderLines,
+    this.selectedOrderLines = const [],
   });
 
   factory Order.fromJson(Map<String, dynamic> json) {

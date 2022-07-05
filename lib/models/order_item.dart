@@ -45,6 +45,16 @@ class OrderItem {
     );
   }
 
+  Map<String, dynamic> toJson() {
+    return {
+      'ItemId': itemId,
+      'ItemShortDesc': description,
+      'UnitPrice': itemPrice,
+      'OrderedQty': orderedQuantity,
+    };
+  }
+
+
 }
 
 // "UnitPrice": "24.99",
