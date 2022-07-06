@@ -74,31 +74,3 @@ abstract class RequestBody {
     };
   }
 }
-
-// {
-//
-// "parentTaskId": "",
-//
-// "subject": "Alert: Call with client",
-//
-// "dueDate": "2022-05-05",
-//
-// "comment": "",
-//
-// "WhoId": "0034M00001wCkKWQA0",
-//
-// "WhatId": "1316C00000009ODQAY",
-//
-// "OwnerId": "0054M000004UMmEQAW",
-//
-// "firstName": "",
-//
-// "lastName": "",
-//
-// "email": "",
-//
-// "phone": "",
-//
-// "orderDetailsJson": "{\"Brand\":\"GC\",\"OrderNumber\":\"GC18870695\",\"OrderDate\":\"2021-10-18\",\"CustomerKey\":\"\",\"Email\":\"\",\"OrderLines\":[{\"ItemId\":\"L19002000001001\",\"ItemShortDesc\":\"YamahaP-125DigitalPianoBlack88Key\",\"UnitPrice\":\"563.49\",\"OrderedQty\":1}],\"GrandTotal\":1269.21}"
-//
-// }

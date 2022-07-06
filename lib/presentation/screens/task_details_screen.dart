@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 import 'package:salesforce_spo/common_widgets/comment_widget.dart';
 import 'package:salesforce_spo/common_widgets/product_list_card_widget.dart';
 import 'package:salesforce_spo/common_widgets/task_client_profile_widget.dart';
@@ -46,11 +47,19 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
   final ScrollController scrollController = ScrollController();
 
   Future<void> getTaskDetails() async {
+
+    orders.clear();
+    childTasks.clear();
+
     var response = await HttpService()
         .doGet(path: Endpoints.getTaskDetails(widget.taskId));
 
     try {
       if (response.data != null) {
+        for (var taskJson in response.data['ChildTasks']) {
+          childTasks.add(TaskModel.fromJson(taskJson));
+        }
+
         for (var orderJson in response.data['Orders']) {
           var orderLines = <OrderItem>[];
 
@@ -62,24 +71,21 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
           } on Exception catch (e) {
             print(e);
           }
-
-          try {
+          try{
             var order = Order.fromOrderInfoJson(orderJson);
             order.orderLines = List.from(orderLines);
             orders.add(order);
-          } on Exception catch (e) {
+          }
+          catch (e){
             print(e);
           }
-        }
-
-        for (var taskJson in response.data['ChildTasks']) {
-          childTasks.add(TaskModel.fromJson(taskJson));
         }
         setState(() {});
       }
     } on Exception catch (e) {
       print(e);
     }
+
   }
 
   Future<void> markTaskAsCompleted() async {
@@ -298,6 +304,9 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                                       );
                                     },
                                   );
+                                  setState((){
+                                    futureTaskDetails = getTaskDetails();
+                                  });
                                 },
                                 child: const Padding(
                                   padding: EdgeInsets.symmetric(vertical: 14),

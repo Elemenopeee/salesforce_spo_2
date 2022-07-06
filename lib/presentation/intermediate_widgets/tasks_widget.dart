@@ -84,6 +84,7 @@ class _TasksWidgetState extends State<TasksWidget>
 
     id = await SharedPreferenceService().getValue(agentId) ?? '';
 
+
     var response = await HttpService().doPost(
         path: Endpoints.getSmartTriggers(),
         body:

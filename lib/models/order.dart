@@ -29,7 +29,7 @@ class Order {
     this.items,
     this.taskType,
     this.brand,
-    this.orderLines,
+    this.orderLines = const [],
     this.selectedOrderLines = const [],
   });
 
@@ -51,22 +51,23 @@ class Order {
     return Order._(
       id: json['Id'] ?? '--',
       orderNumber: json['OrderNumber'] ?? json['OrderNo'],
-      orderAmount: double.tryParse(json['GrandTotal']) ?? 0.0,
+      orderAmount: json['GrandTotal'] != null
+          ? double.tryParse(json['GrandTotal']) ?? 0.0
+          : 0.0,
       createdDate: json['OrderDate'],
       taskType: json['TaskType'] ?? '--',
       brand: json['Brand'],
     );
   }
 
-  Map<String, dynamic> toJson(){
+  Map<String, dynamic> toJson() {
     return {
       'Brand': brand,
       'OrderNumber': orderNumber,
       'OrderDate': createdDate,
       'CustomerKey': '',
       'Email': '',
-      'OrderLines' : selectedOrderLines,
+      'OrderLines': selectedOrderLines,
     };
   }
-
 }

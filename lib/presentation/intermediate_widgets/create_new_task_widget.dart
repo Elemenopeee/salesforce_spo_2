@@ -192,7 +192,6 @@ class _CreateNewTaskWidgetState extends State<CreateNewTaskWidget> {
     var response = await HttpService()
         .doPost(path: Endpoints.getCreateTask(), body: jsonEncode(requestBody));
 
-    print(response.data);
   }
 
   void scrollListener() {
