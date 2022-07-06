@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'order_item.dart';
 
 class Order {
@@ -13,6 +15,7 @@ class Order {
   final String? taskType;
   final String? brand;
   List<OrderItem>? orderLines;
+  List<OrderItem> selectedOrderLines;
 
   Order._({
     required this.id,
@@ -26,7 +29,8 @@ class Order {
     this.items,
     this.taskType,
     this.brand,
-    this.orderLines,
+    this.orderLines = const [],
+    this.selectedOrderLines = const [],
   });
 
   factory Order.fromJson(Map<String, dynamic> json) {
@@ -47,10 +51,23 @@ class Order {
     return Order._(
       id: json['Id'] ?? '--',
       orderNumber: json['OrderNumber'] ?? json['OrderNo'],
-      orderAmount: double.tryParse(json['GrandTotal']) ?? 0.0,
+      orderAmount: json['GrandTotal'] != null
+          ? double.tryParse(json['GrandTotal']) ?? 0.0
+          : 0.0,
       createdDate: json['OrderDate'],
-      taskType: json['TaskType'],
+      taskType: json['TaskType'] ?? '--',
       brand: json['Brand'],
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'Brand': brand,
+      'OrderNumber': orderNumber,
+      'OrderDate': createdDate,
+      'CustomerKey': '',
+      'Email': '',
+      'OrderLines': selectedOrderLines,
+    };
   }
 }

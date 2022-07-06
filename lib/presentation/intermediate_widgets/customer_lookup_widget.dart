@@ -431,6 +431,14 @@ class _CustomerLookupWidgetState extends State<CustomerLookupWidget> {
                                   itemBuilder:
                                       (BuildContext context, int index) {
                                     return CustomerDetailsCard(
+                                        onTap: () async {
+                                          try {
+                                            await launchUrlString(
+                                                'salesforce1://sObject/${customers[index].id}/view');
+                                          } catch (e) {
+                                            print(e);
+                                          }
+                                        },
                                       customerId: customers[index].id,
                                       name: customers[index].name ?? '--',
                                       email: customers[index].email,

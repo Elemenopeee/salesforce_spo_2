@@ -2,6 +2,7 @@ import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:salesforce_spo/utils/constant_functions.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 import '../../common_widgets/customer_details_card.dart';
 import '../../design_system/design_system.dart';
@@ -43,7 +44,7 @@ class _SearchScreenState extends State<SearchScreen> {
     resultSorter(data);
   }
 
-  void resultSorter(HttpResponse data){
+  void resultSorter(HttpResponse data) {
     var temporaryCustomersList = <Customer>[];
 
     try {
@@ -51,19 +52,17 @@ class _SearchScreenState extends State<SearchScreen> {
         temporaryCustomersList.add(Customer.fromJson(json: record));
       }
 
-      if(temporaryCustomersList.isNotEmpty){
-        temporaryCustomersList.sort((a,b) {
-          if(a.name != null &&  b.name != null){
+      if (temporaryCustomersList.isNotEmpty) {
+        temporaryCustomersList.sort((a, b) {
+          if (a.name != null && b.name != null) {
             return a.name!.compareTo(b.name!);
-          }
-          else {
+          } else {
             return -1;
           }
         });
       }
 
       customers.addAll(temporaryCustomersList);
-
     } catch (error) {
       print(error);
     }
@@ -118,9 +117,7 @@ class _SearchScreenState extends State<SearchScreen> {
                       EasyDebounce.cancelAll();
                       if (this.name.length >= 3) {
                         EasyDebounce.debounce(
-                            'search_name_debounce',
-                            Duration(seconds: 1),
-                            () {
+                            'search_name_debounce', Duration(seconds: 1), () {
                           setState(() {
                             futureCustomers = getCustomer(offset);
                           });
@@ -154,40 +151,46 @@ class _SearchScreenState extends State<SearchScreen> {
                   case ConnectionState.active:
                   case ConnectionState.none:
                   case ConnectionState.done:
-                  if (isLoadingData && customers.isEmpty) {
-                    return const Center(
-                      child: CircularProgressIndicator(
-                        color: ColorSystem.primary,
-                      ),
-                    );
-                  }
-                  return ListView.builder(
-                    controller: scrollController,
-                    padding: const EdgeInsets.symmetric(horizontal: 30),
-                    shrinkWrap: true,
-                    itemCount: customers.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return CustomerDetailsCard(
-                        customerId: customers[index].id,
-                        name: customers[index].name ?? '--',
-                        email: customers[index].email,
-                        phone: customers[index].phone,
-                        preferredInstrument:
-                        customers[index].primaryInstrument,
-                        lastTransactionDate:
-                        customers[index].lastTransactionDate,
-                        ltv: customers[index].lifeTimeNetSalesAmount ?? 0,
-                        averageProductValue: aovCalculator(
-                            customers[index]
-                                .lifeTimeNetSalesAmount,
-                            customers[index]
-                                .lifetimeNetTransactions),
-                        customerLevel: customers[index].medianLTVNet,
-                        epsilonCustomerKey: customers[index]
-                            .epsilonCustomerBrandKey,
+                    if (isLoadingData && customers.isEmpty) {
+                      return const Center(
+                        child: CircularProgressIndicator(
+                          color: ColorSystem.primary,
+                        ),
                       );
-                    },
-                  );
+                    }
+                    return ListView.builder(
+                      controller: scrollController,
+                      padding: const EdgeInsets.symmetric(horizontal: 30),
+                      shrinkWrap: true,
+                      itemCount: customers.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return CustomerDetailsCard(
+                          onTap: () async {
+                            try {
+                              await launchUrlString(
+                                  'salesforce1://sObject/${customers[index].id}/view');
+                            } catch (e) {
+                              print(e);
+                            }
+                          },
+                          customerId: customers[index].id,
+                          name: customers[index].name ?? '--',
+                          email: customers[index].email,
+                          phone: customers[index].phone,
+                          preferredInstrument:
+                              customers[index].primaryInstrument,
+                          lastTransactionDate:
+                              customers[index].lastTransactionDate,
+                          ltv: customers[index].lifeTimeNetSalesAmount ?? 0,
+                          averageProductValue: aovCalculator(
+                              customers[index].lifeTimeNetSalesAmount,
+                              customers[index].lifetimeNetTransactions),
+                          customerLevel: customers[index].medianLTVNet,
+                          epsilonCustomerKey:
+                              customers[index].epsilonCustomerBrandKey,
+                        );
+                      },
+                    );
                 }
               },
             ),

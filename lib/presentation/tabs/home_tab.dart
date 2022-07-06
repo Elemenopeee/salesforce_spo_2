@@ -67,6 +67,11 @@ class _TabHomeState extends State<TabHome> with SingleTickerProviderStateMixin {
         if (agent?.id != null) {
           SharedPreferenceService().setKey(key: agentId, value: agent!.id!);
         }
+
+        if(agent?.name != null){
+          SharedPreferenceService().setKey(key: savedAgentName, value: agent!.name!);
+        }
+
         if (agent?.storeId != null) {
           SharedPreferenceService()
               .setKey(key: storeId, value: agent!.storeId!);
@@ -216,8 +221,6 @@ class _ProgressContainerState extends State<ProgressContainer> {
 
   @override
   Widget build(BuildContext context) {
-    var dateTime = DateTime.now();
-    var month = DateFormat(DateFormat.MONTH).format(dateTime);
 
     return FutureBuilder(
       future: futureAgentMetrics,
@@ -283,6 +286,7 @@ class _ProgressContainerState extends State<ProgressContainer> {
                           unAssignedTasks:
                               agentMetrics?.allUnassignedTasks ?? 0,
                           completedTasks: agentMetrics?.completedTasks ?? 0,
+                          futureTasks: agentMetrics?.futureTasks ?? 0,
                         ),
                       ),
                     ],

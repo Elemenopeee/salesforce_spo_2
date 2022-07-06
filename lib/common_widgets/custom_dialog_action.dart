@@ -6,8 +6,9 @@ import '../utils/constants.dart';
 class CustomDialogAction extends StatelessWidget {
   final String label;
   final VoidCallback onTap;
+  final Widget? child;
 
-  const CustomDialogAction({Key? key, required this.label, required this.onTap})
+  const CustomDialogAction({Key? key, required this.label, required this.onTap, this.child})
       : super(key: key);
 
   @override
@@ -16,13 +17,22 @@ class CustomDialogAction extends StatelessWidget {
       onTap: onTap,
       child: Padding(
         padding: const EdgeInsets.all(PaddingSystem.padding12),
-        child: Text(
-          label,
-          style: const TextStyle(
-            color: Colors.black,
-            fontSize: SizeSystem.size16,
-            fontFamily: kRubik,
-          ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if(child != null)
+              child!,
+            if(child != null)
+              const SizedBox(width: 4,),
+            Text(
+              label,
+              style: const TextStyle(
+                color: Colors.black,
+                fontSize: SizeSystem.size16,
+                fontFamily: kRubik,
+              ),
+            ),
+          ],
         ),
       ),
     );

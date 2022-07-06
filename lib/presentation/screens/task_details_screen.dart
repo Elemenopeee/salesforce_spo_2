@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 import 'package:salesforce_spo/common_widgets/comment_widget.dart';
 import 'package:salesforce_spo/common_widgets/product_list_card_widget.dart';
 import 'package:salesforce_spo/common_widgets/task_client_profile_widget.dart';
@@ -11,6 +12,7 @@ import 'package:salesforce_spo/design_system/design_system.dart';
 import 'package:salesforce_spo/models/order.dart';
 import 'package:salesforce_spo/models/order_item.dart';
 import 'package:salesforce_spo/models/task.dart';
+import 'package:salesforce_spo/presentation/intermediate_widgets/create_follow_up_task_widget.dart';
 import 'package:salesforce_spo/services/networking/endpoints.dart';
 import 'package:salesforce_spo/services/networking/networking_service.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -40,13 +42,24 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
   String taskStatus = 'Open';
 
   List<Order> orders = [];
+  List<TaskModel> childTasks = [];
+
+  final ScrollController scrollController = ScrollController();
 
   Future<void> getTaskDetails() async {
+
+    orders.clear();
+    childTasks.clear();
+
     var response = await HttpService()
         .doGet(path: Endpoints.getTaskDetails(widget.taskId));
 
     try {
       if (response.data != null) {
+        for (var taskJson in response.data['ChildTasks']) {
+          childTasks.add(TaskModel.fromJson(taskJson));
+        }
+
         for (var orderJson in response.data['Orders']) {
           var orderLines = <OrderItem>[];
 
@@ -58,19 +71,21 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
           } on Exception catch (e) {
             print(e);
           }
-
-          try {
+          try{
             var order = Order.fromOrderInfoJson(orderJson);
             order.orderLines = List.from(orderLines);
             orders.add(order);
-          } on Exception catch (e) {
+          }
+          catch (e){
             print(e);
           }
         }
+        setState(() {});
       }
     } on Exception catch (e) {
       print(e);
     }
+
   }
 
   Future<void> markTaskAsCompleted() async {
@@ -99,25 +114,48 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
       appBar: TGCAppBar(
         label: 'CALL ALERT',
         trailingActions: [
-          if(taskStatus != 'Completed')
-          InkWell(
-            focusColor: Colors.transparent,
-            highlightColor: Colors.transparent,
-            splashColor: Colors.transparent,
-            hoverColor: Colors.transparent,
-            onTap: () async {
-              if (widget.task.phone != null) {
-                var phone = widget.task.phone;
-                await launchUrl(Uri.parse('tel://$phone'));
-              }
-            },
-            child: SvgPicture.asset(
-              IconSystem.phone,
-              height: 24,
-              width: 24,
-              color: Colors.black,
+          if (childTasks.isNotEmpty)
+            InkWell(
+              focusColor: Colors.transparent,
+              highlightColor: Colors.transparent,
+              splashColor: Colors.transparent,
+              hoverColor: Colors.transparent,
+              onTap: () async {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (BuildContext context) {
+                  return TaskDetailsScreen(
+                      taskId: childTasks[0].id ?? '', task: childTasks[0]);
+                }));
+              },
+              child: SvgPicture.asset(
+                IconSystem.childFollowUpTaskIcon,
+                height: 24,
+                width: 24,
+                color: Colors.black,
+              ),
             ),
+          const SizedBox(
+            width: SizeSystem.size16,
           ),
+          if (taskStatus != 'Completed')
+            InkWell(
+              focusColor: Colors.transparent,
+              highlightColor: Colors.transparent,
+              splashColor: Colors.transparent,
+              hoverColor: Colors.transparent,
+              onTap: () async {
+                if (widget.task.phone != null) {
+                  var phone = widget.task.phone;
+                  await launchUrl(Uri.parse('tel://$phone'));
+                }
+              },
+              child: SvgPicture.asset(
+                IconSystem.phone,
+                height: 24,
+                width: 24,
+                color: Colors.black,
+              ),
+            ),
           const SizedBox(
             width: SizeSystem.size16,
           ),
@@ -151,6 +189,7 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
               );
             case ConnectionState.done:
               return ListView(
+                controller: scrollController,
                 padding: const EdgeInsets.all(10),
                 children: [
                   if (taskStatus == 'Completed')
@@ -193,7 +232,7 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                         order: orders[index],
                         Id: orders[index].orderNumber ?? '--',
                         Date: orders[index].createdDate ?? '--',
-                        taskType: orders[index].taskType,
+                        taskType: orders[index].taskType ?? '--',
                       );
                     },
                     separatorBuilder: (BuildContext context, int index) {
@@ -202,13 +241,16 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                       );
                     },
                   ),
-                  TaskDetailsDateWidget(
-                    task: widget.task,
-                    assigned_to_name: widget.task.assignedTo ?? '--',
-                    modified_by_name: widget.task.modifiedBy ?? '--',
-                    due_by_date: widget.task.taskDate ?? '--',
-                    modified_date: widget.task.lastModifiedDate ?? '--',
-                    lastModifiedById: widget.task.modifiedById ?? '--',
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    child: TaskDetailsDateWidget(
+                      task: widget.task,
+                      assigned_to_name: widget.task.assignedTo ?? '--',
+                      modified_by_name: widget.task.modifiedBy ?? '--',
+                      due_by_date: widget.task.taskDate ?? '--',
+                      modified_date: widget.task.lastModifiedDate ?? '--',
+                      lastModifiedById: widget.task.modifiedById ?? '--',
+                    ),
                   ),
                   const SizedBox(
                     height: 20,
@@ -236,7 +278,36 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                                         RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(10.0),
                                     ))),
-                                onPressed: () {},
+                                onPressed: () async {
+                                  scrollController.animateTo(
+                                      scrollController.position.minScrollExtent,
+                                      duration: const Duration(seconds: 1),
+                                      curve: Curves.fastOutSlowIn);
+
+                                  await showModalBottomSheet(
+                                    isScrollControlled: true,
+                                    elevation: 12,
+                                    barrierColor: Colors.transparent,
+                                    context: context,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(32),
+                                    ),
+                                    constraints: BoxConstraints(
+                                      maxHeight:
+                                          MediaQuery.of(context).size.height *
+                                              0.75,
+                                    ),
+                                    builder: (BuildContext context) {
+                                      return CreateFollowUpTaskWidget(
+                                        orders: orders,
+                                        task: widget.task,
+                                      );
+                                    },
+                                  );
+                                  setState((){
+                                    futureTaskDetails = getTaskDetails();
+                                  });
+                                },
                                 child: const Padding(
                                   padding: EdgeInsets.symmetric(vertical: 14),
                                   child: Text(
@@ -263,7 +334,7 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                                   onPressed: () async {
                                     await markTaskAsCompleted();
                                     widget.task.status = 'Completed';
-                                    setState((){
+                                    setState(() {
                                       taskStatus = 'Completed';
                                     });
                                   },

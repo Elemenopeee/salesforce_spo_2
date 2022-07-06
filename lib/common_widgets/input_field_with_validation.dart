@@ -5,7 +5,7 @@ import 'package:salesforce_spo/design_system/design_system.dart';
 import 'package:salesforce_spo/utils/constants.dart';
 
 class GuitarCentreInputField extends StatelessWidget {
-  final String leadingIcon;
+  final String? leadingIcon;
 
   final FloatingLabelBehavior? floatingLabelBehavior;
   final TextStyle? floatingLabelTextStyle;
@@ -27,7 +27,7 @@ class GuitarCentreInputField extends StatelessWidget {
 
   const GuitarCentreInputField({
     required this.label,
-    required this.leadingIcon,
+    this.leadingIcon,
     this.onChanged,
     this.hintText,
     this.floatingLabelBehavior = FloatingLabelBehavior.always,
@@ -48,6 +48,7 @@ class GuitarCentreInputField extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        if(leadingIcon != null)
         Padding(
           padding: const EdgeInsets.only(
             left: PaddingSystem.padding16,
@@ -56,7 +57,7 @@ class GuitarCentreInputField extends StatelessWidget {
             bottom: PaddingSystem.padding20,
           ),
           child: SvgPicture.asset(
-            leadingIcon,
+            leadingIcon!,
             width: SizeSystem.size24,
             height: SizeSystem.size24,
           ),
