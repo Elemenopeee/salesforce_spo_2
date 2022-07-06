@@ -41,6 +41,7 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
   String taskStatus = 'Open';
 
   List<Order> orders = [];
+  List<TaskModel> childTasks = [];
 
   final ScrollController scrollController = ScrollController();
 
@@ -70,6 +71,11 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
             print(e);
           }
         }
+
+        for (var taskJson in response.data['ChildTasks']) {
+          childTasks.add(TaskModel.fromJson(taskJson));
+        }
+        setState(() {});
       }
     } on Exception catch (e) {
       print(e);
@@ -91,7 +97,6 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
   @override
   initState() {
     super.initState();
-    print(widget.taskId);
     taskStatus = widget.task.status ?? 'Open';
     futureTaskDetails = getTaskDetails();
   }
@@ -103,6 +108,29 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
       appBar: TGCAppBar(
         label: 'CALL ALERT',
         trailingActions: [
+          if (childTasks.isNotEmpty)
+            InkWell(
+              focusColor: Colors.transparent,
+              highlightColor: Colors.transparent,
+              splashColor: Colors.transparent,
+              hoverColor: Colors.transparent,
+              onTap: () async {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (BuildContext context) {
+                  return TaskDetailsScreen(
+                      taskId: childTasks[0].id ?? '', task: childTasks[0]);
+                }));
+              },
+              child: SvgPicture.asset(
+                IconSystem.childFollowUpTaskIcon,
+                height: 24,
+                width: 24,
+                color: Colors.black,
+              ),
+            ),
+          const SizedBox(
+            width: SizeSystem.size16,
+          ),
           if (taskStatus != 'Completed')
             InkWell(
               focusColor: Colors.transparent,
@@ -252,7 +280,7 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
 
                                   await showModalBottomSheet(
                                     isScrollControlled: true,
-                                    elevation: 10,
+                                    elevation: 12,
                                     barrierColor: Colors.transparent,
                                     context: context,
                                     shape: RoundedRectangleBorder(

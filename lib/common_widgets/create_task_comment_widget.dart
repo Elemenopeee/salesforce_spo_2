@@ -103,6 +103,11 @@ class _CreateTaskCommentWidgetState extends State<CreateTaskCommentWidget> {
                         keyboardType: TextInputType.multiline,
                         maxLines: null,
                         enabled: true,
+                        onChanged: (value){
+                          if(value.isNotEmpty){
+                            widget.commentBody['comment'] = value;
+                          }
+                        },
                       ),
                     ),
                     const SizedBox(

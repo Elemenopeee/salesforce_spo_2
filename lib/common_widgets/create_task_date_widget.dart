@@ -31,6 +31,7 @@ class _CreateTaskDateWidgetState extends State<CreateTaskDateWidget> {
   initState(){
     super.initState();
     displayedDueDate = DateFormat('MMM dd, yyyy').format(DateTime.parse(widget.dueByDate));
+    widget.dueDateMap['dueDate'] = widget.dueByDate;
   }
 
   @override
@@ -68,7 +69,7 @@ class _CreateTaskDateWidgetState extends State<CreateTaskDateWidget> {
                             height: 200,
                             child: CupertinoDatePicker(
                               mode: CupertinoDatePickerMode.date,
-                              initialDateTime: DateTime.now(),
+                              initialDateTime: DateTime.parse(widget.dueByDate),
                               minimumDate: DateTime.parse(widget.dueByDate),
                               onDateTimeChanged: (val) {
                                 setState(
@@ -77,7 +78,6 @@ class _CreateTaskDateWidgetState extends State<CreateTaskDateWidget> {
                                         DateFormat('MMM dd, yyyy').format(val);
                                     widget.dueDateMap['dueDate'] =
                                         DateFormat('yyyy-MM-dd').format(val);
-                                    ;
                                   },
                                 );
                               },

@@ -15,6 +15,18 @@ class SubjectWidget extends StatefulWidget {
 
 class _SubjectWidgetState extends State<SubjectWidget> {
   final TextEditingController textEditingController = TextEditingController();
+  final FocusNode focusNode = FocusNode();
+
+  @override
+  initState(){
+    super.initState();
+    textEditingController.text = widget.subjectBody['subject'];
+
+    focusNode.addListener(() {
+      setState((){});
+    });
+
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,6 +54,7 @@ class _SubjectWidgetState extends State<SubjectWidget> {
               children: [
                 Expanded(
                   child: TextFormField(
+                    focusNode: focusNode,
                     controller: textEditingController,
                     showCursor: true,
                     cursorColor: ColorSystem.primary,
@@ -78,12 +91,17 @@ class _SubjectWidgetState extends State<SubjectWidget> {
                     ),
                     GestureDetector(
                       onTap: () async {
-                        WidgetsBinding.instance.focusManager.primaryFocus
-                            ?.unfocus();
+                        if(focusNode.hasFocus){
+                          WidgetsBinding.instance.focusManager.primaryFocus
+                              ?.unfocus();
+                        }
+                        if(!focusNode.hasFocus){
+                          focusNode.requestFocus();
+                        }
                       },
-                      child: const Text(
-                        'Edit',
-                        style: TextStyle(
+                      child: Text(
+                        focusNode.hasFocus ? 'Save' : 'Edit',
+                        style: const TextStyle(
                           color: ColorSystem.lavender2,
                           fontSize: SizeSystem.size14,
                           fontWeight: FontWeight.bold,

@@ -49,30 +49,14 @@ abstract class RequestBody {
     String? lastName,
     String? email,
     String? phone,
-    required Order order,
+    required List<Order> selectedOrders,
   }) {
 
+    var orderDetailsJson = <String>[];
 
-    List<OrderItem> orderItems = List.from(order.selectedOrderLines);
-    List<Map<String, dynamic>> orderDetails = [];
-
-    for(var orderItem in orderItems){
-      var orderItemJson = orderItem.toJson();
-      orderDetails.add(orderItemJson);
+    for(var order in selectedOrders){
+      orderDetailsJson.add(jsonEncode(order.toJson()));
     }
-
-    var details = {
-      'Brand': order.brand ?? '',
-      'OrderNumber': order.orderNumber ?? '',
-      'OrderDate': order.createdDate,
-      'CustomerKey': '',
-      'Email': '',
-      'OrderLines': [],
-
-    };
-
-
-    // var orderDetails = jsonEncode(orderDetailsJson).replaceAll('"', '\\"');
 
     return {
       'parentTaskId': parentTaskId ?? '',
@@ -86,7 +70,7 @@ abstract class RequestBody {
       'lastName': lastName ?? '',
       'email': email ?? '',
       'phone': phone ?? '',
-      // 'orderDetailsJson': orderDetailsJson,
+      'orderDetailsJson': orderDetailsJson,
     };
   }
 }

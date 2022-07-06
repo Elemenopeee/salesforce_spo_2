@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:salesforce_spo/models/agent.dart';
+import 'package:salesforce_spo/presentation/intermediate_widgets/create_new_task_widget.dart';
 import 'package:salesforce_spo/presentation/intermediate_widgets/customer_lookup_widget.dart';
 import 'package:salesforce_spo/presentation/screens/smart_triggers_screen.dart';
 import 'package:salesforce_spo/presentation/tabs/home_tab.dart';
@@ -94,7 +95,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-
   @override
   void initState() {
     super.initState();
@@ -107,6 +107,35 @@ class _HomeScreenState extends State<HomeScreen> {
       extendBodyBehindAppBar: true,
       appBar: TGCAppBar(
         label: 'HOME',
+        trailingActions: [
+          InkWell(
+            focusColor: Colors.transparent,
+            highlightColor: Colors.transparent,
+            splashColor: Colors.transparent,
+            hoverColor: Colors.transparent,
+            onTap: () async {
+
+              var name = await SharedPreferenceService().getValue(savedAgentName);
+
+              await showModalBottomSheet(
+                constraints: BoxConstraints(
+                    maxHeight: MediaQuery.of(context).size.height * 0.9),
+                isScrollControlled: true,
+                context: context,
+                builder: (BuildContext context) {
+                  return CreateNewTaskWidget(
+                    agentName: name ?? '',
+                  );
+                },
+                backgroundColor: Colors.transparent,
+              );
+            },
+            child: SvgPicture.asset(IconSystem.createTaskIcon),
+          ),
+          const SizedBox(
+            width: SizeSystem.size16,
+          ),
+        ],
       ),
       body: const TabHome(),
       bottomNavigationBar: NotchedBottomNavigationBar(
@@ -177,7 +206,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
         centerButton: FloatingActionButton(
           backgroundColor: ColorSystem.primary,
-          onPressed: () async {},
+          onPressed: () {},
           child: SvgPicture.asset(
             IconSystem.plus,
             width: 24,

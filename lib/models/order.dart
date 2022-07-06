@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'order_item.dart';
 
 class Order {
@@ -46,9 +48,6 @@ class Order {
   }
 
   factory Order.fromOrderInfoJson(Map<String, dynamic> json) {
-
-    print(json['Id']);
-
     return Order._(
       id: json['Id'] ?? '--',
       orderNumber: json['OrderNumber'] ?? json['OrderNo'],
@@ -58,4 +57,16 @@ class Order {
       brand: json['Brand'],
     );
   }
+
+  Map<String, dynamic> toJson(){
+    return {
+      'Brand': brand,
+      'OrderNumber': orderNumber,
+      'OrderDate': createdDate,
+      'CustomerKey': '',
+      'Email': '',
+      'OrderLines' : selectedOrderLines,
+    };
+  }
+
 }

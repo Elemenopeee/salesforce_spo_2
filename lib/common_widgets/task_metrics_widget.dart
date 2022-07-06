@@ -29,6 +29,10 @@ class TaskMetricsWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
+      focusColor: Colors.transparent,
+      highlightColor: Colors.transparent,
+      splashColor: Colors.transparent,
+      hoverColor: Colors.transparent,
       onTap: () {
         showDialog(
           context: context,

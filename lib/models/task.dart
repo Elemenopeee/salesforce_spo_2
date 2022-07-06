@@ -12,6 +12,10 @@ class TaskModel {
   final String? assignedTo;
   final String? assignedToId;
   final String? modifiedById;
+  final String? whoId;
+  final String? whatId;
+  final String? firstName;
+  final String? lastName;
   String? description;
 
   TaskModel({
@@ -29,6 +33,10 @@ class TaskModel {
     this.description,
     this.assignedToId,
     this.modifiedById,
+    this.whoId,
+    this.whatId,
+    this.firstName,
+    this.lastName,
   });
 
   factory TaskModel.fromJson(Map<String, dynamic> json) {
@@ -47,6 +55,10 @@ class TaskModel {
       description: json['Description'],
       assignedToId: json['OwnerId'],
       modifiedById: json['LastModifiedById'],
+      whoId: json['WhoId'],
+      whatId: json['WhatId'],
+      firstName: json['First_Name__c'],
+      lastName: json['Last_Name__c'],
     );
   }
 }

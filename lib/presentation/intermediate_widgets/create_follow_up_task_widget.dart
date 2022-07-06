@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:ui';
 
 import 'package:cached_network_image/cached_network_image.dart';
@@ -5,15 +6,16 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
-import 'package:salesforce_spo/common_widgets/comment_widget.dart';
 import 'package:salesforce_spo/common_widgets/create_task_comment_widget.dart';
 import 'package:salesforce_spo/common_widgets/create_task_date_widget.dart';
 import 'package:salesforce_spo/common_widgets/subject_widget.dart';
 import 'package:salesforce_spo/models/task.dart';
-import '../../common_widgets/task_details_date_widget.dart';
+import 'package:salesforce_spo/services/networking/endpoints.dart';
+import 'package:salesforce_spo/services/networking/networking_service.dart';
 import '../../design_system/design_system.dart';
 import '../../models/order.dart';
 import '../../models/order_item.dart';
+import '../../services/networking/request_body.dart';
 import '../../utils/constants.dart';
 
 class CreateFollowUpTaskWidget extends StatefulWidget {
@@ -32,15 +34,12 @@ class CreateFollowUpTaskWidget extends StatefulWidget {
 }
 
 class _CreateFollowUpTaskWidgetState extends State<CreateFollowUpTaskWidget> {
-  late List<List<OrderItem>> selectedItems;
+  List<Order> selectedOrders = [];
 
   @override
   initState() {
     super.initState();
-    selectedItems = [];
-    for (var order in widget.orders) {
-      selectedItems.add([]);
-    }
+    subjectBody['subject'] = widget.task.subject ?? '';
   }
 
   Map<String, dynamic> subjectBody = {
@@ -54,6 +53,27 @@ class _CreateFollowUpTaskWidgetState extends State<CreateFollowUpTaskWidget> {
   Map<String, dynamic> commentBody = {
     'comment': '',
   };
+
+  Future<void> createFollowUpTask() async {
+    var requestBody = RequestBody.getCreateTaskBody(
+      parentTaskId: widget.task.id,
+      subject: subjectBody['subject'],
+      dueDate: dueDateBody['dueDate'],
+      selectedOrders: selectedOrders,
+      comment: commentBody['comment'],
+      whatId: widget.task.whatId,
+      whoId: widget.task.whoId,
+      ownerId: widget.task.assignedToId,
+      firstName: widget.task.firstName,
+      lastName: widget.task.lastName,
+      email: widget.task.email,
+      phone: widget.task.phone,
+    );
+
+    var response = await HttpService()
+        .doPost(path: Endpoints.getCreateTask(), body: jsonEncode(requestBody));
+
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -112,7 +132,7 @@ class _CreateFollowUpTaskWidgetState extends State<CreateFollowUpTaskWidget> {
                     return FollowUpTaskOrderSelectionWidget(
                       order: widget.orders[index],
                       task: widget.task,
-                      selectedItems: selectedItems[index],
+                      selectedOrders: selectedOrders,
                     );
                   },
                   separatorBuilder: (BuildContext context, int index) {
@@ -143,7 +163,8 @@ class _CreateFollowUpTaskWidgetState extends State<CreateFollowUpTaskWidget> {
                                 RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ))),
-                    onPressed: () {
+                    onPressed: () async {
+                      await createFollowUpTask();
                       Navigator.of(context).pop();
                     },
                     child: Row(
@@ -177,13 +198,13 @@ class _CreateFollowUpTaskWidgetState extends State<CreateFollowUpTaskWidget> {
 class FollowUpTaskOrderSelectionWidget extends StatefulWidget {
   final Order order;
   final TaskModel task;
-  final List<OrderItem> selectedItems;
+  final List<Order> selectedOrders;
 
   const FollowUpTaskOrderSelectionWidget({
     Key? key,
     required this.order,
     required this.task,
-    required this.selectedItems,
+    required this.selectedOrders,
   }) : super(key: key);
 
   @override
@@ -196,6 +217,7 @@ class _FollowUpTaskOrderSelectionWidgetState
   bool? selectedRadioOption = false;
 
   List<OrderItem> orderItems = [];
+  List<OrderItem> selectedOrderItems = [];
 
   String dateFormatter(String date) {
     var dateTime = DateTime.parse(date);
@@ -206,6 +228,26 @@ class _FollowUpTaskOrderSelectionWidgetState
   initState() {
     super.initState();
     orderItems = List.from(widget.order.orderLines ?? []);
+  }
+
+  void handleSelection(bool? value, int index) {
+    if (value != null) {
+      if (value) {
+        selectedOrderItems.add(orderItems[index]);
+        if (!widget.selectedOrders.contains(widget.order)) {
+          widget.selectedOrders.add(widget.order);
+        }
+      } else {
+        selectedOrderItems.remove(orderItems[index]);
+        if (widget.order.selectedOrderLines.isNotEmpty) {
+          if (widget.selectedOrders.contains(widget.order)) {
+            widget.selectedOrders.remove(widget.order);
+          }
+        }
+      }
+    }
+    widget.order.selectedOrderLines = List.from(selectedOrderItems);
+    setState(() {});
   }
 
   @override
@@ -267,17 +309,11 @@ class _FollowUpTaskOrderSelectionWidgetState
                     Checkbox(
                       activeColor: ColorSystem.primary,
                       checkColor: ColorSystem.white,
-                      value: widget.selectedItems.contains(orderItems[index]),
+                      value: widget.order.selectedOrderLines
+                          .contains(orderItems[index]),
                       shape: const CircleBorder(),
                       onChanged: (bool? value) {
-                        if (value != null) {
-                          if (value) {
-                            widget.selectedItems.add(orderItems[index]);
-                          } else {
-                            widget.selectedItems.remove(orderItems[index]);
-                          }
-                        }
-                        setState(() {});
+                        handleSelection(value, index);
                       },
                     ),
                     CachedNetworkImage(

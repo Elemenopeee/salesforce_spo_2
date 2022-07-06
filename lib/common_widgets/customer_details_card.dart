@@ -10,6 +10,7 @@ import 'package:url_launcher/url_launcher_string.dart';
 import '../utils/constants.dart';
 
 class CustomerDetailsCard extends StatefulWidget {
+  final VoidCallback? onTap;
   final String? customerId;
   final String name;
   final String? email;
@@ -33,6 +34,7 @@ class CustomerDetailsCard extends StatefulWidget {
     this.averageProductValue,
     this.customerLevel,
     this.epsilonCustomerKey,
+    this.onTap,
   }) : super(key: key);
 
   @override
@@ -70,24 +72,7 @@ class _CustomerDetailsCardState extends State<CustomerDetailsCard> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () async {
-        if (widget.customerId == null) {
-          try {
-            await launchUrlString(
-                'salesforce1://sObject/${widget.customerId}/view');
-          } catch (e) {
-            print(e);
-          }
-        } else {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (BuildContext context) {
-            return ClientLandingScreen(
-              customerID: widget.customerId!,
-              epsilonCustomerKey: widget.epsilonCustomerKey!,
-            );
-          }));
-        }
-      },
+      onTap: widget.onTap,
       child: Container(
         margin: const EdgeInsets.all(10),
         color: ColorSystem.white,
