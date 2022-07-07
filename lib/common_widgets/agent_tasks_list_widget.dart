@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:salesforce_spo/common_widgets/horizontal_multiple_progress_indicator.dart';
 import 'package:salesforce_spo/common_widgets/task_list_widget.dart';
 import 'package:salesforce_spo/design_system/primitives/color_system.dart';
 import 'package:salesforce_spo/design_system/primitives/size_system.dart';
@@ -104,7 +105,8 @@ class _AgentTaskListState extends State<AgentTaskList> {
                       displayedList.clear();
                       displayedList =
                           List.from(widget.agentTaskList[index].allTasks);
-                      isUnAssigned = widget.agentTaskList[index].name == 'Unassigned';
+                      isUnAssigned =
+                          widget.agentTaskList[index].name == 'Unassigned';
                     });
                   },
                   employeeName: widget.agentTaskList[index].name,
@@ -201,7 +203,7 @@ class _AgentTaskListState extends State<AgentTaskList> {
                         ),
                         children: [
                           TextSpan(
-                            text: '${tempAgent.todayTasks.length}',
+                            text: '${tempAgent.allTasks.length}',
                             style: const TextStyle(
                               fontWeight: FontWeight.w600,
                               fontSize: SizeSystem.size24,
@@ -213,10 +215,10 @@ class _AgentTaskListState extends State<AgentTaskList> {
                               width: SizeSystem.size5,
                             ),
                           ),
-                          TextSpan(
+                          const TextSpan(
                             text:
-                                'Pending / ${tempAgent.allTasks.length} Tasks',
-                            style: const TextStyle(
+                                'Pending',
+                            style: TextStyle(
                               fontSize: SizeSystem.size12,
                               color: ColorSystem.primary,
                             ),
@@ -325,19 +327,13 @@ class _AgentTaskListState extends State<AgentTaskList> {
                 ),
               ],
             ),
-            CustomLinearProgressIndicator(
-              containerHeight: SizeSystem.size8,
-              containerMargin: const EdgeInsets.only(top: SizeSystem.size20),
-              containerRadius: const BorderRadius.all(
-                Radius.circular(SizeSystem.size20),
-              ),
-              indicatorValue: tempAgent.allTasks.isNotEmpty
-                  ? (tempAgent.allTasks.length - tempAgent.todayTasks.length) /
-                      tempAgent.allTasks.length
-                  : 0,
-              indicatorValueColor: ColorSystem.skyBlue,
-              indicatorBackgroundColor: ColorSystem.lavender3,
+            const SizedBox(
+              height: SizeSystem.size16,
             ),
+            HorizontalMultipleProgressIndicator(
+                pendingValue: tempAgent.todayTasks.length.toDouble(),
+                overdueValue: tempAgent.pastOpenTasks.length.toDouble(),
+                unAssignedValue: tempAgent.unAssignedTasks.length.toDouble()),
             const SizedBox(
               height: SizeSystem.size30,
             ),

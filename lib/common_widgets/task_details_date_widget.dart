@@ -94,11 +94,11 @@ class _TaskDetailsDateWidgetState extends State<TaskDetailsDateWidget> {
   }
 
   Future<void> getFutureAgents() async {
-    var storeId = await SharedPreferenceService().getValue('store_id');
+    var storeIdValue = await SharedPreferenceService().getValue(storeId);
 
-    if (storeId != null) {
+    if (storeIdValue != null) {
       var response =
-          await HttpService().doGet(path: Endpoints.getStoreAgents(storeId));
+          await HttpService().doGet(path: Endpoints.getStoreAgents(storeIdValue));
       if (response.data != null) {
         for (var agentJson in response.data['AgentList']) {
           agents.add(Agent.fromJson(agentJson));
@@ -197,449 +197,446 @@ class _TaskDetailsDateWidgetState extends State<TaskDetailsDateWidget> {
               ),
             );
           case ConnectionState.done:
-            return Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 0.0),
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                    vertical: 20.0, horizontal: 16.0),
-                decoration: BoxDecoration(
-                    color: widget.showModifiedBy
-                        ? ColorSystem.lavender3.withOpacity(0.08)
-                        : ColorSystem.culturedGrey,
-                    borderRadius: BorderRadius.circular(14.0)),
-                child: Column(
-                  children: [
-                    InkWell(
-                      onTap: widget.task.status != 'Completed'
-                          ? () async {
-                              await showCupertinoModalPopup(
-                                filter: ImageFilter.blur(
-                                  sigmaX: 4.0,
-                                  sigmaY: 4.0,
-                                ),
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return Container(
-                                    decoration: const BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.only(
-                                        topLeft:
-                                            Radius.circular(SizeSystem.size20),
-                                        topRight:
-                                            Radius.circular(SizeSystem.size20),
+            return Container(
+              padding: const EdgeInsets.symmetric(
+                  vertical: 20.0, horizontal: 16.0),
+              decoration: BoxDecoration(
+                  color: widget.showModifiedBy
+                      ? ColorSystem.lavender3.withOpacity(0.08)
+                      : ColorSystem.culturedGrey,
+                  borderRadius: BorderRadius.circular(14.0)),
+              child: Column(
+                children: [
+                  InkWell(
+                    onTap: widget.task.status != 'Completed'
+                        ? () async {
+                            await showCupertinoModalPopup(
+                              filter: ImageFilter.blur(
+                                sigmaX: 4.0,
+                                sigmaY: 4.0,
+                              ),
+                              context: context,
+                              builder: (BuildContext context) {
+                                return Container(
+                                  decoration: const BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.only(
+                                      topLeft:
+                                          Radius.circular(SizeSystem.size20),
+                                      topRight:
+                                          Radius.circular(SizeSystem.size20),
+                                    ),
+                                  ),
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      SizedBox(
+                                        height: 200,
+                                        child: CupertinoDatePicker(
+                                          mode: CupertinoDatePickerMode.date,
+                                          initialDateTime: DateTime.now(),
+                                          minimumDate: DateTime.parse(
+                                              widget.due_by_date),
+                                          onDateTimeChanged: (val) {
+                                            setState(
+                                              () {
+                                                dueDate =
+                                                    DateFormat('MMM dd, yyyy')
+                                                        .format(val);
+                                                selectedDate = val;
+                                              },
+                                            );
+                                          },
+                                        ),
                                       ),
-                                    ),
-                                    child: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        SizedBox(
-                                          height: 200,
-                                          child: CupertinoDatePicker(
-                                            mode: CupertinoDatePickerMode.date,
-                                            initialDateTime: DateTime.now(),
-                                            minimumDate: DateTime.parse(
-                                                widget.due_by_date),
-                                            onDateTimeChanged: (val) {
-                                              setState(
-                                                () {
-                                                  dueDate =
-                                                      DateFormat('MMM dd, yyyy')
-                                                          .format(val);
-                                                  selectedDate = val;
-                                                },
-                                              );
-                                            },
-                                          ),
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: SizeSystem.size40,
+                                          vertical: SizeSystem.size22,
                                         ),
-                                        Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                            horizontal: SizeSystem.size40,
-                                            vertical: SizeSystem.size22,
-                                          ),
-                                          child: ElevatedButton(
-                                            style: ButtonStyle(
-                                              backgroundColor:
-                                                  MaterialStateProperty.all(
-                                                ColorSystem.primary,
-                                              ),
-                                              shape: MaterialStateProperty.all<
-                                                  RoundedRectangleBorder>(
-                                                RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          14.0),
-                                                ),
+                                        child: ElevatedButton(
+                                          style: ButtonStyle(
+                                            backgroundColor:
+                                                MaterialStateProperty.all(
+                                              ColorSystem.primary,
+                                            ),
+                                            shape: MaterialStateProperty.all<
+                                                RoundedRectangleBorder>(
+                                              RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(
+                                                        14.0),
                                               ),
                                             ),
-                                            onPressed: () {
-                                              Navigator.of(context).pop();
-                                            },
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              mainAxisSize: MainAxisSize.max,
-                                              children: const [
-                                                Padding(
-                                                  padding: EdgeInsets.symmetric(
-                                                    vertical: SizeSystem.size16,
-                                                  ),
-                                                  child: Text(
-                                                    'Done',
-                                                    style: TextStyle(
-                                                      fontSize: 16,
-                                                      fontFamily: kRubik,
-                                                    ),
+                                          ),
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                          },
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            mainAxisSize: MainAxisSize.max,
+                                            children: const [
+                                              Padding(
+                                                padding: EdgeInsets.symmetric(
+                                                  vertical: SizeSystem.size16,
+                                                ),
+                                                child: Text(
+                                                  'Done',
+                                                  style: TextStyle(
+                                                    fontSize: 16,
+                                                    fontFamily: kRubik,
                                                   ),
                                                 ),
-                                              ],
-                                            ),
+                                              ),
+                                            ],
                                           ),
                                         ),
-                                      ],
-                                    ),
-                                  );
-                                },
-                              );
-                              await updateTaskDate();
-                            }
-                          : () {},
-                      child: Container(
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(14.0),
-                            color: Colors.white),
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 16.0, horizontal: 14.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Column(
-                                mainAxisSize: MainAxisSize.min,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const Text(
-                                    "Due by:",
-                                    style: TextStyle(
-                                        color: Color(0xff2D3142),
-                                        fontSize: SizeSystem.size14,
-                                        fontFamily: kRubik,
-                                        fontWeight: FontWeight.normal),
+                                      ),
+                                    ],
                                   ),
-                                  const SizedBox(
-                                    height: 4.0,
-                                  ),
-                                  Text(
-                                    dueDate,
-                                    style: const TextStyle(
-                                        color: Color(0xff2D3142),
-                                        fontSize: SizeSystem.size18,
-                                        fontFamily: kRubik,
-                                        fontWeight: FontWeight.w600),
-                                  ),
-                                ]),
-                            SvgPicture.asset(
-                              IconSystem.calendar,
-                            ),
-                          ],
-                        ),
+                                );
+                              },
+                            );
+                            await updateTaskDate();
+                          }
+                        : () {},
+                    child: Container(
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(14.0),
+                          color: Colors.white),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 16.0, horizontal: 14.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  "Due by:",
+                                  style: TextStyle(
+                                      color: Color(0xff2D3142),
+                                      fontSize: SizeSystem.size14,
+                                      fontFamily: kRubik,
+                                      fontWeight: FontWeight.normal),
+                                ),
+                                const SizedBox(
+                                  height: 4.0,
+                                ),
+                                Text(
+                                  dueDate,
+                                  style: const TextStyle(
+                                      color: Color(0xff2D3142),
+                                      fontSize: SizeSystem.size18,
+                                      fontFamily: kRubik,
+                                      fontWeight: FontWeight.w600),
+                                ),
+                              ]),
+                          SvgPicture.asset(
+                            IconSystem.calendar,
+                          ),
+                        ],
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 18),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 18),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text(
+                              "Assigned to:",
+                              style: TextStyle(
+                                  color: ColorSystem.primary,
+                                  fontSize: SizeSystem.size12,
+                                  fontFamily: kRubik,
+                                  fontWeight: FontWeight.w500),
+                            ),
+                            if (widget.showModifiedBy)
                               const Text(
-                                "Assigned to:",
+                                "Modified by:",
                                 style: TextStyle(
                                     color: ColorSystem.primary,
                                     fontSize: SizeSystem.size12,
                                     fontFamily: kRubik,
                                     fontWeight: FontWeight.w500),
                               ),
-                              if (widget.showModifiedBy)
-                                const Text(
-                                  "Modified by:",
-                                  style: TextStyle(
-                                      color: ColorSystem.primary,
-                                      fontSize: SizeSystem.size12,
-                                      fontFamily: kRubik,
-                                      fontWeight: FontWeight.w500),
-                                ),
-                            ],
-                          ),
-                          const SizedBox(
-                            height: 4.0,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Flexible(
-                                child: InkWell(
-                                  onTap:
-                                      widget.task.status != 'Completed' &&
-                                              widget.showModifiedBy
-                                          ? () async {
-                                              await showModalBottomSheet(
-                                                constraints: BoxConstraints(
-                                                  maxHeight:
-                                                      MediaQuery.of(context)
-                                                              .size
-                                                              .height /
-                                                          2,
-                                                ),
-                                                context: context,
-                                                builder:
-                                                    (BuildContext context) {
-                                                  return BackdropFilter(
-                                                    filter: ImageFilter.blur(
-                                                        sigmaX: 10, sigmaY: 10),
-                                                    child: Container(
-                                                      decoration:
-                                                          const BoxDecoration(
-                                                        color: Colors.white,
-                                                        borderRadius:
-                                                            BorderRadius.only(
-                                                          topLeft:
-                                                              Radius.circular(
-                                                                  20),
-                                                          topRight:
-                                                              Radius.circular(
-                                                                  20),
-                                                        ),
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 4.0,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Flexible(
+                              child: InkWell(
+                                onTap:
+                                    widget.task.status != 'Completed' &&
+                                            widget.showModifiedBy
+                                        ? () async {
+                                            await showModalBottomSheet(
+                                              constraints: BoxConstraints(
+                                                maxHeight:
+                                                    MediaQuery.of(context)
+                                                            .size
+                                                            .height /
+                                                        2,
+                                              ),
+                                              context: context,
+                                              builder:
+                                                  (BuildContext context) {
+                                                return BackdropFilter(
+                                                  filter: ImageFilter.blur(
+                                                      sigmaX: 10, sigmaY: 10),
+                                                  child: Container(
+                                                    decoration:
+                                                        const BoxDecoration(
+                                                      color: Colors.white,
+                                                      borderRadius:
+                                                          BorderRadius.only(
+                                                        topLeft:
+                                                            Radius.circular(
+                                                                20),
+                                                        topRight:
+                                                            Radius.circular(
+                                                                20),
                                                       ),
-                                                      child: StatefulBuilder(
-                                                        builder: (BuildContext
-                                                                statefulBuilderContext,
-                                                            void Function(
-                                                                    void
-                                                                        Function())
-                                                                statefulBuilderSetState) {
-                                                          return Column(
-                                                            children: [
-                                                              Padding(
-                                                                padding:
-                                                                    const EdgeInsets
-                                                                            .all(
-                                                                        16.0),
-                                                                child: Row(
-                                                                  children: [
-                                                                    Expanded(
-                                                                      child:
-                                                                          TextFormField(
-                                                                        maxLines:
-                                                                            1,
-                                                                        cursorColor:
-                                                                            ColorSystem.primary,
-                                                                        onChanged:
-                                                                            (value) {
-                                                                          if (value
-                                                                              .isNotEmpty) {
-                                                                            if (showingStores) {
-                                                                              onStoreSearch(value);
-                                                                            } else {
-                                                                              onAgentSearch(value);
-                                                                            }
-                                                                            statefulBuilderSetState(() {});
+                                                    ),
+                                                    child: StatefulBuilder(
+                                                      builder: (BuildContext
+                                                              statefulBuilderContext,
+                                                          void Function(
+                                                                  void
+                                                                      Function())
+                                                              statefulBuilderSetState) {
+                                                        return Column(
+                                                          children: [
+                                                            Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                          .all(
+                                                                      16.0),
+                                                              child: Row(
+                                                                children: [
+                                                                  Expanded(
+                                                                    child:
+                                                                        TextFormField(
+                                                                      maxLines:
+                                                                          1,
+                                                                      cursorColor:
+                                                                          ColorSystem.primary,
+                                                                      onChanged:
+                                                                          (value) {
+                                                                        if (value
+                                                                            .isNotEmpty) {
+                                                                          if (showingStores) {
+                                                                            onStoreSearch(value);
+                                                                          } else {
+                                                                            onAgentSearch(value);
                                                                           }
-                                                                          if (value
-                                                                              .isEmpty) {
-                                                                            searchedList.clear();
-                                                                            searchedStoreList.clear();
-                                                                            statefulBuilderSetState(() {});
-                                                                          }
-                                                                        },
-                                                                        decoration:
-                                                                            const InputDecoration(
-                                                                          hintText:
-                                                                              'Search by ID',
-                                                                          hintStyle:
-                                                                              TextStyle(
-                                                                            color:
-                                                                                ColorSystem.secondary,
-                                                                            fontSize:
-                                                                                SizeSystem.size18,
-                                                                          ),
-                                                                          focusedBorder:
-                                                                              UnderlineInputBorder(
-                                                                            borderSide:
-                                                                                BorderSide(
-                                                                              color: ColorSystem.primary,
-                                                                              width: 1,
-                                                                            ),
+                                                                          statefulBuilderSetState(() {});
+                                                                        }
+                                                                        if (value
+                                                                            .isEmpty) {
+                                                                          searchedList.clear();
+                                                                          searchedStoreList.clear();
+                                                                          statefulBuilderSetState(() {});
+                                                                        }
+                                                                      },
+                                                                      decoration:
+                                                                          const InputDecoration(
+                                                                        hintText:
+                                                                            'Search by ID',
+                                                                        hintStyle:
+                                                                            TextStyle(
+                                                                          color:
+                                                                              ColorSystem.secondary,
+                                                                          fontSize:
+                                                                              SizeSystem.size18,
+                                                                        ),
+                                                                        focusedBorder:
+                                                                            UnderlineInputBorder(
+                                                                          borderSide:
+                                                                              BorderSide(
+                                                                            color: ColorSystem.primary,
+                                                                            width: 1,
                                                                           ),
                                                                         ),
                                                                       ),
                                                                     ),
-                                                                    const SizedBox(
-                                                                      width: SizeSystem
-                                                                          .size20,
-                                                                    ),
-                                                                    AnimatedToggleSwitch<
-                                                                        bool>.dual(
-                                                                      current:
-                                                                          showingStores,
-                                                                      first:
-                                                                          false,
-                                                                      second:
-                                                                          true,
-                                                                      dif: 1.0,
-                                                                      borderColor:
-                                                                          Colors
-                                                                              .transparent,
-                                                                      borderWidth:
-                                                                          3.0,
-                                                                      height:
-                                                                          30,
-                                                                      indicatorSize:
-                                                                          const Size(
-                                                                              28,
-                                                                              double.infinity),
-                                                                      indicatorColor:
-                                                                          ColorSystem
-                                                                              .white,
-                                                                      innerColor:
-                                                                          ColorSystem
-                                                                              .primary,
-                                                                      onChanged:
-                                                                          (b) {
-                                                                        showingStores =
-                                                                            b;
-                                                                        statefulBuilderSetState(
-                                                                            () {});
-                                                                      },
-                                                                      textBuilder: (value) => value
-                                                                          ? const Icon(
-                                                                              Icons.storefront_outlined,
-                                                                              color: Colors.white,
-                                                                              size: 18,
-                                                                            )
-                                                                          : const Icon(
-                                                                              Icons.person_outline,
-                                                                              color: Colors.white,
-                                                                              size: 18,
-                                                                            ),
-                                                                    )
-                                                                  ],
-                                                                ),
-                                                              ),
-                                                              Expanded(
-                                                                child:
-                                                                    FutureBuilder(
-                                                                  future: Future
-                                                                      .wait([
-                                                                    futureAgents,
-                                                                    futureStores,
-                                                                  ]),
-                                                                  builder: (BuildContext
-                                                                          context,
-                                                                      AsyncSnapshot<
-                                                                              dynamic>
-                                                                          snapshot) {
-                                                                    switch (snapshot
-                                                                        .connectionState) {
-                                                                      case ConnectionState
-                                                                          .none:
-                                                                      case ConnectionState
-                                                                          .waiting:
-                                                                      case ConnectionState
-                                                                          .active:
-                                                                        return const Center(
-                                                                          child:
-                                                                              CircularProgressIndicator(
-                                                                            color:
-                                                                                ColorSystem.primary,
+                                                                  ),
+                                                                  const SizedBox(
+                                                                    width: SizeSystem
+                                                                        .size20,
+                                                                  ),
+                                                                  AnimatedToggleSwitch<
+                                                                      bool>.dual(
+                                                                    current:
+                                                                        showingStores,
+                                                                    first:
+                                                                        false,
+                                                                    second:
+                                                                        true,
+                                                                    dif: 1.0,
+                                                                    borderColor:
+                                                                        Colors
+                                                                            .transparent,
+                                                                    borderWidth:
+                                                                        3.0,
+                                                                    height:
+                                                                        30,
+                                                                    indicatorSize:
+                                                                        const Size(
+                                                                            28,
+                                                                            double.infinity),
+                                                                    indicatorColor:
+                                                                        ColorSystem
+                                                                            .white,
+                                                                    innerColor:
+                                                                        ColorSystem
+                                                                            .primary,
+                                                                    onChanged:
+                                                                        (b) {
+                                                                      showingStores =
+                                                                          b;
+                                                                      statefulBuilderSetState(
+                                                                          () {});
+                                                                    },
+                                                                    textBuilder: (value) => value
+                                                                        ? const Icon(
+                                                                            Icons.storefront_outlined,
+                                                                            color: Colors.white,
+                                                                            size: 18,
+                                                                          )
+                                                                        : const Icon(
+                                                                            Icons.person_outline,
+                                                                            color: Colors.white,
+                                                                            size: 18,
                                                                           ),
-                                                                        );
-
-                                                                      case ConnectionState
-                                                                          .done:
-                                                                        if (showingStores) {
-                                                                          return searchedStoreList.isNotEmpty
-                                                                              ? showStoresList(searchedStoreList)
-                                                                              : showStoresList(stores);
-                                                                        } else {
-                                                                          return searchedList.isNotEmpty
-                                                                              ? showAgentList(searchedList)
-                                                                              : showAgentList(agents);
-                                                                        }
-                                                                    }
-                                                                  },
-                                                                ),
+                                                                  )
+                                                                ],
                                                               ),
-                                                            ],
-                                                          );
-                                                        },
-                                                      ),
+                                                            ),
+                                                            Expanded(
+                                                              child:
+                                                                  FutureBuilder(
+                                                                future: Future
+                                                                    .wait([
+                                                                  futureAgents,
+                                                                  futureStores,
+                                                                ]),
+                                                                builder: (BuildContext
+                                                                        context,
+                                                                    AsyncSnapshot<
+                                                                            dynamic>
+                                                                        snapshot) {
+                                                                  switch (snapshot
+                                                                      .connectionState) {
+                                                                    case ConnectionState
+                                                                        .none:
+                                                                    case ConnectionState
+                                                                        .waiting:
+                                                                    case ConnectionState
+                                                                        .active:
+                                                                      return const Center(
+                                                                        child:
+                                                                            CircularProgressIndicator(
+                                                                          color:
+                                                                              ColorSystem.primary,
+                                                                        ),
+                                                                      );
+
+                                                                    case ConnectionState
+                                                                        .done:
+                                                                      if (showingStores) {
+                                                                        return searchedStoreList.isNotEmpty
+                                                                            ? showStoresList(searchedStoreList)
+                                                                            : showStoresList(stores);
+                                                                      } else {
+                                                                        return searchedList.isNotEmpty
+                                                                            ? showAgentList(searchedList)
+                                                                            : showAgentList(agents);
+                                                                      }
+                                                                  }
+                                                                },
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        );
+                                                      },
                                                     ),
-                                                  );
-                                                },
-                                              );
-                                              setState(() {});
-                                            }
-                                          : null,
-                                  child: Text(
-                                    assigneeName,
-                                    style: TextStyle(
-                                      color: widget.showModifiedBy
-                                          ? Color(0xff53A5FF)
-                                          : ColorSystem.primary,
-                                      fontSize: SizeSystem.size12,
-                                      fontFamily: kRubik,
-                                      fontWeight: FontWeight.w600,
-                                    ),
+                                                  ),
+                                                );
+                                              },
+                                            );
+                                            setState(() {});
+                                          }
+                                        : null,
+                                child: Text(
+                                  assigneeName,
+                                  style: TextStyle(
+                                    color: widget.showModifiedBy
+                                        ? Color(0xff53A5FF)
+                                        : ColorSystem.primary,
+                                    fontSize: SizeSystem.size12,
+                                    fontFamily: kRubik,
+                                    fontWeight: FontWeight.w600,
                                   ),
                                 ),
                               ),
-                              if (widget.showModifiedBy)
-                                InkWell(
-                                  focusColor: Colors.transparent,
-                                  splashColor: Colors.transparent,
-                                  highlightColor: Colors.transparent,
-                                  hoverColor: Colors.transparent,
-                                  onTap: agent != null
-                                      ? () {
-                                          showDialog(
-                                            context: context,
-                                            barrierDismissible: true,
-                                            builder: (BuildContext context) {
-                                              return AgentPopup(
-                                                agent: agent!,
-                                              );
-                                            },
-                                          );
-                                        }
-                                      : null,
-                                  child: Text.rich(
-                                    TextSpan(
-                                      text: widget.modified_by_name + " ",
-                                      style: const TextStyle(
-                                          color: Color(0xff53A5FF),
-                                          fontSize: SizeSystem.size12,
-                                          fontFamily: kRubik,
-                                          fontWeight: FontWeight.w600),
-                                      children: <InlineSpan>[
-                                        TextSpan(
-                                          text: "| " + lastModifiedDate,
-                                          style: const TextStyle(
-                                              color: Color(0xff2D3142),
-                                              fontSize: SizeSystem.size12,
-                                              fontFamily: kRubik,
-                                              fontWeight: FontWeight.normal),
-                                        )
-                                      ],
-                                    ),
+                            ),
+                            if (widget.showModifiedBy)
+                              InkWell(
+                                focusColor: Colors.transparent,
+                                splashColor: Colors.transparent,
+                                highlightColor: Colors.transparent,
+                                hoverColor: Colors.transparent,
+                                onTap: agent != null
+                                    ? () {
+                                        showDialog(
+                                          context: context,
+                                          barrierDismissible: true,
+                                          builder: (BuildContext context) {
+                                            return AgentPopup(
+                                              agent: agent!,
+                                            );
+                                          },
+                                        );
+                                      }
+                                    : null,
+                                child: Text.rich(
+                                  TextSpan(
+                                    text: widget.modified_by_name + " ",
+                                    style: const TextStyle(
+                                        color: Color(0xff53A5FF),
+                                        fontSize: SizeSystem.size12,
+                                        fontFamily: kRubik,
+                                        fontWeight: FontWeight.w600),
+                                    children: <InlineSpan>[
+                                      TextSpan(
+                                        text: "| " + lastModifiedDate,
+                                        style: const TextStyle(
+                                            color: Color(0xff2D3142),
+                                            fontSize: SizeSystem.size12,
+                                            fontFamily: kRubik,
+                                            fontWeight: FontWeight.normal),
+                                      )
+                                    ],
                                   ),
                                 ),
-                            ],
-                          ),
-                        ],
-                      ),
+                              ),
+                          ],
+                        ),
+                      ],
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             );
         }

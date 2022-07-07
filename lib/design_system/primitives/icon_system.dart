@@ -65,4 +65,5 @@ abstract class IconSystem {
   static const String followUpTaskIcon = 'assets/icons/follow_up_task_icon.svg';
   static const String childFollowUpTaskIcon = 'assets/icons/child_follow_up_task_icon.svg';
   static const String createTaskIcon = 'assets/icons/create_task_icon.svg';
+  static const String taskTypeIcon = 'assets/icons/task_type.svg';
 }

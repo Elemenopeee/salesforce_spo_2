@@ -17,6 +17,7 @@ class TaskModel {
   final String? firstName;
   final String? lastName;
   String? description;
+  final String? dateLabel;
 
   TaskModel({
     this.id,
@@ -37,6 +38,7 @@ class TaskModel {
     this.whatId,
     this.firstName,
     this.lastName,
+    this.dateLabel,
   });
 
   factory TaskModel.fromJson(Map<String, dynamic> json) {
@@ -59,6 +61,7 @@ class TaskModel {
       whatId: json['WhatId'],
       firstName: json['First_Name__c'],
       lastName: json['Last_Name__c'],
+      dateLabel: json['Date_Label__c'],
     );
   }
 }

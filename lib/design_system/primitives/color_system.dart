@@ -79,4 +79,12 @@ abstract class ColorSystem {
   /// Sky blue
   static const Color skyBlue = Color(0xFF7FE3F0);
 
+  /// Pie chart green
+  static const Color pieChartGreen = Color(0xFF3CE4B2);
+
+  /// Pie chart red
+  static const Color pieChartRed = Color(0xFFFF414A);
+
+  /// Pie chart amber
+  static const Color pieChartAmber = Color(0xFFFFC84A);
 }

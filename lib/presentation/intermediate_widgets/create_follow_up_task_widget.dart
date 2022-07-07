@@ -77,119 +77,130 @@ class _CreateFollowUpTaskWidgetState extends State<CreateFollowUpTaskWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(SizeSystem.size32),
-      ),
-      child: Column(
-        children: [
-          const SizedBox(
-            height: SizeSystem.size8,
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: PaddingSystem.padding16,
-              vertical: PaddingSystem.padding24,
+    return GestureDetector(
+      onTap: (){
+        WidgetsBinding.instance.focusManager.primaryFocus?.unfocus();
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(SizeSystem.size32),
+        ),
+        child: Column(
+          children: [
+            const SizedBox(
+              height: SizeSystem.size8,
             ),
-            child: Row(
-              children: [
-                SvgPicture.asset(
-                  IconSystem.followUpTaskIcon,
-                ),
-                const SizedBox(
-                  width: 8,
-                ),
-                const Text(
-                  'Follow Up Task Details',
-                  style: TextStyle(
-                    color: ColorSystem.primary,
-                    fontFamily: kRubik,
-                    fontWeight: FontWeight.w600,
-                    fontSize: SizeSystem.size16,
-                  ),
-                )
-              ],
-            ),
-          ),
-          Expanded(
-            child: ListView(
+            Padding(
               padding: const EdgeInsets.symmetric(
                 horizontal: PaddingSystem.padding16,
+                vertical: PaddingSystem.padding24,
               ),
-              children: [
-                SubjectWidget(
-                  subjectBody: subjectBody,
+              child: Row(
+                children: [
+                  SvgPicture.asset(
+                    IconSystem.followUpTaskIcon,
+                  ),
+                  const SizedBox(
+                    width: 8,
+                  ),
+                  const Text(
+                    'Follow Up Task Details',
+                    style: TextStyle(
+                      color: ColorSystem.primary,
+                      fontFamily: kRubik,
+                      fontWeight: FontWeight.w600,
+                      fontSize: SizeSystem.size16,
+                    ),
+                  )
+                ],
+              ),
+            ),
+            Expanded(
+              child: ListView(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: PaddingSystem.padding16,
                 ),
-                const SizedBox(
-                  height: SizeSystem.size16,
-                ),
-                ListView.separated(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: widget.orders.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return FollowUpTaskOrderSelectionWidget(
-                      order: widget.orders[index],
-                      task: widget.task,
-                      selectedOrders: selectedOrders,
-                    );
-                  },
-                  separatorBuilder: (BuildContext context, int index) {
-                    return const SizedBox(
-                      height: SizeSystem.size16,
-                    );
-                  },
-                ),
-                CreateTaskDateWidget(
-                    dueByDate: widget.task.taskDate ?? '--',
-                    dueDateMap: dueDateBody,
-                    assigneeName: widget.task.assignedTo ?? '--'),
-                const SizedBox(
-                  height: SizeSystem.size16,
-                ),
-                CreateTaskCommentWidget(commentBody: commentBody),
-                const SizedBox(
-                  height: SizeSystem.size16,
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 40),
-                  child: ElevatedButton(
-                    style: ButtonStyle(
-                        backgroundColor:
-                            MaterialStateProperty.all(ColorSystem.primary),
-                        shape:
-                            MaterialStateProperty.all<RoundedRectangleBorder>(
-                                RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ))),
-                    onPressed: () async {
-                      await createFollowUpTask();
-                      Navigator.of(context).pop();
+                children: [
+                  SubjectWidget(
+                    subjectBody: subjectBody,
+                  ),
+                  const SizedBox(
+                    height: SizeSystem.size16,
+                  ),
+                  ListView.separated(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: widget.orders.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return FollowUpTaskOrderSelectionWidget(
+                        order: widget.orders[index],
+                        task: widget.task,
+                        selectedOrders: selectedOrders,
+                      );
                     },
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      mainAxisSize: MainAxisSize.max,
-                      children: const [
-                        Padding(
-                          padding: EdgeInsets.symmetric(
-                              vertical: PaddingSystem.padding22),
-                          child: Text(
-                            'Create Task',
-                            style: TextStyle(fontSize: 16, fontFamily: kRubik),
+                    separatorBuilder: (BuildContext context, int index) {
+                      return const SizedBox(
+                        height: SizeSystem.size16,
+                      );
+                    },
+                  ),
+                  const SizedBox(
+                    height: SizeSystem.size16,
+                  ),
+                  CreateTaskDateWidget(
+                      dueByDate: widget.task.taskDate ?? '--',
+                      dueDateMap: dueDateBody,
+                      assigneeName: widget.task.assignedTo ?? '--'),
+                  const SizedBox(
+                    height: SizeSystem.size16,
+                  ),
+                  CreateTaskCommentWidget(commentBody: commentBody),
+                  const SizedBox(
+                    height: SizeSystem.size16,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 40),
+                    child: ElevatedButton(
+                      style: ButtonStyle(
+                          backgroundColor:
+                              MaterialStateProperty.all(ColorSystem.primary),
+                          shape:
+                              MaterialStateProperty.all<RoundedRectangleBorder>(
+                                  RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ))),
+                      onPressed: () async {
+                        await createFollowUpTask();
+                        Navigator.of(context).pop();
+                      },
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.max,
+                        children: const [
+                          Padding(
+                            padding: EdgeInsets.symmetric(
+                                vertical: PaddingSystem.padding22),
+                            child: Text(
+                              'Create Task',
+                              style: TextStyle(fontSize: 16, fontFamily: kRubik),
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
-                ),
-                const SizedBox(
-                  height: SizeSystem.size32,
-                ),
-              ],
+                  const SizedBox(
+                    height: SizeSystem.size32,
+                  ),
+                  SizedBox(
+                    height: MediaQuery.of(context).viewInsets.bottom,
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

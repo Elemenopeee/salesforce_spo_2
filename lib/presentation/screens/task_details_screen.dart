@@ -111,6 +111,7 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: ColorSystem.scaffoldBackgroundColor,
+      resizeToAvoidBottomInset: false,
       appBar: TGCAppBar(
         label: 'CALL ALERT',
         trailingActions: [
@@ -220,6 +221,7 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                       name: widget.task.contactName ?? '--',
                       number: widget.task.phone ?? '--',
                       email: widget.task.email ?? '--'),
+                  if(orders.isNotEmpty)
                   const SizedBox(
                     height: SizeSystem.size20,
                   ),
@@ -237,7 +239,7 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                     },
                     separatorBuilder: (BuildContext context, int index) {
                       return const SizedBox(
-                        height: 20,
+                        height: SizeSystem.size20,
                       );
                     },
                   ),
@@ -253,13 +255,13 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                     ),
                   ),
                   const SizedBox(
-                    height: 20,
+                    height: SizeSystem.size20,
                   ),
                   AddComment(
                     task: widget.task,
                   ),
                   const SizedBox(
-                    height: 20,
+                    height: SizeSystem.size20,
                   ),
                   Column(
                     mainAxisSize: MainAxisSize.min,
@@ -359,7 +361,7 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                           ),
                         ),
                       const SizedBox(
-                        height: 40,
+                        height: SizeSystem.size40,
                       ),
                     ],
                   ),

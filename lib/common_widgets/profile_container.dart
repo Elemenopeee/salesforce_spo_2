@@ -17,8 +17,10 @@ class ProfileContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     var dateNow = DateTime.now();
     var date = DateTime(dateNow.year, dateNow.month, dateNow.day);
-    var formattedDate =
-    DateFormat(DateFormat.ABBR_MONTH_WEEKDAY_DAY).format(date);
+
+    var day = DateFormat(DateFormat.ABBR_WEEKDAY).format(date);
+    var monthDate = DateFormat(DateFormat.ABBR_MONTH_DAY).format(date);
+
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -27,30 +29,6 @@ class ProfileContainer extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                children: [
-                  SvgPicture.asset(
-                    IconSystem.sun,
-                    width: SizeSystem.size16,
-                    height: SizeSystem.size16,
-                  ),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  Text(
-                    formattedDate.toUpperCase(),
-                    style: const TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w500,
-                      color: ColorSystem.lavender2,
-                      fontFamily: kRubik,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(
-                height: 10,
-              ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 05),
                 child: Text(
@@ -66,15 +44,30 @@ class ProfileContainer extends StatelessWidget {
             ],
           ),
           const Spacer(),
-          Container(
-            height: SizeSystem.size60,
-            width: SizeSystem.size60,
-            child: SvgPicture.asset(
-              IconSystem.userPlaceholder,
-            ),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(SizeSystem.size24),
-            ),
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Text(
+                '${day.toUpperCase()},',
+                style: const TextStyle(
+                  fontSize: SizeSystem.size16,
+                  color: ColorSystem.primary,
+                  fontFamily: kRubik,
+                  letterSpacing: 2,
+                ),
+              ),
+              Text(
+                monthDate.toUpperCase(),
+                style: const TextStyle(
+                  fontSize: SizeSystem.size16,
+                  fontWeight: FontWeight.bold,
+                  color: ColorSystem.primary,
+                  fontFamily: kRubik,
+                  letterSpacing: 1,
+                ),
+              ),
+            ],
           ),
         ],
       ),
