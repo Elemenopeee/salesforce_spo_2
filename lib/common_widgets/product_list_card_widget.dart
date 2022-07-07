@@ -387,7 +387,7 @@ class TaskOrderWidget extends StatelessWidget {
         product_qty: item.orderedQuantity.toString(),
         product_disc: item.description ?? '--',
         product_status: taskType ?? '--',
-        delivery_date: '--',
+        delivery_date: item.deliveredDate ?? '--',
         track_id: item.trackingNumber ?? '--',
         item_image: item.imageUrl,
       ),
