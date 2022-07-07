@@ -177,7 +177,7 @@ class _HomeScreenState extends State<HomeScreen> {
             IconSystem.plus,
             width: 24,
             height: 24,
-            color: ColorSystem.white,
+            color: ColorSystem.primary,
           ),
         ),
       ),

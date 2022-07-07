@@ -310,7 +310,7 @@ class _TasksWidgetState extends State<TasksWidget>
                                           child: Column(
                                             children: [
                                               CustomDialogAction(
-                                                label: 'All (${allTasks.length})',
+                                                label: 'Actionable (${allTasks.length})',
                                                 onTap: () {
                                                   displayedList.clear();
                                                   displayedList =
@@ -318,7 +318,7 @@ class _TasksWidgetState extends State<TasksWidget>
                                                   Navigator.of(context).pop();
                                                   showingOverdue = false;
                                                   showingUnAssignedTasks = false;
-                                                  filterName = 'ALL';
+                                                  filterName = 'ACTIONABLE';
                                                 },
                                               ),
                                               Container(
@@ -864,7 +864,7 @@ class _TasksWidgetState extends State<TasksWidget>
                                                 children: [
                                                   CustomDialogAction(
                                                     label:
-                                                        'All (${allTasks.length})',
+                                                        'Actionable (${allTasks.length})',
                                                     onTap: () {
                                                       displayedList.clear();
                                                       displayedList =
@@ -1255,7 +1255,7 @@ class _TasksWidgetState extends State<TasksWidget>
                                                     children: [
                                                       CustomDialogAction(
                                                         label:
-                                                            'All (${allTasks.length})',
+                                                            'Actionable (${allTasks.length})',
                                                         onTap: () {
                                                           displayedList.clear();
                                                           displayedList =
@@ -1265,7 +1265,7 @@ class _TasksWidgetState extends State<TasksWidget>
                                                           showingOverdue = false;
                                                           showingUnAssignedTasks =
                                                               false;
-                                                          filterName = 'ALL';
+                                                          filterName = 'ACTIONABLE';
                                                         },
                                                       ),
                                                       Container(

@@ -44,7 +44,7 @@ class TaskMetricsWidget extends StatelessWidget {
                   child: Column(
                     children: [
                       CustomDialogAction(
-                        label: 'All (${allTasks.toString()})',
+                        label: 'Actionable (${allTasks.toString()})',
                         onTap: () {},
                       ),
                       Container(

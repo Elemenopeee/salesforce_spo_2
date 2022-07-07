@@ -12,11 +12,9 @@ import 'package:salesforce_spo/utils/constants.dart';
 
 import '../design_system/design_system.dart';
 import '../models/task.dart';
-import '../presentation/intermediate_widgets/tasks_widget.dart';
 import '../presentation/screens/task_details_screen.dart';
 import 'agent_task_count_tile.dart';
 import 'custom_dialog_action.dart';
-import 'custom_linear_progress_indicator.dart';
 
 class AgentTaskList extends StatefulWidget {
   const AgentTaskList(
@@ -243,7 +241,7 @@ class _AgentTaskListState extends State<AgentTaskList> {
                               child: Column(
                                 children: [
                                   CustomDialogAction(
-                                    label: 'All (${tempAgent.allTasks.length})',
+                                    label: 'Actionable (${tempAgent.allTasks.length})',
                                     onTap: () {
                                       displayedList.clear();
                                       displayedList =
