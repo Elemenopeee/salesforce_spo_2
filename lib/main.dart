@@ -4,13 +4,8 @@ import 'package:azure_ad_authentication/model/user_ad.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:salesforce_spo/models/agent.dart';
-import 'package:salesforce_spo/presentation/intermediate_widgets/create_new_task_widget.dart';
 import 'package:salesforce_spo/presentation/intermediate_widgets/customer_lookup_widget.dart';
-import 'package:salesforce_spo/presentation/screens/smart_triggers_screen.dart';
 import 'package:salesforce_spo/presentation/tabs/home_tab.dart';
-import 'package:salesforce_spo/services/networking/endpoints.dart';
-import 'package:salesforce_spo/services/networking/networking_service.dart';
 import 'package:salesforce_spo/services/storage/shared_preferences_service.dart';
 import 'package:salesforce_spo/utils/constants.dart';
 
@@ -168,7 +163,7 @@ class _HomeScreenState extends State<HomeScreen> {
             splashColor: Colors.transparent,
             onPressed: null,
             icon: SvgPicture.asset(
-              IconSystem.more,
+              IconSystem.feed,
               width: 24,
               height: 24,
               color: ColorSystem.primary,

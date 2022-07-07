@@ -57,13 +57,11 @@ class TaskMetricsWidget extends StatelessWidget {
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Container(
+                            SvgPicture.asset(
+                              IconSystem.taskTypeIcon,
                               width: SizeSystem.size18,
                               height: SizeSystem.size18,
-                              decoration: const BoxDecoration(
-                                color: ColorSystem.pieChartRed,
-                                shape: BoxShape.circle,
-                              ),
+                              color: ColorSystem.pieChartRed,
                             ),
                             const SizedBox(
                               width: SizeSystem.size10,
@@ -89,13 +87,11 @@ class TaskMetricsWidget extends StatelessWidget {
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Container(
+                              SvgPicture.asset(
+                                IconSystem.taskTypeIcon,
                                 width: SizeSystem.size18,
                                 height: SizeSystem.size18,
-                                decoration: const BoxDecoration(
-                                  color: ColorSystem.pieChartAmber,
-                                  shape: BoxShape.circle,
-                                ),
+                                color: ColorSystem.pieChartAmber,
                               ),
                               const SizedBox(
                                 width: SizeSystem.size10,
@@ -120,13 +116,11 @@ class TaskMetricsWidget extends StatelessWidget {
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Container(
+                            SvgPicture.asset(
+                              IconSystem.taskTypeIcon,
                               width: SizeSystem.size18,
                               height: SizeSystem.size18,
-                              decoration: const BoxDecoration(
-                                color: ColorSystem.pieChartGreen,
-                                shape: BoxShape.circle,
-                              ),
+                              color: ColorSystem.pieChartGreen,
                             ),
                             const SizedBox(
                               width: SizeSystem.size10,

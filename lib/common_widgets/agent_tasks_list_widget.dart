@@ -217,7 +217,7 @@ class _AgentTaskListState extends State<AgentTaskList> {
                           ),
                           const TextSpan(
                             text:
-                                'Pending',
+                                'Tasks',
                             style: TextStyle(
                               fontSize: SizeSystem.size12,
                               color: ColorSystem.primary,
@@ -239,79 +239,126 @@ class _AgentTaskListState extends State<AgentTaskList> {
                       builder: (BuildContext context) {
                         return CupertinoAlertDialog(
                           actions: [
-                            Column(
-                              children: [
-                                CustomDialogAction(
-                                  label:
-                                      'Upcoming (${tempAgent.futureTasks.length})',
-                                  onTap: () {
-                                    displayedList.clear();
-                                    displayedList =
-                                        List.from(tempAgent.futureTasks);
-                                    Navigator.of(context).pop();
-                                    showingOverdue = false;
-                                  },
-                                ),
-                                Container(
-                                  height: SizeSystem.size1,
-                                  color: Colors.grey.withOpacity(0.2),
-                                ),
-                                CustomDialogAction(
-                                  label:
-                                      'Overdue (${tempAgent.pastOpenTasks.length})',
-                                  onTap: () {
-                                    displayedList.clear();
-                                    displayedList =
-                                        List.from(tempAgent.pastOpenTasks);
-                                    Navigator.of(context).pop();
-                                    showingOverdue = true;
-                                  },
-                                ),
-                                Container(
-                                  height: SizeSystem.size1,
-                                  color: Colors.grey.withOpacity(0.2),
-                                ),
-                                CustomDialogAction(
-                                  label: 'All (${tempAgent.allTasks.length})',
-                                  onTap: () {
-                                    displayedList.clear();
-                                    displayedList =
-                                        List.from(tempAgent.allTasks);
-                                    Navigator.of(context).pop();
-                                    showingOverdue = false;
-                                  },
-                                ),
-                                Container(
-                                  height: SizeSystem.size1,
-                                  color: Colors.grey.withOpacity(0.2),
-                                ),
-                                CustomDialogAction(
-                                  label:
-                                      'Today (${tempAgent.todayTasks.length})',
-                                  onTap: () {
-                                    displayedList.clear();
-                                    displayedList =
-                                        List.from(tempAgent.todayTasks);
-                                    Navigator.of(context).pop();
-                                    showingOverdue = false;
-                                  },
-                                ),
-                                Container(
-                                  height: SizeSystem.size1,
-                                  color: Colors.grey.withOpacity(0.2),
-                                ),
-                                CustomDialogAction(
-                                  label:
-                                      'Completed (${tempAgent.completedTasks.length})',
-                                  onTap: () {
-                                    displayedList.clear();
-                                    displayedList =
-                                        List.from(tempAgent.completedTasks);
-                                    Navigator.of(context).pop();
-                                    showingOverdue = false;
-                                  },
-                                ),
-                              ],
+                            Material(
+                              child: Column(
+                                children: [
+                                  CustomDialogAction(
+                                    label: 'All (${tempAgent.allTasks.length})',
+                                    onTap: () {
+                                      displayedList.clear();
+                                      displayedList =
+                                          List.from(tempAgent.allTasks);
+                                      Navigator.of(context).pop();
+                                      showingOverdue = false;
+                                    },
+                                  ),
+                                  Container(
+                                    height: SizeSystem.size1,
+                                    color: Colors.grey.withOpacity(0.2),
+                                  ),
+                                  CustomDialogAction(
+                                    label:
+                                        'Overdue (${tempAgent.pastOpenTasks.length})',
+                                    onTap: () {
+                                      displayedList.clear();
+                                      displayedList =
+                                          List.from(tempAgent.pastOpenTasks);
+                                      Navigator.of(context).pop();
+                                      showingOverdue = true;
+                                    },
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        SvgPicture.asset(
+                                          IconSystem.taskTypeIcon,
+                                          width: SizeSystem.size18,
+                                          height: SizeSystem.size18,
+                                          color: ColorSystem.pieChartRed,
+                                        ),
+                                        const SizedBox(
+                                          width: SizeSystem.size10,
+                                        ),
+                                        const Text(
+                                          '-',
+                                        ),
+                                        const SizedBox(
+                                          width: 2,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Container(
+                                    height: SizeSystem.size1,
+                                    color: Colors.grey.withOpacity(0.2),
+                                  ),
+                                  CustomDialogAction(
+                                    label:
+                                        'Today (${tempAgent.todayTasks.length})',
+                                    onTap: () {
+                                      displayedList.clear();
+                                      displayedList =
+                                          List.from(tempAgent.todayTasks);
+                                      Navigator.of(context).pop();
+                                      showingOverdue = false;
+                                    },
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        SvgPicture.asset(
+                                          IconSystem.taskTypeIcon,
+                                          width: SizeSystem.size18,
+                                          height: SizeSystem.size18,
+                                          color: ColorSystem.pieChartGreen,
+                                        ),
+                                        const SizedBox(
+                                          width: SizeSystem.size10,
+                                        ),
+                                        const Text(
+                                          '-',
+                                        ),
+                                        const SizedBox(
+                                          width: 2,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Container(
+                                    height: SizeSystem.size1,
+                                    color: Colors.grey.withOpacity(0.2),
+                                  ),
+                                  CustomDialogAction(
+                                    label:
+                                        'Completed (${tempAgent.completedTasks.length})',
+                                    onTap: () {
+                                      displayedList.clear();
+                                      displayedList =
+                                          List.from(tempAgent.completedTasks);
+                                      Navigator.of(context).pop();
+                                      showingOverdue = false;
+                                    },
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        SvgPicture.asset(
+                                          IconSystem.taskTypeIcon,
+                                          width: SizeSystem.size18,
+                                          height: SizeSystem.size18,
+                                          color: ColorSystem.additionalBlue,
+                                        ),
+                                        const SizedBox(
+                                          width: SizeSystem.size10,
+                                        ),
+                                        const Text(
+                                          '-',
+                                        ),
+                                        const SizedBox(
+                                          width: 2,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
                             )
                           ],
                         );

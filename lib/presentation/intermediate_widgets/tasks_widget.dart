@@ -306,101 +306,183 @@ class _TasksWidgetState extends State<TasksWidget>
                                   builder: (BuildContext context) {
                                     return CupertinoAlertDialog(
                                       actions: [
-                                        Column(
-                                          children: [
-                                            CustomDialogAction(
-                                              label: 'All (${allTasks.length})',
-                                              onTap: () {
-                                                displayedList.clear();
-                                                displayedList =
-                                                    List.from(allTasks);
-                                                Navigator.of(context).pop();
-                                                showingOverdue = false;
-                                                showingUnAssignedTasks = false;
-                                                filterName = 'ALL';
-                                              },
-                                            ),
-                                            Container(
-                                              height: SizeSystem.size1,
-                                              color:
-                                                  Colors.grey.withOpacity(0.2),
-                                            ),
-                                            CustomDialogAction(
-                                              label:
-                                                  'Today (${todaysTasks.length})',
-                                              onTap: () {
-                                                displayedList.clear();
-                                                displayedList =
-                                                    List.from(todaysTasks);
-                                                Navigator.of(context).pop();
-                                                showingOverdue = false;
-                                                showingUnAssignedTasks = false;
-                                                filterName = 'TODAYS';
-                                              },
-                                            ),
-                                            Container(
-                                              height: SizeSystem.size1,
-                                              color:
-                                                  Colors.grey.withOpacity(0.2),
-                                            ),
-                                            if (!showingAgentTasks)
-                                              Column(
-                                                mainAxisSize: MainAxisSize.min,
-                                                children: [
-                                                  CustomDialogAction(
-                                                    label:
-                                                        'Unassigned (${unAssignedTasks.length})',
-                                                    onTap: () {
-                                                      displayedList.clear();
-                                                      displayedList = List.from(
-                                                          unAssignedTasks);
-                                                      Navigator.of(context)
-                                                          .pop();
-                                                      showingOverdue = false;
-                                                      showingUnAssignedTasks =
-                                                          true;
-                                                      filterName = 'UNASSIGNED';
-                                                    },
-                                                  ),
-                                                  Container(
-                                                    height: SizeSystem.size1,
-                                                    color: Colors.grey
-                                                        .withOpacity(0.2),
-                                                  ),
-                                                ],
+                                        Material(
+                                          child: Column(
+                                            children: [
+                                              CustomDialogAction(
+                                                label: 'All (${allTasks.length})',
+                                                onTap: () {
+                                                  displayedList.clear();
+                                                  displayedList =
+                                                      List.from(allTasks);
+                                                  Navigator.of(context).pop();
+                                                  showingOverdue = false;
+                                                  showingUnAssignedTasks = false;
+                                                  filterName = 'ALL';
+                                                },
                                               ),
-                                            CustomDialogAction(
-                                              label:
-                                                  'Completed (${completedTasks.length})',
-                                              onTap: () {
-                                                displayedList.clear();
-                                                displayedList =
-                                                    List.from(completedTasks);
-                                                Navigator.of(context).pop();
-                                                showingOverdue = false;
-                                                showingUnAssignedTasks = false;
-                                                filterName = 'COMPLETED';
-                                              },
-                                            ),
-                                            Container(
-                                              height: SizeSystem.size1,
-                                              color:
-                                                  Colors.grey.withOpacity(0.2),
-                                            ),
-                                            CustomDialogAction(
-                                              label:
-                                                  'Overdue (${pastOpenTasks.length})',
-                                              onTap: () {
-                                                displayedList.clear();
-                                                displayedList =
-                                                    List.from(pastOpenTasks);
-                                                Navigator.of(context).pop();
-                                                showingOverdue = true;
-                                                showingUnAssignedTasks = false;
-                                                filterName = 'OVERDUE';
-                                              },
-                                            ),
-                                          ],
+                                              Container(
+                                                height: SizeSystem.size1,
+                                                color:
+                                                    Colors.grey.withOpacity(0.2),
+                                              ),
+                                              CustomDialogAction(
+                                                label:
+                                                'Overdue (${pastOpenTasks.length})',
+                                                onTap: () {
+                                                  displayedList.clear();
+                                                  displayedList =
+                                                      List.from(pastOpenTasks);
+                                                  Navigator.of(context).pop();
+                                                  showingOverdue = true;
+                                                  showingUnAssignedTasks = false;
+                                                  filterName = 'OVERDUE';
+                                                },
+                                                child: Row(
+                                                  mainAxisSize: MainAxisSize.min,
+                                                  children: [
+                                                    SvgPicture.asset(
+                                                      IconSystem.taskTypeIcon,
+                                                      width: SizeSystem.size18,
+                                                      height: SizeSystem.size18,
+                                                      color: ColorSystem.pieChartRed,
+                                                    ),
+                                                    const SizedBox(
+                                                      width: SizeSystem.size10,
+                                                    ),
+                                                    const Text(
+                                                      '-',
+                                                    ),
+                                                    const SizedBox(
+                                                      width: 2,
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                              Container(
+                                                height: SizeSystem.size1,
+                                                color:
+                                                Colors.grey.withOpacity(0.2),
+                                              ),
+                                              if (!showingAgentTasks)
+                                                Column(
+                                                  mainAxisSize: MainAxisSize.min,
+                                                  children: [
+                                                    CustomDialogAction(
+                                                      label:
+                                                          'Unassigned (${unAssignedTasks.length})',
+                                                      onTap: () {
+                                                        displayedList.clear();
+                                                        displayedList = List.from(
+                                                            unAssignedTasks);
+                                                        Navigator.of(context)
+                                                            .pop();
+                                                        showingOverdue = false;
+                                                        showingUnAssignedTasks =
+                                                            true;
+                                                        filterName = 'UNASSIGNED';
+                                                      },
+                                                      child: Row(
+                                                        mainAxisSize: MainAxisSize.min,
+                                                        children: [
+                                                          SvgPicture.asset(
+                                                            IconSystem.taskTypeIcon,
+                                                            width: SizeSystem.size18,
+                                                            height: SizeSystem.size18,
+                                                            color: ColorSystem.pieChartAmber,
+                                                          ),
+                                                          const SizedBox(
+                                                            width: SizeSystem.size10,
+                                                          ),
+                                                          const Text(
+                                                            '-',
+                                                          ),
+                                                          const SizedBox(
+                                                            width: 2,
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                    Container(
+                                                      height: SizeSystem.size1,
+                                                      color: Colors.grey
+                                                          .withOpacity(0.2),
+                                                    ),
+                                                  ],
+                                                ),
+                                              CustomDialogAction(
+                                                label:
+                                                'Today (${todaysTasks.length})',
+                                                onTap: () {
+                                                  displayedList.clear();
+                                                  displayedList =
+                                                      List.from(todaysTasks);
+                                                  Navigator.of(context).pop();
+                                                  showingOverdue = false;
+                                                  showingUnAssignedTasks = false;
+                                                  filterName = 'TODAYS';
+                                                },
+                                                child: Row(
+                                                  mainAxisSize: MainAxisSize.min,
+                                                  children: [
+                                                    SvgPicture.asset(
+                                                      IconSystem.taskTypeIcon,
+                                                      width: SizeSystem.size18,
+                                                      height: SizeSystem.size18,
+                                                      color: ColorSystem.pieChartGreen,
+                                                    ),
+                                                    const SizedBox(
+                                                      width: SizeSystem.size10,
+                                                    ),
+                                                    const Text(
+                                                      '-',
+                                                    ),
+                                                    const SizedBox(
+                                                      width: 2,
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                              Container(
+                                                height: SizeSystem.size1,
+                                                color:
+                                                Colors.grey.withOpacity(0.2),
+                                              ),
+                                              CustomDialogAction(
+                                                label:
+                                                    'Completed (${completedTasks.length})',
+                                                onTap: () {
+                                                  displayedList.clear();
+                                                  displayedList =
+                                                      List.from(completedTasks);
+                                                  Navigator.of(context).pop();
+                                                  showingOverdue = false;
+                                                  showingUnAssignedTasks = false;
+                                                  filterName = 'COMPLETED';
+                                                },
+                                                child: Row(
+                                                  mainAxisSize: MainAxisSize.min,
+                                                  children: [
+                                                    SvgPicture.asset(
+                                                      IconSystem.taskTypeIcon,
+                                                      width: SizeSystem.size18,
+                                                      height: SizeSystem.size18,
+                                                      color: ColorSystem.additionalBlue,
+                                                    ),
+                                                    const SizedBox(
+                                                      width: SizeSystem.size10,
+                                                    ),
+                                                    const Text(
+                                                      '-',
+                                                    ),
+                                                    const SizedBox(
+                                                      width: 2,
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ],
+                                          ),
                                         )
                                       ],
                                     );
@@ -717,7 +799,7 @@ class _TasksWidgetState extends State<TasksWidget>
                                         ),
                                       ),
                                       const TextSpan(
-                                        text: 'Active Tasks',
+                                        text: 'Tasks',
                                         style: TextStyle(
                                           fontSize: SizeSystem.size12,
                                           color: ColorSystem.primary,
@@ -777,111 +859,193 @@ class _TasksWidgetState extends State<TasksWidget>
                                       builder: (BuildContext context) {
                                         return CupertinoAlertDialog(
                                           actions: [
-                                            Column(
-                                              children: [
-                                                CustomDialogAction(
-                                                  label:
-                                                      'All (${allTasks.length})',
-                                                  onTap: () {
-                                                    displayedList.clear();
-                                                    displayedList =
-                                                        List.from(allTasks);
-                                                    Navigator.of(context).pop();
-                                                    showingOverdue = false;
-                                                    showingUnAssignedTasks =
-                                                        false;
-                                                    filterName = 'ALL';
-                                                  },
-                                                ),
-                                                Container(
-                                                  height: SizeSystem.size1,
-                                                  color: Colors.grey
-                                                      .withOpacity(0.2),
-                                                ),
-                                                CustomDialogAction(
-                                                  label:
-                                                      'Today (${todaysTasks.length})',
-                                                  onTap: () {
-                                                    displayedList.clear();
-                                                    displayedList =
-                                                        List.from(todaysTasks);
-                                                    Navigator.of(context).pop();
-                                                    showingOverdue = false;
-                                                    showingUnAssignedTasks =
-                                                        false;
-                                                    filterName = 'TODAYS';
-                                                  },
-                                                ),
-                                                Container(
-                                                  height: SizeSystem.size1,
-                                                  color: Colors.grey
-                                                      .withOpacity(0.2),
-                                                ),
-                                                if (!showingAgentTasks)
-                                                  Column(
-                                                    mainAxisSize:
-                                                        MainAxisSize.min,
-                                                    children: [
-                                                      CustomDialogAction(
-                                                        label:
-                                                            'Unassigned (${unAssignedTasks.length})',
-                                                        onTap: () {
-                                                          displayedList.clear();
-                                                          displayedList =
-                                                              List.from(
-                                                                  unAssignedTasks);
-                                                          Navigator.of(context)
-                                                              .pop();
-                                                          showingOverdue =
-                                                              false;
-                                                          showingUnAssignedTasks =
-                                                              true;
-                                                          filterName =
-                                                              'UNASSIGNED';
-                                                        },
-                                                      ),
-                                                      Container(
-                                                        height:
-                                                            SizeSystem.size1,
-                                                        color: Colors.grey
-                                                            .withOpacity(0.2),
-                                                      ),
-                                                    ],
+                                            Material(
+                                              child: Column(
+                                                children: [
+                                                  CustomDialogAction(
+                                                    label:
+                                                        'All (${allTasks.length})',
+                                                    onTap: () {
+                                                      displayedList.clear();
+                                                      displayedList =
+                                                          List.from(allTasks);
+                                                      Navigator.of(context).pop();
+                                                      showingOverdue = false;
+                                                      showingUnAssignedTasks =
+                                                          false;
+                                                      filterName = 'ALL';
+                                                    },
                                                   ),
-                                                CustomDialogAction(
-                                                  label:
-                                                      'Completed (${completedTasks.length})',
-                                                  onTap: () {
-                                                    displayedList.clear();
-                                                    displayedList = List.from(
-                                                        completedTasks);
-                                                    Navigator.of(context).pop();
-                                                    showingOverdue = false;
-                                                    showingUnAssignedTasks =
-                                                        false;
-                                                    filterName = 'COMPLETED';
-                                                  },
-                                                ),
-                                                Container(
-                                                  height: SizeSystem.size1,
-                                                  color: Colors.grey
-                                                      .withOpacity(0.2),
-                                                ),
-                                                CustomDialogAction(
-                                                  label:
-                                                      'Overdue (${pastOpenTasks.length})',
-                                                  onTap: () {
-                                                    displayedList.clear();
-                                                    displayedList = List.from(
-                                                        pastOpenTasks);
-                                                    Navigator.of(context).pop();
-                                                    showingOverdue = true;
-                                                    showingUnAssignedTasks =
-                                                        false;
-                                                    filterName = 'OVERDUE';
-                                                  },
-                                                ),
-                                              ],
+                                                  Container(
+                                                    height: SizeSystem.size1,
+                                                    color: Colors.grey
+                                                        .withOpacity(0.2),
+                                                  ),
+                                                  CustomDialogAction(
+                                                    label:
+                                                    'Overdue (${pastOpenTasks.length})',
+                                                    onTap: () {
+                                                      displayedList.clear();
+                                                      displayedList = List.from(
+                                                          pastOpenTasks);
+                                                      Navigator.of(context).pop();
+                                                      showingOverdue = true;
+                                                      showingUnAssignedTasks =
+                                                      false;
+                                                      filterName = 'OVERDUE';
+                                                    },
+                                                    child: Row(
+                                                      mainAxisSize: MainAxisSize.min,
+                                                      children: [
+                                                        SvgPicture.asset(
+                                                          IconSystem.taskTypeIcon,
+                                                          width: SizeSystem.size18,
+                                                          height: SizeSystem.size18,
+                                                          color: ColorSystem.pieChartRed,
+                                                        ),
+                                                        const SizedBox(
+                                                          width: SizeSystem.size10,
+                                                        ),
+                                                        const Text(
+                                                          '-',
+                                                        ),
+                                                        const SizedBox(
+                                                          width: 2,
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  Container(
+                                                    height: SizeSystem.size1,
+                                                    color: Colors.grey
+                                                        .withOpacity(0.2),
+                                                  ),
+                                                  if (!showingAgentTasks)
+                                                    Column(
+                                                      mainAxisSize:
+                                                      MainAxisSize.min,
+                                                      children: [
+                                                        CustomDialogAction(
+                                                          label:
+                                                          'Unassigned (${unAssignedTasks.length})',
+                                                          onTap: () {
+                                                            displayedList.clear();
+                                                            displayedList =
+                                                                List.from(
+                                                                    unAssignedTasks);
+                                                            Navigator.of(context)
+                                                                .pop();
+                                                            showingOverdue =
+                                                            false;
+                                                            showingUnAssignedTasks =
+                                                            true;
+                                                            filterName =
+                                                            'UNASSIGNED';
+                                                          },
+                                                          child: Row(
+                                                            mainAxisSize: MainAxisSize.min,
+                                                            children: [
+                                                              SvgPicture.asset(
+                                                                IconSystem.taskTypeIcon,
+                                                                width: SizeSystem.size18,
+                                                                height: SizeSystem.size18,
+                                                                color: ColorSystem.pieChartAmber,
+                                                              ),
+                                                              const SizedBox(
+                                                                width: SizeSystem.size10,
+                                                              ),
+                                                              const Text(
+                                                                '-',
+                                                              ),
+                                                              const SizedBox(
+                                                                width: 2,
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                        Container(
+                                                          height:
+                                                          SizeSystem.size1,
+                                                          color: Colors.grey
+                                                              .withOpacity(0.2),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  CustomDialogAction(
+                                                    label:
+                                                        'Today (${todaysTasks.length})',
+                                                    onTap: () {
+                                                      displayedList.clear();
+                                                      displayedList =
+                                                          List.from(todaysTasks);
+                                                      Navigator.of(context).pop();
+                                                      showingOverdue = false;
+                                                      showingUnAssignedTasks =
+                                                          false;
+                                                      filterName = 'TODAYS';
+                                                    },
+                                                    child: Row(
+                                                      mainAxisSize: MainAxisSize.min,
+                                                      children: [
+                                                        SvgPicture.asset(
+                                                          IconSystem.taskTypeIcon,
+                                                          width: SizeSystem.size18,
+                                                          height: SizeSystem.size18,
+                                                          color: ColorSystem.pieChartGreen,
+                                                        ),
+                                                        const SizedBox(
+                                                          width: SizeSystem.size10,
+                                                        ),
+                                                        const Text(
+                                                          '-',
+                                                        ),
+                                                        const SizedBox(
+                                                          width: 2,
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  Container(
+                                                    height: SizeSystem.size1,
+                                                    color: Colors.grey
+                                                        .withOpacity(0.2),
+                                                  ),
+                                                  CustomDialogAction(
+                                                    label:
+                                                        'Completed (${completedTasks.length})',
+                                                    onTap: () {
+                                                      displayedList.clear();
+                                                      displayedList = List.from(
+                                                          completedTasks);
+                                                      Navigator.of(context).pop();
+                                                      showingOverdue = false;
+                                                      showingUnAssignedTasks =
+                                                          false;
+                                                      filterName = 'COMPLETED';
+                                                    },
+                                                    child: Row(
+                                                      mainAxisSize: MainAxisSize.min,
+                                                      children: [
+                                                        SvgPicture.asset(
+                                                          IconSystem.taskTypeIcon,
+                                                          width: SizeSystem.size18,
+                                                          height: SizeSystem.size18,
+                                                          color: ColorSystem.additionalBlue,
+                                                        ),
+                                                        const SizedBox(
+                                                          width: SizeSystem.size10,
+                                                        ),
+                                                        const Text(
+                                                          '-',
+                                                        ),
+                                                        const SizedBox(
+                                                          width: 2,
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
                                             )
                                           ],
                                         );
@@ -1024,7 +1188,7 @@ class _TasksWidgetState extends State<TasksWidget>
                                             ),
                                           ),
                                           const TextSpan(
-                                            text: 'Active Tasks',
+                                            text: 'Tasks',
                                             style: TextStyle(
                                               fontSize: SizeSystem.size12,
                                               color: ColorSystem.primary,
@@ -1086,122 +1250,204 @@ class _TasksWidgetState extends State<TasksWidget>
                                           builder: (BuildContext context) {
                                             return CupertinoAlertDialog(
                                               actions: [
-                                                Column(
-                                                  children: [
-                                                    CustomDialogAction(
-                                                      label:
-                                                          'All (${allTasks.length})',
-                                                      onTap: () {
-                                                        displayedList.clear();
-                                                        displayedList =
-                                                            List.from(allTasks);
-                                                        Navigator.of(context)
-                                                            .pop();
-                                                        showingOverdue = false;
-                                                        showingUnAssignedTasks =
-                                                            false;
-                                                        filterName = 'ALL';
-                                                      },
-                                                    ),
-                                                    Container(
-                                                      height: SizeSystem.size1,
-                                                      color: Colors.grey
-                                                          .withOpacity(0.2),
-                                                    ),
-                                                    CustomDialogAction(
-                                                      label:
-                                                          'Today (${todaysTasks.length})',
-                                                      onTap: () {
-                                                        displayedList.clear();
-                                                        displayedList =
-                                                            List.from(
-                                                                todaysTasks);
-                                                        Navigator.of(context)
-                                                            .pop();
-                                                        showingOverdue = false;
-                                                        showingUnAssignedTasks =
-                                                            false;
-                                                        filterName = 'TODAY';
-                                                      },
-                                                    ),
-                                                    Container(
-                                                      height: SizeSystem.size1,
-                                                      color: Colors.grey
-                                                          .withOpacity(0.2),
-                                                    ),
-                                                    if (!showingAgentTasks)
-                                                      Column(
-                                                        mainAxisSize:
-                                                            MainAxisSize.min,
-                                                        children: [
-                                                          CustomDialogAction(
-                                                            label:
-                                                                'Unassigned (${unAssignedTasks.length})',
-                                                            onTap: () {
-                                                              displayedList
-                                                                  .clear();
-                                                              displayedList =
-                                                                  List.from(
-                                                                      unAssignedTasks);
-                                                              Navigator.of(
-                                                                      context)
-                                                                  .pop();
-                                                              showingOverdue =
-                                                                  false;
-                                                              showingUnAssignedTasks =
-                                                                  true;
-                                                              filterName =
-                                                                  'UNASSIGNED';
-                                                            },
-                                                          ),
-                                                          Container(
-                                                            height: SizeSystem
-                                                                .size1,
-                                                            color: Colors.grey
-                                                                .withOpacity(
-                                                                    0.2),
-                                                          ),
-                                                        ],
+                                                Material(
+                                                  child: Column(
+                                                    children: [
+                                                      CustomDialogAction(
+                                                        label:
+                                                            'All (${allTasks.length})',
+                                                        onTap: () {
+                                                          displayedList.clear();
+                                                          displayedList =
+                                                              List.from(allTasks);
+                                                          Navigator.of(context)
+                                                              .pop();
+                                                          showingOverdue = false;
+                                                          showingUnAssignedTasks =
+                                                              false;
+                                                          filterName = 'ALL';
+                                                        },
                                                       ),
-                                                    CustomDialogAction(
-                                                      label:
-                                                          'Completed (${completedTasks.length})',
-                                                      onTap: () {
-                                                        displayedList.clear();
-                                                        displayedList =
-                                                            List.from(
-                                                                completedTasks);
-                                                        Navigator.of(context)
-                                                            .pop();
-                                                        showingOverdue = false;
-                                                        showingUnAssignedTasks =
-                                                            false;
-                                                        filterName =
-                                                            'COMPLETED';
-                                                      },
-                                                    ),
-                                                    Container(
-                                                      height: SizeSystem.size1,
-                                                      color: Colors.grey
-                                                          .withOpacity(0.2),
-                                                    ),
-                                                    CustomDialogAction(
-                                                      label:
-                                                          'Overdue (${pastOpenTasks.length})',
-                                                      onTap: () {
-                                                        displayedList.clear();
-                                                        displayedList =
-                                                            List.from(
-                                                                pastOpenTasks);
-                                                        Navigator.of(context)
-                                                            .pop();
-                                                        showingOverdue = true;
-                                                        showingUnAssignedTasks =
-                                                            false;
-                                                        filterName = 'OVERDUE';
-                                                      },
-                                                    ),
-                                                  ],
+                                                      Container(
+                                                        height: SizeSystem.size1,
+                                                        color: Colors.grey
+                                                            .withOpacity(0.2),
+                                                      ),
+                                                      CustomDialogAction(
+                                                        label:
+                                                        'Overdue (${pastOpenTasks.length})',
+                                                        onTap: () {
+                                                          displayedList.clear();
+                                                          displayedList =
+                                                              List.from(
+                                                                  pastOpenTasks);
+                                                          Navigator.of(context)
+                                                              .pop();
+                                                          showingOverdue = true;
+                                                          showingUnAssignedTasks =
+                                                          false;
+                                                          filterName = 'OVERDUE';
+                                                        },
+                                                        child: Row(
+                                                          mainAxisSize: MainAxisSize.min,
+                                                          children: [
+                                                            SvgPicture.asset(
+                                                              IconSystem.taskTypeIcon,
+                                                              width: SizeSystem.size18,
+                                                              height: SizeSystem.size18,
+                                                              color: ColorSystem.pieChartRed,
+                                                            ),
+                                                            const SizedBox(
+                                                              width: SizeSystem.size10,
+                                                            ),
+                                                            const Text(
+                                                              '-',
+                                                            ),
+                                                            const SizedBox(
+                                                              width: 2,
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                      Container(
+                                                        height: SizeSystem.size1,
+                                                        color: Colors.grey
+                                                            .withOpacity(0.2),
+                                                      ),
+                                                      if (!showingAgentTasks)
+                                                        Column(
+                                                          mainAxisSize:
+                                                          MainAxisSize.min,
+                                                          children: [
+                                                            CustomDialogAction(
+                                                              label:
+                                                              'Unassigned (${unAssignedTasks.length})',
+                                                              onTap: () {
+                                                                displayedList
+                                                                    .clear();
+                                                                displayedList =
+                                                                    List.from(
+                                                                        unAssignedTasks);
+                                                                Navigator.of(
+                                                                    context)
+                                                                    .pop();
+                                                                showingOverdue =
+                                                                false;
+                                                                showingUnAssignedTasks =
+                                                                true;
+                                                                filterName =
+                                                                'UNASSIGNED';
+                                                              },
+                                                              child: Row(
+                                                                mainAxisSize: MainAxisSize.min,
+                                                                children: [
+                                                                  SvgPicture.asset(
+                                                                    IconSystem.taskTypeIcon,
+                                                                    width: SizeSystem.size18,
+                                                                    height: SizeSystem.size18,
+                                                                    color: ColorSystem.pieChartAmber,
+                                                                  ),
+                                                                  const SizedBox(
+                                                                    width: SizeSystem.size10,
+                                                                  ),
+                                                                  const Text(
+                                                                    '-',
+                                                                  ),
+                                                                  const SizedBox(
+                                                                    width: 2,
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ),
+                                                            Container(
+                                                              height: SizeSystem
+                                                                  .size1,
+                                                              color: Colors.grey
+                                                                  .withOpacity(
+                                                                  0.2),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      CustomDialogAction(
+                                                        label:
+                                                            'Today (${todaysTasks.length})',
+                                                        onTap: () {
+                                                          displayedList.clear();
+                                                          displayedList =
+                                                              List.from(
+                                                                  todaysTasks);
+                                                          Navigator.of(context)
+                                                              .pop();
+                                                          showingOverdue = false;
+                                                          showingUnAssignedTasks =
+                                                              false;
+                                                          filterName = 'TODAY';
+                                                        },
+                                                        child: Row(
+                                                          mainAxisSize: MainAxisSize.min,
+                                                          children: [
+                                                            SvgPicture.asset(
+                                                              IconSystem.taskTypeIcon,
+                                                              width: SizeSystem.size18,
+                                                              height: SizeSystem.size18,
+                                                              color: ColorSystem.pieChartGreen,
+                                                            ),
+                                                            const SizedBox(
+                                                              width: SizeSystem.size10,
+                                                            ),
+                                                            const Text(
+                                                              '-',
+                                                            ),
+                                                            const SizedBox(
+                                                              width: 2,
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                      Container(
+                                                        height: SizeSystem.size1,
+                                                        color: Colors.grey
+                                                            .withOpacity(0.2),
+                                                      ),
+                                                      CustomDialogAction(
+                                                        label:
+                                                            'Completed (${completedTasks.length})',
+                                                        onTap: () {
+                                                          displayedList.clear();
+                                                          displayedList =
+                                                              List.from(
+                                                                  completedTasks);
+                                                          Navigator.of(context)
+                                                              .pop();
+                                                          showingOverdue = false;
+                                                          showingUnAssignedTasks =
+                                                              false;
+                                                          filterName =
+                                                              'COMPLETED';
+                                                        },
+                                                        child: Row(
+                                                          mainAxisSize: MainAxisSize.min,
+                                                          children: [
+                                                            SvgPicture.asset(
+                                                              IconSystem.taskTypeIcon,
+                                                              width: SizeSystem.size18,
+                                                              height: SizeSystem.size18,
+                                                              color: ColorSystem.additionalBlue,
+                                                            ),
+                                                            const SizedBox(
+                                                              width: SizeSystem.size10,
+                                                            ),
+                                                            const Text(
+                                                              '-',
+                                                            ),
+                                                            const SizedBox(
+                                                              width: 2,
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
                                                 )
                                               ],
                                             );
