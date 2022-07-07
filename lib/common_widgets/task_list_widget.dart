@@ -72,7 +72,7 @@ class _TaskListWidgetState extends State<TaskListWidget> {
 
     if (storeId != null) {
       var response =
-          await HttpService().doGet(path: Endpoints.getStoreAgents(storeId));
+      await HttpService().doGet(path: Endpoints.getStoreAgents(storeId));
       if (response.data != null) {
         for (var agentJson in response.data['AgentList']) {
           agents.add(Agent.fromJson(agentJson));
@@ -125,7 +125,9 @@ class _TaskListWidgetState extends State<TaskListWidget> {
 
   void onAgentSearch(String idOrName) {
     searchedList.clear();
-    if (idOrName.trim().isEmpty) {
+    if (idOrName
+        .trim()
+        .isEmpty) {
       return;
     }
     for (var agent in agents) {
@@ -137,7 +139,9 @@ class _TaskListWidgetState extends State<TaskListWidget> {
 
   void onStoreSearch(String name) {
     searchedStoreList.clear();
-    if (name.trim().isEmpty) {
+    if (name
+        .trim()
+        .isEmpty) {
       return;
     }
     for (var store in stores) {
@@ -147,6 +151,18 @@ class _TaskListWidgetState extends State<TaskListWidget> {
     }
   }
 
+  Color getLabelColor() {
+    return widget.task.dateLabel == 'Overdue'
+        ? ColorSystem.pieChartRed
+        : widget.task.dateLabel == 'Active'
+        ? ColorSystem.pieChartGreen
+        : widget.task.dateLabel == 'Unassigned'
+        ? ColorSystem.pieChartAmber
+        : widget.task.dateLabel == 'Completed'
+        ? ColorSystem.additionalBlue
+        : ColorSystem.primary;
+  }
+
   @override
   initState() {
     super.initState();
@@ -154,42 +170,11 @@ class _TaskListWidgetState extends State<TaskListWidget> {
     futureStores = getFutureStores();
   }
 
-  String getSubtitleFromDate(String? activityDate) {
-    if (widget.status == 'Completed') {
-      return 'Completed';
+  String getFormattedDate(String? activityDate) {
+    if (activityDate == null) {
+      return '';
     } else {
-      if (activityDate == null) {
-        return '';
-      } else {
-        var dateTime = DateTime.parse(activityDate);
-        final now = DateTime.now();
-        final today = DateTime(now.year, now.month, now.day);
-        final yesterday = DateTime(now.year, now.month, now.day - 1);
-        final tomorrow = DateTime(now.year, now.month, now.day + 1);
-        final dateToCheck =
-            DateTime(dateTime.year, dateTime.month, dateTime.day);
-        if (dateToCheck == today) {
-          return 'Today :';
-        } else if (dateToCheck == yesterday ||
-            dateToCheck.millisecondsSinceEpoch <
-                yesterday.millisecondsSinceEpoch) {
-          return DateFormat('MMM dd, yyyy').format(dateTime);
-        } else if (dateToCheck == tomorrow) {
-          return 'Tomorrow :';
-        } else {
-          return 'Future :';
-        }
-      }
-    }
-  }
-
-  String getLabel(String dateLabel) {
-    if (dateLabel == 'Today :' ||
-        dateLabel == 'Tomorrow :' ||
-        dateLabel == 'Future :') {
-      return ' Pending';
-    } else {
-      return ' Overdue';
+      return DateFormat('MMM, dd yyyy').format(DateTime.parse(activityDate));
     }
   }
 
@@ -239,9 +224,12 @@ class _TaskListWidgetState extends State<TaskListWidget> {
                       ],
                     ),
                   ),
+                  const SizedBox(
+                    height: SizeSystem.size4,
+                  ),
                   RichText(
                     text: TextSpan(
-                        text: getSubtitleFromDate(widget.activityDate),
+                        text: '${getFormattedDate(widget.activityDate)} :',
                         style: const TextStyle(
                           fontSize: SizeSystem.size14,
                           color: ColorSystem.primary,
@@ -249,15 +237,10 @@ class _TaskListWidgetState extends State<TaskListWidget> {
                         ),
                         children: [
                           TextSpan(
-                            text: getLabel(
-                                getSubtitleFromDate(widget.activityDate)),
+                            text: ' ${widget.task.dateLabel}',
                             style: TextStyle(
                               fontSize: SizeSystem.size14,
-                              color: getLabel(getSubtitleFromDate(
-                                          widget.activityDate))
-                                      .contains('Pending')
-                                  ? ColorSystem.purple
-                                  : ColorSystem.peach,
+                              color: getLabelColor(),
                               fontFamily: kRubik,
                             ),
                           ),
@@ -273,158 +256,162 @@ class _TaskListWidgetState extends State<TaskListWidget> {
               hoverColor: Colors.transparent,
               onTap: widget.showingStoreTasks && widget.showingUnassignedTask
                   ? () async {
-                      await showModalBottomSheet(
-                        constraints: BoxConstraints(
-                          maxHeight: MediaQuery.of(context).size.height / 2,
+                await showModalBottomSheet(
+                  constraints: BoxConstraints(
+                    maxHeight: MediaQuery
+                        .of(context)
+                        .size
+                        .height / 2,
+                  ),
+                  context: context,
+                  builder: (BuildContext context) {
+                    return BackdropFilter(
+                      filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                      child: Container(
+                        decoration: const BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(20),
+                            topRight: Radius.circular(20),
+                          ),
                         ),
-                        context: context,
-                        builder: (BuildContext context) {
-                          return BackdropFilter(
-                            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                            child: Container(
-                              decoration: const BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(20),
-                                  topRight: Radius.circular(20),
-                                ),
-                              ),
-                              child: StatefulBuilder(
-                                builder: (BuildContext statefulBuilderContext,
-                                    void Function(void Function())
-                                        statefulBuilderSetState) {
-                                  return Column(
+                        child: StatefulBuilder(
+                          builder: (BuildContext statefulBuilderContext,
+                              void Function(void Function())
+                              statefulBuilderSetState) {
+                            return Column(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.all(16.0),
+                                  child: Row(
                                     children: [
-                                      Padding(
-                                        padding: const EdgeInsets.all(16.0),
-                                        child: Row(
-                                          children: [
-                                            Expanded(
-                                              child: TextFormField(
-                                                maxLines: 1,
-                                                cursorColor:
-                                                    ColorSystem.primary,
-                                                onChanged: (value) {
-                                                  if (value.isNotEmpty) {
-                                                    if (showingStores) {
-                                                      onStoreSearch(value);
-                                                    } else {
-                                                      onAgentSearch(value);
-                                                    }
-                                                    statefulBuilderSetState(
-                                                        () {});
-                                                  }
-                                                  if (value.isEmpty) {
-                                                    searchedList.clear();
-                                                    searchedStoreList.clear();
-                                                    statefulBuilderSetState(
-                                                        () {});
-                                                  }
-                                                },
-                                                decoration:
-                                                    const InputDecoration(
-                                                  hintText: 'Search by ID',
-                                                  hintStyle: TextStyle(
-                                                    color:
-                                                        ColorSystem.secondary,
-                                                    fontSize: SizeSystem.size18,
-                                                  ),
-                                                  focusedBorder:
-                                                      UnderlineInputBorder(
-                                                    borderSide: BorderSide(
-                                                      color:
-                                                          ColorSystem.primary,
-                                                      width: 1,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                            const SizedBox(
-                                              width: SizeSystem.size20,
-                                            ),
-                                            AnimatedToggleSwitch<bool>.dual(
-                                              current: showingStores,
-                                              first: false,
-                                              second: true,
-                                              dif: 1.0,
-                                              borderColor: Colors.transparent,
-                                              borderWidth: 3.0,
-                                              height: 30,
-                                              indicatorSize: const Size(
-                                                  28, double.infinity),
-                                              indicatorColor: ColorSystem.white,
-                                              innerColor: ColorSystem.primary,
-                                              onChanged: (b) {
-                                                showingStores = b;
-                                                statefulBuilderSetState(() {});
-                                              },
-                                              textBuilder: (value) => value
-                                                  ? const Icon(
-                                                      Icons.storefront_outlined,
-                                                      color: Colors.white,
-                                                      size: 18,
-                                                    )
-                                                  : const Icon(
-                                                      Icons.person_outline,
-                                                      color: Colors.white,
-                                                      size: 18,
-                                                    ),
-                                            )
-                                          ],
-                                        ),
-                                      ),
                                       Expanded(
-                                        child: FutureBuilder(
-                                          future: Future.wait([
-                                            futureAgents,
-                                            futureStores,
-                                          ]),
-                                          builder: (BuildContext context,
-                                              AsyncSnapshot<dynamic> snapshot) {
-                                            switch (snapshot.connectionState) {
-                                              case ConnectionState.none:
-                                              case ConnectionState.waiting:
-                                              case ConnectionState.active:
-                                                return const Center(
-                                                  child:
-                                                      CircularProgressIndicator(
-                                                    color: ColorSystem.primary,
-                                                  ),
-                                                );
-
-                                              case ConnectionState.done:
-                                                if (showingStores) {
-                                                  return searchedStoreList
-                                                          .isNotEmpty
-                                                      ? showStoresList(
-                                                          searchedStoreList)
-                                                      : showStoresList(stores);
-                                                } else {
-                                                  return searchedList.isNotEmpty
-                                                      ? showAgentList(
-                                                          searchedList)
-                                                      : showAgentList(agents);
-                                                }
+                                        child: TextFormField(
+                                          maxLines: 1,
+                                          cursorColor:
+                                          ColorSystem.primary,
+                                          onChanged: (value) {
+                                            if (value.isNotEmpty) {
+                                              if (showingStores) {
+                                                onStoreSearch(value);
+                                              } else {
+                                                onAgentSearch(value);
+                                              }
+                                              statefulBuilderSetState(
+                                                      () {});
+                                            }
+                                            if (value.isEmpty) {
+                                              searchedList.clear();
+                                              searchedStoreList.clear();
+                                              statefulBuilderSetState(
+                                                      () {});
                                             }
                                           },
+                                          decoration:
+                                          const InputDecoration(
+                                            hintText: 'Search by ID',
+                                            hintStyle: TextStyle(
+                                              color:
+                                              ColorSystem.secondary,
+                                              fontSize: SizeSystem.size18,
+                                            ),
+                                            focusedBorder:
+                                            UnderlineInputBorder(
+                                              borderSide: BorderSide(
+                                                color:
+                                                ColorSystem.primary,
+                                                width: 1,
+                                              ),
+                                            ),
+                                          ),
                                         ),
                                       ),
+                                      const SizedBox(
+                                        width: SizeSystem.size20,
+                                      ),
+                                      AnimatedToggleSwitch<bool>.dual(
+                                        current: showingStores,
+                                        first: false,
+                                        second: true,
+                                        dif: 1.0,
+                                        borderColor: Colors.transparent,
+                                        borderWidth: 3.0,
+                                        height: 30,
+                                        indicatorSize: const Size(
+                                            28, double.infinity),
+                                        indicatorColor: ColorSystem.white,
+                                        innerColor: ColorSystem.primary,
+                                        onChanged: (b) {
+                                          showingStores = b;
+                                          statefulBuilderSetState(() {});
+                                        },
+                                        textBuilder: (value) =>
+                                        value
+                                            ? const Icon(
+                                          Icons.storefront_outlined,
+                                          color: Colors.white,
+                                          size: 18,
+                                        )
+                                            : const Icon(
+                                          Icons.person_outline,
+                                          color: Colors.white,
+                                          size: 18,
+                                        ),
+                                      )
                                     ],
-                                  );
-                                },
-                              ),
-                            ),
-                          );
-                        },
-                      );
-                      await updateTaskAssignee();
-                    }
+                                  ),
+                                ),
+                                Expanded(
+                                  child: FutureBuilder(
+                                    future: Future.wait([
+                                      futureAgents,
+                                      futureStores,
+                                    ]),
+                                    builder: (BuildContext context,
+                                        AsyncSnapshot<dynamic> snapshot) {
+                                      switch (snapshot.connectionState) {
+                                        case ConnectionState.none:
+                                        case ConnectionState.waiting:
+                                        case ConnectionState.active:
+                                          return const Center(
+                                            child:
+                                            CircularProgressIndicator(
+                                              color: ColorSystem.primary,
+                                            ),
+                                          );
+
+                                        case ConnectionState.done:
+                                          if (showingStores) {
+                                            return searchedStoreList
+                                                .isNotEmpty
+                                                ? showStoresList(
+                                                searchedStoreList)
+                                                : showStoresList(stores);
+                                          } else {
+                                            return searchedList.isNotEmpty
+                                                ? showAgentList(
+                                                searchedList)
+                                                : showAgentList(agents);
+                                          }
+                                      }
+                                    },
+                                  ),
+                                ),
+                              ],
+                            );
+                          },
+                        ),
+                      ),
+                    );
+                  },
+                );
+                await updateTaskAssignee();
+              }
                   : () async {
-                      if (widget.phone != null) {
-                        await launchUrl(Uri.parse('tel://${widget.phone}'));
-                      }
-                    },
+                if (widget.phone != null) {
+                  await launchUrl(Uri.parse('tel://${widget.phone}'));
+                }
+              },
               child: SvgPicture.asset(
                 widget.showingStoreTasks && widget.showingUnassignedTask
                     ? IconSystem.assignTask

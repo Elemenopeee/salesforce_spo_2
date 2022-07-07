@@ -54,9 +54,9 @@ class _MySalesState extends State<MySalesWidget> {
           const SizedBox(
             height: 4,
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               RichText(
                 textAlign: TextAlign.center,
@@ -86,15 +86,15 @@ class _MySalesState extends State<MySalesWidget> {
                   ],
                 ),
               ),
-              const Text(
-                'Today',
+              Text(
+                'Yesterday',
                 style: TextStyle(
-                  fontSize: SizeSystem.size14,
-                  color: ColorSystem.primary,
+                  fontSize: SizeSystem.size12,
+                  color: ColorSystem.primary.withOpacity(0.7),
                   fontFamily: kRubik,
                   fontWeight: FontWeight.w400,
                 ),
-              )
+              ),
             ],
           ),
           const SizedBox(
@@ -102,7 +102,7 @@ class _MySalesState extends State<MySalesWidget> {
           ),
           Center(
             child: SizedBox(
-                height: 30,
+                height: 24,
                 child: widget.todaySale == 0 && widget.todayCommission == 0
                     ? SvgPicture.asset(IconSystem.noSales)
                     : BarChartWidget(
@@ -126,8 +126,9 @@ class _MySalesState extends State<MySalesWidget> {
           const SizedBox(
             height: 5,
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               RichText(
                 textAlign: TextAlign.center,
@@ -158,11 +159,11 @@ class _MySalesState extends State<MySalesWidget> {
                   ],
                 ),
               ),
-              const Text(
-                'Today',
+              Text(
+                'Yesterday',
                 style: TextStyle(
-                  fontSize: SizeSystem.size14,
-                  color: ColorSystem.primary,
+                  fontSize: SizeSystem.size12,
+                  color: ColorSystem.primary.withOpacity(0.7),
                   fontFamily: kRubik,
                   fontWeight: FontWeight.w400,
                 ),
@@ -174,7 +175,7 @@ class _MySalesState extends State<MySalesWidget> {
           ),
           Center(
             child: SizedBox(
-              height: 30,
+              height: 24,
               width: 150,
               child: widget.todaySale == 0 && widget.todayCommission == 0
                   ? SvgPicture.asset(IconSystem.noSales)

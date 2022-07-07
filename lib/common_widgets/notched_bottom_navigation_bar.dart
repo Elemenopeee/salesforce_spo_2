@@ -11,7 +11,7 @@ class NotchedBottomNavigationBar extends StatelessWidget {
     required this.actions,
     required this.centerButton,
   })  : assert(
-          actions.length == 4,
+          actions.length >= 2,
           'The number of actions should always be 4',
         ),
         super(key: key);
@@ -35,11 +35,13 @@ class NotchedBottomNavigationBar extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     actions[0],
-                    actions[1],
                     SizedBox(
                       width: MediaQuery.of(context).size.width * 0.2,
                     ),
+                    actions[1],
+                    if(actions.length > 2)
                     actions[2],
+                    if(actions.length > 2)
                     actions[3],
                   ],
                 ),

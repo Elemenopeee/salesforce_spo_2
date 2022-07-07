@@ -18,8 +18,25 @@ class CreateTaskCommentWidget extends StatefulWidget {
 
 class _CreateTaskCommentWidgetState extends State<CreateTaskCommentWidget> {
   final TextEditingController textEditingController = TextEditingController();
+  final FocusNode focusNode = FocusNode();
 
   String comment = '';
+
+  @override
+  initState(){
+    super.initState();
+    focusNode.addListener(() {
+      if(focusNode.hasFocus){
+
+      }
+    });
+  }
+
+  @override
+  dispose(){
+    focusNode.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -87,6 +104,7 @@ class _CreateTaskCommentWidgetState extends State<CreateTaskCommentWidget> {
                   children: [
                     Expanded(
                       child: TextFormField(
+                        focusNode: focusNode,
                         controller: textEditingController,
                         showCursor: true,
                         cursorColor: ColorSystem.primary,

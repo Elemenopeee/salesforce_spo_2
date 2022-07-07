@@ -26,21 +26,21 @@ class HorizontalMultipleProgressIndicator extends StatelessWidget {
               child: Container(
                 height: 8,
                 child: Row(),
-                color: const Color(0xFF6B5FD2),
+                color: ColorSystem.pieChartGreen,
               ),
             ),
             Expanded(
               flex: (overdueValue * 100).toInt(),
               child: Container(
                 height: 8,
-                color: ColorSystem.peach,
+                color: ColorSystem.pieChartRed,
               ),
             ),
             Expanded(
               flex: (unAssignedValue * 100).toInt(),
               child: Container(
                 height: 8,
-                color: ColorSystem.complimentary,
+                color: ColorSystem.pieChartAmber,
               ),
             ),
           ],

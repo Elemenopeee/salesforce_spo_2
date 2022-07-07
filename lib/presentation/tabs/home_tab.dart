@@ -243,7 +243,7 @@ class _ProgressContainerState extends State<ProgressContainer> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        "Metrics of ${getMonthName(monthNumber)}",
+                        "${getMonthName(monthNumber)} Metrics",
                         style: const TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,

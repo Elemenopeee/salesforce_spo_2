@@ -47,7 +47,7 @@ Future<String> getResult({bool isAcquireToken = true}) async {
     if (isAcquireToken) {
       userAdModel = await pca.acquireToken(scopes: kScopes);
       SharedPreferenceService()
-          .setKey(key: 'agent_email', value: '${userAdModel?.mail}');
+          .setKey(key: agentEmail, value: '${userAdModel?.mail}');
 
       // userAdModel.
     } else {
@@ -107,35 +107,6 @@ class _HomeScreenState extends State<HomeScreen> {
       extendBodyBehindAppBar: true,
       appBar: TGCAppBar(
         label: 'HOME',
-        trailingActions: [
-          InkWell(
-            focusColor: Colors.transparent,
-            highlightColor: Colors.transparent,
-            splashColor: Colors.transparent,
-            hoverColor: Colors.transparent,
-            onTap: () async {
-
-              var name = await SharedPreferenceService().getValue(savedAgentName);
-
-              await showModalBottomSheet(
-                constraints: BoxConstraints(
-                    maxHeight: MediaQuery.of(context).size.height * 0.9),
-                isScrollControlled: true,
-                context: context,
-                builder: (BuildContext context) {
-                  return CreateNewTaskWidget(
-                    agentName: name ?? '',
-                  );
-                },
-                backgroundColor: Colors.transparent,
-              );
-            },
-            child: SvgPicture.asset(IconSystem.createTaskIcon),
-          ),
-          const SizedBox(
-            width: SizeSystem.size16,
-          ),
-        ],
       ),
       body: const TabHome(),
       bottomNavigationBar: NotchedBottomNavigationBar(
@@ -161,37 +132,37 @@ class _HomeScreenState extends State<HomeScreen> {
               color: ColorSystem.primary,
             ),
           ),
-          IconButton(
-            focusColor: Colors.transparent,
-            splashColor: Colors.transparent,
-            onPressed: () {},
-            icon: SvgPicture.asset(
-              IconSystem.feed,
-              width: 24,
-              height: 24,
-              color: ColorSystem.primary,
-            ),
-          ),
-          IconButton(
-            focusColor: Colors.transparent,
-            splashColor: Colors.transparent,
-            onPressed: () {
-              Navigator.of(context)
-                  .push(MaterialPageRoute(builder: (BuildContext context) {
-                return SmartTriggerScreen(
-                  agentName: userAdModel?.givenName != null
-                      ? '${userAdModel!.givenName}\'s'
-                      : 'My',
-                );
-              }));
-            },
-            icon: SvgPicture.asset(
-              IconSystem.sparkle,
-              width: 24,
-              height: 24,
-              color: ColorSystem.primary,
-            ),
-          ),
+          // IconButton(
+          //   focusColor: Colors.transparent,
+          //   splashColor: Colors.transparent,
+          //   onPressed: () {},
+          //   icon: SvgPicture.asset(
+          //     IconSystem.feed,
+          //     width: 24,
+          //     height: 24,
+          //     color: ColorSystem.primary,
+          //   ),
+          // ),
+          // IconButton(
+          //   focusColor: Colors.transparent,
+          //   splashColor: Colors.transparent,
+          //   onPressed: () {
+          //     Navigator.of(context)
+          //         .push(MaterialPageRoute(builder: (BuildContext context) {
+          //       return SmartTriggerScreen(
+          //         agentName: userAdModel?.givenName != null
+          //             ? '${userAdModel!.givenName}\'s'
+          //             : 'My',
+          //       );
+          //     }));
+          //   },
+          //   icon: SvgPicture.asset(
+          //     IconSystem.sparkle,
+          //     width: 24,
+          //     height: 24,
+          //     color: ColorSystem.primary,
+          //   ),
+          // ),
           IconButton(
             focusColor: Colors.transparent,
             splashColor: Colors.transparent,

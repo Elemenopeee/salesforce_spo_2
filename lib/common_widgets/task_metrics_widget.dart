@@ -1,6 +1,7 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import '../design_system/design_system.dart';
 import '../utils/constants.dart';
@@ -43,37 +44,8 @@ class TaskMetricsWidget extends StatelessWidget {
                   child: Column(
                     children: [
                       CustomDialogAction(
-                        label: 'Upcoming (${futureTasks?.toString() ?? 0})',
+                        label: 'All (${allTasks.toString()})',
                         onTap: () {},
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Container(
-                              child: const Text(
-                                'P',
-                                style: TextStyle(
-                                    fontFamily: kRubik,
-                                    color: Colors.white,
-                                    fontSize: 12),
-                              ),
-                              padding:
-                                  const EdgeInsets.all(PaddingSystem.padding4),
-                              decoration: const BoxDecoration(
-                                color: Color(0xFF6B5FD2),
-                                shape: BoxShape.circle,
-                              ),
-                            ),
-                            const SizedBox(
-                              width: 2,
-                            ),
-                            const Text(
-                              '-',
-                            ),
-                            const SizedBox(
-                              width: 2,
-                            ),
-                          ],
-                        ),
                       ),
                       Container(
                         height: SizeSystem.size1,
@@ -86,22 +58,15 @@ class TaskMetricsWidget extends StatelessWidget {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Container(
-                              child: const Text(
-                                'O',
-                                style: TextStyle(
-                                    fontFamily: kRubik,
-                                    color: Colors.white,
-                                    fontSize: 12),
-                              ),
-                              padding:
-                                  const EdgeInsets.all(PaddingSystem.padding4),
+                              width: SizeSystem.size18,
+                              height: SizeSystem.size18,
                               decoration: const BoxDecoration(
-                                color: ColorSystem.peach,
+                                color: ColorSystem.pieChartRed,
                                 shape: BoxShape.circle,
                               ),
                             ),
                             const SizedBox(
-                              width: 2,
+                              width: SizeSystem.size10,
                             ),
                             const Text(
                               '-',
@@ -116,14 +81,39 @@ class TaskMetricsWidget extends StatelessWidget {
                         height: SizeSystem.size1,
                         color: Colors.grey.withOpacity(0.2),
                       ),
-                      CustomDialogAction(
-                        label: 'All (${allTasks.toString()})',
-                        onTap: () {},
-                      ),
-                      Container(
-                        height: SizeSystem.size1,
-                        color: Colors.grey.withOpacity(0.2),
-                      ),
+                      if (isManager)
+                        CustomDialogAction(
+                          label:
+                              'Unassigned (${unAssignedTasks?.toString() ?? 0})',
+                          onTap: () {},
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Container(
+                                width: SizeSystem.size18,
+                                height: SizeSystem.size18,
+                                decoration: const BoxDecoration(
+                                  color: ColorSystem.pieChartAmber,
+                                  shape: BoxShape.circle,
+                                ),
+                              ),
+                              const SizedBox(
+                                width: SizeSystem.size10,
+                              ),
+                              const Text(
+                                '-',
+                              ),
+                              const SizedBox(
+                                width: 2,
+                              ),
+                            ],
+                          ),
+                        ),
+                      if (isManager)
+                        Container(
+                          height: SizeSystem.size1,
+                          color: Colors.grey.withOpacity(0.2),
+                        ),
                       CustomDialogAction(
                         label: 'Today (${pendingTasks?.toString() ?? 0})',
                         onTap: () {},
@@ -131,99 +121,15 @@ class TaskMetricsWidget extends StatelessWidget {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Container(
-                              child: const Text(
-                                'P',
-                                style: TextStyle(
-                                    fontFamily: kRubik,
-                                    color: Colors.white,
-                                    fontSize: 12),
-                              ),
-                              padding:
-                                  const EdgeInsets.all(PaddingSystem.padding4),
+                              width: SizeSystem.size18,
+                              height: SizeSystem.size18,
                               decoration: const BoxDecoration(
-                                color: Color(0xFF6B5FD2),
+                                color: ColorSystem.pieChartGreen,
                                 shape: BoxShape.circle,
                               ),
                             ),
                             const SizedBox(
-                              width: 2,
-                            ),
-                            const Text(
-                              '-',
-                            ),
-                            const SizedBox(
-                              width: 2,
-                            ),
-                          ],
-                        ),
-                      ),
-                      // Container(
-                      //   height: SizeSystem.size1,
-                      //   color: Colors.grey.withOpacity(0.2),
-                      // ),
-                      // CustomDialogAction(
-                      //   label: 'Completed (${completedTasks?.toString() ?? 0})',
-                      //   onTap: () {},
-                      //   child: Row(
-                      //     mainAxisSize: MainAxisSize.min,
-                      //     children: [
-                      //       Container(
-                      //         child: const Text(
-                      //           'C',
-                      //           style: TextStyle(
-                      //               fontFamily: kRubik,
-                      //               color: Colors.white,
-                      //               fontSize: 12),
-                      //         ),
-                      //         padding:
-                      //             const EdgeInsets.all(PaddingSystem.padding4),
-                      //         decoration: const BoxDecoration(
-                      //           color: ColorSystem.skyBlue,
-                      //           shape: BoxShape.circle,
-                      //         ),
-                      //       ),
-                      //       const SizedBox(
-                      //         width: 2,
-                      //       ),
-                      //       const Text(
-                      //         '-',
-                      //       ),
-                      //       const SizedBox(
-                      //         width: 2,
-                      //       ),
-                      //     ],
-                      //   ),
-                      // ),
-                      if(isManager)
-                      Container(
-                        height: SizeSystem.size1,
-                        color: Colors.grey.withOpacity(0.2),
-                      ),
-                      if(isManager)
-                      CustomDialogAction(
-                        label:
-                            'Unassigned (${unAssignedTasks?.toString() ?? 0})',
-                        onTap: () {},
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Container(
-                              child: const Text(
-                                'U',
-                                style: TextStyle(
-                                    fontFamily: kRubik,
-                                    color: Colors.white,
-                                    fontSize: 12),
-                              ),
-                              padding:
-                                  const EdgeInsets.all(PaddingSystem.padding4),
-                              decoration: const BoxDecoration(
-                                color: ColorSystem.complimentary,
-                                shape: BoxShape.circle,
-                              ),
-                            ),
-                            const SizedBox(
-                              width: 2,
+                              width: SizeSystem.size10,
                             ),
                             const Text(
                               '-',
@@ -246,8 +152,8 @@ class TaskMetricsWidget extends StatelessWidget {
         padding: const EdgeInsets.only(
           left: PaddingSystem.padding16,
           right: PaddingSystem.padding16,
-          top: PaddingSystem.padding4,
-          bottom: PaddingSystem.padding10,
+          top: PaddingSystem.padding8,
+          bottom: PaddingSystem.padding16,
         ),
         decoration: BoxDecoration(
           color: ColorSystem.purple.withOpacity(0.1),
@@ -287,6 +193,7 @@ class TaskMetricsWidget extends StatelessWidget {
               height: 110,
               child: PieChart(
                 PieChartData(
+                  sectionsSpace: 0,
                   sections: showingSections(
                     unAssignedTasks: unAssignedTasks?.toDouble() ?? 0,
                     pendingTasks: pendingTasks?.toDouble() ?? 0,
@@ -311,7 +218,7 @@ class TaskMetricsWidget extends StatelessWidget {
                       Text(
                         '${pendingTasks! + (futureTasks ?? 0)}',
                         style: const TextStyle(
-                          color: ColorSystem.purple,
+                          color: ColorSystem.pieChartGreen,
                           fontSize: SizeSystem.size24,
                           fontFamily: kRubik,
                           fontWeight: FontWeight.bold,
@@ -320,13 +227,11 @@ class TaskMetricsWidget extends StatelessWidget {
                       const SizedBox(
                         height: SizeSystem.size4,
                       ),
-                      const Text(
-                        'P',
-                        style: TextStyle(
-                          color: ColorSystem.primary,
-                          fontSize: SizeSystem.size12,
-                          fontFamily: kRubik,
-                        ),
+                      SvgPicture.asset(
+                        IconSystem.taskTypeIcon,
+                        color: ColorSystem.pieChartGreen,
+                        width: SizeSystem.size16,
+                        height: SizeSystem.size16,
                       ),
                     ],
                   ),
@@ -337,7 +242,7 @@ class TaskMetricsWidget extends StatelessWidget {
                       Text(
                         pastOpenTasks.toString(),
                         style: const TextStyle(
-                          color: ColorSystem.peach,
+                          color: ColorSystem.pieChartRed,
                           fontSize: SizeSystem.size24,
                           fontFamily: kRubik,
                           fontWeight: FontWeight.bold,
@@ -346,13 +251,11 @@ class TaskMetricsWidget extends StatelessWidget {
                       const SizedBox(
                         height: SizeSystem.size4,
                       ),
-                      const Text(
-                        'O',
-                        style: TextStyle(
-                          color: ColorSystem.primary,
-                          fontSize: SizeSystem.size12,
-                          fontFamily: kRubik,
-                        ),
+                      SvgPicture.asset(
+                        IconSystem.taskTypeIcon,
+                        color: ColorSystem.pieChartRed,
+                        width: SizeSystem.size16,
+                        height: SizeSystem.size16,
                       ),
                     ],
                   ),
@@ -363,7 +266,7 @@ class TaskMetricsWidget extends StatelessWidget {
                       Text(
                         unAssignedTasks.toString(),
                         style: const TextStyle(
-                          color: ColorSystem.complimentary,
+                          color: ColorSystem.pieChartAmber,
                           fontSize: SizeSystem.size24,
                           fontFamily: kRubik,
                           fontWeight: FontWeight.bold,
@@ -372,13 +275,11 @@ class TaskMetricsWidget extends StatelessWidget {
                       const SizedBox(
                         height: SizeSystem.size4,
                       ),
-                      const Text(
-                        'U',
-                        style: TextStyle(
-                          color: ColorSystem.primary,
-                          fontSize: SizeSystem.size12,
-                          fontFamily: kRubik,
-                        ),
+                      SvgPicture.asset(
+                        IconSystem.taskTypeIcon,
+                        color: ColorSystem.pieChartAmber,
+                        width: SizeSystem.size16,
+                        height: SizeSystem.size16,
                       ),
                     ],
                   ),
@@ -403,7 +304,7 @@ List<PieChartSectionData> showingSections({
     switch (i) {
       case 0:
         return PieChartSectionData(
-          color: const Color(0xFF6B5FD2),
+          color: ColorSystem.pieChartGreen,
           value: pendingTasks + upcomingTasks,
           radius: radius,
           titleStyle: const TextStyle(
@@ -412,7 +313,7 @@ List<PieChartSectionData> showingSections({
         );
       case 1:
         return PieChartSectionData(
-          color: ColorSystem.peach,
+          color: ColorSystem.pieChartRed,
           value: overdueTasks,
           radius: radius,
           titleStyle: const TextStyle(
@@ -421,7 +322,7 @@ List<PieChartSectionData> showingSections({
         );
       case 2:
         return PieChartSectionData(
-          color: ColorSystem.complimentary,
+          color: ColorSystem.pieChartAmber,
           value: unAssignedTasks,
           radius: radius,
           titleStyle: const TextStyle(
