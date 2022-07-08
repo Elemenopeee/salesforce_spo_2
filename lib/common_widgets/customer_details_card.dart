@@ -2,10 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:salesforce_spo/design_system/design_system.dart';
-import 'package:salesforce_spo/presentation/screens/client_landing_screen.dart';
 import 'package:salesforce_spo/utils/constant_functions.dart';
 import 'package:salesforce_spo/utils/enums/music_instrument_enum.dart';
-import 'package:url_launcher/url_launcher_string.dart';
 
 import '../utils/constants.dart';
 
@@ -151,7 +149,7 @@ class _CustomerDetailsCardState extends State<CustomerDetailsCard> {
                           if (widget.lastTransactionDate != null)
                             TextSpan(
                               text:
-                                  ' • L. Purchased : ${formatDate(widget.lastTransactionDate!)}',
+                                  ' • Last Purchased : ${formatDate(widget.lastTransactionDate!)}',
                               style: const TextStyle(
                                 fontSize: SizeSystem.size12,
                                 color: ColorSystem.secondary,

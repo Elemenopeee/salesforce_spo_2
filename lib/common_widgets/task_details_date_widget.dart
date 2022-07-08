@@ -97,8 +97,8 @@ class _TaskDetailsDateWidgetState extends State<TaskDetailsDateWidget> {
     var storeIdValue = await SharedPreferenceService().getValue(storeId);
 
     if (storeIdValue != null) {
-      var response =
-          await HttpService().doGet(path: Endpoints.getStoreAgents(storeIdValue));
+      var response = await HttpService()
+          .doGet(path: Endpoints.getStoreAgents(storeIdValue));
       if (response.data != null) {
         for (var agentJson in response.data['AgentList']) {
           agents.add(Agent.fromJson(agentJson));
@@ -148,8 +148,22 @@ class _TaskDetailsDateWidgetState extends State<TaskDetailsDateWidget> {
       return;
     }
     for (var agent in agents) {
-      if (agent.name!.contains(idOrName) || agent.id!.contains(idOrName)) {
-        searchedList.add(agent);
+      if(agent.name != null && agent.employeeId != null){
+        if (agent.name!.contains(idOrName) || agent.employeeId!.contains(idOrName)) {
+          var searchedStringList = idOrName.split('');
+          var idStringList = agent.employeeId!.split('');
+
+          for(var i = 0; i < searchedStringList.length; i++){
+            if(idStringList.elementAt(i) == searchedStringList.elementAt(i)) {
+              if(searchedList.contains(agent)){
+                return;
+              }else {
+                searchedList.add(agent);
+              }
+            }
+          }
+
+        }
       }
     }
   }
@@ -198,8 +212,8 @@ class _TaskDetailsDateWidgetState extends State<TaskDetailsDateWidget> {
             );
           case ConnectionState.done:
             return Container(
-              padding: const EdgeInsets.symmetric(
-                  vertical: 20.0, horizontal: 16.0),
+              padding:
+                  const EdgeInsets.symmetric(vertical: 20.0, horizontal: 16.0),
               decoration: BoxDecoration(
                   color: widget.showModifiedBy
                       ? ColorSystem.lavender3.withOpacity(0.08)
@@ -264,8 +278,7 @@ class _TaskDetailsDateWidgetState extends State<TaskDetailsDateWidget> {
                                                 RoundedRectangleBorder>(
                                               RoundedRectangleBorder(
                                                 borderRadius:
-                                                    BorderRadius.circular(
-                                                        14.0),
+                                                    BorderRadius.circular(14.0),
                                               ),
                                             ),
                                           ),
@@ -389,8 +402,7 @@ class _TaskDetailsDateWidgetState extends State<TaskDetailsDateWidget> {
                                                         2,
                                               ),
                                               context: context,
-                                              builder:
-                                                  (BuildContext context) {
+                                              builder: (BuildContext context) {
                                                 return BackdropFilter(
                                                   filter: ImageFilter.blur(
                                                       sigmaX: 10, sigmaY: 10),
@@ -401,11 +413,9 @@ class _TaskDetailsDateWidgetState extends State<TaskDetailsDateWidget> {
                                                       borderRadius:
                                                           BorderRadius.only(
                                                         topLeft:
-                                                            Radius.circular(
-                                                                20),
+                                                            Radius.circular(20),
                                                         topRight:
-                                                            Radius.circular(
-                                                                20),
+                                                            Radius.circular(20),
                                                       ),
                                                     ),
                                                     child: StatefulBuilder(
@@ -430,7 +440,8 @@ class _TaskDetailsDateWidgetState extends State<TaskDetailsDateWidget> {
                                                                       maxLines:
                                                                           1,
                                                                       cursorColor:
-                                                                          ColorSystem.primary,
+                                                                          ColorSystem
+                                                                              .primary,
                                                                       onChanged:
                                                                           (value) {
                                                                         if (value
@@ -440,13 +451,17 @@ class _TaskDetailsDateWidgetState extends State<TaskDetailsDateWidget> {
                                                                           } else {
                                                                             onAgentSearch(value);
                                                                           }
-                                                                          statefulBuilderSetState(() {});
+                                                                          statefulBuilderSetState(
+                                                                              () {});
                                                                         }
                                                                         if (value
                                                                             .isEmpty) {
-                                                                          searchedList.clear();
-                                                                          searchedStoreList.clear();
-                                                                          statefulBuilderSetState(() {});
+                                                                          searchedList
+                                                                              .clear();
+                                                                          searchedStoreList
+                                                                              .clear();
+                                                                          statefulBuilderSetState(
+                                                                              () {});
                                                                         }
                                                                       },
                                                                       decoration:
@@ -464,8 +479,10 @@ class _TaskDetailsDateWidgetState extends State<TaskDetailsDateWidget> {
                                                                             UnderlineInputBorder(
                                                                           borderSide:
                                                                               BorderSide(
-                                                                            color: ColorSystem.primary,
-                                                                            width: 1,
+                                                                            color:
+                                                                                ColorSystem.primary,
+                                                                            width:
+                                                                                1,
                                                                           ),
                                                                         ),
                                                                       ),
@@ -475,51 +492,51 @@ class _TaskDetailsDateWidgetState extends State<TaskDetailsDateWidget> {
                                                                     width: SizeSystem
                                                                         .size20,
                                                                   ),
-                                                                  AnimatedToggleSwitch<
-                                                                      bool>.dual(
-                                                                    current:
-                                                                        showingStores,
-                                                                    first:
-                                                                        false,
-                                                                    second:
-                                                                        true,
-                                                                    dif: 1.0,
-                                                                    borderColor:
-                                                                        Colors
-                                                                            .transparent,
-                                                                    borderWidth:
-                                                                        3.0,
-                                                                    height:
-                                                                        30,
-                                                                    indicatorSize:
-                                                                        const Size(
-                                                                            28,
-                                                                            double.infinity),
-                                                                    indicatorColor:
-                                                                        ColorSystem
-                                                                            .white,
-                                                                    innerColor:
-                                                                        ColorSystem
-                                                                            .primary,
-                                                                    onChanged:
-                                                                        (b) {
-                                                                      showingStores =
-                                                                          b;
-                                                                      statefulBuilderSetState(
-                                                                          () {});
-                                                                    },
-                                                                    textBuilder: (value) => value
-                                                                        ? const Icon(
-                                                                            Icons.storefront_outlined,
-                                                                            color: Colors.white,
-                                                                            size: 18,
-                                                                          )
-                                                                        : const Icon(
-                                                                            Icons.person_outline,
-                                                                            color: Colors.white,
-                                                                            size: 18,
-                                                                          ),
-                                                                  )
+                                                                  // AnimatedToggleSwitch<
+                                                                  //     bool>.dual(
+                                                                  //   current:
+                                                                  //       showingStores,
+                                                                  //   first:
+                                                                  //       false,
+                                                                  //   second:
+                                                                  //       true,
+                                                                  //   dif: 1.0,
+                                                                  //   borderColor:
+                                                                  //       Colors
+                                                                  //           .transparent,
+                                                                  //   borderWidth:
+                                                                  //       3.0,
+                                                                  //   height:
+                                                                  //       30,
+                                                                  //   indicatorSize:
+                                                                  //       const Size(
+                                                                  //           28,
+                                                                  //           double.infinity),
+                                                                  //   indicatorColor:
+                                                                  //       ColorSystem
+                                                                  //           .white,
+                                                                  //   innerColor:
+                                                                  //       ColorSystem
+                                                                  //           .primary,
+                                                                  //   onChanged:
+                                                                  //       (b) {
+                                                                  //     showingStores =
+                                                                  //         b;
+                                                                  //     statefulBuilderSetState(
+                                                                  //         () {});
+                                                                  //   },
+                                                                  //   textBuilder: (value) => value
+                                                                  //       ? const Icon(
+                                                                  //           Icons.storefront_outlined,
+                                                                  //           color: Colors.white,
+                                                                  //           size: 18,
+                                                                  //         )
+                                                                  //       : const Icon(
+                                                                  //           Icons.person_outline,
+                                                                  //           color: Colors.white,
+                                                                  //           size: 18,
+                                                                  //         ),
+                                                                  // )
                                                                 ],
                                                               ),
                                                             ),
@@ -580,6 +597,8 @@ class _TaskDetailsDateWidgetState extends State<TaskDetailsDateWidget> {
                                         : null,
                                 child: Text(
                                   assigneeName,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
                                   style: TextStyle(
                                     color: widget.showModifiedBy
                                         ? Color(0xff53A5FF)
@@ -590,6 +609,9 @@ class _TaskDetailsDateWidgetState extends State<TaskDetailsDateWidget> {
                                   ),
                                 ),
                               ),
+                            ),
+                            const SizedBox(
+                              width: SizeSystem.size16,
                             ),
                             if (widget.showModifiedBy)
                               InkWell(

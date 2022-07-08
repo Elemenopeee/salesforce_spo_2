@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:ui';
 
-import 'package:animated_toggle_switch/animated_toggle_switch.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
@@ -125,14 +124,26 @@ class _TaskListWidgetState extends State<TaskListWidget> {
 
   void onAgentSearch(String idOrName) {
     searchedList.clear();
-    if (idOrName
-        .trim()
-        .isEmpty) {
+    if (idOrName.trim().isEmpty) {
       return;
     }
     for (var agent in agents) {
-      if (agent.name!.contains(idOrName) || agent.id!.contains(idOrName)) {
-        searchedList.add(agent);
+      if(agent.name != null && agent.employeeId != null){
+        if (agent.name!.contains(idOrName) || agent.employeeId!.contains(idOrName)) {
+          var searchedStringList = idOrName.split('');
+          var idStringList = agent.employeeId!.split('');
+
+          for(var i = 0; i < searchedStringList.length; i++){
+            if(idStringList.elementAt(i) == searchedStringList.elementAt(i)) {
+              if(searchedList.contains(agent)){
+                return;
+              }else {
+                searchedList.add(agent);
+              }
+            }
+          }
+
+        }
       }
     }
   }
@@ -329,35 +340,35 @@ class _TaskListWidgetState extends State<TaskListWidget> {
                                       const SizedBox(
                                         width: SizeSystem.size20,
                                       ),
-                                      AnimatedToggleSwitch<bool>.dual(
-                                        current: showingStores,
-                                        first: false,
-                                        second: true,
-                                        dif: 1.0,
-                                        borderColor: Colors.transparent,
-                                        borderWidth: 3.0,
-                                        height: 30,
-                                        indicatorSize: const Size(
-                                            28, double.infinity),
-                                        indicatorColor: ColorSystem.white,
-                                        innerColor: ColorSystem.primary,
-                                        onChanged: (b) {
-                                          showingStores = b;
-                                          statefulBuilderSetState(() {});
-                                        },
-                                        textBuilder: (value) =>
-                                        value
-                                            ? const Icon(
-                                          Icons.storefront_outlined,
-                                          color: Colors.white,
-                                          size: 18,
-                                        )
-                                            : const Icon(
-                                          Icons.person_outline,
-                                          color: Colors.white,
-                                          size: 18,
-                                        ),
-                                      )
+                                      // AnimatedToggleSwitch<bool>.dual(
+                                      //   current: showingStores,
+                                      //   first: false,
+                                      //   second: true,
+                                      //   dif: 1.0,
+                                      //   borderColor: Colors.transparent,
+                                      //   borderWidth: 3.0,
+                                      //   height: 30,
+                                      //   indicatorSize: const Size(
+                                      //       28, double.infinity),
+                                      //   indicatorColor: ColorSystem.white,
+                                      //   innerColor: ColorSystem.primary,
+                                      //   onChanged: (b) {
+                                      //     showingStores = b;
+                                      //     statefulBuilderSetState(() {});
+                                      //   },
+                                      //   textBuilder: (value) =>
+                                      //   value
+                                      //       ? const Icon(
+                                      //     Icons.storefront_outlined,
+                                      //     color: Colors.white,
+                                      //     size: 18,
+                                      //   )
+                                      //       : const Icon(
+                                      //     Icons.person_outline,
+                                      //     color: Colors.white,
+                                      //     size: 18,
+                                      //   ),
+                                      // )
                                     ],
                                   ),
                                 ),

@@ -9,7 +9,6 @@ import 'package:salesforce_spo/presentation/tabs/home_tab.dart';
 import 'package:salesforce_spo/services/storage/shared_preferences_service.dart';
 import 'package:salesforce_spo/utils/constants.dart';
 
-import 'common_widgets/notched_bottom_navigation_bar.dart';
 import 'common_widgets/tgc_app_bar.dart';
 import 'design_system/design_system.dart';
 
