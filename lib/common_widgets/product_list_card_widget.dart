@@ -415,6 +415,16 @@ class _OrderItem extends StatelessWidget {
   final String track_id;
   final String? item_image;
 
+  String dateFormatter(String date) {
+    try{
+      var dateTime = DateTime.parse(date);
+      return DateFormat('MMM dd, yyyy').format(dateTime);
+    } catch (e){
+      print(e);
+      return date;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -482,67 +492,65 @@ class _OrderItem extends StatelessWidget {
             ],
           ),
         ),
-        Container(
-          child: Flexible(
-            child: Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 8.0, vertical: 0.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    product_disc,
-                    style: const TextStyle(
-                      fontSize: SizeSystem.size14,
-                      fontWeight: FontWeight.w600,
-                      color: Color(0xff2D3142),
-                      fontFamily: kRubik,
-                    ),
+        Flexible(
+          child: Padding(
+            padding:
+                const EdgeInsets.symmetric(horizontal: 8.0, vertical: 0.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  product_disc,
+                  style: const TextStyle(
+                    fontSize: SizeSystem.size14,
+                    fontWeight: FontWeight.w600,
+                    color: Color(0xff2D3142),
+                    fontFamily: kRubik,
                   ),
-                  const SizedBox(
-                    height: 8.0,
+                ),
+                const SizedBox(
+                  height: 8.0,
+                ),
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 5, horizontal: 8),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10.0),
+                    border: Border.all(color: ColorSystem.secondary),
                   ),
-                  Container(
-                    padding:
-                        const EdgeInsets.symmetric(vertical: 5, horizontal: 8),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10.0),
-                      border: Border.all(color: Color(0xff9C9EB9)),
-                    ),
-                    child: Text(product_status,
-                        style: const TextStyle(
-                            color: Color(0xff8C80F8),
-                            fontWeight: FontWeight.w400,
-                            fontSize: SizeSystem.size12,
-                            fontFamily: kRubik),
-                        textAlign: TextAlign.center),
-                  ),
-                  const SizedBox(
-                    height: 8.0,
-                  ),
-                  if (product_status == 'SPO Delivery')
-                    RichText(
-                      text: TextSpan(
-                        text: 'Deilvered on:',
-                        style: const TextStyle(
+                  child: Text(product_status,
+                      style: const TextStyle(
+                          color: Color(0xff8C80F8),
+                          fontWeight: FontWeight.w400,
                           fontSize: SizeSystem.size12,
-                          color: Color(0xff2D3142),
-                          fontFamily: kRubik,
-                        ),
-                        children: <TextSpan>[
-                          TextSpan(
-                              text: ' ' + delivery_date,
-                              style: const TextStyle(
-                                  fontWeight: FontWeight.w500,
-                                  fontFamily: kRubik,
-                                  fontSize: SizeSystem.size14)),
-                        ],
+                          fontFamily: kRubik),
+                      textAlign: TextAlign.center),
+                ),
+                const SizedBox(
+                  height: 8.0,
+                ),
+                if (product_status == 'SPO Delivery')
+                  RichText(
+                    text: TextSpan(
+                      text: 'Delivered on:',
+                      style: const TextStyle(
+                        fontSize: SizeSystem.size12,
+                        color: Color(0xff2D3142),
+                        fontFamily: kRubik,
                       ),
+                      children: <TextSpan>[
+                        TextSpan(
+                            text: ' ' + dateFormatter(delivery_date),
+                            style: const TextStyle(
+                                fontWeight: FontWeight.w500,
+                                fontFamily: kRubik,
+                                fontSize: SizeSystem.size14)),
+                      ],
                     ),
-                ],
-              ),
+                  ),
+              ],
             ),
           ),
         )
@@ -707,6 +715,7 @@ class TaskOrderLineWidget extends StatelessWidget {
                                 height: 8.0,
                               ),
                             if (taskType == 'SPO Delivery')
+                              if(trackingId != null || trackingId != 'null')
                               RichText(
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
@@ -719,10 +728,7 @@ class TaskOrderLineWidget extends StatelessWidget {
                                   ),
                                   children: [
                                     TextSpan(
-                                        text: trackingId == null ||
-                                                trackingId == 'null'
-                                            ? '--'
-                                            : trackingId,
+                                        text: trackingId,
                                         style: const TextStyle(
                                             fontWeight: FontWeight.w500,
                                             fontFamily: kRubik,
@@ -779,7 +785,7 @@ class TaskOrderLineWidget extends StatelessWidget {
                                 color: Color(0xff9C9EB9)),
                             child: Center(
                               child: Text(
-                                '\$ $itemPrice',
+                                '\$ ${itemPrice ?? '--'}',
                                 style: const TextStyle(
                                     color: Colors.white,
                                     fontSize: SizeSystem.size12,

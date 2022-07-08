@@ -1093,9 +1093,6 @@ class _TasksWidgetState extends State<TasksWidget>
                                     task: displayedList[index],
                                   );
                                 }));
-                                setState(() {
-                                  futureTasks = getTasks(myNewTask);
-                                });
                               },
                               task: displayedList[index],
                               taskId: displayedList[index].id!,
@@ -1495,11 +1492,6 @@ class _TasksWidgetState extends State<TasksWidget>
                                         task: displayedList[index],
                                       );
                                     }));
-                                    setState(() {
-                                      futureTasks = getTasks(showingAgentTasks
-                                          ? myNewTask
-                                          : myNewStore);
-                                    });
                                   },
                                   task: displayedList[index],
                                   taskId: displayedList[index].id!,

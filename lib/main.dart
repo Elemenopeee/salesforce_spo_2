@@ -104,81 +104,58 @@ class _HomeScreenState extends State<HomeScreen> {
         label: 'HOME',
       ),
       body: const TabHome(),
-      bottomNavigationBar: NotchedBottomNavigationBar(
-        actions: [
-          IconButton(
-            focusColor: Colors.transparent,
-            splashColor: Colors.transparent,
-            onPressed: () {
-              showModalBottomSheet(
-                  constraints: BoxConstraints(
-                      maxHeight: MediaQuery.of(context).size.height * 0.9),
-                  isScrollControlled: true,
-                  context: context,
-                  builder: (BuildContext context) {
-                    return const CustomerLookupWidget();
-                  },
-                  backgroundColor: Colors.transparent);
-            },
-            icon: SvgPicture.asset(
-              IconSystem.user,
-              width: 24,
-              height: 24,
-              color: ColorSystem.primary,
+      bottomNavigationBar: Container(
+        decoration: BoxDecoration(
+            borderRadius: const BorderRadius.only(
+              topRight: Radius.circular(SizeSystem.size24),
+              topLeft: Radius.circular(SizeSystem.size24),
             ),
-          ),
-          // IconButton(
-          //   focusColor: Colors.transparent,
-          //   splashColor: Colors.transparent,
-          //   onPressed: () {},
-          //   icon: SvgPicture.asset(
-          //     IconSystem.feed,
-          //     width: 24,
-          //     height: 24,
-          //     color: ColorSystem.primary,
-          //   ),
-          // ),
-          // IconButton(
-          //   focusColor: Colors.transparent,
-          //   splashColor: Colors.transparent,
-          //   onPressed: () {
-          //     Navigator.of(context)
-          //         .push(MaterialPageRoute(builder: (BuildContext context) {
-          //       return SmartTriggerScreen(
-          //         agentName: userAdModel?.givenName != null
-          //             ? '${userAdModel!.givenName}\'s'
-          //             : 'My',
-          //       );
-          //     }));
-          //   },
-          //   icon: SvgPicture.asset(
-          //     IconSystem.sparkle,
-          //     width: 24,
-          //     height: 24,
-          //     color: ColorSystem.primary,
-          //   ),
-          // ),
-          IconButton(
-            focusColor: Colors.transparent,
-            splashColor: Colors.transparent,
-            onPressed: null,
-            icon: SvgPicture.asset(
-              IconSystem.feed,
-              width: 24,
-              height: 24,
-              color: ColorSystem.primary,
+            color: Colors.white,
+            boxShadow: [
+              BoxShadow(
+                blurRadius: 10,
+                spreadRadius: 4,
+                color: ColorSystem.secondary.withOpacity(0.4),
+              )
+            ]),
+        height: 80,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            IconButton(
+              focusColor: Colors.transparent,
+              splashColor: Colors.transparent,
+              onPressed: () {
+                showModalBottomSheet(
+                    constraints: BoxConstraints(
+                        maxHeight: MediaQuery.of(context).size.height * 0.9),
+                    isScrollControlled: true,
+                    context: context,
+                    builder: (BuildContext context) {
+                      return const CustomerLookupWidget();
+                    },
+                    backgroundColor: Colors.transparent);
+              },
+              icon: SvgPicture.asset(
+                IconSystem.user,
+                width: 24,
+                height: 24,
+                color: ColorSystem.primary,
+              ),
             ),
-          ),
-        ],
-        centerButton: FloatingActionButton(
-          backgroundColor: ColorSystem.primary,
-          onPressed: () {},
-          child: SvgPicture.asset(
-            IconSystem.plus,
-            width: 24,
-            height: 24,
-            color: ColorSystem.primary,
-          ),
+            const SizedBox.shrink(),
+            IconButton(
+              focusColor: Colors.transparent,
+              splashColor: Colors.transparent,
+              onPressed: () {},
+              icon: SvgPicture.asset(
+                IconSystem.feed,
+                width: 24,
+                height: 24,
+                color: ColorSystem.primary,
+              ),
+            ),
+          ],
         ),
       ),
     );
